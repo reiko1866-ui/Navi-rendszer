@@ -13,7 +13,12 @@
             margin: 0; padding: 0; width: 100%; height: 100%;
             overflow: hidden; background: #222; font-family: 'Comic Neue', cursive, sans-serif;
         }
-        #map { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+        
+        #map { 
+            width: 100%; height: 100%; position: absolute; top: 0; left: 0; 
+            /* Itt varázsoljuk rajzfilmes, kontrasztos, egyedi stílusúvá a térképet API-kulcs nélkül! */
+            filter: saturate(1.4) contrast(1.1);
+        }
         
         /* Rajzfilmes felső sáv és kereső */
         #top-bar {
@@ -44,7 +49,6 @@
             box-shadow: 0 6px 0px #333;
             display: flex; align-items: center; justify-content: center;
             font-size: 24px;
-            transition: transform 0.2s ease;
         }
     </style>
 </head>
@@ -61,7 +65,7 @@
     <!-- MapLibre GL JS Script -->
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <script>
-        // 1. Térkép inicializálása Magyarország határain belül, rajzfilmes stílusú (Stamen Toner / Voyager jellegű vagy custom filteres) csempével
+        // Tiszta, ingyenes OpenStreetMap csempék használata API-kulcs nélkül
         const map = new maplibregl.Map({
             container: 'map',
             style: {
@@ -69,10 +73,9 @@
                 sources: {
                     'osm': {
                         type: 'raster',
-                        // Használhatunk egy világosabb, rajzfilmesebb csempét (pl. CartoDB Positron, ami tiszta és rajzfilmszerűen minimalista)
-                        tiles: ['https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'],
+                        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
                         tileSize: 256,
-                        attribution: '&copy; OpenStreetMap & CARTO'
+                        attribution: '&copy; OpenStreetMap'
                     }
                 },
                 layers: [{
@@ -90,7 +93,7 @@
 
         let userMarker = null;
 
-        // 2. GPS helyzetkövetés és rajzfilmes autó jelölő
+        // GPS helyzetkövetés és rajzfilmes autó jelölő
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(
                 (position) => {
@@ -106,10 +109,9 @@
                     } else {
                         const el = document.createElement('div');
                         el.className = 'cartoon-car';
-                        el.innerHTML = '🚙'; // Rajzfilmes autó emoji / ikon
+                        el.innerHTML = '🚙';
                         userMarker = new maplibregl.Marker({ element: el }).setLngLat(currentPos).addTo(map);
                         
-                        // Első GPS fixnél rákozelítünk Magyarországon belül a kocsira
                         map.flyTo({ center: currentPos, zoom: 16, pitch: 45 });
                     }
 
