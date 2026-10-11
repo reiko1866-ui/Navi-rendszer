@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Rajzfilmes Navigáció - Magyarország</title>
+    <title>Mese Navigáció - Magyarország</title>
     <!-- MapLibre GL JS CSS -->
     <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
     <style>
@@ -11,62 +11,63 @@
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; background: #ffeb3b; font-family: 'Comic Neue', cursive, sans-serif;
+            overflow: hidden; background: #8bc34a; font-family: 'Comic Neue', cursive, sans-serif;
         }
         
         #map { 
             width: 100%; height: 100%; position: absolute; top: 0; left: 0; 
-            /* Itt varázsoljuk igazi rajzfilmes, élénk, rajzolt stílusúvá a térképet! */
-            filter: saturate(2.2) contrast(1.3) brightness(1.05);
+            /* Rajzfilmes mesevilág szűrő: élénk zöldek, meleg tónusok */
+            filter: hue-rotate(15deg) saturate(2.5) contrast(1.2) brightness(1.1);
         }
         
-        /* Rajzfilmes felső kereső sáv */
+        /* Mesebeli felső kereső sáv */
         #top-bar {
             position: absolute; top: 20px; left: 20px; right: 20px;
             z-index: 10; display: flex;
         }
         input {
             width: 100%; padding: 16px 20px; font-size: 20px; border-radius: 20px;
-            border: 4px solid #111; background: #fffde7; color: #111;
-            box-shadow: 0 6px 0px #111; outline: none; font-weight: bold;
+            border: 4px solid #2e7d32; background: #fffde7; color: #1b5e20;
+            box-shadow: 0 6px 0px #2e7d32; outline: none; font-weight: bold;
             font-family: 'Comic Neue', cursive, sans-serif;
         }
-        input::placeholder { color: #666; }
+        input::placeholder { color: #81c784; }
 
-        /* Rajzfilmes stílusú alsó státusz doboz */
+        /* Rajzfilmes alsó státusz doboz */
         #status-box {
             position: absolute; bottom: 25px; left: 20px; right: 20px;
-            background: #ff5722; color: #fff; padding: 16px;
-            border: 4px solid #111; border-radius: 20px; font-size: 18px; font-weight: bold;
-            text-align: center; box-shadow: 0 6px 0px #111; z-index: 10;
-            text-shadow: 2px 2px 0px #111;
+            background: #ffb300; color: #fff; padding: 16px;
+            border: 4px solid #e65100; border-radius: 20px; font-size: 18px; font-weight: bold;
+            text-align: center; box-shadow: 0 6px 0px #e65100; z-index: 10;
+            text-shadow: 2px 2px 0px #e65100;
         }
 
         /* Rajzfilmes autó ikon a térképen */
         .cartoon-car {
-            width: 54px; height: 54px;
-            background-color: #4caf50;
-            border: 4px solid #111;
+            width: 56px; height: 56px;
+            background-color: #ff5722;
+            border: 4px solid #333;
             border-radius: 50% 50% 30% 30%;
-            box-shadow: 0 6px 0px #111;
+            box-shadow: 0 6px 0px #333;
             display: flex; align-items: center; justify-content: center;
-            font-size: 28px;
+            font-size: 30px;
         }
     </style>
 </head>
 <body>
 
     <div id="top-bar">
-        <input type="text" id="search-input" placeholder="Hová utazunk, főnök? 🚗💨">
+        <input type="text" id="search-input" placeholder="Hová kalandozunk Magyarországon? 🏰🚗">
     </div>
 
     <div id="map"></div>
 
-    <div id="status-box">🗺️ Rajzfilmes Magyarország betöltve! GPS keresése...</div>
+    <div id="status-box">🗺️ Mesevilág betöltve! GPS keresése...</div>
 
     <!-- MapLibre GL JS Script -->
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <script>
+        // Magyarországra fókuszáló rajzfilmes stílusú térkép
         const map = new maplibregl.Map({
             container: 'map',
             style: {
@@ -87,7 +88,7 @@
                     maxzoom: 19
                 }]
             },
-            center: [19.5033, 47.1625],
+            center: [19.5033, 47.1625], // Magyarország középpontja
             zoom: 7,
             pitch: 30
         });
@@ -102,7 +103,7 @@
                     const speed = position.coords.speed ? (position.coords.speed * 3.6) : 0;
                     const currentPos = [lng, lat];
 
-                    document.getElementById('status-box').innerText = `🚗 Sebesség: ${speed.toFixed(1)} km/h | Úton!`;
+                    document.getElementById('status-box').innerText = `🚗 Kalandban | Sebesség: ${speed.toFixed(1)} km/h`;
 
                     if (userMarker) {
                         userMarker.setLngLat(currentPos);
@@ -112,7 +113,7 @@
                         el.innerHTML = '🚙';
                         userMarker = new maplibregl.Marker({ element: el }).setLngLat(currentPos).addTo(map);
                         
-                        map.flyTo({ center: currentPos, zoom: 16, pitch: 45 });
+                        map.flyTo({ center: currentPos, zoom: 15, pitch: 45 });
                     }
 
                     if (speed > 3) {
@@ -120,7 +121,7 @@
                     }
                 },
                 (err) => {
-                    document.getElementById('status-box').innerText = "⚠️ Várjuk a GPS jelet Magyarországon...";
+                    document.getElementById('status-box').innerText = "⚠️ Várjuk a mesebeli GPS jelet...";
                 },
                 { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
             );
