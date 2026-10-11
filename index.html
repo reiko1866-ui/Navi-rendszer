@@ -11,61 +11,62 @@
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; background: #222; font-family: 'Comic Neue', cursive, sans-serif;
+            overflow: hidden; background: #ffeb3b; font-family: 'Comic Neue', cursive, sans-serif;
         }
         
         #map { 
             width: 100%; height: 100%; position: absolute; top: 0; left: 0; 
-            /* Itt varázsoljuk rajzfilmes, kontrasztos, egyedi stílusúvá a térképet API-kulcs nélkül! */
-            filter: saturate(1.4) contrast(1.1);
+            /* Itt varázsoljuk igazi rajzfilmes, élénk, rajzolt stílusúvá a térképet! */
+            filter: saturate(2.2) contrast(1.3) brightness(1.05);
         }
         
-        /* Rajzfilmes felső sáv és kereső */
+        /* Rajzfilmes felső kereső sáv */
         #top-bar {
-            position: absolute; top: 15px; left: 15px; right: 15px;
-            z-index: 10; display: flex; gap: 10px;
+            position: absolute; top: 20px; left: 20px; right: 20px;
+            z-index: 10; display: flex;
         }
         input {
-            flex: 1; padding: 14px 18px; font-size: 18px; border-radius: 16px;
-            border: 4px solid #333; background: #fffdf0; color: #333;
-            box-shadow: 0 6px 0px #333; outline: none; font-weight: bold;
+            width: 100%; padding: 16px 20px; font-size: 20px; border-radius: 20px;
+            border: 4px solid #111; background: #fffde7; color: #111;
+            box-shadow: 0 6px 0px #111; outline: none; font-weight: bold;
+            font-family: 'Comic Neue', cursive, sans-serif;
         }
-        input::placeholder { color: #888; }
+        input::placeholder { color: #666; }
 
         /* Rajzfilmes stílusú alsó státusz doboz */
         #status-box {
-            position: absolute; bottom: 20px; left: 15px; right: 15px;
-            background: #ffeb3b; color: #333; padding: 14px;
-            border: 4px solid #333; border-radius: 16px; font-size: 16px; font-weight: bold;
-            text-align: center; box-shadow: 0 6px 0px #333; z-index: 10;
+            position: absolute; bottom: 25px; left: 20px; right: 20px;
+            background: #ff5722; color: #fff; padding: 16px;
+            border: 4px solid #111; border-radius: 20px; font-size: 18px; font-weight: bold;
+            text-align: center; box-shadow: 0 6px 0px #111; z-index: 10;
+            text-shadow: 2px 2px 0px #111;
         }
 
         /* Rajzfilmes autó ikon a térképen */
         .cartoon-car {
-            width: 48px; height: 48px;
-            background-color: #ff5722;
-            border: 4px solid #333;
+            width: 54px; height: 54px;
+            background-color: #4caf50;
+            border: 4px solid #111;
             border-radius: 50% 50% 30% 30%;
-            box-shadow: 0 6px 0px #333;
+            box-shadow: 0 6px 0px #111;
             display: flex; align-items: center; justify-content: center;
-            font-size: 24px;
+            font-size: 28px;
         }
     </style>
 </head>
 <body>
 
     <div id="top-bar">
-        <input type="text" id="search-input" placeholder="Hová utazunk Magyarországon? 🚗">
+        <input type="text" id="search-input" placeholder="Hová utazunk, főnök? 🚗💨">
     </div>
 
     <div id="map"></div>
 
-    <div id="status-box">Magyarország térkép betöltve - GPS keresése...</div>
+    <div id="status-box">🗺️ Rajzfilmes Magyarország betöltve! GPS keresése...</div>
 
     <!-- MapLibre GL JS Script -->
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <script>
-        // Tiszta, ingyenes OpenStreetMap csempék használata API-kulcs nélkül
         const map = new maplibregl.Map({
             container: 'map',
             style: {
@@ -86,14 +87,13 @@
                     maxzoom: 19
                 }]
             },
-            center: [19.5033, 47.1625], // Magyarország közepe
+            center: [19.5033, 47.1625],
             zoom: 7,
             pitch: 30
         });
 
         let userMarker = null;
 
-        // GPS helyzetkövetés és rajzfilmes autó jelölő
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(
                 (position) => {
@@ -102,7 +102,7 @@
                     const speed = position.coords.speed ? (position.coords.speed * 3.6) : 0;
                     const currentPos = [lng, lat];
 
-                    document.getElementById('status-box').innerText = `🚗 Magyarország | Sebesség: ${speed.toFixed(1)} km/h`;
+                    document.getElementById('status-box').innerText = `🚗 Sebesség: ${speed.toFixed(1)} km/h | Úton!`;
 
                     if (userMarker) {
                         userMarker.setLngLat(currentPos);
@@ -120,7 +120,7 @@
                     }
                 },
                 (err) => {
-                    document.getElementById('status-box').innerText = "⚠️ Várakozás a magyarországi GPS jelre...";
+                    document.getElementById('status-box').innerText = "⚠️ Várjuk a GPS jelet Magyarországon...";
                 },
                 { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
             );
