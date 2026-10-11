@@ -3,131 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Mese Navigáció - Magyarország</title>
-    <!-- MapLibre GL JS CSS -->
-    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    <title>Rajzfilmes 3D Navigáció - Magyarország</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; background: #8bc34a; font-family: 'Comic Neue', cursive, sans-serif;
+            overflow: hidden; background: #111; font-family: 'Comic Neue', cursive, sans-serif;
+            user-select: none;
         }
-        
-        #map { 
-            width: 100%; height: 100%; position: absolute; top: 0; left: 0; 
-            /* Rajzfilmes mesevilág szűrő: élénk zöldek, meleg tónusok */
-            filter: hue-rotate(15deg) saturate(2.5) contrast(1.2) brightness(1.1);
+
+        #gameCanvas {
+            display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;
         }
-        
-        /* Mesebeli felső kereső sáv */
+
+        /* Felső navigációs panel */
         #top-bar {
-            position: absolute; top: 20px; left: 20px; right: 20px;
-            z-index: 10; display: flex;
+            position: absolute; top: 15px; left: 15px; right: 15px;
+            z-index: 10; display: flex; gap: 10px; align-items: center;
         }
-        input {
-            width: 100%; padding: 16px 20px; font-size: 20px; border-radius: 20px;
-            border: 4px solid #2e7d32; background: #fffde7; color: #1b5e20;
-            box-shadow: 0 6px 0px #2e7d32; outline: none; font-weight: bold;
-            font-family: 'Comic Neue', cursive, sans-serif;
+        #instruction-box {
+            flex: 1; background: rgba(255, 255, 255, 0.95); border: 4px solid #222;
+            border-radius: 16px; padding: 10px 15px; display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 6px 0px #222; font-size: 20px; font-weight: bold; color: #222;
         }
-        input::placeholder { color: #81c784; }
-
-        /* Rajzfilmes alsó státusz doboz */
-        #status-box {
-            position: absolute; bottom: 25px; left: 20px; right: 20px;
-            background: #ffb300; color: #fff; padding: 16px;
-            border: 4px solid #e65100; border-radius: 20px; font-size: 18px; font-weight: bold;
-            text-align: center; box-shadow: 0 6px 0px #e65100; z-index: 10;
-            text-shadow: 2px 2px 0px #e65100;
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.95); border: 4px solid #222; border-radius: 16px;
+            width: 55px; height: 55px; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; box-shadow: 0 6px 0px #222; cursor: pointer;
         }
 
-        /* Rajzfilmes autó ikon a térképen */
-        .cartoon-car {
-            width: 56px; height: 56px;
-            background-color: #ff5722;
-            border: 4px solid #333;
-            border-radius: 50% 50% 30% 30%;
-            box-shadow: 0 6px 0px #333;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 30px;
+        /* Alsó műszerfal */
+        #dashboard {
+            position: absolute; bottom: 20px; left: 15px; right: 15px;
+            z-index: 10; display: flex; justify-content: space-between; align-items: center;
+            pointer-events: none;
+        }
+        .gauge {
+            width: 90px; height: 90px; background: #ff334b; border: 4px solid #222;
+            border-radius: 50%; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; box-shadow: 0 6px 0px #222; color: #fff;
+        }
+        .gauge-val { font-size: 28px; font-weight: bold; line-height: 1; }
+        .gauge-unit { font-size: 12px; font-weight: bold; opacity: 0.9; }
+        
+        #speed-gauge { background: #ff334b; }
+        #limit-gauge { background: #fff; color: #222; }
+
+        /* Éjszakai/Nappali jelző státusz */
+        #mode-badge {
+            position: absolute; top: 85px; left: 15px; z-index: 10;
+            background: rgba(0, 0, 0, 0.6); color: #fff; padding: 4px 10px;
+            border-radius: 10px; font-size: 12px; font-weight: bold;
         }
     </style>
 </head>
 <body>
 
+    <div id="mode-badge">Mód: Éjszaka</div>
+
     <div id="top-bar">
-        <input type="text" id="search-input" placeholder="Hová kalandozunk Magyarországon? 🏰🚗">
+        <div id="instruction-box">
+            <span style="font-size: 28px;">⬆️</span>
+            <div>
+                <div style="font-size: 14px; color: #666;">Következő manőver</div>
+                <div id="distance-text">383 m</div>
+            </div>
+        </div>
+        <div class="icon-btn" onclick="alert('Célpont keresés hamarosan!')">🔍</div>
     </div>
 
-    <div id="map"></div>
+    <canvas id="gameCanvas"></canvas>
 
-    <div id="status-box">🗺️ Mesevilág betöltve! GPS keresése...</div>
+    <div id="dashboard">
+        <div class="gauge" id="limit-gauge">
+            <span class="gauge-val">50</span>
+            <span class="gauge-unit">KM/H</span>
+        </div>
+        <div class="gauge" id="speed-gauge">
+            <span class="gauge-val" id="speed-val">0</span>
+            <span class="gauge-unit">KM/H</span>
+        </div>
+    </div>
 
-    <!-- MapLibre GL JS Script -->
-    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <script>
-        // Magyarországra fókuszáló rajzfilmes stílusú térkép
-        const map = new maplibregl.Map({
-            container: 'map',
-            style: {
-                version: 8,
-                sources: {
-                    'osm': {
-                        type: 'raster',
-                        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-                        tileSize: 256,
-                        attribution: '&copy; OpenStreetMap'
-                    }
-                },
-                layers: [{
-                    id: 'osm-layer',
-                    type: 'raster',
-                    source: 'osm',
-                    minzoom: 0,
-                    maxzoom: 19
-                }]
-            },
-            center: [19.5033, 47.1625], // Magyarország középpontja
-            zoom: 7,
-            pitch: 30
-        });
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-        let userMarker = null;
-
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(
-                (position) => {
-                    const lng = position.coords.longitude;
-                    const lat = position.coords.latitude;
-                    const speed = position.coords.speed ? (position.coords.speed * 3.6) : 0;
-                    const currentPos = [lng, lat];
-
-                    document.getElementById('status-box').innerText = `🚗 Kalandban | Sebesség: ${speed.toFixed(1)} km/h`;
-
-                    if (userMarker) {
-                        userMarker.setLngLat(currentPos);
-                    } else {
-                        const el = document.createElement('div');
-                        el.className = 'cartoon-car';
-                        el.innerHTML = '🚙';
-                        userMarker = new maplibregl.Marker({ element: el }).setLngLat(currentPos).addTo(map);
-                        
-                        map.flyTo({ center: currentPos, zoom: 15, pitch: 45 });
-                    }
-
-                    if (speed > 3) {
-                        map.setCenter(currentPos);
-                    }
-                },
-                (err) => {
-                    document.getElementById('status-box').innerText = "⚠️ Várjuk a mesebeli GPS jelet...";
-                },
-                { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
-            );
-        } else {
-            document.getElementById('status-box').innerText = "❌ A böngésző nem támogatja a GPS-t.";
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
+        window.addEventListener('resize', resize);
+        resize();
+
+        let currentSpeed = 0;
+        let roadOffset = 0;
+        let isNight = true;
+
+        // Valós idejű óra ellenőrzés az automatikus nappali/éjszakai váltáshoz (6:00 - 18:00 nappal, különben éjszaka)
+        function updateThemeByTime() {
+            const hour = new Date().getHours();
+            isNight = (hour < 6 || hour >= 18);
+            document.getElementById('mode-badge').innerText = isNight ? "🌙 Éjszakai Mód (Lámpák felkapcsolva)" : "☀️ Nappali Mód";
+        }
+        setInterval(updateThemeByTime, 10000);
+        updateThemeByTime();
+
+        // GPS alapú sebességkövetés
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition((position) => {
+                if (position.coords.speed !== null) {
+                    currentSpeed = Math.round(position.coords.speed * 3.6);
+                } else {
+                    currentSpeed = 2; // Szimulált alap mozgás ha áll a helyben teszteléskor
+                }
+                document.getElementById('speed-val').innerText = currentSpeed;
+            }, (err) => {
+                currentSpeed = 1; // Fallback
+            }, { enableHighAccuracy: true });
+        }
+
+        // 3D Rajzfilmes jelenet renderelése
+        function render() {
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // Háttér (Éjjel sötétkék/fekete, nappal világos kék/zöld)
+            if (isNight) {
+                const bgGrad = ctx.createLinearGradient(0, 0, 0, height * 0.5);
+                bgGrad.addColorStop(0, '#0a0d14');
+                bgGrad.addColorStop(1, '#1b2838');
+                ctx.fillStyle = bgGrad;
+            } else {
+                const bgGrad = ctx.createLinearGradient(0, 0, 0, height * 0.5);
+                bgGrad.addColorStop(0, '#4fc3f7');
+                bgGrad.addColorStop(1, '#81c784');
+                ctx.fillStyle = bgGrad;
+            }
+            ctx.fillRect(0, 0, width, height * 0.5);
+
+            // Föld / Füves terület
+            ctx.fillStyle = isNight ? '#142314' : '#558b2f';
+            ctx.fillRect(0, height * 0.5, width, height * 0.5);
+
+            // Út rajzolása (Perspektivikus kanyargó szalag)
+            const horizonY = height * 0.5;
+            const roadWidthBottom = width * 0.7;
+            const roadWidthTop = width * 0.12;
+
+            ctx.beginPath();
+            ctx.moveTo((width - roadWidthBottom) / 2, height);
+            
+            // Kanyargó görbe az út széléhez
+            roadOffset += (currentSpeed + 1) * 0.05;
+            const curve = Math.sin(roadOffset * 0.05) * (width * 0.15);
+
+            ctx.bezierCurveTo(
+                width / 2 + curve * 0.5, horizonY + (height - horizonY) * 0.6,
+                width / 2 + curve, horizonY + (height - horizonY) * 0.2,
+                (width - roadWidthTop) / 2 + curve * 0.2, horizonY
+            );
+            ctx.lineTo((width + roadWidthTop) / 2 + curve * 0.2, horizonY);
+            ctx.bezierCurveTo(
+                width / 2 + curve, horizonY + (height - horizonY) * 0.2,
+                width / 2 + curve * 0.5, horizonY + (height - horizonY) * 0.6,
+                (width + roadWidthBottom) / 2, height
+            );
+            ctx.closePath();
+
+            // Út teste (sötétszürke aszfalt)
+            ctx.fillStyle = isNight ? '#222629' : '#424242';
+            ctx.fill();
+
+            // Világító neonkék sáv az út közepén (mint a fotón)
+            ctx.beginPath();
+            const centerTopX = width / 2 + curve * 0.2;
+            const centerBottomX = width / 2;
+            ctx.moveTo(centerBottomX - 8, height);
+            ctx.lineTo(centerTopX - 3, horizonY);
+            ctx.lineTo(centerTopX + 3, horizonY);
+            ctx.lineTo(centerBottomX + 8, height);
+            ctx.closePath();
+            ctx.fillStyle = '#00e5ff';
+            ctx.shadowBlur = isNight ? 15 : 0;
+            ctx.shadowColor = '#00e5ff';
+            ctx.fill();
+            ctx.shadowBlur = 0; // reset
+
+            // Útszéli lámpák és fák renderelése (Éjjel a lámpák sárgán világítanak!)
+            const lampCount = 8;
+            for (let i = 0; i < lampCount; i++) {
+                let progress = (i / lampCount + (roadOffset * 0.01) % 1) % 1;
+                let y = horizonY + progress * (height - horizonY);
+                let xFactor = (width * 0.35) * (1 - progress);
+
+                // Bal oldali lámpa
+                drawLampPost(width / 2 - roadWidthBottom * 0.5 - xFactor - 30, y, progress, isNight);
+                // Jobb oldali lámpa
+                drawLampPost(width / 2 + roadWidthBottom * 0.5 + xFactor + 30, y, progress, isNight);
+            }
+
+            // Piros autó hátulról a képernyő alján
+            drawPlayerCar(width / 2, height - 120);
+
+            requestAnimationFrame(render);
+        }
+
+        function drawLampPost(x, y, scale, nightMode) {
+            let size = Math.max(5, scale * 35);
+            // Oszlop
+            ctx.fillStyle = '#263238';
+            ctx.fillRect(x - 2, y - size * 2, 4, size * 2);
+
+            // Lámpafej és fény
+            ctx.beginPath();
+            ctx.arc(x, y - size * 2, Math.max(3, size * 0.3), 0, Math.PI * 2);
+            if (nightMode) {
+                ctx.fillStyle = '#ffeb3b'; // sárga izzó
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = '#ffeb3b';
+            } else {
+                ctx.fillStyle = '#cfd8dc'; // kikapcsolt lámpa nappal
+                ctx.shadowBlur = 0;
+            }
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        function drawPlayerCar(cx, cy) {
+            // Rajzfilmes piros autó hátulnézetből
+            ctx.save();
+            ctx.translate(cx, cy);
+
+            // Kasztni (piros doboz lekerekített hatással)
+            ctx.fillStyle = '#ff1744';
+            ctx.strokeStyle = '#111';
+            ctx.lineWidth = 4;
+            
+            ctx.beginPath();
+            ctx.roundRect(-90, -30, 180, 90, 20);
+            ctx.fill();
+            ctx.stroke();
+
+            // Hátsó szélvédő / tető (fekete rész)
+            ctx.fillStyle = '#111';
+            ctx.beginPath();
+            ctx.roundRect(-70, -60, 140, 50, 15);
+            ctx.fill();
+
+            // Hátsó lámpák
+            ctx.fillStyle = '#ffeb3b';
+            ctx.fillRect(-80, 0, 20, 15);
+            ctx.fillRect(60, 0, 20, 15);
+
+            ctx.restore();
+        }
+
+        // Segédfüggvény roundRect-hez régebbi böngészőkben is
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+                if (w < 2 * r) r = w / 2;
+                if (h < 2 * r) r = h / 2;
+                this.beginPath();
+                this.moveTo(x + r, y);
+                this.arcTo(x + w, y, x + w, y + h, r);
+                this.arcTo(x + w, y + h, x, y + h, r);
+                this.arcTo(x, y + h, x, y, r);
+                this.arcTo(x, y, x + w, y, r);
+                this.closePath();
+                return this;
+            };
+        }
+
+        // Indítás
+        requestAnimationFrame(render);
     </script>
 </body>
 </html>
