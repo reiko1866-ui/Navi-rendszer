@@ -144,48 +144,83 @@
         window.addEventListener('resize', resize);
         resize();
 
-        let currentSpeed = 0;
+        let currentSpeed = 35;
         let roadOffset = 0;
 
-        // GPS Sebesség követés
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition((position) => {
                 if (position.coords.speed !== null) {
                     currentSpeed = Math.round(position.coords.speed * 3.6);
-                } else {
-                    currentSpeed = 35; // Szimulált stabil tempó, ha nincs GPS sebesség
                 }
                 document.getElementById('current-speed').innerText = currentSpeed + ' km/h';
-            }, () => {
-                currentSpeed = 35;
-                document.getElementById('current-speed').innerText = '35 km/h';
-            }, { enableHighAccuracy: true });
-        } else {
-            currentSpeed = 35;
-            document.getElementById('current-speed').innerText = '35 km/h';
+            }, () => {}, { enableHighAccuracy: true });
         }
 
         function render() {
             const width = canvas.width;
             const height = canvas.height;
-
-            // 1. Éjszakai háttér (hangulatos Lánchíd-stílusú sötét égbolt)
-            ctx.fillStyle = '#070a0f';
-            ctx.fillRect(0, 0, width, height * 0.45);
-
-            // 2. Föld / Háttér táj
-            ctx.fillStyle = '#0c1410';
-            ctx.fillRect(0, height * 0.45, width, height * 0.55);
-
             const horizonY = height * 0.45;
+
+            // 1. Éjszakai égbolt színátmenet
+            let skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY);
+            skyGrad.addColorStop(0, '#050b14');
+            skyGrad.addColorStop(1, '#1e293b');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, width, horizonY);
+
+            // Csillagok az égen
+            ctx.fillStyle = '#ffffff';
+            for(let i = 0; i < 30; i++) {
+                let sx = (Math.sin(i * 99) * 10000) % width;
+                let sy = (Math.cos(i * 33) * 5000) % (horizonY - 20);
+                if(sx < 0) sx += width;
+                if(sy < 0) sy += horizonY;
+                ctx.fillRect(sx, sy, 2, 2);
+            }
+
+            // 2. Budapest / Lánchíd sziluett a háttérben (ikonikus kupolák és híd)
+            ctx.fillStyle = '#0f172a';
+            // Városvonal hátul
+            ctx.beginPath();
+            ctx.moveTo(0, horizonY);
+            ctx.lineTo(0, horizonY - 30);
+            ctx.lineTo(width * 0.2, horizonY - 45); // Bazilika kúp
+            ctx.lineTo(width * 0.25, horizonY - 35);
+            ctx.lineTo(width * 0.4, horizonY - 25);
+            ctx.lineTo(width * 0.5, horizonY - 55); // Lánchíd kapu / várak
+            ctx.lineTo(width * 0.6, horizonY - 25);
+            ctx.lineTo(width, horizonY - 35);
+            ctx.lineTo(width, horizonY);
+            ctx.fill();
+
+            // Lánchíd függőleges láncai / hídtest stilizált rajza
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(width * 0.42, horizonY - 15);
+            ctx.quadraticCurveTo(width * 0.5, horizonY - 40, width * 0.58, horizonY - 15);
+            ctx.stroke();
+
+            // 3. Duna folyó a bal oldalon
+            ctx.fillStyle = '#0369a1';
+            ctx.beginPath();
+            ctx.moveTo(0, horizonY);
+            ctx.lineTo(width * 0.35, horizonY);
+            ctx.lineTo(width * 0.2, height * 0.6);
+            ctx.lineTo(0, height * 0.6);
+            ctx.fill();
+
+            // 4. Föld / Part / Zöld sáv jobb oldalon
+            ctx.fillStyle = '#064e3b';
+            ctx.fillRect(0, horizonY, width, height - horizonY);
+
             const roadWidthBottom = width * 0.8;
             const roadWidthTop = width * 0.08;
 
-            // Stabil, egyenletes mozgás (nincs ingázás)
             roadOffset += (currentSpeed + 5) * 0.02;
             const curve = Math.sin(roadOffset * 0.02) * (width * 0.15);
 
-            // 3. Aszfaltút rajzolása
+            // 5. Aszfaltút rajzolása
             ctx.beginPath();
             ctx.moveTo((width - roadWidthBottom) / 2, height);
             ctx.bezierCurveTo(
@@ -204,7 +239,7 @@
             ctx.fillStyle = '#1e2229';
             ctx.fill();
 
-            // 4. Középső ragyogó neonkék sáv
+            // 6. Középső ragyogó neonkék sáv
             ctx.beginPath();
             const centerTopX = width / 2 + curve * 0.05;
             const centerBottomX = width / 2;
@@ -219,7 +254,7 @@
             ctx.fill();
             ctx.shadowBlur = 0;
 
-            // 5. Útszéli sárga világító lámpák
+            // 7. Útszéli sárga világító lámpák
             const itemCount = 12;
             for (let i = 0; i < itemCount; i++) {
                 let progress = (i / itemCount + (roadOffset * 0.004) % 1) % 1;
@@ -230,7 +265,7 @@
                 drawLamp(width / 2 + roadWidthBottom * 0.5 + xFactor + 20, y, progress);
             }
 
-            // 6. Saját kék autó fixen alul
+            // 8. Saját kék autó fixen alul
             drawPlayerCar(width / 2, height - 70);
 
             requestAnimationFrame(render);
@@ -254,12 +289,10 @@
             ctx.save();
             ctx.translate(cx, cy);
 
-            // Kerekek
             ctx.fillStyle = '#111';
             ctx.fillRect(-80, 0, 22, 38);
             ctx.fillRect(58, 0, 22, 38);
 
-            // Kék kasztni
             ctx.fillStyle = '#3b82f6';
             ctx.strokeStyle = '#111';
             ctx.lineWidth = 4;
@@ -268,13 +301,11 @@
             ctx.fill();
             ctx.stroke();
 
-            // Hátsó ablak / Tető
             ctx.fillStyle = '#111';
             ctx.beginPath();
             ctx.roundRect(-50, -38, 100, 32, 10);
             ctx.fill();
 
-            // Hátsó piros lámpák fénye
             ctx.fillStyle = '#ff334b';
             ctx.shadowBlur = 10;
             ctx.shadowColor = '#ff334b';
