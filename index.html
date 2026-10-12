@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rajzfilmes 3D Navigáció</title>
+    <title>Rajzfilmes 3D Navigáció v2</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
 
         * { box-sizing: border-box; }
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
+            margin: 0; padding: 0; width: 100vw; height: 100vh;
             overflow: hidden; background: #81d4fa; font-family: 'Comic Neue', cursive, sans-serif;
             user-select: none; -webkit-user-select: none;
         }
 
         #gameCanvas {
-            display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;
+            display: block; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: 1;
         }
 
         /* Felső navigációs sáv */
         #top-bar {
-            position: absolute; top: 15px; left: 15px; right: 15px;
+            position: fixed; top: 15px; left: 15px; right: 15px;
             z-index: 10; display: flex; gap: 10px; align-items: center; pointer-events: none;
         }
         #instruction-box {
@@ -38,7 +38,7 @@
 
         /* Alsó műszerfal elemek */
         #limit-gauge {
-            position: absolute; bottom: 20px; left: 20px; z-index: 10;
+            position: fixed; bottom: 20px; left: 20px; z-index: 10;
             width: 70px; height: 70px; background: #ff334b; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 5px 0px #111; color: #fff; font-size: 26px; font-weight: bold;
@@ -46,7 +46,7 @@
         }
 
         #speed-gauge {
-            position: absolute; bottom: 20px; right: 20px; z-index: 10;
+            position: fixed; bottom: 20px; right: 20px; z-index: 10;
             width: 70px; height: 70px; background: #ffffff; border-radius: 16px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: 0 5px 0px #111; color: #222; border: 3px solid #111;
@@ -91,14 +91,12 @@
         let roadOffset = 0;
         let isNight = false;
 
-        // Óra alapú automatikus mód (6 és 18 óra között nappal)
         function updateTheme() {
             const hour = new Date().getHours();
             isNight = (hour < 6 || hour >= 18);
         }
         updateTheme();
 
-        // GPS sebesség lekérdezés
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition((position) => {
                 if (position.coords.speed !== null) {
@@ -116,23 +114,13 @@
             const width = canvas.width;
             const height = canvas.height;
 
-            // 1. ÉGBOLT
-            if (isNight) {
-                ctx.fillStyle = '#070a0f';
-            } else {
-                ctx.fillStyle = '#81d4fa';
-            }
+            // Égvonal és föld
+            ctx.fillStyle = isNight ? '#070a0f' : '#81d4fa';
             ctx.fillRect(0, 0, width, height * 0.45);
 
-            // 2. FÖLD / FÜVES TERÜLET
-            if (isNight) {
-                ctx.fillStyle = '#0c1410';
-            } else {
-                ctx.fillStyle = '#81c784';
-            }
+            ctx.fillStyle = isNight ? '#0c1410' : '#81c784';
             ctx.fillRect(0, height * 0.45, width, height * 0.55);
 
-            // 3. ÚT ÉS PERSPEKTÍVA (Fixen a helyén)
             const horizonY = height * 0.45;
             const roadWidthBottom = width * 0.8;
             const roadWidthTop = width * 0.08;
@@ -155,7 +143,6 @@
             );
             ctx.closePath();
 
-            // Aszfalt
             ctx.fillStyle = isNight ? '#1e2229' : '#37474f';
             ctx.fill();
 
@@ -187,7 +174,7 @@
                 ctx.fillRect(px - pw * 0.5, py, pw, p * 18);
             }
 
-            // 4. ÚTSZÉLI FÁK VAGY LÁMPÁK
+            // Fák / Lámpák
             const itemCount = 10;
             const treeColors = ['#ab47bc', '#ef5350', '#ffca28', '#42a5f5', '#26a69a'];
             for (let i = 0; i < itemCount; i++) {
@@ -204,8 +191,8 @@
                 }
             }
 
-            // 5. PIROS AUTÓ HÁTULNÉZETBŐL (Biztosan a vászon alján)
-            drawPlayerCar(width / 2, height - 50);
+            // Autó fixen alul
+            drawPlayerCar(width / 2, height - 60);
 
             requestAnimationFrame(render);
         }
@@ -237,12 +224,10 @@
             ctx.save();
             ctx.translate(cx, cy);
 
-            // Kerekek
             ctx.fillStyle = '#111';
             ctx.fillRect(-75, -5, 20, 30);
             ctx.fillRect(55, -5, 20, 30);
 
-            // Piros kasztni
             ctx.fillStyle = '#ff334b';
             ctx.strokeStyle = '#111';
             ctx.lineWidth = 3;
@@ -251,7 +236,6 @@
             ctx.fill();
             ctx.stroke();
 
-            // Tető / Hátsó szélvédő
             ctx.fillStyle = '#111';
             ctx.beginPath();
             ctx.roundRect(-45, -45, 90, 28, 8);
