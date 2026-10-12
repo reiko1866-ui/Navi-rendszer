@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rajzfilmes 3D Navigáció v2</title>
+    <title>Budapest Arcade Navigáció</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
 
         * { box-sizing: border-box; }
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
-            overflow: hidden; background: #81d4fa; font-family: 'Comic Neue', cursive, sans-serif;
+            overflow: hidden; background: #070a0f; font-family: 'Comic Neue', cursive, sans-serif;
             user-select: none; -webkit-user-select: none;
         }
 
@@ -18,63 +18,120 @@
             display: block; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: 1;
         }
 
-        /* Felső navigációs sáv */
-        #top-bar {
-            position: fixed; top: 15px; left: 15px; right: 15px;
-            z-index: 10; display: flex; gap: 10px; align-items: center; pointer-events: none;
-        }
-        #instruction-box {
-            flex: 1; background: #2ecc71; border: 3px solid #111;
-            border-radius: 16px; padding: 10px 16px; display: flex; align-items: center; gap: 14px;
-            box-shadow: 0 4px 0px #111; font-size: 20px; font-weight: bold; color: #fff;
-            pointer-events: auto;
-        }
-        .icon-btn {
-            background: #2ecc71; border: 3px solid #111; border-radius: 16px;
-            width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-            font-size: 22px; box-shadow: 0 4px 0px #111; cursor: pointer; color: #fff;
-            pointer-events: auto;
+        /* --- HUD ELEMEK --- */
+        .hud-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+            color: #fff;
+            padding: 12px 16px;
+            position: fixed;
+            z-index: 10;
         }
 
-        /* Alsó műszerfal elemek */
-        #limit-gauge {
-            position: fixed; bottom: 20px; left: 20px; z-index: 10;
-            width: 70px; height: 70px; background: #ff334b; border-radius: 50%;
+        /* Bal fent: Manőver */
+        #maneuver-box {
+            top: 15px; left: 15px; display: flex; align-items: center; gap: 14px;
+            min-width: 220px;
+        }
+        .maneuver-icon {
+            font-size: 28px; background: rgba(255,255,255,0.1); width: 45px; height: 45px;
+            display: flex; align-items: center; justify-content: center; border-radius: 12px;
+        }
+
+        /* Jobb fent: Időjárás & Óra */
+        #weather-box {
+            top: 15px; right: 15px; display: flex; align-items: center; gap: 12px;
+        }
+
+        /* Alul balra: Úticél adatok */
+        #destination-box {
+            bottom: 15px; left: 15px; min-width: 200px;
+        }
+
+        /* Jobb oldali vezérlőoszlop */
+        #right-panel {
+            position: fixed; right: 15px; bottom: 95px; z-index: 10;
+            display: flex; flex-direction: column; gap: 10px; align-items: center;
+        }
+
+        /* Sebességtábla */
+        #speed-limit-sign {
+            width: 60px; height: 60px; background: #ff334b; border-radius: 50%;
+            border: 4px solid #fff; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+        .limit-num { font-size: 22px; font-weight: bold; color: #fff; line-height: 1; }
+        .limit-sub { font-size: 9px; font-weight: bold; color: #ffccd2; }
+
+        /* Gyorsgombok */
+        .control-btn {
+            width: 48px; height: 48px; background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px); border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        /* Kis kerek radar térkép jobb alul */
+        #mini-radar {
+            position: fixed; bottom: 15px; right: 15px; width: 75px; height: 75px;
+            background: rgba(15, 23, 42, 0.9); border: 3px solid #fff; border-radius: 50%;
+            z-index: 10; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 5px 0px #111; color: #fff; font-size: 26px; font-weight: bold;
-            border: 3px solid #111;
         }
-
-        #speed-gauge {
-            position: fixed; bottom: 20px; right: 20px; z-index: 10;
-            width: 70px; height: 70px; background: #ffffff; border-radius: 16px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 5px 0px #111; color: #222; border: 3px solid #111;
-        }
-        .speed-val { font-size: 24px; font-weight: bold; line-height: 1; color: #ff334b; }
-        .speed-unit { font-size: 9px; font-weight: bold; color: #666; margin-top: 2px; }
     </style>
 </head>
 <body>
 
-    <div id="top-bar">
-        <div id="instruction-box">
-            <span style="font-size: 24px;">⬅️</span>
-            <div>
-                <div style="font-size: 20px;" id="distance-text">250 m</div>
-                <div style="font-size: 12px; font-weight: normal; opacity: 0.9;" id="street-text">Fő út / Váci út</div>
-            </div>
+    <!-- Bal fent: Manőver -->
+    <div id="maneuver-box" class="hud-card">
+        <div class="maneuver-icon">⬅️</div>
+        <div>
+            <div style="font-size: 18px; font-weight: bold;" id="dist-text">2,3 km</div>
+            <div style="font-size: 12px; color: #cbd5e1;">Következő utca</div>
         </div>
-        <div class="icon-btn">🔍</div>
     </div>
 
+    <!-- Jobb fent: Időjárás -->
+    <div id="weather-box" class="hud-card">
+        <span style="font-size: 24px;" id="weather-icon">🌙</span>
+        <div>
+            <div style="font-size: 16px; font-weight: bold;" id="temp-text">12°C</div>
+            <div style="font-size: 11px; color: #cbd5e1;" id="weather-desc">Tiszta égbolt</div>
+        </div>
+    </div>
+
+    <!-- Alul balra: Úticél adatok -->
+    <div id="destination-box" class="hud-card">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: bold;">
+            <span>🏁</span> <span id="rem-dist">10,9 km</span>
+        </div>
+        <div style="font-size: 13px; color: #cbd5e1; margin-top: 4px; display: flex; gap: 12px;">
+            <span id="rem-time">18 perc</span>
+            <span id="arr-time">22:17</span>
+        </div>
+    </div>
+
+    <!-- Jobb oldali panel: Sebesség & Gombok -->
+    <div id="right-panel">
+        <div id="speed-limit-sign">
+            <span class="limit-num">50</span>
+            <span class="limit-sub" id="current-speed">0 km/h</span>
+        </div>
+        <div class="control-btn">🔊</div>
+        <div class="control-btn">🧭</div>
+        <div class="control-btn">⚙️</div>
+    </div>
+
+    <!-- Jobb alul: Mini radar -->
+    <div id="mini-radar">
+        <div style="width: 12px; height: 12px; background: #3b82f6; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 8px #3b82f6;"></div>
+    </div>
+
+    <!-- 3D Vászon -->
     <canvas id="gameCanvas"></canvas>
-
-    <div id="limit-gauge">50</div>
-    <div id="speed-gauge">
-        <span class="speed-val" id="speed-val">0</span>
-        <span class="speed-unit">KM/H</span>
-    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -89,45 +146,46 @@
 
         let currentSpeed = 0;
         let roadOffset = 0;
-        let isNight = false;
 
-        function updateTheme() {
-            const hour = new Date().getHours();
-            isNight = (hour < 6 || hour >= 18);
-        }
-        updateTheme();
-
+        // GPS Sebesség követés
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition((position) => {
                 if (position.coords.speed !== null) {
                     currentSpeed = Math.round(position.coords.speed * 3.6);
                 } else {
-                    currentSpeed = 3; 
+                    currentSpeed = 35; // Szimulált stabil tempó, ha nincs GPS sebesség
                 }
-                document.getElementById('speed-val').innerText = currentSpeed;
+                document.getElementById('current-speed').innerText = currentSpeed + ' km/h';
             }, () => {
-                currentSpeed = 3;
+                currentSpeed = 35;
+                document.getElementById('current-speed').innerText = '35 km/h';
             }, { enableHighAccuracy: true });
+        } else {
+            currentSpeed = 35;
+            document.getElementById('current-speed').innerText = '35 km/h';
         }
 
         function render() {
             const width = canvas.width;
             const height = canvas.height;
 
-            // Égvonal és föld
-            ctx.fillStyle = isNight ? '#070a0f' : '#81d4fa';
+            // 1. Éjszakai háttér (hangulatos Lánchíd-stílusú sötét égbolt)
+            ctx.fillStyle = '#070a0f';
             ctx.fillRect(0, 0, width, height * 0.45);
 
-            ctx.fillStyle = isNight ? '#0c1410' : '#81c784';
+            // 2. Föld / Háttér táj
+            ctx.fillStyle = '#0c1410';
             ctx.fillRect(0, height * 0.45, width, height * 0.55);
 
             const horizonY = height * 0.45;
             const roadWidthBottom = width * 0.8;
             const roadWidthTop = width * 0.08;
 
-            roadOffset += (currentSpeed + 2) * 0.035;
-            const curve = Math.sin(roadOffset * 0.03) * (width * 0.2);
+            // Stabil, egyenletes mozgás (nincs ingázás)
+            roadOffset += (currentSpeed + 5) * 0.02;
+            const curve = Math.sin(roadOffset * 0.02) * (width * 0.15);
 
+            // 3. Aszfaltút rajzolása
             ctx.beginPath();
             ctx.moveTo((width - roadWidthBottom) / 2, height);
             ctx.bezierCurveTo(
@@ -143,103 +201,86 @@
             );
             ctx.closePath();
 
-            ctx.fillStyle = isNight ? '#1e2229' : '#37474f';
+            ctx.fillStyle = '#1e2229';
             ctx.fill();
 
-            // Középső sáv
+            // 4. Középső ragyogó neonkék sáv
             ctx.beginPath();
             const centerTopX = width / 2 + curve * 0.05;
             const centerBottomX = width / 2;
-            ctx.moveTo(centerBottomX - 6, height);
+            ctx.moveTo(centerBottomX - 8, height);
             ctx.lineTo(centerTopX - 2, horizonY);
             ctx.lineTo(centerTopX + 2, horizonY);
-            ctx.lineTo(centerBottomX + 6, height);
+            ctx.lineTo(centerBottomX + 8, height);
             ctx.closePath();
-            ctx.fillStyle = isNight ? '#00e5ff' : '#2ecc71';
-            if (isNight) {
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = '#00e5ff';
-            }
+            ctx.fillStyle = '#00e5ff';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#00e5ff';
             ctx.fill();
             ctx.shadowBlur = 0;
 
-            // Szaggatott vonalak
-            ctx.fillStyle = '#ffffff';
-            const dashCount = 12;
-            for (let i = 0; i < dashCount; i++) {
-                let p = (i / dashCount + (roadOffset * 0.025) % 1) % 1;
-                let py = horizonY + p * (height - horizonY);
-                let pw = Math.max(2, p * 5);
-                let px = width / 2 + curve * 0.05 * p;
-                ctx.fillRect(px - pw * 0.5, py, pw, p * 18);
-            }
-
-            // Fák / Lámpák
-            const itemCount = 10;
-            const treeColors = ['#ab47bc', '#ef5350', '#ffca28', '#42a5f5', '#26a69a'];
+            // 5. Útszéli sárga világító lámpák
+            const itemCount = 12;
             for (let i = 0; i < itemCount; i++) {
-                let progress = (i / itemCount + (roadOffset * 0.007) % 1) % 1;
+                let progress = (i / itemCount + (roadOffset * 0.004) % 1) % 1;
                 let y = horizonY + progress * (height - horizonY);
-                let xFactor = (width * 0.38) * (1 - progress);
+                let xFactor = (width * 0.42) * (1 - progress);
 
-                if (isNight) {
-                    drawLamp(width / 2 - roadWidthBottom * 0.5 - xFactor - 20, y, progress);
-                    drawLamp(width / 2 + roadWidthBottom * 0.5 + xFactor + 20, y, progress);
-                } else {
-                    drawTree(width / 2 - roadWidthBottom * 0.5 - xFactor - 20, y, progress, treeColors[i % treeColors.length]);
-                    drawTree(width / 2 + roadWidthBottom * 0.5 + xFactor + 20, y, progress, treeColors[(i + 2) % treeColors.length]);
-                }
+                drawLamp(width / 2 - roadWidthBottom * 0.5 - xFactor - 20, y, progress);
+                drawLamp(width / 2 + roadWidthBottom * 0.5 + xFactor + 20, y, progress);
             }
 
-            // Autó fixen alul
-            drawPlayerCar(width / 2, height - 60);
+            // 6. Saját kék autó fixen alul
+            drawPlayerCar(width / 2, height - 70);
 
             requestAnimationFrame(render);
         }
 
         function drawLamp(x, y, scale) {
-            let size = Math.max(3, scale * 20);
+            let size = Math.max(3, scale * 22);
             ctx.fillStyle = '#111';
-            ctx.fillRect(x - 2, y - size * 1.8, 3, size * 1.8);
+            ctx.fillRect(x - 2, y - size * 2, 3, size * 2);
+
             ctx.beginPath();
-            ctx.arc(x, y - size * 1.8, Math.max(2.5, size * 0.25), 0, Math.PI * 2);
+            ctx.arc(x, y - size * 2, Math.max(2.5, size * 0.3), 0, Math.PI * 2);
             ctx.fillStyle = '#ffeb3b';
-            ctx.shadowBlur = 10;
+            ctx.shadowBlur = 12;
             ctx.shadowColor = '#ffeb3b';
             ctx.fill();
             ctx.shadowBlur = 0;
-        }
-
-        function drawTree(x, y, scale, color) {
-            let size = Math.max(4, scale * 22);
-            ctx.fillStyle = '#5d4037';
-            ctx.fillRect(x - size * 0.15, y - size * 0.6, size * 0.3, size * 0.6);
-            ctx.beginPath();
-            ctx.arc(x, y - size * 0.9, size * 0.5, 0, Math.PI * 2);
-            ctx.fillStyle = color;
-            ctx.fill();
         }
 
         function drawPlayerCar(cx, cy) {
             ctx.save();
             ctx.translate(cx, cy);
 
+            // Kerekek
             ctx.fillStyle = '#111';
-            ctx.fillRect(-75, -5, 20, 30);
-            ctx.fillRect(55, -5, 20, 30);
+            ctx.fillRect(-80, 0, 22, 38);
+            ctx.fillRect(58, 0, 22, 38);
 
-            ctx.fillStyle = '#ff334b';
+            // Kék kasztni
+            ctx.fillStyle = '#3b82f6';
             ctx.strokeStyle = '#111';
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 4;
             ctx.beginPath();
-            ctx.roundRect(-65, -25, 130, 55, 12);
+            ctx.roundRect(-70, -20, 140, 65, 16);
             ctx.fill();
             ctx.stroke();
 
+            // Hátsó ablak / Tető
             ctx.fillStyle = '#111';
             ctx.beginPath();
-            ctx.roundRect(-45, -45, 90, 28, 8);
+            ctx.roundRect(-50, -38, 100, 32, 10);
             ctx.fill();
+
+            // Hátsó piros lámpák fénye
+            ctx.fillStyle = '#ff334b';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#ff334b';
+            ctx.fillRect(-62, 5, 16, 8);
+            ctx.fillRect(46, 5, 16, 8);
+            ctx.shadowBlur = 0;
 
             ctx.restore();
         }
