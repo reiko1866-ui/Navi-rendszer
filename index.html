@@ -10,15 +10,31 @@
         * { box-sizing: border-box; }
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
-            overflow: hidden; background: #070a0f; font-family: 'Comic Neue', cursive, sans-serif;
+            overflow: hidden; background: #050b14; font-family: 'Comic Neue', cursive, sans-serif;
             user-select: none; -webkit-user-select: none;
         }
 
-        #gameCanvas {
-            display: block; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: 1;
+        /* 1. RÉTEG: Fix háttér panoráma (A Lánchíd / Város látképe felül) */
+        #skyline-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 45vh;
+            background: url('https://images.unsplash.com/photo-1549877452-9c387954fbc2?q=80&w=1200&auto=format&fit=crop') no-repeat center bottom;
+            background-size: cover;
+            z-index: 1;
+            /* Hangulatos éjszakai sötétítés, hogy passzoljon az arcade stílushoz */
+            filter: brightness(0.6) saturate(1.3);
+        }
+        #skyline-bg::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
+            background: linear-gradient(to top, #070a0f, transparent);
         }
 
-        /* --- HUD ELEMEK --- */
+        /* 2. RÉTEG: Futó 3D út (Canvas alul) */
+        #gameCanvas {
+            position: fixed; bottom: 0; left: 0; width: 100vw; height: 55vh;
+            display: block; z-index: 2;
+        }
+
+        /* 3. RÉTEG: HUD Kezelőfelület (Kártyák legfelül) */
         .hud-card {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(8px);
@@ -85,6 +101,13 @@
 </head>
 <body>
 
+    <!-- 1. RÉTEG: Fix Városi Panoráma Háttér -->
+    <div id="skyline-bg"></div>
+
+    <!-- 2. RÉTEG: 3D Futó Út Vászon -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- 3. RÉTEG: HUD Elemek -->
     <!-- Bal fent: Manőver -->
     <div id="maneuver-box" class="hud-card">
         <div class="maneuver-icon">⬅️</div>
@@ -130,16 +153,13 @@
         <div style="width: 12px; height: 12px; background: #3b82f6; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 8px #3b82f6;"></div>
     </div>
 
-    <!-- 3D Vászon -->
-    <canvas id="gameCanvas"></canvas>
-
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
         function resize() {
             canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvas.height = window.innerHeight * 0.55; // Pontosan az alsó sávra méretezve
         }
         window.addEventListener('resize', resize);
         resize();
@@ -159,79 +179,30 @@
         function render() {
             const width = canvas.width;
             const height = canvas.height;
-            const horizonY = height * 0.45;
 
-            // 1. Éjszakai égbolt színátmenet
-            let skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY);
-            skyGrad.addColorStop(0, '#050b14');
-            skyGrad.addColorStop(1, '#1e293b');
-            ctx.fillStyle = skyGrad;
-            ctx.fillRect(0, 0, width, horizonY);
-
-            // Csillagok az égen
-            ctx.fillStyle = '#ffffff';
-            for(let i = 0; i < 30; i++) {
-                let sx = (Math.sin(i * 99) * 10000) % width;
-                let sy = (Math.cos(i * 33) * 5000) % (horizonY - 20);
-                if(sx < 0) sx += width;
-                if(sy < 0) sy += horizonY;
-                ctx.fillRect(sx, sy, 2, 2);
-            }
-
-            // 2. Budapest / Lánchíd sziluett a háttérben (ikonikus kupolák és híd)
-            ctx.fillStyle = '#0f172a';
-            // Városvonal hátul
-            ctx.beginPath();
-            ctx.moveTo(0, horizonY);
-            ctx.lineTo(0, horizonY - 30);
-            ctx.lineTo(width * 0.2, horizonY - 45); // Bazilika kúp
-            ctx.lineTo(width * 0.25, horizonY - 35);
-            ctx.lineTo(width * 0.4, horizonY - 25);
-            ctx.lineTo(width * 0.5, horizonY - 55); // Lánchíd kapu / várak
-            ctx.lineTo(width * 0.6, horizonY - 25);
-            ctx.lineTo(width, horizonY - 35);
-            ctx.lineTo(width, horizonY);
-            ctx.fill();
-
-            // Lánchíd függőleges láncai / hídtest stilizált rajza
-            ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(width * 0.42, horizonY - 15);
-            ctx.quadraticCurveTo(width * 0.5, horizonY - 40, width * 0.58, horizonY - 15);
-            ctx.stroke();
-
-            // 3. Duna folyó a bal oldalon
-            ctx.fillStyle = '#0369a1';
-            ctx.beginPath();
-            ctx.moveTo(0, horizonY);
-            ctx.lineTo(width * 0.35, horizonY);
-            ctx.lineTo(width * 0.2, height * 0.6);
-            ctx.lineTo(0, height * 0.6);
-            ctx.fill();
-
-            // 4. Föld / Part / Zöld sáv jobb oldalon
-            ctx.fillStyle = '#064e3b';
-            ctx.fillRect(0, horizonY, width, height - horizonY);
+            // Sötét föld/alap az út alatt
+            ctx.fillStyle = '#070a0f';
+            ctx.fillRect(0, 0, width, height);
 
             const roadWidthBottom = width * 0.8;
-            const roadWidthTop = width * 0.08;
+            const roadWidthTop = width * 0.12;
+            const horizonY = 0;
 
             roadOffset += (currentSpeed + 5) * 0.02;
             const curve = Math.sin(roadOffset * 0.02) * (width * 0.15);
 
-            // 5. Aszfaltút rajzolása
+            // Aszfaltút rajzolása
             ctx.beginPath();
             ctx.moveTo((width - roadWidthBottom) / 2, height);
             ctx.bezierCurveTo(
-                width / 2 + curve * 0.4, horizonY + (height - horizonY) * 0.5,
-                width / 2 + curve, horizonY + (height - horizonY) * 0.15,
+                width / 2 + curve * 0.4, horizonY + height * 0.5,
+                width / 2 + curve, horizonY + height * 0.15,
                 (width - roadWidthTop) / 2 + curve * 0.05, horizonY
             );
             ctx.lineTo((width + roadWidthTop) / 2 + curve * 0.05, horizonY);
             ctx.bezierCurveTo(
-                width / 2 + curve, horizonY + (height - horizonY) * 0.15,
-                width / 2 + curve * 0.4, horizonY + (height - horizonY) * 0.5,
+                width / 2 + curve, horizonY + height * 0.15,
+                width / 2 + curve * 0.4, horizonY + height * 0.5,
                 (width + roadWidthBottom) / 2, height
             );
             ctx.closePath();
@@ -239,7 +210,7 @@
             ctx.fillStyle = '#1e2229';
             ctx.fill();
 
-            // 6. Középső ragyogó neonkék sáv
+            // Középső ragyogó neonkék sáv
             ctx.beginPath();
             const centerTopX = width / 2 + curve * 0.05;
             const centerBottomX = width / 2;
@@ -254,32 +225,32 @@
             ctx.fill();
             ctx.shadowBlur = 0;
 
-            // 7. Útszéli sárga világító lámpák
-            const itemCount = 12;
+            // Útszéli sárga világító lámpák
+            const itemCount = 10;
             for (let i = 0; i < itemCount; i++) {
                 let progress = (i / itemCount + (roadOffset * 0.004) % 1) % 1;
-                let y = horizonY + progress * (height - horizonY);
+                let y = horizonY + progress * height;
                 let xFactor = (width * 0.42) * (1 - progress);
 
-                drawLamp(width / 2 - roadWidthBottom * 0.5 - xFactor - 20, y, progress);
-                drawLamp(width / 2 + roadWidthBottom * 0.5 + xFactor + 20, y, progress);
+                drawLamp(width / 2 - roadWidthBottom * 0.5 - xFactor - 15, y, progress);
+                drawLamp(width / 2 + roadWidthBottom * 0.5 + xFactor + 15, y, progress);
             }
 
-            // 8. Saját kék autó fixen alul
-            drawPlayerCar(width / 2, height - 70);
+            // Saját kék autó fixen alul
+            drawPlayerCar(width / 2, height - 60);
 
             requestAnimationFrame(render);
         }
 
         function drawLamp(x, y, scale) {
-            let size = Math.max(3, scale * 22);
+            let size = Math.max(3, scale * 20);
             ctx.fillStyle = '#111';
             ctx.fillRect(x - 2, y - size * 2, 3, size * 2);
 
             ctx.beginPath();
             ctx.arc(x, y - size * 2, Math.max(2.5, size * 0.3), 0, Math.PI * 2);
             ctx.fillStyle = '#ffeb3b';
-            ctx.shadowBlur = 12;
+            ctx.shadowBlur = 10;
             ctx.shadowColor = '#ffeb3b';
             ctx.fill();
             ctx.shadowBlur = 0;
@@ -290,27 +261,27 @@
             ctx.translate(cx, cy);
 
             ctx.fillStyle = '#111';
-            ctx.fillRect(-80, 0, 22, 38);
-            ctx.fillRect(58, 0, 22, 38);
+            ctx.fillRect(-75, 0, 20, 35);
+            ctx.fillRect(55, 0, 20, 35);
 
             ctx.fillStyle = '#3b82f6';
             ctx.strokeStyle = '#111';
             ctx.lineWidth = 4;
             ctx.beginPath();
-            ctx.roundRect(-70, -20, 140, 65, 16);
+            ctx.roundRect(-65, -18, 130, 60, 14);
             ctx.fill();
             ctx.stroke();
 
             ctx.fillStyle = '#111';
             ctx.beginPath();
-            ctx.roundRect(-50, -38, 100, 32, 10);
+            ctx.roundRect(-45, -35, 90, 30, 8);
             ctx.fill();
 
             ctx.fillStyle = '#ff334b';
             ctx.shadowBlur = 10;
             ctx.shadowColor = '#ff334b';
-            ctx.fillRect(-62, 5, 16, 8);
-            ctx.fillRect(46, 5, 16, 8);
+            ctx.fillRect(-55, 4, 14, 7);
+            ctx.fillRect(41, 4, 14, 7);
             ctx.shadowBlur = 0;
 
             ctx.restore();
