@@ -1,5 +1,7 @@
 # ToonNav3D — do this next
 
+The picture we are aiming for is `Reference/celkep.png` (explained in Hungarian in `Reference/CEL.md`): one cartoon drive in Budapest, in sun, rain, night, and snow. The scripts in this repo are only the first slice of that picture.
+
 This repo is **not** a playable Unity project yet. It only contains the first three scripts. Unity has not compiled or run them.
 
 The old `index.html` file is a browser drawing. Leave it. It is not part of the Unity scene.
