@@ -569,8 +569,8 @@
         }
 
         function drawSky(daylight, date) {
-            var top = sceneSnow ? [198, 220, 234] : (sceneRain ? [78, 98, 118] : mixColor([126, 198, 255], [6, 12, 36], daylight));
-            var bottom = sceneSnow ? [236, 242, 246] : (sceneRain ? [156, 168, 178] : mixColor([255, 228, 170], [42, 58, 112], daylight));
+            var top = sceneSnow ? [198, 220, 234] : (sceneRain ? [78, 98, 118] : mixColor([102, 188, 255], [6, 12, 36], daylight));
+            var bottom = sceneSnow ? [226, 236, 242] : (sceneRain ? [156, 168, 178] : mixColor([255, 220, 156], [42, 58, 112], daylight));
             var sky = ctx.createLinearGradient(0, 0, 0, horizon + 20);
             sky.addColorStop(0, paint(top));
             sky.addColorStop(1, paint(bottom));
@@ -597,7 +597,7 @@
             if (across > 1) across = 1;
             var bodyX = viewW * (0.28 + across * 0.4);
             var bodyY = horizon * (0.62 - Math.sin(across * Math.PI) * 0.42);
-            if (!sceneRain && daylight > 0.05) {
+            if (!sceneRain && !sceneSnow && daylight > 0.05) {
                 var glow = ctx.createRadialGradient(bodyX, bodyY, 6, bodyX, bodyY, 64);
                 glow.addColorStop(0, "rgba(255, 220, 90, " + daylight + ")");
                 glow.addColorStop(1, "rgba(255, 220, 90, 0)");
@@ -618,86 +618,144 @@
             }
         }
 
-        function drawCity(daylight) {
-            var base = horizon + 2;
-            var hill = ctx.createLinearGradient(0, base - 80, 0, base + 10);
-            hill.addColorStop(0, paint(mixColor([126, 176, 112], [18, 36, 32], daylight)));
-            hill.addColorStop(1, paint(mixColor([78, 150, 86], [12, 28, 24], daylight)));
-            ctx.fillStyle = hill;
+        function cityUnit() {
+            return Math.max(26, Math.min(viewW, viewH) * (viewH > viewW ? 0.072 : 0.05));
+        }
+
+        function drawHills(daylight) {
+            var base = horizon + 8;
+            var rise = viewH * (viewH > viewW ? 0.07 : 0.09);
+            var far = mixColor(sceneSnow ? [214, 226, 220] : [176, 210, 122], [22, 40, 34], daylight);
+            var near = mixColor(sceneSnow ? [186, 206, 200] : [108, 176, 78], [14, 32, 26], daylight);
+            ctx.fillStyle = paint(far);
             ctx.beginPath();
             ctx.moveTo(0, base);
-            ctx.quadraticCurveTo(viewW * 0.2, base - 46, viewW * 0.4, base - 10);
-            ctx.quadraticCurveTo(viewW * 0.7, base - 58, viewW, base - 16);
-            ctx.lineTo(viewW, base + 8);
-            ctx.lineTo(0, base + 8);
+            ctx.quadraticCurveTo(viewW * 0.12, base - rise * 1.65, viewW * 0.3, base - rise * 0.35);
+            ctx.quadraticCurveTo(viewW * 0.52, base - rise * 1.05, viewW * 0.74, base - rise * 0.3);
+            ctx.quadraticCurveTo(viewW * 0.9, base - rise * 0.8, viewW, base - rise * 0.2);
+            ctx.lineTo(viewW, base + 6);
+            ctx.lineTo(0, base + 6);
             ctx.fill();
+            ctx.fillStyle = paint(near);
+            ctx.beginPath();
+            ctx.moveTo(0, base - 2);
+            ctx.quadraticCurveTo(viewW * 0.22, base - rise * 0.55, viewW * 0.46, base + 2);
+            ctx.quadraticCurveTo(viewW * 0.72, base - rise * 0.45, viewW, base - 6);
+            ctx.lineTo(viewW, base + 10);
+            ctx.lineTo(0, base + 10);
+            ctx.fill();
+        }
 
-            var s = Math.min(viewW, viewH) * (viewH > viewW ? 0.16 : 0.12);
-            drawHouse(viewW * 0.0, base - 10, s * 0.34, s * 0.4, [214, 198, 176], [154, 74, 62], daylight);
-            drawHouse(viewW * 0.08, base - 14, s * 0.28, s * 0.5, [186, 168, 188], [118, 58, 68], daylight);
-            drawHouse(viewW * 0.62, base - 12, s * 0.3, s * 0.42, [206, 190, 164], [142, 66, 58], daylight);
-            drawHouse(viewW * 0.76, base - 8, s * 0.26, s * 0.48, [196, 176, 168], [128, 60, 66], daylight);
-            drawHouse(viewW * 0.9, base - 16, s * 0.3, s * 0.34, [220, 200, 170], [160, 78, 64], daylight);
+        function drawCity(daylight) {
+            var base = horizon + 2;
+            var u = cityUnit();
+            var walls = [
+                [244, 164, 102],
+                [232, 112, 96],
+                [246, 214, 156],
+                [176, 204, 222],
+                [236, 176, 154],
+                [214, 196, 168],
+                [228, 154, 112],
+                [168, 190, 214]
+            ];
+            var roofs = [
+                [184, 70, 56],
+                [132, 52, 58],
+                [168, 74, 60],
+                [112, 64, 78],
+                [150, 62, 54],
+                [146, 68, 58],
+                [176, 78, 62],
+                [96, 72, 108]
+            ];
+            var i;
+            var count = Math.max(14, Math.round(viewW / (u * 0.86)));
+            for (i = 0; i < count; i++) {
+                var x = (i + 0.08) * (viewW / count);
+                var bridgeZone = x < viewW * 0.34;
+                var h = u * (bridgeZone ? 0.9 + (i % 3) * 0.16 : 1.25 + ((i * 3) % 5) * 0.2);
+                drawHouse(x, base - u * 0.2, u * 0.72, h, walls[i % walls.length], roofs[i % roofs.length], daylight);
+            }
 
-            drawHouse(viewW * 0.0, base, s * 0.4, s * 0.68, [244, 156, 102], [176, 68, 58], daylight);
-            drawHouse(viewW * 0.1, base, s * 0.34, s * 0.9, [228, 112, 96], [124, 52, 58], daylight);
-            drawBridge(viewW * 0.012, base, s * 0.9, daylight);
-            drawParliament(viewW * 0.48, base, s, daylight);
-            drawHouse(viewW * 0.67, base, s * 0.4, s * 0.8, [244, 206, 140], [186, 78, 62], daylight);
-            drawHouse(viewW * 0.77, base, s * 0.34, s * 1.05, [168, 196, 220], [86, 108, 148], daylight);
+            var front = [
+                [0.3, 1.0, 2.4, 2],
+                [0.72, 1.05, 2.7, 0],
+                [0.82, 0.95, 3.2, 1],
+                [0.91, 1.05, 2.25, 4]
+            ];
+            for (i = 0; i < front.length; i++) {
+                var row = front[i];
+                drawHouse(viewW * row[0], base, u * row[1], u * row[2], walls[row[3]], roofs[row[3]], daylight);
+            }
 
-            var palaceX = viewW * 0.86;
-            ctx.fillStyle = paint(mixColor([228, 210, 168], [62, 52, 44], daylight));
-            ctx.fillRect(palaceX, base - s * 0.58, s * 0.62, s * 0.58);
-            ctx.fillStyle = paint(mixColor([168, 64, 52], [40, 22, 22], daylight));
-            ctx.fillRect(palaceX - s * 0.04, base - s * 0.7, s * 0.7, s * 0.12);
+            drawParliament(viewW * 0.56, base, u * 2.05, daylight);
+
+            var spireX = viewW * 0.84;
+            ctx.fillStyle = paint(mixColor([232, 220, 196], [48, 44, 62], daylight));
+            ctx.fillRect(spireX, base - u * 3.7, u * 0.16, u * 1.2);
+            ctx.beginPath();
+            ctx.moveTo(spireX - u * 0.1, base - u * 3.7);
+            ctx.lineTo(spireX + u * 0.08, base - u * 4.55);
+            ctx.lineTo(spireX + u * 0.26, base - u * 3.7);
+            ctx.fill();
             if (sceneSnow) {
                 ctx.fillStyle = "rgba(255,255,255,0.92)";
-                ctx.fillRect(palaceX - s * 0.05, base - s * 0.76, s * 0.72, s * 0.08);
-            }
-            ctx.fillStyle = daylight < 0.55
-                ? "rgba(255, 214, 120, " + (0.4 + (1 - daylight) * 0.6) + ")"
-                : "rgba(170, 214, 226, 0.95)";
-            ctx.fillRect(palaceX + s * 0.1, base - s * 0.42, s * 0.08, s * 0.12);
-            ctx.fillRect(palaceX + s * 0.28, base - s * 0.42, s * 0.08, s * 0.12);
-            ctx.fillRect(palaceX + s * 0.46, base - s * 0.42, s * 0.08, s * 0.12);
-
-            ctx.fillStyle = paint(mixColor([230, 220, 200], [50, 46, 64], daylight));
-            var spireX = viewW * 0.79;
-            ctx.fillRect(spireX, base - s * 1.35, s * 0.08, s * 0.55);
-            ctx.beginPath();
-            ctx.moveTo(spireX - s * 0.06, base - s * 1.35);
-            ctx.lineTo(spireX + s * 0.04, base - s * 1.72);
-            ctx.lineTo(spireX + s * 0.14, base - s * 1.35);
-            ctx.fill();
-
-            var bank;
-            for (bank = 0; bank < 9; bank++) {
-                drawTree(viewW * (0.04 + bank * 0.11), base + 6, s * 0.42, daylight);
+                ctx.beginPath();
+                ctx.moveTo(spireX - u * 0.12, base - u * 3.62);
+                ctx.lineTo(spireX + u * 0.08, base - u * 4.55);
+                ctx.lineTo(spireX + u * 0.28, base - u * 3.62);
+                ctx.fill();
             }
         }
 
         function drawRiver(daylight) {
-            var top = horizon - 2;
-            var depth = Math.max(26, viewH * 0.055);
+            var top = horizon - 6;
+            var depth = Math.max(68, viewH * (viewH > viewW ? 0.1 : 0.072));
+            var waterTop = sceneSnow ? [176, 198, 208] : (sceneRain ? [70, 96, 112] : [78, 176, 214]);
+            var waterBottom = sceneSnow ? [146, 170, 184] : (sceneRain ? [48, 70, 86] : [32, 120, 182]);
             var water = ctx.createLinearGradient(0, top, 0, top + depth);
-            water.addColorStop(0, paint(mixColor([92, 186, 224], [18, 36, 78], daylight)));
-            water.addColorStop(1, paint(mixColor([46, 140, 196], [10, 22, 52], daylight)));
+            water.addColorStop(0, paint(mixColor(waterTop, [16, 32, 64], daylight)));
+            water.addColorStop(1, paint(mixColor(waterBottom, [8, 18, 40], daylight)));
             ctx.fillStyle = water;
             ctx.fillRect(0, top, viewW, depth);
-            ctx.strokeStyle = "rgba(255,255,255," + (0.35 * daylight + 0.1) + ")";
+
+            var shades = [
+                [244, 168, 110],
+                [232, 206, 160],
+                [214, 150, 90],
+                [186, 96, 78],
+                [120, 176, 210]
+            ];
+            var col;
+            var cols = Math.max(12, Math.round(viewW / 18));
+            for (col = 0; col < cols; col++) {
+                var shade = shades[col % shades.length];
+                var alpha = (sceneSnow ? 0.14 : 0.2) + (daylight < 0.55 ? (1 - daylight) * 0.38 : 0);
+                ctx.fillStyle = "rgba(" + shade[0] + "," + shade[1] + "," + shade[2] + "," + alpha + ")";
+                ctx.fillRect((col + 0.15) * (viewW / cols), top + 4, Math.max(3, viewW / cols * 0.26), depth * (0.42 + (col % 3) * 0.14));
+            }
+
+            ctx.strokeStyle = "rgba(255,255,255," + (0.28 * daylight + 0.08) + ")";
             ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(0, top + depth * 0.45);
-            ctx.bezierCurveTo(viewW * 0.3, top + 4, viewW * 0.6, top + depth * 0.8, viewW, top + depth * 0.3);
-            ctx.stroke();
-            drawBoat(viewW * 0.12, top + depth * 0.35, daylight);
-            if (daylight < 0.75) {
-                ctx.fillStyle = "rgba(255, 214, 130, " + (0.35 * (1 - daylight)) + ")";
-                var i;
-                for (i = 0; i < 14; i++) {
-                    ctx.fillRect(viewW * (0.2 + (i % 7) * 0.1), top + 6 + (i % 3) * 4, 2, 8 + (i % 4) * 3);
-                }
+            var wave;
+            for (wave = 1; wave <= 3; wave++) {
+                var y = top + depth * (0.24 * wave);
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.bezierCurveTo(viewW * 0.28, y - 4, viewW * 0.62, y + 5, viewW, y - 2);
+                ctx.stroke();
+            }
+            drawBoat(viewW * 0.32, top + depth * 0.4, daylight);
+        }
+
+        function drawBankTrees(daylight) {
+            var y = horizon + viewH * (viewH > viewW ? 0.095 : 0.075);
+            var u = cityUnit();
+            var count = Math.max(8, Math.round(viewW / (u * 1.35)));
+            var i;
+            for (i = 0; i < count; i++) {
+                drawTree((i + 0.35) * (viewW / count), y, u * 1.05, daylight);
             }
         }
 
@@ -890,7 +948,7 @@
             sceneSnow = scene.snow;
             viewW = window.innerWidth;
             viewH = window.innerHeight;
-            horizon = viewH * (viewH > viewW ? 0.4 : 0.46);
+            horizon = viewH * (viewH > viewW ? 0.43 : 0.48);
             roadOffset += 1.2;
 
             var grass = scene.snow
@@ -899,10 +957,13 @@
             ctx.fillStyle = paint(grass);
             ctx.fillRect(0, 0, viewW, viewH);
             drawSky(daylight, date);
+            drawHills(daylight);
             drawCity(daylight);
             drawRiver(daylight);
+            drawBridge(viewW * 0.01, horizon + 2, cityUnit() * 3.05, daylight);
             ctx.fillStyle = paint(grass);
-            ctx.fillRect(0, horizon + viewH * 0.04, viewW, viewH);
+            ctx.fillRect(0, horizon + viewH * (viewH > viewW ? 0.07 : 0.055), viewW, viewH);
+            drawBankTrees(daylight);
             drawTrees(daylight);
             drawRoad(daylight);
             drawLamps(daylight);
