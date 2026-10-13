@@ -247,10 +247,13 @@
             return forced;
         }
 
+        function pageWants(name) {
+            return window.location.href.indexOf("weather=" + name) !== -1;
+        }
+
         function sceneNow() {
-            var params = new URLSearchParams(window.location.search);
-            if (params.get("weather") === "rain") return { daylight: 0.45, rain: true, snow: false };
-            if (params.get("weather") === "snow") return { daylight: 0.72, rain: false, snow: true };
+            if (pageWants("rain")) return { daylight: 0.45, rain: true, snow: false };
+            if (pageWants("snow")) return { daylight: 0.72, rain: false, snow: true };
             if (previewMode !== null && Date.now() < previewUntil) {
                 if (previewMode === "rain") return { daylight: 0.45, rain: true, snow: false };
                 if (previewMode === "snow") return { daylight: 0.72, rain: false, snow: true };
@@ -291,10 +294,9 @@
             var snowButton = document.getElementById("snow");
             var status = document.getElementById("status-text");
             var arrival = new Date(date.getTime() + 22 * 60 * 1000);
-            var weather = new URLSearchParams(window.location.search).get("weather");
             document.getElementById("arrival").textContent = clock(arrival);
-            var showingRain = rain && (previewMode === "rain" || weather === "rain");
-            var showingSnow = snow && (previewMode === "snow" || weather === "snow");
+            var showingRain = rain && (previewMode === "rain" || pageWants("rain"));
+            var showingSnow = snow && (previewMode === "snow" || pageWants("snow"));
 
             if (showingSnow) {
                 icon.textContent = "❄️";
