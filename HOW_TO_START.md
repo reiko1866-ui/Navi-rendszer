@@ -6,7 +6,7 @@ The moving picture runs in the phone browser. Unity Editor does not run on Andro
 
 Close any old tab first. Open the latest phone link from the project notes in Chrome, with the phone held sideways.
 
-The page is the picture again: a blue car seen from behind, a glowing lane, the river, the bridge, and the parliament. The car moves slowly forward. It does not use the phone's real location. Nappal, Éjszaka, Eső, and Hó change the look.
+The page follows the three target photos: a red car from behind, a straight road, colorful trees, a green lane by day, and a glowing blue lane at night. The top card shows 250 m and Fő út / Váci út. Day and night follow the phone clock. From 7:00 to 19:59 it is day. From 20:00 to 6:59 it is night. On open it shows the other look for a few seconds, then switches by itself.
 
 The painted pictures are still in `Reference/panels`. This page does not show those pictures, and it is not a real route. The Unity scripts are still only text files. No Unity scene has been built or played.
 

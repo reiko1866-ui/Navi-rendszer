@@ -4,11 +4,9 @@ Ez a fájl a telefonos állapot. A régebbi leírásokat nem cseréli le.
 
 ## Mi készült el
 
-A telefonos oldal az `index.html`. A látványt újra a célképhez igazítottuk: a kék autó közelről látszik hátulról, előtte világító kék sáv van, balra a folyó, a híd és a Parlament, kétoldalt házak és fák. Az autó lassan megy előre, hogy a kép ne állókép legyen.
+A telefonos oldal az `index.html`. A kép a három célfotó szerint néz ki: piros autó hátulról, egyenes út, színes fák, nappal zöld sáv, éjjel világító kék sáv. Fent a kanyar: 250 m, Fő út / Váci út. Lent az 50-es tábla és a sebesség.
 
-Alul a Nappal, Éjszaka, Eső és Hó gomb a négy hangulatot váltja. A felső kártyák, az 50-es tábla, a Belváros tábla és a kerek térkép a célkép elemei.
-
-A festett képek megmaradtak a `Reference/panels` mappában.
+A nappal és az éjszaka a telefon óráját követi. 7-től 19 óráig nappal, 20-tól reggel 7-ig éjszaka. Nyitáskor először a másik hangulat látszik, pár másodperc múlva magától átvált a valódira. Utána is figyeli az órát.
 
 A számítógépre szánt vázlatok:
 
@@ -25,7 +23,5 @@ Ne telepíts Unityt a Play Áruházból. A Unity szerkesztő számítógépen fu
 ## A következő lépés a telefonon
 
 1. Zárd be a régi ToonNav lapokat.
-2. Fordítsd a telefont fektetve.
-3. Nyisd meg Chrome-ban. A pontos link a beszélgetésben van, mert minden új változat új cím.
-
-A képen a város, a folyó, a híd és a kék autó legyen a lényeg. Alul a négy gombbal válts hangulatot.
+2. Nyisd meg Chrome-ban. A pontos link a beszélgetésben van.
+3. Várd meg a váltást. A zöld nappali kép magától sötét éjszakai képre vált, vagy fordítva, ahogy az óra kéri.

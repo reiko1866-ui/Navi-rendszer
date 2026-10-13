@@ -17,4 +17,4 @@ A képernyő részei:
 - Jobb lent: kerek térkép
 - Az út közepén: világoskék sáv
 
-Telefonon a mozgó kép az `index.html`. A telefon órája vált nappal és éjszaka között: 7–19 óra nappal, 20–6 óra éjszaka. Az eső és a hó még nincs benne. A link a `HOW_TO_START.md` fájlban van.
+A telefonos oldal most a három új célfotót követi: piros autó, színes fák, nappal zöld sáv, éjjel világító kék sáv. A telefon órája vált: 7–19 óra nappal, 20–6 óra éjszaka. A link a `HOW_TO_START.md` fájlban van.
