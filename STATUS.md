@@ -4,14 +4,9 @@ Ez a fájl a telefonos állapot. A régebbi leírásokat nem cseréli le.
 
 ## Mi készült el
 
-A telefonos oldal az `index.html`. Négy festett képet mutat a `Reference/celkep.png` fájlból:
+A telefonos oldal az `index.html`. Ez egy böngészős háromdimenziós próba: egyenes út, kék autó hátulról, világoskék sáv, érintéses kormány, és egy Éjszaka / Nappal gomb.
 
-- nappal
-- eső
-- éjszaka
-- hó
-
-A kép kinézete navigáció: kék autó, város, világoskék sáv, táblák. A kép nem mozog, nem tudja, hol van a telefon, és nem mond valódi következő utcát.
+A festett célképek megmaradtak a `Reference/panels` mappában. Az oldal nem azokat a képeket mutatja, és nem tud valódi útvonalat.
 
 A számítógépre szánt vázlatok:
 
@@ -29,16 +24,6 @@ Ne telepíts Unityt a Play Áruházból. A Unity szerkesztő számítógépen fu
 
 1. Zárd be a régi ToonNav lapokat.
 2. Fordítsd a telefont fektetve.
-3. Nyisd meg Chrome-ban ezt a nappali képet:
+3. Nyisd meg Chrome-ban. A pontos link a beszélgetésben van, mert minden új változat új cím.
 
-https://htmlpreview.github.io/?https://github.com/reiko1866-ui/Navi-rendszer/blob/bc597fc/index.html?hour=14
-
-Ha a nappali kép megvan, ezek a másik három:
-
-- Hó: https://htmlpreview.github.io/?https://github.com/reiko1866-ui/Navi-rendszer/blob/bc597fc/index.html?weather=snow
-- Eső: https://htmlpreview.github.io/?https://github.com/reiko1866-ui/Navi-rendszer/blob/bc597fc/index.html?weather=rain
-- Éjszaka: https://htmlpreview.github.io/?https://github.com/reiko1866-ui/Navi-rendszer/blob/bc597fc/index.html?hour=22
-
-Ha a linkben nincs óra és nincs időjárás, a telefon órája választ: 7:00–19:00 nappal, 20:00–6:00 éjszaka.
-
-Ennyi a telefonos maximum. A vezethető háromdimenziós út később, számítógépen készülhet. Az sem lesz a festmény mozgó másolata.
+Érintsd a képernyő bal oldalát: az autó balra kanyarodik. A jobb oldal jobbra visz. Az Éjszaka gomb sötétre vált. Ez még nem a festett város, és nem valódi navigáció.

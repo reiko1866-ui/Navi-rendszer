@@ -4,17 +4,11 @@
 
 The moving picture runs in the phone browser. Unity Editor does not run on Android.
 
-Open this link in Chrome. Close any old tab first. The page shows the painted picture from `Reference/celkep.png`.
+Close any old tab first. Open the latest phone link from the project notes in Chrome, with the phone held sideways.
 
-https://htmlpreview.github.io/?https://github.com/reiko1866-ui/Navi-rendszer/blob/cursor/toonnav3d-milestone-1-b5ab/index.html?hour=14
+The page is a small browser 3D drive: a straight road, a blue car seen from behind, a glowing blue line, and an Éjszaka / Nappal button. Touch the left side of the screen to steer left and the right side to steer right.
 
-Day and night follow the phone clock when the link has no `hour` and no `weather`.
-
-- 7:00–19:00 is the sunny picture.
-- 20:00–6:00 is the night picture.
-- Around 6:00–7:00 and 19:00–20:00 the page switches from one picture to the other.
-
-Rain and snow are separate pictures. Add `?weather=rain` or `?weather=snow` to the GitHub address inside the link above.
+The painted pictures are still in `Reference/panels`. This page does not show those pictures, and it is not a real route. The Unity scripts are still only text files. No Unity scene has been built or played.
 
 The 3D Unity scene still needs a computer. Those steps are below. Do not install a Unity app from the Play Store.
 
