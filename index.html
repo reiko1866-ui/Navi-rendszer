@@ -130,7 +130,7 @@
             gap: 8px;
             align-items: center;
         }
-        #peek, #rain {
+        #peek, #rain, #snow {
             border: 0;
             border-radius: 999px;
             background: white;
@@ -198,6 +198,7 @@
         <span id="status-text">Nappal</span>
         <button id="peek" type="button">Éjszaka</button>
         <button id="rain" type="button">Eső</button>
+        <button id="snow" type="button">Hó</button>
     </div>
 
     <script>
@@ -210,6 +211,7 @@
         var viewH = 1;
         var horizon = 1;
         var sceneRain = false;
+        var sceneSnow = false;
 
         function resize() {
             var ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -247,13 +249,15 @@
 
         function sceneNow() {
             var params = new URLSearchParams(window.location.search);
-            if (params.get("weather") === "rain") return { daylight: 0.45, rain: true };
+            if (params.get("weather") === "rain") return { daylight: 0.45, rain: true, snow: false };
+            if (params.get("weather") === "snow") return { daylight: 0.72, rain: false, snow: true };
             if (previewMode !== null && Date.now() < previewUntil) {
-                if (previewMode === "rain") return { daylight: 0.45, rain: true };
-                return { daylight: previewMode === "night" ? 0 : 1, rain: false };
+                if (previewMode === "rain") return { daylight: 0.45, rain: true, snow: false };
+                if (previewMode === "snow") return { daylight: 0.72, rain: false, snow: true };
+                return { daylight: previewMode === "night" ? 0 : 1, rain: false, snow: false };
             }
             previewMode = null;
-            return { daylight: daylightFromDate(shownDate()), rain: false };
+            return { daylight: daylightFromDate(shownDate()), rain: false, snow: false };
         }
 
         function mix(a, b, t) {
@@ -278,16 +282,30 @@
             return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
         }
 
-        function updateHud(date, daylight, rain) {
+        function updateHud(date, daylight, rain, snow) {
             var icon = document.getElementById("weather-icon");
             var temp = document.getElementById("temp");
             var text = document.getElementById("weather-text");
             var peek = document.getElementById("peek");
             var rainButton = document.getElementById("rain");
+            var snowButton = document.getElementById("snow");
             var status = document.getElementById("status-text");
             var arrival = new Date(date.getTime() + 22 * 60 * 1000);
+            var weather = new URLSearchParams(window.location.search).get("weather");
             document.getElementById("arrival").textContent = clock(arrival);
-            var showingRain = rain && (previewMode === "rain" || new URLSearchParams(window.location.search).get("weather") === "rain");
+            var showingRain = rain && (previewMode === "rain" || weather === "rain");
+            var showingSnow = snow && (previewMode === "snow" || weather === "snow");
+
+            if (showingSnow) {
+                icon.textContent = "❄️";
+                temp.textContent = "-2°C";
+                text.textContent = "Havazás";
+                status.textContent = "Havazás";
+                peek.textContent = daylightFromDate(date) > 0.5 ? "Éjszaka" : "Nappal";
+                rainButton.textContent = "Eső";
+                snowButton.textContent = "Óra";
+                return;
+            }
 
             if (showingRain) {
                 icon.textContent = "🌧️";
@@ -296,6 +314,7 @@
                 status.textContent = "Eső";
                 peek.textContent = daylightFromDate(date) > 0.5 ? "Éjszaka" : "Nappal";
                 rainButton.textContent = "Óra";
+                snowButton.textContent = "Hó";
                 return;
             }
 
@@ -318,6 +337,7 @@
             }
 
             rainButton.textContent = "Eső";
+            snowButton.textContent = "Hó";
             if (previewMode !== null && Date.now() < previewUntil) {
                 status.textContent = "Előnézet";
                 peek.textContent = "Óra";
@@ -364,6 +384,14 @@
             ctx.lineTo(x + bw * 0.5, base - bh - bw * 0.42);
             ctx.lineTo(x + bw * 1.06, base - bh);
             ctx.fill();
+            if (sceneSnow) {
+                ctx.fillStyle = "rgba(255,255,255,0.92)";
+                ctx.beginPath();
+                ctx.moveTo(x - bw * 0.06, base - bh);
+                ctx.lineTo(x + bw * 0.5, base - bh - bw * 0.42);
+                ctx.lineTo(x + bw * 1.06, base - bh);
+                ctx.fill();
+            }
             ctx.fillStyle = daylight < 0.55
                 ? "rgba(255, 214, 120, " + (0.35 + (1 - daylight) * 0.65) + ")"
                 : "rgba(170, 214, 226, 0.95)";
@@ -462,6 +490,12 @@
             ctx.beginPath();
             ctx.arc(x + s * 0.04, y - s * 0.58, s * 0.16, 0, Math.PI * 2);
             ctx.fill();
+            if (sceneSnow) {
+                ctx.fillStyle = "rgba(255,255,255,0.92)";
+                ctx.beginPath();
+                ctx.arc(x, y - s * 0.62, s * 0.18, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
 
         function drawBoat(x, y, daylight) {
@@ -482,8 +516,8 @@
         }
 
         function drawSky(daylight, date) {
-            var top = sceneRain ? [78, 98, 118] : mixColor([126, 198, 255], [6, 12, 36], daylight);
-            var bottom = sceneRain ? [156, 168, 178] : mixColor([255, 228, 170], [42, 58, 112], daylight);
+            var top = sceneSnow ? [198, 220, 234] : (sceneRain ? [78, 98, 118] : mixColor([126, 198, 255], [6, 12, 36], daylight));
+            var bottom = sceneSnow ? [236, 242, 246] : (sceneRain ? [156, 168, 178] : mixColor([255, 228, 170], [42, 58, 112], daylight));
             var sky = ctx.createLinearGradient(0, 0, 0, horizon + 20);
             sky.addColorStop(0, paint(top));
             sky.addColorStop(1, paint(bottom));
@@ -604,7 +638,7 @@
             ctx.lineTo(d.x, d.y);
             ctx.lineTo(c.x, c.y);
             ctx.closePath();
-            ctx.fillStyle = paint(mixColor([78, 86, 98], [22, 26, 34], daylight));
+            ctx.fillStyle = paint(sceneSnow ? [186, 198, 208] : mixColor([78, 86, 98], [22, 26, 34], daylight));
             ctx.fill();
 
             ctx.strokeStyle = "rgba(255,255,255,0.9)";
@@ -746,6 +780,19 @@
             ctx.restore();
         }
 
+        function drawSnow() {
+            var flake;
+            var shift = (roadOffset * 5) % 90;
+            for (flake = 0; flake < 80; flake++) {
+                var x = (flake * 47 + shift) % viewW;
+                var y = (flake * 31 + shift * 2) % viewH;
+                ctx.fillStyle = "rgba(255,255,255," + (0.7 + (flake % 3) * 0.1) + ")";
+                ctx.beginPath();
+                ctx.arc(x, y, 1.2 + (flake % 3), 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
         function drawRain() {
             var drop;
             var shift = (roadOffset * 16) % 48;
@@ -766,12 +813,15 @@
             var scene = sceneNow();
             var daylight = scene.daylight;
             sceneRain = scene.rain;
+            sceneSnow = scene.snow;
             viewW = window.innerWidth;
             viewH = window.innerHeight;
             horizon = viewH * (viewH > viewW ? 0.4 : 0.46);
             roadOffset += 1.2;
 
-            var grass = mixColor([92, 186, 78], [14, 40, 28], daylight);
+            var grass = scene.snow
+                ? [214, 228, 226]
+                : mixColor([92, 186, 78], [14, 40, 28], daylight);
             ctx.fillStyle = paint(grass);
             ctx.fillRect(0, 0, viewW, viewH);
             drawSky(daylight, date);
@@ -791,7 +841,8 @@
                 drawCloud(viewW * 0.86, horizon * 0.24, 34, 1);
                 drawRain();
             }
-            updateHud(date, daylight, scene.rain);
+            if (scene.snow) drawSnow();
+            updateHud(date, daylight, scene.rain, scene.snow);
             requestAnimationFrame(frame);
         }
 
@@ -810,6 +861,15 @@
                 return;
             }
             previewMode = "rain";
+            previewUntil = Date.now() + 12000;
+        });
+
+        document.getElementById("snow").addEventListener("click", function () {
+            if (previewMode === "snow") {
+                previewMode = null;
+                return;
+            }
+            previewMode = "snow";
             previewUntil = Date.now() + 12000;
         });
 
