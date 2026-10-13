@@ -4,9 +4,9 @@ Ez a fájl a telefonos állapot. A régebbi leírásokat nem cseréli le.
 
 ## Mi készült el
 
-A telefonos oldal az `index.html`. Ez egy böngészős háromdimenziós próba: út, kék autó hátulról, világoskék sáv, folyó, házak, fák, és Nappal, Éjszaka, Eső, Hó gomb.
+A telefonos oldal az `index.html`. Az autó egy előre megírt útvonalon megy. Az útvonal pontokból áll: utca, kanyar, távolság. A bal felső szám csökken, a kanyarnál új utca jön, a kis térkép mutatja a vonalat.
 
-A „2,3 km” felirat a célkép szövege. Nem élő útvonal. A festett képek megmaradtak a `Reference/panels` mappában.
+Ez a később fejleszthető navigáció váza. Most nem a telefon valódi helyét használja. A festett képek megmaradtak a `Reference/panels` mappában.
 
 A számítógépre szánt vázlatok:
 
@@ -26,4 +26,4 @@ Ne telepíts Unityt a Play Áruházból. A Unity szerkesztő számítógépen fu
 2. Fordítsd a telefont fektetve.
 3. Nyisd meg Chrome-ban. A pontos link a beszélgetésben van, mert minden új változat új cím.
 
-Érintsd a képernyő bal oldalát: az autó balra kanyarodik. A jobb oldal jobbra visz. Alul a Nappal, Éjszaka, Eső és Hó gomb vált hangulatot. Ez a célkép stílusa, egyszerű térbeli formákból. Nem valódi navigáció.
+Nézd a bal felső számot. Csökken, aztán a következő utca neve kicserélődik. A végén megjelenik a Megérkeztél, és az Újra gomb elölről indítja. Alul a Nappal, Éjszaka, Eső és Hó gomb a hangulatot váltja.
