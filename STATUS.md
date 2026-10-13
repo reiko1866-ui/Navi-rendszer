@@ -4,9 +4,11 @@ Ez a fájl a telefonos állapot. A régebbi leírásokat nem cseréli le.
 
 ## Mi készült el
 
-A telefonos oldal az `index.html`. Az autó egy előre megírt útvonalon megy. Az útvonal pontokból áll: utca, kanyar, távolság. A bal felső szám csökken, a kanyarnál új utca jön, a kis térkép mutatja a vonalat.
+A telefonos oldal az `index.html`. A látványt újra a célképhez igazítottuk: a kék autó közelről látszik hátulról, előtte világító kék sáv van, balra a folyó, a híd és a Parlament, kétoldalt házak és fák. Az autó lassan megy előre, hogy a kép ne állókép legyen.
 
-Ez a később fejleszthető navigáció váza. Most nem a telefon valódi helyét használja. A festett képek megmaradtak a `Reference/panels` mappában.
+Alul a Nappal, Éjszaka, Eső és Hó gomb a négy hangulatot váltja. A felső kártyák, az 50-es tábla, a Belváros tábla és a kerek térkép a célkép elemei.
+
+A festett képek megmaradtak a `Reference/panels` mappában.
 
 A számítógépre szánt vázlatok:
 
@@ -26,4 +28,4 @@ Ne telepíts Unityt a Play Áruházból. A Unity szerkesztő számítógépen fu
 2. Fordítsd a telefont fektetve.
 3. Nyisd meg Chrome-ban. A pontos link a beszélgetésben van, mert minden új változat új cím.
 
-Nézd a bal felső számot. Csökken, aztán a következő utca neve kicserélődik. A végén megjelenik a Megérkeztél, és az Újra gomb elölről indítja. Alul a Nappal, Éjszaka, Eső és Hó gomb a hangulatot váltja.
+A képen a város, a folyó, a híd és a kék autó legyen a lényeg. Alul a négy gombbal válts hangulatot.

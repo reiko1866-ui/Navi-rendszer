@@ -10,7 +10,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #8ecaf2;
+            background: #7ec8f5;
             touch-action: none;
             font-family: "Trebuchet MS", "Segoe UI", sans-serif;
             color: white;
@@ -18,9 +18,9 @@
         #view { display: block; width: 100%; height: 100%; touch-action: none; }
         .hud { position: fixed; z-index: 2; touch-action: manipulation; }
         .card {
-            background: rgba(16, 32, 64, 0.9);
+            background: rgba(12, 28, 58, 0.92);
             border-radius: 18px;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
             padding: 8px 12px;
         }
         #maneuver {
@@ -29,11 +29,10 @@
             display: flex;
             gap: 8px;
             align-items: center;
-            min-width: 168px;
         }
         #arrow {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 10px;
             background: rgba(255, 255, 255, 0.12);
             display: flex;
@@ -42,7 +41,7 @@
             font-size: 22px;
         }
         .big { font-size: 18px; font-weight: 800; line-height: 1.05; }
-        .small { font-size: 12px; color: #d7e2ef; }
+        .small { font-size: 12px; color: #d5e4f4; }
         #weather {
             top: calc(10px + env(safe-area-inset-top));
             right: calc(10px + env(safe-area-inset-right));
@@ -52,10 +51,10 @@
         }
         #weather .icon { font-size: 26px; }
         #limit {
-            top: calc(74px + env(safe-area-inset-top));
-            right: calc(18px + env(safe-area-inset-right));
-            width: 52px;
-            height: 52px;
+            top: calc(72px + env(safe-area-inset-top));
+            right: calc(16px + env(safe-area-inset-right));
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
             background: #e10600;
             border: 4px solid white;
@@ -65,37 +64,40 @@
             font-size: 22px;
             font-weight: 800;
         }
+        #speed {
+            top: calc(132px + env(safe-area-inset-top));
+            right: calc(14px + env(safe-area-inset-right));
+            font-weight: 800;
+            font-size: 14px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65);
+        }
         #map {
             right: calc(12px + env(safe-area-inset-right));
-            bottom: calc(62px + env(safe-area-inset-bottom));
-            width: 92px;
-            height: 92px;
+            bottom: calc(58px + env(safe-area-inset-bottom));
+            width: 86px;
+            height: 86px;
             border-radius: 50%;
             border: 4px solid white;
-            background: #143d2a;
+            background: #1d6b45;
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
         }
         #moods {
             left: 50%;
-            bottom: calc(10px + env(safe-area-inset-bottom));
+            bottom: calc(8px + env(safe-area-inset-bottom));
             transform: translateX(-50%);
             display: flex;
             gap: 6px;
         }
-        #moods button, #again {
+        #moods button {
             min-height: 40px;
             padding: 8px 12px;
             border: 0;
             border-radius: 20px;
-            background: rgba(16, 32, 64, 0.88);
+            background: rgba(12, 28, 58, 0.9);
             color: white;
             font: 700 14px "Trebuchet MS", "Segoe UI", sans-serif;
         }
-        #moods button.on, #again { background: #1f9d45; }
-        #again {
-            top: calc(78px + env(safe-area-inset-top));
-            left: calc(10px + env(safe-area-inset-left));
-        }
+        #moods button.on { background: #1f9d45; }
         #missing { position: fixed; inset: 24px; font-size: 18px; }
     </style>
 </head>
@@ -103,11 +105,10 @@
     <section id="maneuver" class="hud card">
         <div id="arrow">↱</div>
         <div>
-            <div class="big" id="distance">—</div>
-            <div class="small" id="street">Következő utca</div>
+            <div class="big">2,3 km</div>
+            <div class="small">Következő utca</div>
         </div>
     </section>
-    <button id="again" class="hud" type="button" hidden>Újra</button>
     <section id="weather" class="hud card">
         <div class="icon" id="weather-icon">☀️</div>
         <div>
@@ -116,7 +117,8 @@
         </div>
     </section>
     <div id="limit" class="hud">50</div>
-    <canvas id="map" class="hud" width="184" height="184"></canvas>
+    <div id="speed" class="hud">48 km/h</div>
+    <canvas id="map" class="hud" width="160" height="160"></canvas>
     <div id="moods" class="hud">
         <button type="button" data-mood="day">Nappal</button>
         <button type="button" data-mood="night">Éjszaka</button>
@@ -126,10 +128,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         var moods = document.getElementById("moods");
-        var again = document.getElementById("again");
-        var mapCanvas = document.getElementById("map");
-        var mapCtx = mapCanvas.getContext("2d");
-
         if (!window.THREE) {
             moods.hidden = true;
             var missing = document.createElement("p");
@@ -137,61 +135,84 @@
             missing.textContent = "A 3D nézet nem indult el. Chrome-ban nyisd meg újra, internetkapcsolat kell.";
             document.body.appendChild(missing);
         } else {
-            var METERS = 4;
-            var route = [
-                { x: 0, z: 36 },
-                { x: 0, z: 12, street: "Duna-part", action: "straight" },
-                { x: 0, z: -58, street: "Lánchíd utca", action: "right" },
-                { x: 46, z: -58, street: "Belváros", action: "left" },
-                { x: 46, z: -118, street: "Cél", action: "arrive" }
-            ];
             var mood = initialMood();
-            var travel = span(0, 1);
-            var arrived = false;
             var snowCaps = [];
             var windowMat = new THREE.MeshBasicMaterial({ color: 0xb7e4f2 });
-            var treeMat = new THREE.MeshLambertMaterial({ color: 0x2f9d4a });
-            var roadMat = new THREE.MeshLambertMaterial({ color: 0x3c434c });
-            var waterMat = new THREE.MeshLambertMaterial({ color: 0x2f92cf });
-
+            var treeMat = new THREE.MeshLambertMaterial({ color: 0x239246 });
+            var roadMat = new THREE.MeshLambertMaterial({ color: 0x4a515b });
+            var waterMat = new THREE.MeshLambertMaterial({ color: 0x3aa6dc });
             var scene = new THREE.Scene();
-            var camera = new THREE.PerspectiveCamera(68, 1, 0.1, 280);
+            var camera = new THREE.PerspectiveCamera(62, 1, 0.1, 320);
             var renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
             renderer.domElement.id = "view";
             document.body.insertBefore(renderer.domElement, document.getElementById("maneuver"));
 
-            var hemi = new THREE.HemisphereLight(0xd7f0ff, 0x3d9a45, 0.55);
-            var ambient = new THREE.AmbientLight(0xffffff, 0.45);
-            var sun = new THREE.DirectionalLight(0xfff2c4, 1.05);
-            sun.position.set(40, 60, 10);
+            var hemi = new THREE.HemisphereLight(0xd8f3ff, 0x67b85a, 0.7);
+            var ambient = new THREE.AmbientLight(0xffffff, 0.35);
+            var sun = new THREE.DirectionalLight(0xfff0c2, 1.15);
+            sun.position.set(-30, 50, 20);
             scene.add(hemi);
             scene.add(ambient);
             scene.add(sun);
-            var sunBall = new THREE.Mesh(
-                new THREE.SphereGeometry(3.2, 16, 12),
-                new THREE.MeshBasicMaterial({ color: 0xffe15a })
+
+            var sky = new THREE.Mesh(
+                new THREE.SphereGeometry(180, 24, 16),
+                new THREE.MeshBasicMaterial({ side: THREE.BackSide, fog: false })
             );
-            sunBall.position.set(22, 26, -20);
+            scene.add(sky);
+            var sunBall = new THREE.Mesh(
+                new THREE.SphereGeometry(4.2, 18, 14),
+                new THREE.MeshBasicMaterial({ color: 0xffe15a, fog: false })
+            );
+            sunBall.position.set(-16, 24, -70);
             scene.add(sunBall);
+            var moon = new THREE.Mesh(
+                new THREE.SphereGeometry(2.4, 16, 12),
+                new THREE.MeshBasicMaterial({ color: 0xf4ecc4, fog: false })
+            );
+            moon.position.set(18, 22, -80);
+            scene.add(moon);
 
             var ground = new THREE.Mesh(
-                new THREE.PlaneGeometry(420, 420),
-                new THREE.MeshLambertMaterial({ color: 0x3caf4a })
+                new THREE.PlaneGeometry(500, 500),
+                new THREE.MeshLambertMaterial({ color: 0x5cbf55 })
             );
             ground.rotation.x = -Math.PI / 2;
-            ground.position.set(20, -0.25, -40);
+            ground.position.y = -0.3;
             scene.add(ground);
 
-            buildRoute();
+            var water = new THREE.Mesh(new THREE.BoxGeometry(24, 0.25, 220), waterMat);
+            water.position.set(-18, -0.08, -20);
+            scene.add(water);
+
+            var road = new THREE.Mesh(new THREE.BoxGeometry(8.2, 0.18, 220), roadMat);
+            scene.add(road);
+            strip(0, 0.15, 0.55, 0x19d4ff, 0.35);
+            strip(0, 0.18, 0.16, 0xeffbff, 1);
+            strip(3.85, 0.14, 0.1, 0xf7f9fb, 1);
+            strip(-3.85, 0.14, 0.1, 0xf7f9fb, 1);
+            addBox(scene, 0.08, 0.28, 220, -4.35, 0.28, -20, 0xd7dee6, false);
+            var dashZ;
+            for (dashZ = -100; dashZ < 50; dashZ += 4) {
+                addBox(scene, 0.1, 0.02, 1.3, -1.45, 0.12, dashZ, 0xf4f7fa, true);
+                addBox(scene, 0.1, 0.02, 1.3, 1.45, 0.12, dashZ, 0xf4f7fa, true);
+            }
+
+            buildCity();
             var car = buildCar();
+            car.scale.setScalar(1.35);
+            car.position.set(0, 0, 8);
             scene.add(car);
             var flakes = buildFlakes();
             scene.add(flakes);
-
+            paintMap();
             applyMood();
             resize();
-            placeCar(travel);
+            camera.position.set(0, 2.45, car.position.z + 6.4);
+            camera.lookAt(0, 0.85, car.position.z - 9);
+            renderer.render(scene, camera);
+
             window.addEventListener("resize", resize);
             moods.addEventListener("click", function (event) {
                 var button = event.target.closest("button");
@@ -199,8 +220,6 @@
                 mood = button.getAttribute("data-mood");
                 applyMood();
             });
-            again.addEventListener("click", restart);
-
             var clock = new THREE.Clock();
             requestAnimationFrame(frame);
         }
@@ -214,119 +233,31 @@
             return hour >= 20 || hour < 7 ? "night" : "day";
         }
 
-        function span(from, to) {
-            var total = 0;
-            var i;
-            for (i = from; i < to; i++) {
-                total += Math.hypot(route[i + 1].x - route[i].x, route[i + 1].z - route[i].z);
-            }
-            return total;
+        function skyPaint(top, bottom) {
+            var canvas = document.createElement("canvas");
+            canvas.width = 4;
+            canvas.height = 256;
+            var pen = canvas.getContext("2d");
+            var fade = pen.createLinearGradient(0, 0, 0, 256);
+            fade.addColorStop(0, top);
+            fade.addColorStop(0.34, top);
+            fade.addColorStop(0.56, bottom);
+            fade.addColorStop(1, bottom);
+            pen.fillStyle = fade;
+            pen.fillRect(0, 0, 4, 256);
+            var texture = new THREE.CanvasTexture(canvas);
+            sky.material.map = texture;
+            sky.material.needsUpdate = true;
+            scene.background = texture;
         }
 
-        function sample(distance) {
-            var remain = distance;
-            var i;
-            for (i = 0; i < route.length - 1; i++) {
-                var dx = route[i + 1].x - route[i].x;
-                var dz = route[i + 1].z - route[i].z;
-                var len = Math.hypot(dx, dz);
-                if (remain <= len || i === route.length - 2) {
-                    var t = len === 0 ? 0 : Math.max(0, Math.min(1, remain / len));
-                    return {
-                        x: route[i].x + dx * t,
-                        z: route[i].z + dz * t,
-                        yaw: Math.atan2(dx, dz)
-                    };
-                }
-                remain -= len;
-            }
-            var last = route[route.length - 1];
-            return { x: last.x, z: last.z, yaw: 0 };
-        }
-
-        function nextStop(distance) {
-            var covered = 0;
-            var i;
-            for (i = 1; i < route.length; i++) {
-                covered += Math.hypot(route[i].x - route[i - 1].x, route[i].z - route[i - 1].z);
-                if (route[i].action && route[i].action !== "straight" && covered > distance + 0.4) {
-                    return { point: route[i], away: covered - distance };
-                }
-            }
-            return { point: route[route.length - 1], away: 0 };
-        }
-
-        function buildRoute() {
-            var i;
-            for (i = 0; i < route.length - 1; i++) {
-                ribbon(route[i], route[i + 1], 7.2, 0.08, roadMat);
-                ribbon(route[i], route[i + 1], 1.05, 0.16, new THREE.MeshBasicMaterial({
-                    color: 0x00d8ff,
-                    transparent: true,
-                    opacity: 0.38
-                }));
-                ribbon(route[i], route[i + 1], 0.32, 0.2, new THREE.MeshBasicMaterial({ color: 0xe9fdff }));
-                edge(route[i], route[i + 1], 3.4);
-                edge(route[i], route[i + 1], -3.4);
-                scatter(route[i], route[i + 1], 9, 5.4, function (x, z) { tree(x, z, 1); });
-                scatter(route[i], route[i + 1], 9, -5.5, function (x, z) { tree(x, z, 1.05); });
-                scatter(route[i], route[i + 1], 16, 8.2, function (x, z, n) {
-                    house(x, z, 2.2, 2.2 + (n % 3) * 0.45, palette(n), roofOf(n));
-                });
-            }
-            var water = new THREE.Mesh(new THREE.BoxGeometry(16, 0.2, 110), waterMat);
-            water.position.set(-14, -0.02, -16);
-            scene.add(water);
-            parliament(-13, -24);
-            bridge(-12, -58);
-            sign(6.2, -8);
-        }
-
-        function ribbon(a, b, width, y, material) {
-            var dx = b.x - a.x;
-            var dz = b.z - a.z;
-            var len = Math.hypot(dx, dz);
-            var mesh = new THREE.Mesh(new THREE.BoxGeometry(width, 0.08, len + width * 0.15), material);
-            mesh.position.set((a.x + b.x) / 2, y, (a.z + b.z) / 2);
-            mesh.rotation.y = Math.atan2(dx, dz);
-            scene.add(mesh);
-        }
-
-        function edge(a, b, side) {
-            var dx = b.x - a.x;
-            var dz = b.z - a.z;
-            var len = Math.hypot(dx, dz) || 1;
-            var ox = (-dz / len) * side;
-            var oz = (dx / len) * side;
-            ribbon(
-                { x: a.x + ox, z: a.z + oz },
-                { x: b.x + ox, z: b.z + oz },
-                0.1,
-                0.42,
-                new THREE.MeshLambertMaterial({ color: 0xd5dbe3 })
+        function strip(x, y, width, color, opacity) {
+            var mesh = new THREE.Mesh(
+                new THREE.BoxGeometry(width, 0.05, 220),
+                new THREE.MeshBasicMaterial({ color: color, transparent: opacity < 1, opacity: opacity })
             );
-        }
-
-        function scatter(a, b, step, side, fn) {
-            var dx = b.x - a.x;
-            var dz = b.z - a.z;
-            var len = Math.hypot(dx, dz) || 1;
-            var ox = (-dz / len) * side;
-            var oz = (dx / len) * side;
-            var t;
-            var n = 0;
-            for (t = 8; t < len - 4; t += step) {
-                fn(a.x + (dx / len) * t + ox, a.z + (dz / len) * t + oz, n);
-                n += 1;
-            }
-        }
-
-        function palette(n) {
-            return [0xf4a05a, 0xe15b4a, 0xf6d59a, 0x9fd0e4, 0xf0b090][n % 5];
-        }
-
-        function roofOf(n) {
-            return [0xb44638, 0x8a3038, 0xc45a3a, 0x6e4468][n % 4];
+            mesh.position.set(x, y, -20);
+            scene.add(mesh);
         }
 
         function addBox(parent, w, h, d, x, y, z, color, basic) {
@@ -339,18 +270,45 @@
             return mesh;
         }
 
+        function buildCity() {
+            var z;
+            var n = 0;
+            for (z = -90; z <= 30; z += 4.2) {
+                tree(-5.15, z, 0.95 + (n % 3) * 0.1);
+                tree(5.35, z + 1.6, 1.05 + (n % 2) * 0.12);
+                n += 1;
+            }
+            var walls = [0xf4a05a, 0xe15b4a, 0xf6d59a, 0xf0b090, 0xf7e2bf, 0x9ecfe6, 0xf27b6a];
+            var roofs = [0xc24b3a, 0x8d3034, 0xb85a32, 0x7a3d55, 0x3d6f86];
+            for (z = -86; z <= 20; z += 6.5) {
+                var h = 2.2 + (Math.abs(z) % 5) * 0.45;
+                house(8.4, z, 2.4, h, walls[Math.abs(z) % walls.length], roofs[Math.abs(z) % roofs.length]);
+            }
+            for (z = -96; z <= -8; z += 4.8) {
+                house(-30, z, 3.4, 4 + (Math.abs(z) % 5) * 0.7, walls[Math.abs(z + 1) % walls.length], roofs[Math.abs(z) % roofs.length]);
+            }
+            parliament(-16, -22);
+            bridge(-17, -11);
+            sign(4.7, 2);
+            var boat = new THREE.Group();
+            addBox(boat, 1.8, 0.28, 0.5, 0, 0.22, 0, 0xffffff, false);
+            addBox(boat, 0.08, 1.4, 0.08, 0.15, 0.9, 0, 0xf7f7f7, true);
+            boat.position.set(-14, 0, -4);
+            scene.add(boat);
+        }
+
         function house(x, z, w, h, wall, roof) {
             var group = new THREE.Group();
-            addBox(group, w, h, w * 0.85, 0, h / 2, 0, wall, false);
+            addBox(group, w, h, w * 0.9, 0, h / 2, 0, wall, false);
             var cap = new THREE.Mesh(
-                new THREE.ConeGeometry(w * 0.72, w * 0.5, 4),
+                new THREE.ConeGeometry(w * 0.75, w * 0.55, 4),
                 new THREE.MeshLambertMaterial({ color: roof })
             );
             cap.rotation.y = Math.PI / 4;
-            cap.position.y = h + w * 0.2;
+            cap.position.y = h + w * 0.18;
             group.add(cap);
             var snow = new THREE.Mesh(
-                new THREE.ConeGeometry(w * 0.48, w * 0.26, 4),
+                new THREE.ConeGeometry(w * 0.55, w * 0.28, 4),
                 new THREE.MeshBasicMaterial({ color: 0xffffff })
             );
             snow.rotation.y = Math.PI / 4;
@@ -358,24 +316,27 @@
             snow.visible = false;
             group.add(snow);
             snowCaps.push(snow);
-            var win = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.4, 0.05), windowMat);
-            win.position.set(0, h * 0.55, w * 0.43);
-            group.add(win);
+            var row;
+            for (row = 0; row < 3; row++) {
+                var win = new THREE.Mesh(new THREE.BoxGeometry(w * 0.16, h * 0.12, 0.05), windowMat);
+                win.position.set((row - 1) * w * 0.28, h * 0.45, w * 0.46);
+                group.add(win);
+            }
             group.position.set(x, 0, z);
             scene.add(group);
         }
 
         function tree(x, z, scale) {
             var group = new THREE.Group();
-            addBox(group, 0.18, 0.7 * scale, 0.18, 0, 0.35 * scale, 0, 0x6d4a30, false);
-            var crown = new THREE.Mesh(new THREE.SphereGeometry(0.52 * scale, 8, 6), treeMat);
-            crown.position.y = 0.95 * scale;
+            addBox(group, 0.16, 0.55 * scale, 0.16, 0, 0.28 * scale, 0, 0x6b4228, false);
+            var crown = new THREE.Mesh(new THREE.SphereGeometry(0.48 * scale, 8, 6), treeMat);
+            crown.position.y = 0.78 * scale;
             group.add(crown);
             var cap = new THREE.Mesh(
-                new THREE.SphereGeometry(0.26 * scale, 8, 6),
+                new THREE.SphereGeometry(0.24 * scale, 8, 6),
                 new THREE.MeshBasicMaterial({ color: 0xffffff })
             );
-            cap.position.y = 1.18 * scale;
+            cap.position.y = 1.02 * scale;
             cap.visible = false;
             group.add(cap);
             snowCaps.push(cap);
@@ -385,52 +346,92 @@
 
         function parliament(x, z) {
             var group = new THREE.Group();
-            addBox(group, 7, 2.2, 3, 0, 1.1, 0, 0xf0e2c4, false);
+            addBox(group, 10, 3.2, 3.4, 0, 1.6, 0, 0xf3e6cb, false);
+            addBox(group, 2.4, 2.2, 2.4, 0, 3.6, 0, 0xf7edd6, false);
             var dome = new THREE.Mesh(
-                new THREE.SphereGeometry(1.2, 16, 12),
-                new THREE.MeshLambertMaterial({ color: 0xd3924e })
+                new THREE.SphereGeometry(1.55, 20, 14),
+                new THREE.MeshLambertMaterial({ color: 0xd0893e })
             );
-            dome.position.y = 3.4;
+            dome.position.y = 5.3;
             group.add(dome);
             var spire = new THREE.Mesh(
-                new THREE.ConeGeometry(0.14, 1.4, 8),
-                new THREE.MeshLambertMaterial({ color: 0xf4ead4 })
+                new THREE.ConeGeometry(0.16, 2.2, 8),
+                new THREE.MeshLambertMaterial({ color: 0xf8f1df })
             );
-            spire.position.y = 5.1;
+            spire.position.y = 7.4;
             group.add(spire);
+            var i;
+            for (i = -4; i <= 4; i++) {
+                if (i === 0) continue;
+                var needle = new THREE.Mesh(
+                    new THREE.ConeGeometry(0.16, 1.1, 4),
+                    new THREE.MeshLambertMaterial({ color: 0xf8f1df })
+                );
+                needle.position.set(i * 1.05, 3.5, 1.2);
+                group.add(needle);
+                var win = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.36, 0.05), windowMat);
+                win.position.set(i * 1.05, 1.7, 1.72);
+                group.add(win);
+            }
+            group.scale.setScalar(1.55);
             group.position.set(x, 0, z);
             scene.add(group);
         }
 
         function bridge(x, z) {
             var group = new THREE.Group();
-            addBox(group, 0.6, 2.8, 0.6, -3.6, 1.4, 0, 0xe6d7b8, false);
-            addBox(group, 0.6, 2.8, 0.6, 3.6, 1.4, 0, 0xe6d7b8, false);
-            addBox(group, 8.4, 0.25, 1.2, 0, 0.55, 0, 0xd9c7a4, false);
+            function span(x1, y1, x2, y2) {
+                var dx = x2 - x1;
+                var dy = y2 - y1;
+                var len = Math.sqrt(dx * dx + dy * dy);
+                var mesh = new THREE.Mesh(
+                    new THREE.BoxGeometry(Math.max(len, 0.05), 0.06, 0.06),
+                    new THREE.MeshBasicMaterial({ color: 0x3e4654 })
+                );
+                mesh.position.set((x1 + x2) / 2, (y1 + y2) / 2, 0);
+                mesh.rotation.z = Math.atan2(dy, dx);
+                group.add(mesh);
+            }
+            addBox(group, 0.7, 4.2, 0.7, -5.2, 2.1, 0, 0xefe3c8, false);
+            addBox(group, 0.7, 4.2, 0.7, 5.2, 2.1, 0, 0xefe3c8, false);
+            addBox(group, 12, 0.28, 1.5, 0, 0.7, 0, 0xe7d7b4, false);
+            span(-5.2, 4.05, 0, 3.15);
+            span(0, 3.15, 5.2, 4.05);
+            span(-5.2, 3.9, 0, 0.95);
+            span(5.2, 3.9, 0, 0.95);
+            var hanger;
+            for (hanger = -4; hanger <= 4; hanger++) {
+                if (hanger === 0) continue;
+                var drop = 3.55 - Math.abs(hanger) * 0.18;
+                span(hanger * 1.15, drop, hanger * 1.15, 0.9);
+            }
+            group.scale.set(1.45, 1.2, 1);
             group.position.set(x, 0, z);
             scene.add(group);
         }
 
         function sign(x, z) {
             var group = new THREE.Group();
-            addBox(group, 0.08, 1.4, 0.08, 0, 0.7, 0, 0x66707a, false);
+            addBox(group, 0.08, 1.6, 0.08, 0, 0.8, 0, 0x66717c, false);
             var canvas = document.createElement("canvas");
             canvas.width = 256;
             canvas.height = 96;
             var pen = canvas.getContext("2d");
             pen.fillStyle = "#1f9d45";
             pen.fillRect(0, 0, 256, 96);
+            pen.strokeStyle = "#ffffff";
+            pen.lineWidth = 8;
+            pen.strokeRect(6, 6, 244, 84);
             pen.fillStyle = "#ffffff";
-            pen.font = "bold 42px Trebuchet MS, sans-serif";
+            pen.font = "bold 40px Trebuchet MS, sans-serif";
             pen.textAlign = "center";
             pen.textBaseline = "middle";
-            pen.fillText("Belváros", 128, 50);
+            pen.fillText("↑  Belváros", 128, 50);
             var board = new THREE.Mesh(
-                new THREE.PlaneGeometry(2.2, 0.82),
+                new THREE.PlaneGeometry(2.3, 0.86),
                 new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(canvas), side: THREE.DoubleSide })
             );
-            board.position.y = 1.45;
-            board.rotation.y = Math.PI;
+            board.position.y = 1.7;
             group.add(board);
             group.position.set(x, 0, z);
             scene.add(group);
@@ -438,15 +439,19 @@
 
         function buildCar() {
             var group = new THREE.Group();
-            addBox(group, 1.5, 0.46, 2.6, 0, 0.6, 0, 0x2f86ea, false);
-            addBox(group, 1.1, 0.38, 1.2, 0, 1.0, -0.12, 0xb7e7fb, false);
-            addBox(group, 1.58, 0.12, 2.7, 0, 0.34, 0, 0x16304a, false);
-            addBox(group, 0.26, 0.12, 0.08, -0.48, 0.66, 1.28, 0xff3340, true);
-            addBox(group, 0.26, 0.12, 0.08, 0.48, 0.66, 1.28, 0xff3340, true);
-            var wheelGeo = new THREE.CylinderGeometry(0.28, 0.28, 0.18, 12);
+            addBox(group, 1.55, 0.5, 2.75, 0, 0.58, 0, 0x2f86ea, false);
+            addBox(group, 1.18, 0.4, 1.2, 0, 0.98, -0.2, 0x8fd4f2, false);
+            addBox(group, 1.02, 0.24, 0.06, 0, 1.0, 0.42, 0x17324c, true);
+            addBox(group, 1.48, 0.1, 0.7, 0, 0.82, 0.72, 0x2776d6, false);
+            addBox(group, 0.32, 0.12, 0.06, -0.48, 0.64, 1.36, 0xff2d3c, true);
+            addBox(group, 0.32, 0.12, 0.06, 0.48, 0.64, 1.36, 0xff2d3c, true);
+            addBox(group, 0.22, 0.1, 0.06, -0.46, 0.58, -1.36, 0xfff1b8, true);
+            addBox(group, 0.22, 0.1, 0.06, 0.46, 0.58, -1.36, 0xfff1b8, true);
+            addBox(group, 1.62, 0.12, 2.85, 0, 0.28, 0, 0x16304a, false);
+            var wheelGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.2, 14);
             wheelGeo.rotateZ(Math.PI / 2);
-            var wheelMat = new THREE.MeshLambertMaterial({ color: 0x1b1e24 });
-            [[-0.74, 0.28, 0.8], [0.74, 0.28, 0.8], [-0.74, 0.28, -0.8], [0.74, 0.28, -0.8]].forEach(function (spot) {
+            var wheelMat = new THREE.MeshLambertMaterial({ color: 0x171b22 });
+            [[-0.86, 0.32, 0.9], [0.86, 0.32, 0.9], [-0.86, 0.32, -0.9], [0.86, 0.32, -0.9]].forEach(function (spot) {
                 var wheel = new THREE.Mesh(wheelGeo, wheelMat);
                 wheel.position.set(spot[0], spot[1], spot[2]);
                 group.add(wheel);
@@ -455,172 +460,111 @@
         }
 
         function buildFlakes() {
-            var count = 220;
+            var count = 260;
             var positions = new Float32Array(count * 3);
             var i;
             for (i = 0; i < count; i++) {
-                positions[i * 3] = (Math.random() - 0.5) * 22;
-                positions[i * 3 + 1] = Math.random() * 12;
-                positions[i * 3 + 2] = (Math.random() - 0.5) * 22;
+                positions[i * 3] = (Math.random() - 0.5) * 26;
+                positions[i * 3 + 1] = Math.random() * 14;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 28;
             }
             var geometry = new THREE.BufferGeometry();
             geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
             return new THREE.Points(
                 geometry,
-                new THREE.PointsMaterial({ color: 0xffffff, size: 0.16, transparent: true, opacity: 0.9 })
+                new THREE.PointsMaterial({ color: 0xffffff, size: 0.15, transparent: true, opacity: 0.85 })
             );
         }
 
-        function formatDistance(meters) {
-            if (meters >= 950) {
-                var km = Math.round(meters / 100) / 10;
-                return String(km).replace(".", ",") + " km";
-            }
-            return Math.max(10, Math.round(meters / 10) * 10) + " m";
-        }
-
-        function arrowFor(action) {
-            if (action === "right") return "↱";
-            if (action === "left") return "↰";
-            if (action === "arrive") return "🏁";
-            return "↑";
-        }
-
-        function updateHud() {
-            var stop = nextStop(travel);
-            var distance = document.getElementById("distance");
-            var street = document.getElementById("street");
-            var arrow = document.getElementById("arrow");
-            if (arrived) {
-                distance.textContent = "Megérkeztél";
-                street.textContent = "Belváros";
-                arrow.textContent = "🏁";
-                again.hidden = false;
-            } else {
-                distance.textContent = formatDistance(stop.away * METERS);
-                street.textContent = stop.point.street;
-                arrow.textContent = arrowFor(stop.point.action);
-                again.hidden = true;
-            }
-            drawMap();
-        }
-
-        function drawMap() {
-            var w = mapCanvas.width;
-            var h = mapCanvas.height;
-            mapCtx.clearRect(0, 0, w, h);
-            mapCtx.fillStyle = "#1d6b45";
-            mapCtx.beginPath();
-            mapCtx.arc(w / 2, h / 2, w / 2, 0, Math.PI * 2);
-            mapCtx.fill();
-            function px(x, z) {
-                return { x: 28 + (x / 70) * 130, y: 20 + ((40 - z) / 170) * 146 };
-            }
-            mapCtx.strokeStyle = "#b7e4c7";
-            mapCtx.lineWidth = 10;
-            mapCtx.lineJoin = "round";
-            mapCtx.lineCap = "round";
-            mapCtx.beginPath();
-            var i;
-            for (i = 0; i < route.length; i++) {
-                var p = px(route[i].x, route[i].z);
-                if (i === 0) mapCtx.moveTo(p.x, p.y);
-                else mapCtx.lineTo(p.x, p.y);
-            }
-            mapCtx.stroke();
-            mapCtx.strokeStyle = "#2f6bff";
-            mapCtx.lineWidth = 4;
-            mapCtx.stroke();
-            var here = sample(travel);
-            var carPoint = px(here.x, here.z);
-            mapCtx.fillStyle = "#ffffff";
-            mapCtx.beginPath();
-            mapCtx.arc(carPoint.x, carPoint.y, 7, 0, Math.PI * 2);
-            mapCtx.fill();
-            mapCtx.fillStyle = "#2f6bff";
-            mapCtx.beginPath();
-            mapCtx.arc(carPoint.x, carPoint.y, 4, 0, Math.PI * 2);
-            mapCtx.fill();
-        }
-
-        function placeCar(distance) {
-            var here = sample(distance);
-            var ahead = sample(distance + 1.2);
-            car.position.set(here.x, 0, here.z);
-            car.rotation.y = Math.atan2(ahead.x - here.x, ahead.z - here.z) + Math.PI;
-            var yaw = car.rotation.y;
-            var forwardX = Math.sin(yaw);
-            var forwardZ = Math.cos(yaw);
-            var behindX = here.x - forwardX * 8;
-            var behindZ = here.z - forwardZ * 8;
-            if (camera.position.lengthSq() < 0.01) {
-                camera.position.set(behindX, 4.2, behindZ);
-            }
-            return { forwardX: forwardX, forwardZ: forwardZ, here: here };
-        }
-
-        function restart() {
-            travel = span(0, 1);
-            arrived = false;
-            placeCar(travel);
-            updateHud();
+        function paintMap() {
+            var ctx = document.getElementById("map").getContext("2d");
+            ctx.fillStyle = "#1d6b45";
+            ctx.fillRect(0, 0, 160, 160);
+            ctx.strokeStyle = "#d7f5e3";
+            ctx.lineWidth = 14;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(28, 128);
+            ctx.quadraticCurveTo(70, 96, 92, 48);
+            ctx.stroke();
+            ctx.strokeStyle = "#2f6bff";
+            ctx.lineWidth = 6;
+            ctx.stroke();
+            ctx.fillStyle = "#2f6bff";
+            ctx.beginPath();
+            ctx.moveTo(92, 28);
+            ctx.lineTo(108, 58);
+            ctx.lineTo(92, 50);
+            ctx.lineTo(76, 58);
+            ctx.fill();
+            ctx.fillStyle = "white";
+            ctx.font = "bold 16px Trebuchet MS, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("N", 80, 18);
         }
 
         function applyMood() {
-            var sky = 0x8ecaf2;
-            var grass = 0x3caf4a;
-            var waterColor = 0x2f92cf;
-            var roadColor = 0x3c434c;
-            var treeColor = 0x2f9d4a;
+            var top = "#5eb6f5";
+            var bottom = "#ffe3a8";
+            var grass = 0x5cbf55;
+            var waterColor = 0x3aa6dc;
+            var roadColor = 0x4a515b;
+            var treeColor = 0x239246;
             var icon = "☀️";
             var temp = "22°C";
             var label = "Enyhe szél";
             var night = mood === "night";
             sunBall.visible = mood === "day";
+            moon.visible = night;
             flakes.visible = mood === "rain" || mood === "snow";
-            flakes.material.color.setHex(mood === "rain" ? 0xd5e4ee : 0xffffff);
-            flakes.material.size = mood === "rain" ? 0.12 : 0.22;
+            flakes.material.color.setHex(mood === "rain" ? 0xd5e6f2 : 0xffffff);
+            flakes.material.size = mood === "rain" ? 0.08 : 0.2;
             if (night) {
-                sky = 0x10183a;
+                top = "#070b22";
+                bottom = "#24366f";
                 grass = 0x143222;
-                waterColor = 0x12345c;
-                treeColor = 0x1d6a38;
+                waterColor = 0x163e72;
+                treeColor = 0x1c6a38;
                 icon = "🌙";
                 temp = "12°C";
                 label = "Tiszta égbolt";
             } else if (mood === "rain") {
-                sky = 0x73889a;
-                grass = 0x2f6d42;
-                waterColor = 0x56788c;
-                roadColor = 0x2c333b;
-                treeColor = 0x2a7a40;
+                top = "#607488";
+                bottom = "#b7c3cc";
+                grass = 0x2f6a40;
+                waterColor = 0x5d8094;
+                roadColor = 0x323942;
+                treeColor = 0x2b7840;
                 icon = "🌧️";
                 temp = "16°C";
                 label = "Eső";
             } else if (mood === "snow") {
-                sky = 0xd5e4ee;
-                grass = 0xdfe8ea;
-                waterColor = 0xb7c9d4;
-                roadColor = 0xc5d0d8;
-                treeColor = 0x8fbf78;
+                top = "#d5e4ee";
+                bottom = "#f4f7f8";
+                grass = 0xe7eef0;
+                waterColor = 0xc5d5de;
+                roadColor = 0xd5dee4;
+                treeColor = 0x9ec98a;
                 icon = "❄️";
                 temp = "-2°C";
                 label = "Havazás";
             }
-            scene.background = new THREE.Color(sky);
-            scene.fog = new THREE.Fog(sky, 30, 140);
+            skyPaint(top, bottom);
+            scene.fog = new THREE.Fog(new THREE.Color(bottom).getHex(), 28, 130);
             ground.material.color.setHex(grass);
             waterMat.color.setHex(waterColor);
             roadMat.color.setHex(roadColor);
             treeMat.color.setHex(treeColor);
             windowMat.color.setHex(night ? 0xffd27a : 0xb7e4f2);
-            ambient.intensity = night ? 0.35 : 0.5;
-            sun.intensity = night ? 0.18 : mood === "rain" ? 0.35 : 1.05;
-            hemi.intensity = night ? 0.22 : 0.55;
-            document.body.style.background = "#" + scene.background.getHexString();
+            ambient.intensity = night ? 0.28 : mood === "rain" ? 0.4 : 0.38;
+            sun.intensity = night ? 0.08 : mood === "rain" ? 0.28 : 1.15;
+            hemi.color.setHex(night ? 0x223056 : 0xd8f3ff);
+            hemi.intensity = night ? 0.25 : 0.7;
+            document.body.style.background = bottom;
             document.getElementById("weather-icon").textContent = icon;
             document.getElementById("temp").textContent = temp;
             document.getElementById("weather-text").textContent = label;
+            document.getElementById("speed").textContent = night ? "44 km/h" : mood === "rain" ? "46 km/h" : mood === "snow" ? "42 km/h" : "48 km/h";
             var buttons = moods.querySelectorAll("button");
             var index;
             for (index = 0; index < buttons.length; index++) {
@@ -641,35 +585,26 @@
         function frame() {
             requestAnimationFrame(frame);
             var dt = Math.min(clock.getDelta(), 0.05);
-            if (!arrived) {
-                travel += 11 * dt;
-                var end = span(0, route.length - 1);
-                if (travel >= end) {
-                    travel = end;
-                    arrived = true;
-                }
-            }
-            var pose = placeCar(travel);
-            var follow = Math.min(1, dt * 4);
-            var behindX = pose.here.x - pose.forwardX * 8;
-            var behindZ = pose.here.z - pose.forwardZ * 8;
-            camera.position.x += (behindX - camera.position.x) * follow;
-            camera.position.y += (4.3 - camera.position.y) * follow;
-            camera.position.z += (behindZ - camera.position.z) * follow;
-            camera.lookAt(pose.here.x + pose.forwardX * 10, 1.2, pose.here.z + pose.forwardZ * 10);
+            car.position.z -= 7 * dt;
+            if (car.position.z < -24) car.position.z += 36;
+            var behindZ = car.position.z + 6.4;
+            camera.position.x += (0 - camera.position.x) * Math.min(1, dt * 3);
+            camera.position.y += (2.45 - camera.position.y) * Math.min(1, dt * 3);
+            camera.position.z += (behindZ - camera.position.z) * Math.min(1, dt * 3);
+            camera.lookAt(0, 0.85, car.position.z - 9);
+            sky.position.copy(camera.position);
             if (flakes.visible) {
                 var positions = flakes.geometry.attributes.position;
-                var fall = (mood === "rain" ? 14 : 4) * dt;
+                var fall = (mood === "rain" ? 16 : 3.5) * dt;
                 var i;
                 for (i = 0; i < positions.count; i++) {
                     var y = positions.getY(i) - fall;
-                    if (y < 0) y = 12;
+                    if (y < 0) y = 13;
                     positions.setY(i, y);
                 }
                 positions.needsUpdate = true;
                 flakes.position.copy(car.position);
             }
-            updateHud();
             renderer.render(scene, camera);
         }
     </script>

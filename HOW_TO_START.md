@@ -6,7 +6,7 @@ The moving picture runs in the phone browser. Unity Editor does not run on Andro
 
 Close any old tab first. Open the latest phone link from the project notes in Chrome, with the phone held sideways.
 
-The page is a small navigation demo. The car follows a planned route made of points. The top-left distance counts down, the street name changes at each turn, and the round map shows the line. It does not use the phone's real location. Nappal, Éjszaka, Eső, and Hó only change the look.
+The page is the picture again: a blue car seen from behind, a glowing lane, the river, the bridge, and the parliament. The car moves slowly forward. It does not use the phone's real location. Nappal, Éjszaka, Eső, and Hó change the look.
 
 The painted pictures are still in `Reference/panels`. This page does not show those pictures, and it is not a real route. The Unity scripts are still only text files. No Unity scene has been built or played.
 
