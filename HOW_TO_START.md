@@ -4,23 +4,17 @@
 
 The moving picture runs in the phone browser. Unity Editor does not run on Android.
 
-Open this link in Chrome:
+Open this link in Chrome. Close any old tab first. The page shows the painted picture from `Reference/celkep.png`.
 
-https://htmlpreview.github.io/?https://github.com/reiko1866-ui/Navi-rendszer/blob/cursor/toonnav3d-milestone-1-b5ab/index.html
+https://htmlpreview.github.io/?https://github.com/reiko1866-ui/Navi-rendszer/blob/cursor/toonnav3d-milestone-1-b5ab/index.html?hour=14
 
-If that page stays blank, open this one instead:
+Day and night follow the phone clock when the link has no `hour` and no `weather`.
 
-https://cdn.jsdelivr.net/gh/reiko1866-ui/Navi-rendszer@cursor/toonnav3d-milestone-1-b5ab/index.html
+- 7:00–19:00 is the sunny picture.
+- 20:00–6:00 is the night picture.
+- Around 6:00–7:00 and 19:00–20:00 the page switches from one picture to the other.
 
-Day and night follow the phone clock. No button is required.
-
-- 7:00–19:00 is day (sun, 22°C).
-- 20:00–6:00 is night (moon, 12°C).
-- 6:00–7:00 and 19:00–20:00 fade from one to the other.
-
-The word on the bottom pill (Éjszaka or Nappal) only previews the other look for 12 seconds, then the clock takes over again.
-
-The picture we are aiming for is `Reference/celkep.png`. Rain and snow are not in this phone page yet.
+Rain and snow are separate pictures. Add `?weather=rain` or `?weather=snow` to the GitHub address inside the link above.
 
 The 3D Unity scene still needs a computer. Those steps are below. Do not install a Unity app from the Play Store.
 
