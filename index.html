@@ -239,10 +239,10 @@
         }
 
         function shownDate() {
-            var params = new URLSearchParams(window.location.search);
-            if (!params.has("hour")) return new Date();
+            var match = window.location.href.match(/hour=(\d{1,2})/);
+            if (!match) return new Date();
             var forced = new Date();
-            var hour = Number(params.get("hour"));
+            var hour = Number(match[1]);
             if (hour >= 0 && hour <= 23) forced.setHours(hour, 0, 0, 0);
             return forced;
         }
