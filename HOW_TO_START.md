@@ -1,20 +1,28 @@
 # ToonNav3D — do this next
 
-The picture we are aiming for is `Reference/celkep.png` (explained in Hungarian in `Reference/CEL.md`): one cartoon drive in Budapest, in sun, rain, night, and snow. The scripts in this repo are only the first slice of that picture.
+## On your phone, open this
 
-This repo is **not** a playable Unity project yet. It only contains the first three scripts. Unity has not compiled or run them.
+The moving picture runs in the phone browser. Unity Editor does not run on Android.
 
-The old `index.html` file is a browser drawing. Leave it. It is not part of the Unity scene.
+Open this link in Chrome:
 
-You are on an Android phone. The Unity Editor does not run on Android. The steps below that create the road and the car need a **Windows or Mac computer**.
+https://htmlpreview.github.io/?https://github.com/reiko1866-ui/Navi-rendszer/blob/cursor/toonnav3d-milestone-1-b5ab/index.html
 
-## On your phone, stop after this
+If that page stays blank, open this one instead:
 
-1. Open the pull request for this repo and read these files:
-   - `Assets/Scripts/World/CarMovement.cs`
-   - `Assets/Scripts/World/CameraFollow.cs`
-   - `Assets/Scripts/Core/DayNightController.cs`
-2. Do not install a Unity app from the Play Store. It will not open this project.
+https://cdn.jsdelivr.net/gh/reiko1866-ui/Navi-rendszer@cursor/toonnav3d-milestone-1-b5ab/index.html
+
+Day and night follow the phone clock. No button is required.
+
+- 7:00–19:00 is day (sun, 22°C).
+- 20:00–6:00 is night (moon, 12°C).
+- 6:00–7:00 and 19:00–20:00 fade from one to the other.
+
+The word on the bottom pill (Éjszaka or Nappal) only previews the other look for 12 seconds, then the clock takes over again.
+
+The picture we are aiming for is `Reference/celkep.png`. Rain and snow are not in this phone page yet.
+
+The 3D Unity scene still needs a computer. Those steps are below. Do not install a Unity app from the Play Store.
 
 ## On a computer
 

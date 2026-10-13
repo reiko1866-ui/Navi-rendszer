@@ -2,307 +2,553 @@
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Budapest Arcade Navigáció</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ToonNav3D</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
-
         * { box-sizing: border-box; }
-        body, html {
-            margin: 0; padding: 0; width: 100vw; height: 100vh;
-            overflow: hidden; background: #050b14; font-family: 'Comic Neue', cursive, sans-serif;
-            user-select: none; -webkit-user-select: none;
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #08101c;
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            color: white;
+            user-select: none;
+            -webkit-user-select: none;
         }
-
-        /* 1. RÉTEG: Fix háttér panoráma (A Lánchíd / Város látképe felül) */
-        #skyline-bg {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 45vh;
-            background: url('https://images.unsplash.com/photo-1549877452-9c387954fbc2?q=80&w=1200&auto=format&fit=crop') no-repeat center bottom;
-            background-size: cover;
-            z-index: 1;
-            /* Hangulatos éjszakai sötétítés, hogy passzoljon az arcade stílushoz */
-            filter: brightness(0.6) saturate(1.3);
-        }
-        #skyline-bg::after {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
-            background: linear-gradient(to top, #070a0f, transparent);
-        }
-
-        /* 2. RÉTEG: Futó 3D út (Canvas alul) */
-        #gameCanvas {
-            position: fixed; bottom: 0; left: 0; width: 100vw; height: 55vh;
-            display: block; z-index: 2;
-        }
-
-        /* 3. RÉTEG: HUD Kezelőfelület (Kártyák legfelül) */
-        .hud-card {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
-            color: #fff;
-            padding: 12px 16px;
+        #world {
             position: fixed;
-            z-index: 10;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
         }
-
-        /* Bal fent: Manőver */
-        #maneuver-box {
-            top: 15px; left: 15px; display: flex; align-items: center; gap: 14px;
-            min-width: 220px;
+        .card {
+            position: fixed;
+            z-index: 2;
+            background: rgba(12, 24, 48, 0.82);
+            border: 2px solid rgba(255, 255, 255, 0.22);
+            border-radius: 18px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+            padding: 10px 14px;
         }
-        .maneuver-icon {
-            font-size: 28px; background: rgba(255,255,255,0.1); width: 45px; height: 45px;
-            display: flex; align-items: center; justify-content: center; border-radius: 12px;
+        #maneuver {
+            top: calc(12px + env(safe-area-inset-top));
+            left: calc(12px + env(safe-area-inset-left));
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            min-width: 180px;
         }
-
-        /* Jobb fent: Időjárás & Óra */
-        #weather-box {
-            top: 15px; right: 15px; display: flex; align-items: center; gap: 12px;
+        .arrow {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
         }
-
-        /* Alul balra: Úticél adatok */
-        #destination-box {
-            bottom: 15px; left: 15px; min-width: 200px;
+        .big { font-size: 20px; font-weight: 700; line-height: 1.1; }
+        .small { font-size: 13px; color: #d5deea; margin-top: 2px; }
+        #weather {
+            top: calc(12px + env(safe-area-inset-top));
+            right: calc(12px + env(safe-area-inset-right));
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
-
-        /* Jobb oldali vezérlőoszlop */
-        #right-panel {
-            position: fixed; right: 15px; bottom: 95px; z-index: 10;
-            display: flex; flex-direction: column; gap: 10px; align-items: center;
+        #weather .icon { font-size: 28px; }
+        #speed-wrap {
+            position: fixed;
+            z-index: 2;
+            top: calc(92px + env(safe-area-inset-top));
+            right: calc(18px + env(safe-area-inset-right));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
-
-        /* Sebességtábla */
-        #speed-limit-sign {
-            width: 60px; height: 60px; background: #ff334b; border-radius: 50%;
-            border: 4px solid #fff; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        #limit {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #e10600;
+            border: 4px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
-        .limit-num { font-size: 22px; font-weight: bold; color: #fff; line-height: 1; }
-        .limit-sub { font-size: 9px; font-weight: bold; color: #ffccd2; }
-
-        /* Gyorsgombok */
-        .control-btn {
-            width: 48px; height: 48px; background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px); border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        #speed {
+            background: rgba(12, 24, 48, 0.82);
+            border-radius: 12px;
+            padding: 4px 8px;
+            font-weight: 700;
+            font-size: 14px;
         }
-
-        /* Kis kerek radar térkép jobb alul */
-        #mini-radar {
-            position: fixed; bottom: 15px; right: 15px; width: 75px; height: 75px;
-            background: rgba(15, 23, 42, 0.9); border: 3px solid #fff; border-radius: 50%;
-            z-index: 10; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            display: flex; align-items: center; justify-content: center;
+        #trip {
+            left: calc(12px + env(safe-area-inset-left));
+            bottom: calc(14px + env(safe-area-inset-bottom));
+            min-width: 168px;
+        }
+        #radar {
+            position: fixed;
+            z-index: 2;
+            right: calc(14px + env(safe-area-inset-right));
+            bottom: calc(14px + env(safe-area-inset-bottom));
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            border: 4px solid white;
+            background: rgba(16, 32, 28, 0.9);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #radar .arrow {
+            width: auto;
+            height: auto;
+            background: none;
+            font-size: 34px;
+            color: #2f6bff;
+            text-shadow: 0 0 6px white;
+        }
+        #sign {
+            position: fixed;
+            z-index: 2;
+            top: 46%;
+            left: 62%;
+            background: #1e8f3e;
+            border: 3px solid #f4f4f4;
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+        }
+        #status {
+            position: fixed;
+            z-index: 3;
+            left: 50%;
+            bottom: calc(10px + env(safe-area-inset-bottom));
+            transform: translateX(-50%);
+            background: rgba(8, 16, 32, 0.72);
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            max-width: calc(100% - 200px);
+            text-align: center;
+        }
+        #peek {
+            pointer-events: auto;
+            border: 0;
+            border-radius: 999px;
+            background: white;
+            color: #102038;
+            font-weight: 700;
+            padding: 4px 8px;
+            font-family: inherit;
+        }
+        @media (max-width: 720px) {
+            .big { font-size: 16px; }
+            #sign { left: 50%; top: 42%; }
+            #status { max-width: calc(100% - 24px); bottom: calc(78px + env(safe-area-inset-bottom)); }
         }
     </style>
 </head>
 <body>
+    <canvas id="world"></canvas>
 
-    <!-- 1. RÉTEG: Fix Városi Panoráma Háttér -->
-    <div id="skyline-bg"></div>
-
-    <!-- 2. RÉTEG: 3D Futó Út Vászon -->
-    <canvas id="gameCanvas"></canvas>
-
-    <!-- 3. RÉTEG: HUD Elemek -->
-    <!-- Bal fent: Manőver -->
-    <div id="maneuver-box" class="hud-card">
-        <div class="maneuver-icon">⬅️</div>
+    <section id="maneuver" class="card">
+        <div class="arrow">↱</div>
         <div>
-            <div style="font-size: 18px; font-weight: bold;" id="dist-text">2,3 km</div>
-            <div style="font-size: 12px; color: #cbd5e1;">Következő utca</div>
+            <div class="big">2,3 km</div>
+            <div class="small">Következő utca</div>
         </div>
-    </div>
+    </section>
 
-    <!-- Jobb fent: Időjárás -->
-    <div id="weather-box" class="hud-card">
-        <span style="font-size: 24px;" id="weather-icon">🌙</span>
+    <section id="weather" class="card">
+        <div class="icon" id="weather-icon">☀️</div>
         <div>
-            <div style="font-size: 16px; font-weight: bold;" id="temp-text">12°C</div>
-            <div style="font-size: 11px; color: #cbd5e1;" id="weather-desc">Tiszta égbolt</div>
+            <div class="big" id="temp">22°C</div>
+            <div class="small" id="weather-text">Enyhe szél</div>
         </div>
+    </section>
+
+    <div id="speed-wrap">
+        <div id="limit">50</div>
+        <div id="speed">46 km/h</div>
     </div>
 
-    <!-- Alul balra: Úticél adatok -->
-    <div id="destination-box" class="hud-card">
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: bold;">
-            <span>🏁</span> <span id="rem-dist">10,9 km</span>
-        </div>
-        <div style="font-size: 13px; color: #cbd5e1; margin-top: 4px; display: flex; gap: 12px;">
-            <span id="rem-time">18 perc</span>
-            <span id="arr-time">22:17</span>
-        </div>
-    </div>
+    <div id="sign">Belváros</div>
 
-    <!-- Jobb oldali panel: Sebesség & Gombok -->
-    <div id="right-panel">
-        <div id="speed-limit-sign">
-            <span class="limit-num">50</span>
-            <span class="limit-sub" id="current-speed">0 km/h</span>
-        </div>
-        <div class="control-btn">🔊</div>
-        <div class="control-btn">🧭</div>
-        <div class="control-btn">⚙️</div>
-    </div>
+    <section id="trip" class="card">
+        <div class="big">🏁 <span id="distance">12 km</span></div>
+        <div class="small"><span id="minutes">22 perc</span> · <span id="arrival">--:--</span></div>
+    </section>
 
-    <!-- Jobb alul: Mini radar -->
-    <div id="mini-radar">
-        <div style="width: 12px; height: 12px; background: #3b82f6; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 8px #3b82f6;"></div>
+    <div id="radar" aria-hidden="true"><div class="arrow">➤</div></div>
+
+    <div id="status">
+        <span id="status-text">Az óra állítja a nappalt és az éjszakát.</span>
+        <button id="peek" type="button">Éjszaka</button>
     </div>
 
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+        var canvas = document.getElementById("world");
+        var ctx = canvas.getContext("2d");
+        var roadOffset = 0;
+        var preview = null;
+        var previewUntil = 0;
 
         function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight * 0.55; // Pontosan az alsó sávra méretezve
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        let currentSpeed = 35;
-        let roadOffset = 0;
-
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition((position) => {
-                if (position.coords.speed !== null) {
-                    currentSpeed = Math.round(position.coords.speed * 3.6);
-                }
-                document.getElementById('current-speed').innerText = currentSpeed + ' km/h';
-            }, () => {}, { enableHighAccuracy: true });
+            var ratio = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = Math.floor(window.innerWidth * ratio);
+            canvas.height = Math.floor(window.innerHeight * ratio);
+            ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
         }
 
-        function render() {
-            const width = canvas.width;
-            const height = canvas.height;
+        function minutesOf(date) {
+            return date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60;
+        }
 
-            // Sötét föld/alap az út alatt
-            ctx.fillStyle = '#070a0f';
-            ctx.fillRect(0, 0, width, height);
+        // 1 = full day, 0 = full night. The fade lasts one hour.
+        function daylightFromDate(date) {
+            var minutes = minutesOf(date);
+            var sunrise = 6 * 60;
+            var day = 7 * 60;
+            var sunset = 19 * 60;
+            var night = 20 * 60;
+            if (minutes >= day && minutes < sunset) return 1;
+            if (minutes >= night || minutes < sunrise) return 0;
+            if (minutes >= sunrise && minutes < day) return (minutes - sunrise) / 60;
+            return 1 - (minutes - sunset) / 60;
+        }
 
-            const roadWidthBottom = width * 0.8;
-            const roadWidthTop = width * 0.12;
-            const horizonY = 0;
+        function shownDate() {
+            var params = new URLSearchParams(window.location.search);
+            if (!params.has("hour")) return new Date();
+            var forced = new Date();
+            var hour = Number(params.get("hour"));
+            if (hour >= 0 && hour <= 23) forced.setHours(hour, 0, 0, 0);
+            return forced;
+        }
 
-            roadOffset += (currentSpeed + 5) * 0.02;
-            const curve = Math.sin(roadOffset * 0.02) * (width * 0.15);
+        function daylightNow() {
+            if (preview !== null && Date.now() < previewUntil) return preview;
+            preview = null;
+            return daylightFromDate(shownDate());
+        }
 
-            // Aszfaltút rajzolása
-            ctx.beginPath();
-            ctx.moveTo((width - roadWidthBottom) / 2, height);
-            ctx.bezierCurveTo(
-                width / 2 + curve * 0.4, horizonY + height * 0.5,
-                width / 2 + curve, horizonY + height * 0.15,
-                (width - roadWidthTop) / 2 + curve * 0.05, horizonY
-            );
-            ctx.lineTo((width + roadWidthTop) / 2 + curve * 0.05, horizonY);
-            ctx.bezierCurveTo(
-                width / 2 + curve, horizonY + height * 0.15,
-                width / 2 + curve * 0.4, horizonY + height * 0.5,
-                (width + roadWidthBottom) / 2, height
-            );
-            ctx.closePath();
+        function mix(a, b, t) {
+            return a + (b - a) * t;
+        }
 
-            ctx.fillStyle = '#1e2229';
-            ctx.fill();
+        function mixColor(day, night, t) {
+            return [
+                mix(night[0], day[0], t),
+                mix(night[1], day[1], t),
+                mix(night[2], day[2], t)
+            ];
+        }
 
-            // Középső ragyogó neonkék sáv
-            ctx.beginPath();
-            const centerTopX = width / 2 + curve * 0.05;
-            const centerBottomX = width / 2;
-            ctx.moveTo(centerBottomX - 8, height);
-            ctx.lineTo(centerTopX - 2, horizonY);
-            ctx.lineTo(centerTopX + 2, horizonY);
-            ctx.lineTo(centerBottomX + 8, height);
-            ctx.closePath();
-            ctx.fillStyle = '#00e5ff';
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = '#00e5ff';
-            ctx.fill();
-            ctx.shadowBlur = 0;
+        function paint(color) {
+            return "rgb(" + (color[0] | 0) + "," + (color[1] | 0) + "," + (color[2] | 0) + ")";
+        }
 
-            // Útszéli sárga világító lámpák
-            const itemCount = 10;
-            for (let i = 0; i < itemCount; i++) {
-                let progress = (i / itemCount + (roadOffset * 0.004) % 1) % 1;
-                let y = horizonY + progress * height;
-                let xFactor = (width * 0.42) * (1 - progress);
+        function clock(date) {
+            var h = date.getHours();
+            var m = date.getMinutes();
+            return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
+        }
 
-                drawLamp(width / 2 - roadWidthBottom * 0.5 - xFactor - 15, y, progress);
-                drawLamp(width / 2 + roadWidthBottom * 0.5 + xFactor + 15, y, progress);
+        function updateHud(date, daylight) {
+            var icon = document.getElementById("weather-icon");
+            var temp = document.getElementById("temp");
+            var text = document.getElementById("weather-text");
+            var peek = document.getElementById("peek");
+            var status = document.getElementById("status-text");
+            var arrival = new Date(date.getTime() + 22 * 60 * 1000);
+
+            document.getElementById("arrival").textContent = clock(arrival);
+            document.getElementById("speed").textContent = "46 km/h";
+
+            if (daylight > 0.72) {
+                icon.textContent = "☀️";
+                temp.textContent = "22°C";
+                text.textContent = "Enyhe szél";
+            } else if (daylight < 0.28) {
+                icon.textContent = "🌙";
+                temp.textContent = "12°C";
+                text.textContent = "Tiszta égbolt";
+            } else if (date.getHours() < 12) {
+                icon.textContent = "🌅";
+                temp.textContent = "16°C";
+                text.textContent = "Napkelte";
+            } else {
+                icon.textContent = "🌇";
+                temp.textContent = "18°C";
+                text.textContent = "Naplemente";
             }
 
-            // Saját kék autó fixen alul
-            drawPlayerCar(width / 2, height - 60);
-
-            requestAnimationFrame(render);
+            if (preview !== null && Date.now() < previewUntil) {
+                status.textContent = "Előnézet";
+                peek.textContent = "Óra";
+            } else {
+                var mode = daylight > 0.5 ? "Nappal" : "Éjszaka";
+                status.textContent = mode + " · " + clock(date);
+                peek.textContent = daylight > 0.5 ? "Éjszaka" : "Nappal";
+            }
         }
 
-        function drawLamp(x, y, scale) {
-            let size = Math.max(3, scale * 20);
-            ctx.fillStyle = '#111';
-            ctx.fillRect(x - 2, y - size * 2, 3, size * 2);
-
+        function roundedRect(x, y, w, h, r) {
+            var radius = Math.min(r, w / 2, h / 2);
             ctx.beginPath();
-            ctx.arc(x, y - size * 2, Math.max(2.5, size * 0.3), 0, Math.PI * 2);
-            ctx.fillStyle = '#ffeb3b';
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#ffeb3b';
-            ctx.fill();
-            ctx.shadowBlur = 0;
+            ctx.moveTo(x + radius, y);
+            ctx.arcTo(x + w, y, x + w, y + h, radius);
+            ctx.arcTo(x + w, y + h, x, y + h, radius);
+            ctx.arcTo(x, y + h, x, y, radius);
+            ctx.arcTo(x, y, x + w, y, radius);
+            ctx.closePath();
         }
 
-        function drawPlayerCar(cx, cy) {
-            ctx.save();
-            ctx.translate(cx, cy);
+        function drawSky(w, h, horizon, daylight, date) {
+            var top = mixColor([94, 186, 255], [7, 10, 34], daylight);
+            var bottom = mixColor([255, 214, 150], [28, 42, 92], daylight);
+            var sky = ctx.createLinearGradient(0, 0, 0, horizon);
+            sky.addColorStop(0, paint(top));
+            sky.addColorStop(1, paint(bottom));
+            ctx.fillStyle = sky;
+            ctx.fillRect(0, 0, w, horizon + 2);
 
-            ctx.fillStyle = '#111';
-            ctx.fillRect(-75, 0, 20, 35);
-            ctx.fillRect(55, 0, 20, 35);
+            if (daylight < 0.8) {
+                ctx.fillStyle = "rgba(255,255,255," + (0.85 * (1 - daylight)) + ")";
+                for (var i = 0; i < 28; i++) {
+                    var sx = (i * 97) % w;
+                    var sy = (i * 53) % (horizon * 0.7);
+                    ctx.fillRect(sx, sy, 2, 2);
+                }
+            }
 
-            ctx.fillStyle = '#3b82f6';
-            ctx.strokeStyle = '#111';
-            ctx.lineWidth = 4;
+            var minutes = minutesOf(date);
+            var across = (minutes - 6 * 60) / (14 * 60);
+            across = Math.max(0, Math.min(1, across));
+            var arc = Math.sin(across * Math.PI);
+            var bodyX = w * (0.3 + across * 0.4);
+            var bodyY = horizon - 30 - arc * horizon * 0.62;
+
+            if (daylight > 0.08) {
+                ctx.fillStyle = "rgba(255, 214, 80, " + daylight + ")";
+                ctx.beginPath();
+                ctx.arc(bodyX, bodyY, 28, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            if (daylight < 0.92) {
+                var moonX = w * 0.38;
+                var moonY = Math.max(78, horizon * 0.22);
+                ctx.fillStyle = "rgba(245, 236, 196, " + (1 - daylight) + ")";
+                ctx.beginPath();
+                ctx.arc(moonX, moonY, 18, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawCity(w, horizon, daylight) {
+            var riverTop = horizon - 8;
+            ctx.fillStyle = paint(mixColor([72, 170, 220], [18, 36, 78], daylight));
+            ctx.fillRect(0, riverTop, w, 36);
+
+            if (daylight > 0.4) {
+                ctx.fillStyle = "rgba(255,255,255,0.85)";
+                ctx.beginPath();
+                ctx.moveTo(w * 0.16, riverTop + 20);
+                ctx.lineTo(w * 0.16, riverTop + 8);
+                ctx.lineTo(w * 0.2, riverTop + 14);
+                ctx.fill();
+            }
+
+            var buildings = [
+                [0.08, 70, 46, [244, 196, 120]],
+                [0.18, 110, 54, [232, 122, 104]],
+                [0.31, 150, 90, [186, 214, 232]],
+                [0.46, 96, 60, [244, 176, 92]],
+                [0.58, 78, 48, [120, 186, 168]],
+                [0.7, 120, 64, [214, 228, 236]],
+                [0.82, 88, 50, [240, 140, 126]]
+            ];
+
+            for (var i = 0; i < buildings.length; i++) {
+                var item = buildings[i];
+                var x = w * item[0];
+                var bh = item[1];
+                var bw = item[2];
+                var color = mixColor(item[3], [item[3][0] * 0.28, item[3][1] * 0.32, item[3][2] * 0.45], daylight);
+                ctx.fillStyle = paint(color);
+                ctx.fillRect(x, horizon - bh, bw, bh);
+                if (daylight < 0.75) {
+                    ctx.fillStyle = "rgba(255, 214, 120, " + (1 - daylight) + ")";
+                    for (var wy = horizon - bh + 12; wy < horizon - 16; wy += 16) {
+                        for (var wx = x + 8; wx < x + bw - 8; wx += 14) {
+                            ctx.fillRect(wx, wy, 6, 8);
+                        }
+                    }
+                }
+            }
+
+            ctx.strokeStyle = paint(mixColor([70, 78, 88], [20, 24, 32], daylight));
+            ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.roundRect(-65, -18, 130, 60, 14);
-            ctx.fill();
+            ctx.moveTo(w * 0.2, horizon - 8);
+            ctx.lineTo(w * 0.2, horizon - 52);
+            ctx.moveTo(w * 0.34, horizon - 8);
+            ctx.lineTo(w * 0.34, horizon - 52);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(w * 0.2, horizon - 48);
+            ctx.quadraticCurveTo(w * 0.27, horizon - 70, w * 0.34, horizon - 48);
             ctx.stroke();
 
-            ctx.fillStyle = '#111';
+            ctx.fillStyle = paint(mixColor([186, 214, 150], [24, 48, 36], daylight));
+            for (var t = 0; t < 8; t++) {
+                var tx = (t / 8) * w;
+                ctx.beginPath();
+                ctx.arc(tx, horizon - 16, 16, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillRect(tx - 2, horizon - 16, 4, 18);
+            }
+        }
+
+        function roadEdge(w, h, horizon, progress, side, curve) {
+            var center = w * 0.52 + curve * (1 - progress);
+            var half = mix(w * 0.035, w * 0.46, Math.pow(progress, 1.15));
+            var y = mix(horizon, h, progress);
+            return { x: center + side * half, y: y };
+        }
+
+        function drawRoad(w, h, horizon, daylight) {
+            var curve = Math.sin(roadOffset * 0.015) * w * 0.12;
             ctx.beginPath();
-            ctx.roundRect(-45, -35, 90, 30, 8);
+            var nearLeft = roadEdge(w, h, horizon, 1, -1, curve);
+            var farLeft = roadEdge(w, h, horizon, 0.02, -1, curve);
+            var farRight = roadEdge(w, h, horizon, 0.02, 1, curve);
+            var nearRight = roadEdge(w, h, horizon, 1, 1, curve);
+            ctx.moveTo(nearLeft.x, nearLeft.y);
+            ctx.lineTo(farLeft.x, farLeft.y);
+            ctx.lineTo(farRight.x, farRight.y);
+            ctx.lineTo(nearRight.x, nearRight.y);
+            ctx.closePath();
+            ctx.fillStyle = paint(mixColor([86, 92, 102], [28, 32, 40], daylight));
             ctx.fill();
 
-            ctx.fillStyle = '#ff334b';
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#ff334b';
-            ctx.fillRect(-55, 4, 14, 7);
-            ctx.fillRect(41, 4, 14, 7);
+            ctx.strokeStyle = "rgba(255,255,255,0.85)";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(roadEdge(w, h, horizon, 1, -0.92, curve).x, nearLeft.y);
+            ctx.lineTo(roadEdge(w, h, horizon, 0.02, -0.92, curve).x, farLeft.y);
+            ctx.moveTo(roadEdge(w, h, horizon, 1, 0.92, curve).x, nearRight.y);
+            ctx.lineTo(roadEdge(w, h, horizon, 0.02, 0.92, curve).x, farRight.y);
+            ctx.stroke();
+
+            ctx.fillStyle = "rgba(0, 210, 255, 0.95)";
+            ctx.shadowColor = "#00e5ff";
+            ctx.shadowBlur = 16 * (0.45 + daylight * 0.55);
+            for (var i = 0; i < 8; i++) {
+                var progress = ((i / 8) + (roadOffset * 0.004) % 1) % 1;
+                if (progress < 0.08) continue;
+                var a = roadEdge(w, h, horizon, progress, -0.035, curve);
+                var b = roadEdge(w, h, horizon, Math.min(1, progress + 0.08), -0.06, curve);
+                var c = roadEdge(w, h, horizon, Math.min(1, progress + 0.08), 0.06, curve);
+                var d = roadEdge(w, h, horizon, progress, 0.035, curve);
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.lineTo(c.x, c.y);
+                ctx.lineTo(d.x, d.y);
+                ctx.fill();
+            }
             ctx.shadowBlur = 0;
 
+            if (daylight < 0.7) {
+                for (var lamp = 0; lamp < 6; lamp++) {
+                    var lp = ((lamp / 6) + (roadOffset * 0.003) % 1) % 1;
+                    if (lp < 0.12) continue;
+                    var left = roadEdge(w, h, horizon, lp, -1.15, curve);
+                    var glow = (1 - daylight) * (0.3 + lp);
+                    ctx.fillStyle = "rgba(255, 220, 120, " + glow + ")";
+                    ctx.beginPath();
+                    ctx.arc(left.x, left.y - 18 * lp, 4 + lp * 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        function drawCar(w, h) {
+            var x = w * 0.5;
+            var bottomSpace = w < h ? 230 : 120;
+            var y = h - bottomSpace;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.fillStyle = "rgba(0,0,0,0.25)";
+            roundedRect(-58, 18, 116, 18, 8);
+            ctx.fill();
+            ctx.fillStyle = "#1d2430";
+            roundedRect(-62, 4, 22, 28, 6);
+            roundedRect(40, 4, 22, 28, 6);
+            ctx.fill();
+            ctx.fillStyle = "#2f86ea";
+            roundedRect(-54, -16, 108, 48, 14);
+            ctx.fill();
+            ctx.fillStyle = "#d7f1ff";
+            roundedRect(-34, -30, 68, 24, 8);
+            ctx.fill();
+            ctx.fillStyle = "#ff4b55";
+            ctx.fillRect(-48, 8, 12, 6);
+            ctx.fillRect(36, 8, 12, 6);
             ctx.restore();
         }
 
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-                if (w < 2 * r) r = w / 2;
-                if (h < 2 * r) r = h / 2;
-                this.beginPath();
-                this.moveTo(x + r, y);
-                this.arcTo(x + w, y, x + w, y + h, r);
-                this.arcTo(x + w, y + h, x, y + h, r);
-                this.arcTo(x, y + h, x, y, r);
-                this.arcTo(x, y, x + w, y, r);
-                this.closePath();
-                return this;
-            };
+        function frame() {
+            var date = shownDate();
+            var daylight = daylightNow();
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+            var horizon = h * 0.46;
+            roadOffset += 1.4;
+
+            ctx.clearRect(0, 0, w, h);
+            drawSky(w, h, horizon, daylight, date);
+            var bank = mixColor([126, 196, 92], [16, 36, 28], daylight);
+            ctx.fillStyle = paint(bank);
+            ctx.fillRect(0, horizon - 8, w, h);
+            drawCity(w, horizon, daylight);
+            drawRoad(w, h, horizon + 8, daylight);
+            drawCar(w, h);
+            updateHud(date, daylight);
+            requestAnimationFrame(frame);
         }
 
-        requestAnimationFrame(render);
+        document.getElementById("peek").addEventListener("click", function () {
+            if (preview !== null && Date.now() < previewUntil) {
+                preview = null;
+                return;
+            }
+            var current = daylightFromDate(shownDate());
+            preview = current > 0.5 ? 0 : 1;
+            previewUntil = Date.now() + 12000;
+        });
+
+        window.addEventListener("resize", resize);
+        resize();
+        requestAnimationFrame(frame);
     </script>
 </body>
 </html>

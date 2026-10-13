@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 // Attach this to an empty object named EnvironmentManager.
-// Press N, or the button in the Game view, to switch between day and night.
+// Day and night follow the clock on the device. There is no button.
+// 7:00 to 19:00 is day. 20:00 to 6:00 is night.
+// The hour before 7:00 and the hour before 20:00 fade between them.
 public class DayNightController : MonoBehaviour
 {
     [Header("Scene references")]
@@ -23,12 +26,7 @@ public class DayNightController : MonoBehaviour
     [SerializeField] private float nightIntensity = 0.18f;
     [SerializeField] private float nightPitch = -20f;
 
-    [Tooltip("How fast the colors change. 1 means about one second.")]
-    [SerializeField] private float blendSpeed = 1.5f;
-
-    private bool isNight;
     private float blend;
-    private bool inputBlocked;
     private bool loggedMissingSun;
 
     private void Start()
@@ -45,37 +43,32 @@ public class DayNightController : MonoBehaviour
             Debug.LogWarning("DayNightController: drag Directional Light into the Sun slot on EnvironmentManager.");
         }
 
+        blend = NightAmount(DateTime.Now);
         Apply();
     }
 
     private void Update()
     {
-        if (!inputBlocked && WasNightKeyPressed())
-            isNight = !isNight;
-
-        float target = isNight ? 1f : 0f;
-        blend = Mathf.MoveTowards(blend, target, blendSpeed * Time.deltaTime);
+        blend = NightAmount(DateTime.Now);
         Apply();
     }
 
-    private void OnGUI()
+    // 0 is day, 1 is night.
+    private static float NightAmount(DateTime time)
     {
-        string label = isNight ? "Switch to day" : "Switch to night";
-        if (GUI.Button(new Rect(16f, 16f, 180f, 36f), label))
-            isNight = !isNight;
-    }
+        float minutes = time.Hour * 60f + time.Minute + time.Second / 60f;
+        const float sunrise = 6f * 60f;
+        const float day = 7f * 60f;
+        const float sunset = 19f * 60f;
+        const float night = 20f * 60f;
 
-    private bool WasNightKeyPressed()
-    {
-        try
-        {
-            return Input.GetKeyDown(KeyCode.N);
-        }
-        catch (System.InvalidOperationException)
-        {
-            inputBlocked = true;
-            return false;
-        }
+        if (minutes >= day && minutes < sunset)
+            return 0f;
+        if (minutes >= night || minutes < sunrise)
+            return 1f;
+        if (minutes >= sunrise && minutes < day)
+            return 1f - (minutes - sunrise) / 60f;
+        return (minutes - sunset) / 60f;
     }
 
     private static Light FindDirectionalLight()

@@ -17,6 +17,4 @@ A képernyő részei:
 - Jobb lent: kerek térkép
 - Az út közepén: világoskék sáv
 
-Először egy egyszerű úton mozgó autó, kamera, és nappal/éjszaka váltás készül el számítógépen. A képen látható feliratok, az eső és a hó utána jönnek. Az igazi GPS és az élő időjárás a legvégén jön.
-
-A telefonon ezt a képet meg lehet nyitni. A 3D-s világot a Unity Editorban, számítógépen kell összerakni. A lépések a `HOW_TO_START.md` fájlban vannak.
+Telefonon a mozgó kép az `index.html`. A telefon órája vált nappal és éjszaka között: 7–19 óra nappal, 20–6 óra éjszaka. Az eső és a hó még nincs benne. A link a `HOW_TO_START.md` fájlban van.
