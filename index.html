@@ -378,154 +378,218 @@
         }
 
         function drawHouse(x, base, bw, bh, wall, roof, daylight) {
-            ctx.fillStyle = paint(mixColor(wall, [wall[0] * 0.22, wall[1] * 0.24, wall[2] * 0.38], daylight));
+            if (bw < 4 || bh < 6) return;
+            var body = mixColor(wall, [wall[0] * 0.22, wall[1] * 0.24, wall[2] * 0.38], daylight);
+            var shade = mixColor([wall[0] * 0.72, wall[1] * 0.68, wall[2] * 0.64], [wall[0] * 0.12, wall[1] * 0.14, wall[2] * 0.26], daylight);
+            ctx.fillStyle = paint(body);
             ctx.fillRect(x, base - bh, bw, bh);
+            ctx.fillStyle = paint(shade);
+            ctx.fillRect(x + bw * 0.78, base - bh, bw * 0.22, bh);
+            ctx.fillStyle = paint(mixColor([255, 236, 214], [48, 40, 52], daylight));
+            ctx.fillRect(x - bw * 0.03, base - bh, bw * 1.06, Math.max(2, bh * 0.04));
+
             ctx.fillStyle = paint(mixColor(roof, [roof[0] * 0.25, roof[1] * 0.22, roof[2] * 0.28], daylight));
             ctx.beginPath();
-            ctx.moveTo(x - bw * 0.06, base - bh);
-            ctx.lineTo(x + bw * 0.5, base - bh - bw * 0.42);
-            ctx.lineTo(x + bw * 1.06, base - bh);
+            ctx.moveTo(x - bw * 0.08, base - bh);
+            ctx.lineTo(x + bw * 0.5, base - bh - bw * 0.5);
+            ctx.lineTo(x + bw * 1.08, base - bh);
             ctx.fill();
             if (sceneSnow) {
-                ctx.fillStyle = "rgba(255,255,255,0.92)";
+                ctx.fillStyle = "rgba(255,255,255,0.94)";
                 ctx.beginPath();
-                ctx.moveTo(x - bw * 0.06, base - bh);
-                ctx.lineTo(x + bw * 0.5, base - bh - bw * 0.42);
-                ctx.lineTo(x + bw * 1.06, base - bh);
+                ctx.moveTo(x - bw * 0.1, base - bh + 1);
+                ctx.lineTo(x + bw * 0.5, base - bh - bw * 0.52);
+                ctx.lineTo(x + bw * 1.1, base - bh + 1);
                 ctx.fill();
             }
-            ctx.fillStyle = daylight < 0.55
-                ? "rgba(255, 214, 120, " + (0.35 + (1 - daylight) * 0.65) + ")"
-                : "rgba(170, 214, 226, 0.95)";
+
+            ctx.fillStyle = paint(mixColor([122, 78, 58], [32, 24, 28], daylight));
+            ctx.fillRect(x + bw * 0.66, base - bh - bw * 0.36, Math.max(2, bw * 0.12), bw * 0.3);
+            if (sceneSnow) {
+                ctx.fillStyle = "rgba(255,255,255,0.95)";
+                ctx.fillRect(x + bw * 0.62, base - bh - bw * 0.42, Math.max(3, bw * 0.2), Math.max(2, bw * 0.08));
+            }
+
+            var lit = daylight < 0.55;
+            var win = lit
+                ? "rgba(255, 210, 110, " + (0.5 + (1 - daylight) * 0.5) + ")"
+                : "rgba(176, 220, 232, 0.96)";
+            var frame = lit ? "rgba(92, 58, 28, 0.55)" : "rgba(255,255,255,0.9)";
+            var rowStep = Math.max(7, bh * 0.17);
+            var colStep = Math.max(6, bw * 0.23);
+            var ww = Math.max(2.5, bw * 0.1);
+            var wh = Math.max(3.5, bh * 0.085);
             var row;
             var col;
-            for (row = base - bh + bh * 0.22; row < base - bh * 0.16; row += Math.max(8, bh * 0.22)) {
-                for (col = x + bw * 0.16; col < x + bw * 0.8; col += Math.max(8, bw * 0.28)) {
-                    ctx.fillRect(col, row, Math.max(3, bw * 0.12), Math.max(4, bh * 0.1));
+            for (row = base - bh + bh * 0.16; row < base - Math.min(bh * 0.12, 10); row += rowStep) {
+                for (col = x + bw * 0.12; col < x + bw * 0.7; col += colStep) {
+                    ctx.fillStyle = frame;
+                    ctx.fillRect(col - 1, row - 1, ww + 2, wh + 2);
+                    ctx.fillStyle = win;
+                    ctx.fillRect(col, row, ww, wh);
                 }
+            }
+        }
+
+        function drawSpire(tx, base, s, top, daylight, stone) {
+            ctx.fillStyle = paint(stone);
+            ctx.fillRect(tx - s * 0.035, base - top, s * 0.07, top * 0.42);
+            ctx.beginPath();
+            ctx.moveTo(tx - s * 0.07, base - top);
+            ctx.lineTo(tx, base - top - s * 0.34);
+            ctx.lineTo(tx + s * 0.07, base - top);
+            ctx.fill();
+            if (sceneSnow) {
+                ctx.fillStyle = "rgba(255,255,255,0.94)";
+                ctx.beginPath();
+                ctx.moveTo(tx - s * 0.08, base - top + s * 0.02);
+                ctx.lineTo(tx, base - top - s * 0.34);
+                ctx.lineTo(tx + s * 0.08, base - top + s * 0.02);
+                ctx.fill();
             }
         }
 
         function drawParliament(cx, base, s, daylight) {
             var stone = mixColor([236, 220, 186], [58, 52, 72], daylight);
-            var roof = mixColor([176, 78, 62], [48, 28, 36], daylight);
-            var dome = mixColor([214, 154, 96], [92, 70, 58], daylight);
+            var roof = mixColor([176, 72, 58], [48, 28, 36], daylight);
+            var dome = mixColor([214, 148, 78], [92, 64, 48], daylight);
             var win = daylight < 0.55
-                ? "rgba(255, 220, 140, " + (0.45 + (1 - daylight) * 0.55) + ")"
+                ? "rgba(255, 214, 120, " + (0.5 + (1 - daylight) * 0.5) + ")"
                 : "rgba(150, 198, 214, 0.95)";
-            var tower;
-            var towers = [-0.92, -0.55, 0.55, 0.92];
+            var towers = [-1.05, -0.72, -0.38, 0.38, 0.72, 1.05];
             var c;
             var r;
+            var rib;
 
             ctx.fillStyle = paint(stone);
-            roundedRect(cx - s * 1.1, base - s * 0.72, s * 2.2, s * 0.72, 2);
+            roundedRect(cx - s * 1.15, base - s * 0.92, s * 2.3, s * 0.92, 2);
             ctx.fill();
             ctx.fillStyle = paint(roof);
-            ctx.fillRect(cx - s * 1.1, base - s * 0.84, s * 2.2, s * 0.12);
+            ctx.fillRect(cx - s * 1.18, base - s * 1.02, s * 2.36, s * 0.1);
             if (sceneSnow) {
-                ctx.fillStyle = "rgba(255,255,255,0.92)";
-                ctx.fillRect(cx - s * 1.12, base - s * 0.92, s * 2.24, s * 0.1);
+                ctx.fillStyle = "rgba(255,255,255,0.94)";
+                ctx.fillRect(cx - s * 1.2, base - s * 1.1, s * 2.4, s * 0.1);
+            }
+            ctx.fillStyle = "rgba(255,255,255,0.16)";
+            for (c = -5; c <= 5; c++) {
+                ctx.fillRect(cx + c * s * 0.2, base - s * 0.88, 1.4, s * 0.78);
             }
 
-            for (tower = 0; tower < towers.length; tower++) {
-                var tx = cx + towers[tower] * s;
-                ctx.fillStyle = paint(stone);
-                ctx.fillRect(tx - s * 0.08, base - s * 1.15, s * 0.16, s * 0.45);
-                ctx.beginPath();
-                ctx.moveTo(tx - s * 0.12, base - s * 1.15);
-                ctx.lineTo(tx, base - s * 1.42);
-                ctx.lineTo(tx + s * 0.12, base - s * 1.15);
-                ctx.fill();
-                if (sceneSnow) {
-                    ctx.fillStyle = "rgba(255,255,255,0.92)";
-                    ctx.beginPath();
-                    ctx.moveTo(tx - s * 0.13, base - s * 1.12);
-                    ctx.lineTo(tx, base - s * 1.42);
-                    ctx.lineTo(tx + s * 0.13, base - s * 1.12);
-                    ctx.fill();
-                }
+            for (c = 0; c < towers.length; c++) {
+                drawSpire(cx + towers[c] * s, base, s, s * 1.05, daylight, stone);
             }
 
             ctx.fillStyle = paint(stone);
-            ctx.fillRect(cx - s * 0.38, base - s * 1.16, s * 0.76, s * 0.48);
+            ctx.fillRect(cx - s * 0.42, base - s * 1.28, s * 0.84, s * 0.42);
             ctx.fillStyle = paint(dome);
             ctx.beginPath();
-            ctx.arc(cx, base - s * 1.14, s * 0.36, Math.PI, 0);
+            ctx.arc(cx, base - s * 1.26, s * 0.4, Math.PI, 0);
             ctx.fill();
+            ctx.strokeStyle = "rgba(255, 232, 190, 0.55)";
+            ctx.lineWidth = Math.max(1, s * 0.025);
+            for (rib = -2; rib <= 2; rib++) {
+                ctx.beginPath();
+                ctx.moveTo(cx + rib * s * 0.14, base - s * 1.26);
+                ctx.quadraticCurveTo(cx + rib * s * 0.06, base - s * 1.5, cx, base - s * 1.64);
+                ctx.stroke();
+            }
             if (sceneSnow) {
                 ctx.fillStyle = "rgba(255,255,255,0.92)";
                 ctx.beginPath();
-                ctx.arc(cx, base - s * 1.24, s * 0.22, Math.PI * 1.15, Math.PI * 1.85);
+                ctx.arc(cx, base - s * 1.4, s * 0.24, Math.PI * 1.12, Math.PI * 1.88);
                 ctx.fill();
             }
-            ctx.fillStyle = "rgba(255,255,255,0.35)";
-            ctx.beginPath();
-            ctx.arc(cx - s * 0.1, base - s * 1.26, s * 0.08, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.fillStyle = paint(stone);
+            ctx.fillRect(cx - s * 0.06, base - s * 1.78, s * 0.12, s * 0.16);
             ctx.fillStyle = paint(sceneSnow ? [236, 242, 246] : stone);
             ctx.beginPath();
-            ctx.moveTo(cx - s * 0.045, base - s * 1.48);
-            ctx.lineTo(cx, base - s * 1.92);
-            ctx.lineTo(cx + s * 0.045, base - s * 1.48);
+            ctx.moveTo(cx - s * 0.04, base - s * 1.76);
+            ctx.lineTo(cx, base - s * 2.35);
+            ctx.lineTo(cx + s * 0.04, base - s * 1.76);
+            ctx.fill();
+            ctx.fillStyle = win;
+            ctx.beginPath();
+            ctx.arc(cx, base - s * 1.08, s * 0.07, 0, Math.PI * 2);
             ctx.fill();
 
-            ctx.fillStyle = win;
-            for (c = -3; c <= 3; c++) {
+            for (c = -4; c <= 4; c++) {
                 if (c === 0) continue;
-                for (r = 0; r < 2; r++) {
-                    ctx.fillRect(cx + c * s * 0.26 - s * 0.035, base - s * 0.24 - r * s * 0.22, s * 0.07, s * 0.11);
+                for (r = 0; r < 4; r++) {
+                    ctx.fillRect(cx + c * s * 0.22 - s * 0.035, base - s * 0.2 - r * s * 0.18, s * 0.07, s * 0.1);
                 }
             }
             for (c = -1; c <= 1; c++) {
-                ctx.fillRect(cx + c * s * 0.14 - s * 0.03, base - s * 0.92, s * 0.06, s * 0.14);
+                ctx.beginPath();
+                ctx.arc(cx + c * s * 0.16, base - s * 0.1, s * 0.055, Math.PI, 0);
+                ctx.fill();
             }
         }
 
         function drawBridge(x, base, s, daylight) {
-            var stone = mixColor([214, 198, 168], [52, 48, 58], daylight);
-            var cable = mixColor([64, 64, 72], [210, 198, 160], daylight);
-            ctx.strokeStyle = paint(cable);
-            ctx.lineWidth = Math.max(1.5, s * 0.045);
-            ctx.beginPath();
-            ctx.moveTo(x + s * 0.12, base - s * 0.72);
-            ctx.quadraticCurveTo(x + s * 0.7, base - s * 0.15, x + s * 1.28, base - s * 0.72);
-            ctx.stroke();
-            ctx.fillStyle = paint(stone);
-            ctx.fillRect(x, base - s * 0.95, s * 0.22, s * 0.95);
-            ctx.fillRect(x + s * 1.2, base - s * 0.95, s * 0.22, s * 0.95);
-            ctx.beginPath();
-            ctx.moveTo(x - s * 0.02, base - s * 0.95);
-            ctx.lineTo(x + s * 0.11, base - s * 1.28);
-            ctx.lineTo(x + s * 0.24, base - s * 0.95);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.moveTo(x + s * 1.18, base - s * 0.95);
-            ctx.lineTo(x + s * 1.31, base - s * 1.28);
-            ctx.lineTo(x + s * 1.44, base - s * 0.95);
-            ctx.fill();
-            ctx.fillStyle = paint(mixColor([120, 176, 206], [16, 28, 48], daylight));
-            ctx.beginPath();
-            ctx.arc(x + s * 0.11, base - s * 0.18, s * 0.12, Math.PI, 0);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(x + s * 1.31, base - s * 0.18, s * 0.12, Math.PI, 0);
-            ctx.fill();
-            ctx.strokeStyle = paint(cable);
-            ctx.lineWidth = 1;
+            var stone = mixColor([228, 210, 176], [52, 48, 58], daylight);
+            var cable = mixColor([48, 52, 60], [220, 206, 170], daylight);
+            var opening = mixColor([86, 164, 204], [12, 24, 42], daylight);
+            var left = x + s * 0.16;
+            var right = x + s * 1.3;
+            var crown = base - s * 1.08;
+            var sag = base - s * 0.7;
+            var deck = base - s * 0.16;
             var hanger;
-            for (hanger = 1; hanger <= 5; hanger++) {
-                var px = x + s * (0.18 + hanger * 0.18);
+            var t;
+            var px;
+            var py;
+            var span;
+
+            ctx.fillStyle = paint(stone);
+            ctx.fillRect(x, base - s * 1.15, s * 0.28, s * 1.15);
+            ctx.fillRect(x + s * 1.18, base - s * 1.15, s * 0.28, s * 1.15);
+            ctx.beginPath();
+            ctx.moveTo(x - s * 0.02, base - s * 1.15);
+            ctx.lineTo(x + s * 0.14, base - s * 1.62);
+            ctx.lineTo(x + s * 0.3, base - s * 1.15);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(x + s * 1.16, base - s * 1.15);
+            ctx.lineTo(x + s * 1.32, base - s * 1.62);
+            ctx.lineTo(x + s * 1.48, base - s * 1.15);
+            ctx.fill();
+            ctx.fillStyle = paint(opening);
+            ctx.beginPath();
+            ctx.arc(x + s * 0.14, base - s * 0.22, s * 0.16, Math.PI, 0);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x + s * 1.32, base - s * 0.22, s * 0.16, Math.PI, 0);
+            ctx.fill();
+            ctx.fillStyle = "rgba(255,244,220,0.85)";
+            ctx.beginPath();
+            ctx.arc(x + s * 0.14, base - s * 0.72, s * 0.045, 0, Math.PI * 2);
+            ctx.arc(x + s * 1.32, base - s * 0.72, s * 0.045, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = paint(cable);
+            ctx.lineWidth = Math.max(2, s * 0.045);
+            ctx.beginPath();
+            ctx.moveTo(left, crown);
+            ctx.quadraticCurveTo(x + s * 0.73, sag, right, crown);
+            ctx.stroke();
+            ctx.lineWidth = 1;
+            for (hanger = 1; hanger <= 7; hanger++) {
+                t = hanger / 8;
+                px = left + (right - left) * t;
+                span = (1 - t) * (1 - t) * crown + 2 * (1 - t) * t * sag + t * t * crown;
+                py = span;
                 ctx.beginPath();
-                ctx.moveTo(px, base - s * 0.16);
-                ctx.lineTo(px, base - s * 0.55);
+                ctx.moveTo(px, deck);
+                ctx.lineTo(px, py);
                 ctx.stroke();
             }
             ctx.fillStyle = paint(stone);
-            ctx.fillRect(x, base - s * 0.14, s * 1.42, s * 0.08);
+            ctx.fillRect(x - s * 0.02, deck, s * 1.5, s * 0.07);
+            ctx.fillStyle = paint(mixColor([90, 98, 108], [20, 22, 28], daylight));
+            ctx.fillRect(x, deck + s * 0.05, s * 1.46, s * 0.035);
             if (sceneSnow) {
-                ctx.fillStyle = "rgba(255,255,255,0.92)";
-                ctx.fillRect(x - s * 0.02, base - s * 0.18, s * 1.46, s * 0.06);
+                ctx.fillStyle = "rgba(255,255,255,0.94)";
+                ctx.fillRect(x - s * 0.04, deck - s * 0.03, s * 1.54, s * 0.05);
             }
         }
 
@@ -619,12 +683,12 @@
         }
 
         function cityUnit() {
-            return Math.max(26, Math.min(viewW, viewH) * (viewH > viewW ? 0.072 : 0.05));
+            return Math.max(30, Math.min(viewW, viewH) * (viewH > viewW ? 0.09 : 0.062));
         }
 
         function drawHills(daylight) {
             var base = horizon + 8;
-            var rise = viewH * (viewH > viewW ? 0.07 : 0.09);
+            var rise = viewH * (viewH > viewW ? 0.1 : 0.12);
             var far = mixColor(sceneSnow ? [214, 226, 220] : [176, 210, 122], [22, 40, 34], daylight);
             var near = mixColor(sceneSnow ? [186, 206, 200] : [108, 176, 78], [14, 32, 26], daylight);
             ctx.fillStyle = paint(far);
@@ -650,68 +714,68 @@
             var base = horizon + 2;
             var u = cityUnit();
             var walls = [
-                [244, 164, 102],
-                [232, 112, 96],
-                [246, 214, 156],
-                [176, 204, 222],
-                [236, 176, 154],
-                [214, 196, 168],
-                [228, 154, 112],
-                [168, 190, 214]
+                [244, 154, 92],
+                [226, 96, 82],
+                [248, 214, 150],
+                [164, 198, 220],
+                [236, 168, 140],
+                [214, 186, 150],
+                [232, 140, 96],
+                [186, 176, 210]
             ];
             var roofs = [
-                [184, 70, 56],
-                [132, 52, 58],
-                [168, 74, 60],
-                [112, 64, 78],
-                [150, 62, 54],
-                [146, 68, 58],
-                [176, 78, 62],
-                [96, 72, 108]
+                [186, 64, 50],
+                [128, 46, 52],
+                [168, 68, 54],
+                [108, 58, 74],
+                [154, 56, 48],
+                [142, 62, 52],
+                [176, 72, 56],
+                [92, 64, 102]
             ];
             var i;
-            var count = Math.max(14, Math.round(viewW / (u * 0.86)));
+            var x;
+            var h;
+            var hillTop = horizon - viewH * 0.03;
+            drawHouse(viewW * 0.0, hillTop, u * 1.25, u * 1.45, [236, 216, 176], [172, 62, 50], daylight);
+            drawHouse(viewW * 0.1, hillTop, u * 0.95, u * 2.05, [246, 228, 196], [150, 54, 48], daylight);
+            drawHouse(viewW * 0.18, hillTop, u * 1.1, u * 1.25, [228, 190, 148], [166, 68, 52], daylight);
+
+            var count = Math.max(16, Math.round(viewW / (u * 0.78)));
             for (i = 0; i < count; i++) {
-                var x = (i + 0.08) * (viewW / count);
-                var bridgeZone = x < viewW * 0.34;
-                var h = u * (bridgeZone ? 0.9 + (i % 3) * 0.16 : 1.25 + ((i * 3) % 5) * 0.2);
-                drawHouse(x, base - u * 0.2, u * 0.72, h, walls[i % walls.length], roofs[i % roofs.length], daylight);
+                x = (i + 0.02) * ((viewW - u * 0.4) / count);
+                h = u * (x < viewW * 0.32 ? 1.05 + (i % 3) * 0.22 : 1.55 + ((i * 3) % 5) * 0.28);
+                var paleWall = [
+                    walls[i % walls.length][0] * 0.42 + 112,
+                    walls[i % walls.length][1] * 0.42 + 128,
+                    walls[i % walls.length][2] * 0.42 + 138
+                ];
+                drawHouse(x, base - u * 0.08, u * 0.7, h, paleWall, roofs[i % roofs.length], daylight);
             }
 
             var front = [
-                [0.3, 1.0, 2.4, 2],
-                [0.72, 1.05, 2.7, 0],
-                [0.82, 0.95, 3.2, 1],
-                [0.91, 1.05, 2.25, 4]
+                [0.3, 1.05, 3.05, 2],
+                [0.72, 1.05, 3.25, 0],
+                [0.81, 0.95, 3.9, 1],
+                [0.91, 1.02, 2.7, 4]
             ];
             for (i = 0; i < front.length; i++) {
                 var row = front[i];
                 drawHouse(viewW * row[0], base, u * row[1], u * row[2], walls[row[3]], roofs[row[3]], daylight);
             }
 
-            drawParliament(viewW * 0.56, base, u * 2.05, daylight);
+            drawParliament(viewW * 0.55, base, u * 2.15, daylight);
+            drawSpire(viewW * 0.8, base, u * 1.15, u * 3.4, daylight, mixColor([232, 220, 196], [48, 44, 62], daylight));
 
-            var spireX = viewW * 0.84;
-            ctx.fillStyle = paint(mixColor([232, 220, 196], [48, 44, 62], daylight));
-            ctx.fillRect(spireX, base - u * 3.7, u * 0.16, u * 1.2);
-            ctx.beginPath();
-            ctx.moveTo(spireX - u * 0.1, base - u * 3.7);
-            ctx.lineTo(spireX + u * 0.08, base - u * 4.55);
-            ctx.lineTo(spireX + u * 0.26, base - u * 3.7);
-            ctx.fill();
-            if (sceneSnow) {
-                ctx.fillStyle = "rgba(255,255,255,0.92)";
-                ctx.beginPath();
-                ctx.moveTo(spireX - u * 0.12, base - u * 3.62);
-                ctx.lineTo(spireX + u * 0.08, base - u * 4.55);
-                ctx.lineTo(spireX + u * 0.28, base - u * 3.62);
-                ctx.fill();
+            for (i = 0; i < count; i++) {
+                x = (i + 0.4) * (viewW / count);
+                drawTree(x, base + 2, u * (0.48 + (i % 4) * 0.08), daylight);
             }
         }
 
         function drawRiver(daylight) {
-            var top = horizon - 6;
-            var depth = Math.max(68, viewH * (viewH > viewW ? 0.1 : 0.072));
+            var top = horizon - 8;
+            var depth = Math.max(78, viewH * (viewH > viewW ? 0.125 : 0.09));
             var waterTop = sceneSnow ? [176, 198, 208] : (sceneRain ? [70, 96, 112] : [78, 176, 214]);
             var waterBottom = sceneSnow ? [146, 170, 184] : (sceneRain ? [48, 70, 86] : [32, 120, 182]);
             var water = ctx.createLinearGradient(0, top, 0, top + depth);
@@ -728,12 +792,18 @@
                 [120, 176, 210]
             ];
             var col;
-            var cols = Math.max(12, Math.round(viewW / 18));
+            var cols = Math.max(8, Math.round(viewW / 42));
             for (col = 0; col < cols; col++) {
                 var shade = shades[col % shades.length];
-                var alpha = (sceneSnow ? 0.14 : 0.2) + (daylight < 0.55 ? (1 - daylight) * 0.38 : 0);
-                ctx.fillStyle = "rgba(" + shade[0] + "," + shade[1] + "," + shade[2] + "," + alpha + ")";
-                ctx.fillRect((col + 0.15) * (viewW / cols), top + 4, Math.max(3, viewW / cols * 0.26), depth * (0.42 + (col % 3) * 0.14));
+                var rx = (col + 0.15) * (viewW / cols);
+                var rw = viewW / cols * 0.62;
+                var rh = depth * (0.5 + (col % 4) * 0.1);
+                var alpha = daylight < 0.55 ? 0.16 + (1 - daylight) * 0.42 : (sceneSnow ? 0.12 : 0.2);
+                var fade = ctx.createLinearGradient(0, top, 0, top + rh);
+                fade.addColorStop(0, "rgba(" + shade[0] + "," + shade[1] + "," + shade[2] + "," + alpha + ")");
+                fade.addColorStop(1, "rgba(" + shade[0] + "," + shade[1] + "," + shade[2] + ",0)");
+                ctx.fillStyle = fade;
+                ctx.fillRect(rx, top + 2, rw, rh);
             }
 
             ctx.strokeStyle = "rgba(255,255,255," + (0.28 * daylight + 0.08) + ")";
@@ -750,12 +820,17 @@
         }
 
         function drawBankTrees(daylight) {
-            var y = horizon + viewH * (viewH > viewW ? 0.095 : 0.075);
+            var y = horizon + viewH * (viewH > viewW ? 0.105 : 0.08);
             var u = cityUnit();
-            var count = Math.max(8, Math.round(viewW / (u * 1.35)));
+            var count = Math.max(7, Math.round(viewW / (u * 1.55)));
             var i;
             for (i = 0; i < count; i++) {
-                drawTree((i + 0.35) * (viewW / count), y, u * 1.05, daylight);
+                var size = u * (1.15 + ((i * 3) % 4) * 0.22);
+                var drop = ((i * 5) % 3) * u * 0.12;
+                drawTree((i + 0.2) * (viewW / count), y + drop, size, daylight);
+                if (i % 2 === 0) {
+                    drawTree((i + 0.55) * (viewW / count), y + u * 0.35, size * 0.72, daylight);
+                }
             }
         }
 
@@ -960,9 +1035,9 @@
             drawHills(daylight);
             drawCity(daylight);
             drawRiver(daylight);
-            drawBridge(viewW * 0.01, horizon + 2, cityUnit() * 3.05, daylight);
+            drawBridge(viewW * 0.02, horizon + 2, cityUnit() * 2.35, daylight);
             ctx.fillStyle = paint(grass);
-            ctx.fillRect(0, horizon + viewH * (viewH > viewW ? 0.07 : 0.055), viewW, viewH);
+            ctx.fillRect(0, horizon + viewH * (viewH > viewW ? 0.086 : 0.064), viewW, viewH);
             drawBankTrees(daylight);
             drawTrees(daylight);
             drawRoad(daylight);
