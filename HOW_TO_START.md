@@ -6,7 +6,7 @@ The moving picture runs in the phone browser. Unity Editor does not run on Andro
 
 Close any old tab first. Open the latest phone link from the project notes in Chrome, with the phone held sideways.
 
-The page is a small browser 3D drive: a straight road, a blue car seen from behind, a glowing blue line, and an Éjszaka / Nappal button. Touch the left side of the screen to steer left and the right side to steer right.
+The page is a small browser 3D drive: a road, a blue car seen from behind, a glowing blue line, a river, houses, trees, and Nappal, Éjszaka, Eső, and Hó buttons. Touch the left side of the screen to steer left and the right side to steer right. The distance text is the sample from the target picture, not a live route.
 
 The painted pictures are still in `Reference/panels`. This page does not show those pictures, and it is not a real route. The Unity scripts are still only text files. No Unity scene has been built or played.
 
