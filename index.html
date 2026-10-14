@@ -19,18 +19,20 @@
         #card {
             position: fixed;
             z-index: 2;
-            left: 16px;
-            right: 16px;
-            bottom: calc(16px + env(safe-area-inset-bottom));
-            padding: 26px 18px 18px;
+            left: 50%;
+            bottom: calc(14px + env(safe-area-inset-bottom));
+            transform: translateX(-50%);
+            width: min(720px, calc(100% - 28px));
+            box-sizing: border-box;
+            padding: 22px 18px 16px;
             border-radius: 28px;
             background: rgba(22, 26, 32, 0.94);
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
             text-align: center;
         }
         #question {
-            margin: 0 0 20px;
-            font-size: clamp(20px, 5.4vw, 30px);
+            margin: 0 0 16px;
+            font-size: clamp(20px, 4.6vw, 32px);
             font-weight: 700;
             letter-spacing: -0.02em;
         }
@@ -53,11 +55,11 @@
             border: 0;
         }
         #card.done #choices { display: none; }
-        #card.done #question { margin-bottom: 6px; }
-        #missing { position: fixed; inset: 24px; font-size: 18px; }
+        #card.done #question { margin-bottom: 4px; }
     </style>
 </head>
 <body>
+    <canvas id="view"></canvas>
     <section id="card">
         <p id="question">Ez dugó. Menjünk máshol?</p>
         <div id="choices">
@@ -65,117 +67,36 @@
             <button id="igen" type="button">Igen</button>
         </div>
     </section>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
+        var canvas = document.getElementById("view");
+        var ctx = canvas.getContext("2d");
         var card = document.getElementById("card");
-        if (!window.THREE) {
-            card.hidden = true;
-            var missing = document.createElement("p");
-            missing.id = "missing";
-            missing.textContent = "A kép nem indult el. A kijelző böngészőjében nyisd meg újra, internetkapcsolat kell.";
-            document.body.appendChild(missing);
-        } else {
-            var scene = new THREE.Scene();
-            var camera = new THREE.PerspectiveCamera(56, 1, 0.1, 220);
-            var renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-            renderer.domElement.id = "view";
-            document.body.insertBefore(renderer.domElement, card);
+        var width = 1;
+        var height = 1;
+        var horizon = 200;
+        var choice = "ask";
+        var along = 0;
+        var cam = { x: 0, y: 1.85, z: 10.4 };
+        var car = { x: 0, z: 3.6, yaw: 0 };
+        var straight = line(0, 16, 0, -3, 8);
+        var leftRoad = bend(-1);
+        var rightRoad = bend(1);
+        var queue = [0x3a4048, 0xd8d4cc, 0x8a3030, 0x22262c, 0xc8c2b8, 0x4a4038, 0x1c2026].map(function (color, index) {
+            return { color: color, index: 3 + index * 2 };
+        });
 
-            scene.add(new THREE.HemisphereLight(0xffc7ae, 0x1a2218, 0.7));
-            scene.add(new THREE.AmbientLight(0xfff0e4, 0.28));
-            var sun = new THREE.DirectionalLight(0xffb089, 0.85);
-            sun.position.set(-12, 18, -30);
-            scene.add(sun);
-            paintSky();
-            scene.fog = new THREE.Fog(0xc48470, 22, 78);
-
-            var ground = new THREE.Mesh(
-                new THREE.PlaneGeometry(240, 240),
-                new THREE.MeshLambertMaterial({ color: 0x243028 })
-            );
-            ground.rotation.x = -Math.PI / 2;
-            ground.position.y = -0.35;
-            scene.add(ground);
-            hill(-18, -12, 16, 0.42);
-            hill(16, -20, 11, 0.36);
-
-            var roadMat = new THREE.MeshLambertMaterial({ color: 0x2c333c });
-            var straight = line(0, 14, 0, -3, 8);
-            var leftRoad = bend(-1);
-            var rightRoad = bend(1);
-            ribbon(straight, 7.2, 0, roadMat);
-            ribbon(leftRoad, 4.6, 0.02, roadMat);
-            ribbon(rightRoad, 4.6, 0.02, roadMat);
-            ribbon(leftRoad.slice(5), 1.15, 0.08, new THREE.MeshBasicMaterial({ color: 0xffb15a, transparent: true, opacity: 0.5 }));
-            ribbon(leftRoad.slice(5), 0.22, 0.1, new THREE.MeshBasicMaterial({ color: 0xffe0b0 }));
-            ribbon(rightRoad.slice(5), 1.45, 0.08, new THREE.MeshBasicMaterial({ color: 0x2ad4d8, transparent: true, opacity: 0.5 }));
-            ribbon(rightRoad.slice(5), 0.18, 0.11, new THREE.MeshBasicMaterial({ color: 0xf3ffff }));
-
-            tree(-9.2, -4, 2.1);
-            tree(-12.4, -12, 2.4);
-            tree(-7.4, -16, 1.7);
-            tree(9.2, -8, 1.8);
-            tree(12.2, -18, 2.2);
-
-            var queue = [];
-            [0x3a4048, 0xd8d4cc, 0x8a3030, 0x22262c, 0xc8c2b8, 0x4a4038, 0x1c2026].forEach(function (color, index) {
-                var jamCar = trafficCar(color);
-                var spot = leftRoad[3 + index * 2];
-                var next = leftRoad[4 + index * 2];
-                place(jamCar, spot, next);
-                queue.push(jamCar);
-                scene.add(jamCar);
-            });
-
-            var car = playerCar();
-            car.position.set(0, 0, 3.2);
-            scene.add(car);
-
-            var choice = "ask";
-            var along = 0;
-            document.getElementById("igen").addEventListener("click", function () { pick("yes"); });
-            document.getElementById("nem").addEventListener("click", function () { pick("no"); });
-            var preset = window.location.hash;
-            if (preset === "#igen") {
-                pick("yes");
-                along = 0.5;
-            }
-            if (preset === "#nem") pick("no");
-            if (choice === "ask") speak("Ez dugó. Menjünk máshol?");
-
-            resize();
-            followCamera(1);
-            renderer.render(scene, camera);
-            window.addEventListener("resize", resize);
-            var clock = new THREE.Clock();
-            requestAnimationFrame(frame);
+        document.getElementById("igen").addEventListener("click", function () { pick("yes"); });
+        document.getElementById("nem").addEventListener("click", function () { pick("no"); });
+        if (location.hash === "#igen") {
+            pick("yes");
+            along = 0.5;
         }
+        if (location.hash === "#nem") pick("no");
+        if (choice === "ask") speak("Ez dugó. Menjünk máshol?");
 
-        function paintSky() {
-            var canvas = document.createElement("canvas");
-            canvas.width = 4;
-            canvas.height = 256;
-            var pen = canvas.getContext("2d");
-            var fade = pen.createLinearGradient(0, 0, 0, 256);
-            fade.addColorStop(0, "#1a2233");
-            fade.addColorStop(0.42, "#6a4a52");
-            fade.addColorStop(0.72, "#d48968");
-            fade.addColorStop(1, "#e7b08a");
-            pen.fillStyle = fade;
-            pen.fillRect(0, 0, 4, 256);
-            scene.background = new THREE.CanvasTexture(canvas);
-        }
-
-        function hill(x, z, radius, flat) {
-            var mesh = new THREE.Mesh(
-                new THREE.SphereGeometry(radius, 22, 14),
-                new THREE.MeshLambertMaterial({ color: 0x1b2820 })
-            );
-            mesh.scale.y = flat;
-            mesh.position.set(x, -radius * flat * 0.72, z);
-            scene.add(mesh);
-        }
+        window.addEventListener("resize", resize);
+        resize();
+        requestAnimationFrame(frame);
 
         function line(x1, z1, x2, z2, steps) {
             var points = [];
@@ -200,83 +121,132 @@
             return points;
         }
 
-        function ribbon(points, width, y, material) {
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            var ratio = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = Math.max(1, Math.floor(width * ratio));
+            canvas.height = Math.max(1, Math.floor(height * ratio));
+            canvas.style.width = width + "px";
+            canvas.style.height = height + "px";
+            ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+            horizon = height * (height > width ? 0.4 : 0.46);
+        }
+
+        function project(x, y, z) {
+            var depth = cam.z - z;
+            if (depth < 0.35) return null;
+            var focal = height * 0.92;
+            return {
+                x: width * 0.5 + (x - cam.x) * focal / depth,
+                y: horizon + (cam.y - y) * focal / depth
+            };
+        }
+
+        function poly(points, color, alpha) {
+            if (points.some(function (point) { return !point; })) return;
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
             var i;
-            for (i = 0; i < points.length - 1; i++) {
+            for (i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+
+        function ribbon(points, roadWidth, color, alpha) {
+            var i;
+            for (i = points.length - 2; i >= 0; i--) {
                 var a = points[i];
                 var b = points[i + 1];
                 var dx = b.x - a.x;
                 var dz = b.z - a.z;
-                var len = Math.sqrt(dx * dx + dz * dz);
-                var mesh = new THREE.Mesh(new THREE.BoxGeometry(width, 0.06, len + 0.55), material);
-                mesh.position.set((a.x + b.x) / 2, y, (a.z + b.z) / 2);
-                mesh.rotation.y = Math.atan2(dx, dz);
-                scene.add(mesh);
+                var len = Math.sqrt(dx * dx + dz * dz) || 1;
+                var sideX = -dz / len * roadWidth * 0.5;
+                var sideZ = dx / len * roadWidth * 0.5;
+                poly([
+                    project(a.x + sideX, 0, a.z + sideZ),
+                    project(a.x - sideX, 0, a.z - sideZ),
+                    project(b.x - sideX, 0, b.z - sideZ),
+                    project(b.x + sideX, 0, b.z + sideZ)
+                ], color, alpha);
             }
         }
 
-        function addBox(parent, w, h, d, x, y, z, color, basic) {
-            var material = basic
-                ? new THREE.MeshBasicMaterial({ color: color })
-                : new THREE.MeshLambertMaterial({ color: color });
-            var mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
-            mesh.position.set(x, y, z);
-            parent.add(mesh);
-            return mesh;
+        function face(corners, yaw, origin, color) {
+            var points = corners.map(function (corner) {
+                var x = origin.x + corner[0] * Math.cos(yaw) + corner[2] * Math.sin(yaw);
+                var z = origin.z - corner[0] * Math.sin(yaw) + corner[2] * Math.cos(yaw);
+                return project(x, corner[1], z);
+            });
+            poly(points, color, 1);
+        }
+
+        function drawCar(x, z, yaw, body, big) {
+            var s = big ? 1.05 : 0.72;
+            var origin = { x: x, z: z };
+            face([[-0.85 * s, 0.22, 1.15 * s], [0.85 * s, 0.22, 1.15 * s], [0.85 * s, 0.95 * s, 1.15 * s], [-0.85 * s, 0.95 * s, 1.15 * s]], yaw, origin, body);
+            face([[-0.62 * s, 0.95 * s, 0.15 * s], [0.62 * s, 0.95 * s, 0.15 * s], [0.48 * s, 1.28 * s, -0.3 * s], [-0.48 * s, 1.28 * s, -0.3 * s]], yaw, origin, "#1a2030");
+            face([[-0.62 * s, 0.5, 1.18 * s], [-0.28 * s, 0.5, 1.18 * s], [-0.28 * s, 0.62, 1.18 * s], [-0.62 * s, 0.62, 1.18 * s]], yaw, origin, "#ff2430");
+            face([[0.28 * s, 0.5, 1.18 * s], [0.62 * s, 0.5, 1.18 * s], [0.62 * s, 0.62, 1.18 * s], [0.28 * s, 0.62, 1.18 * s]], yaw, origin, "#ff2430");
         }
 
         function tree(x, z, scale) {
-            var group = new THREE.Group();
-            addBox(group, 0.16, 0.7 * scale, 0.16, 0, 0.35 * scale, 0, 0x243028, false);
-            var crown = new THREE.Mesh(
-                new THREE.SphereGeometry(0.72 * scale, 12, 10),
-                new THREE.MeshLambertMaterial({ color: 0x15241c })
-            );
-            crown.position.y = 1.05 * scale;
-            group.add(crown);
-            group.position.set(x, 0, z);
-            scene.add(group);
+            var base = project(x, 0, z);
+            var top = project(x, 1.6 * scale, z);
+            if (!base || !top) return;
+            var radius = Math.abs(base.y - top.y) * 0.55;
+            ctx.fillStyle = "#15241c";
+            ctx.beginPath();
+            ctx.arc(top.x, top.y + radius * 0.35, radius, 0, Math.PI * 2);
+            ctx.fill();
         }
 
-        function trafficCar(color) {
-            var group = new THREE.Group();
-            addBox(group, 1.35, 0.42, 2.2, 0, 0.48, 0, color, false);
-            addBox(group, 1.05, 0.28, 0.9, 0, 0.78, -0.15, 0x1a1e26, false);
-            addBox(group, 0.28, 0.08, 0.05, -0.4, 0.58, 1.08, 0xff2a2a, true);
-            addBox(group, 0.28, 0.08, 0.05, 0.4, 0.58, 1.08, 0xff2a2a, true);
-            return group;
+        function sky() {
+            var fade = ctx.createLinearGradient(0, 0, 0, height);
+            fade.addColorStop(0, "#1a2233");
+            fade.addColorStop(0.42, "#6a4a52");
+            fade.addColorStop(0.72, "#d48968");
+            fade.addColorStop(1, "#c98462");
+            ctx.fillStyle = fade;
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = "#243028";
+            ctx.fillRect(0, horizon, width, height - horizon);
         }
 
-        function playerCar() {
-            var group = new THREE.Group();
-            addBox(group, 1.9, 0.46, 2.85, 0, 0.5, 0, 0xd01218, false);
-            addBox(group, 1.45, 0.36, 1.25, 0, 0.86, -0.2, 0x1a2030, false);
-            addBox(group, 1.55, 0.07, 0.05, 0, 0.7, 1.4, 0xff2430, true);
-            var wheelGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.18, 12);
-            wheelGeo.rotateZ(Math.PI / 2);
-            var wheelMat = new THREE.MeshLambertMaterial({ color: 0x14171c });
-            [[-0.98, 0.3, 0.9], [0.98, 0.3, 0.9], [-0.98, 0.3, -0.9], [0.98, 0.3, -0.9]].forEach(function (spot) {
-                var wheel = new THREE.Mesh(wheelGeo, wheelMat);
-                wheel.position.set(spot[0], spot[1], spot[2]);
-                group.add(wheel);
-            });
-            return group;
-        }
-
-        function place(group, spot, next) {
-            var dx = next.x - spot.x;
-            var dz = next.z - spot.z;
-            group.position.set(spot.x, 0, spot.z);
-            group.rotation.y = Math.atan2(dx, dz) + Math.PI;
+        function paint() {
+            sky();
+            tree(-10, -6, 2.2);
+            tree(-13, -16, 2.5);
+            tree(10, -10, 2);
+            tree(13, -20, 2.3);
+            ribbon(straight, 7.2, "#2c333c", 1);
+            ribbon(leftRoad, 4.6, "#2c333c", 1);
+            ribbon(rightRoad, 4.6, "#2c333c", 1);
+            ribbon(leftRoad.slice(5), 1.2, "#ffb15a", 0.55);
+            ribbon(rightRoad.slice(5), 1.35, "#2ad4d8", 0.72);
+            ribbon(rightRoad.slice(5), 0.22, "#f4ffff", 0.95);
+            var i;
+            for (i = queue.length - 1; i >= 0; i--) {
+                var spot = leftRoad[queue[i].index];
+                var next = leftRoad[queue[i].index + 1];
+                var yaw = Math.atan2(next.x - spot.x, next.z - spot.z) + Math.PI;
+                var hex = queue[i].color.toString(16);
+                while (hex.length < 6) hex = "0" + hex;
+                drawCar(spot.x, spot.z, yaw, "#" + hex, false);
+            }
+            drawCar(car.x, car.z, car.yaw, "#d01218", true);
         }
 
         function pick(next) {
-            if (choice !== "ask" && window.location.hash === "") return;
+            if (choice !== "ask" && location.hash === "") return;
             choice = next;
             card.className = "done";
             var text = next === "yes" ? "Arra megyünk." : "Maradunk ezen az úton.";
             document.getElementById("question").textContent = text;
-            if (window.location.hash === "") speak(text);
+            if (location.hash === "") speak(text);
         }
 
         function speak(text) {
@@ -292,43 +262,28 @@
             }
         }
 
-        function followCamera(blend) {
-            var behindX = car.position.x + Math.sin(car.rotation.y) * 8.4;
-            var behindZ = car.position.z + Math.cos(car.rotation.y) * 8.4;
-            camera.position.x += (behindX - camera.position.x) * blend;
-            camera.position.y += (3.35 - camera.position.y) * blend;
-            camera.position.z += (behindZ - camera.position.z) * blend;
-            camera.lookAt(
-                car.position.x - Math.sin(car.rotation.y) * 9,
-                0.55,
-                car.position.z - Math.cos(car.rotation.y) * 9
-            );
+        function follow(yaw) {
+            cam.x = car.x + Math.sin(yaw) * 6.6;
+            cam.z = car.z + Math.cos(yaw) * 6.6;
         }
 
-        function resize() {
-            var width = window.innerWidth;
-            var height = window.innerHeight;
-            camera.aspect = width / Math.max(height, 1);
-            camera.fov = height > width ? 58 : 46;
-            camera.updateProjectionMatrix();
-            renderer.setSize(width, height);
-        }
-
-        function frame() {
+        function frame(time) {
             requestAnimationFrame(frame);
-            var dt = Math.min(clock.getDelta(), 0.05);
+            if (!frame.last) frame.last = time;
+            var dt = Math.min(0.05, (time - frame.last) / 1000);
+            frame.last = time;
             if (choice === "yes") {
                 along = Math.min(1, along + dt * 0.12);
                 var index = Math.min(rightRoad.length - 2, Math.floor(along * (rightRoad.length - 2)));
                 var spot = rightRoad[index];
                 var next = rightRoad[index + 1];
                 var local = along * (rightRoad.length - 2) - index;
-                car.position.x = spot.x + (next.x - spot.x) * local;
-                car.position.z = spot.z + (next.z - spot.z) * local;
-                car.rotation.y = Math.atan2(next.x - spot.x, next.z - spot.z) + Math.PI;
+                car.x = spot.x + (next.x - spot.x) * local;
+                car.z = spot.z + (next.z - spot.z) * local;
+                car.yaw = Math.atan2(next.x - spot.x, next.z - spot.z) + Math.PI;
+                follow(car.yaw);
             }
-            followCamera(Math.min(1, dt * 3));
-            renderer.render(scene, camera);
+            paint();
         }
     </script>
 </body>
