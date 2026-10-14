@@ -14,9 +14,12 @@
             background: #14181e;
             font-family: "Segoe UI", "Trebuchet MS", sans-serif;
             color: white;
+            user-select: none;
+            -webkit-user-select: none;
         }
         #view { display: block; width: 100%; height: 100%; }
         #card {
+            display: none;
             position: fixed;
             z-index: 2;
             left: 50%;
@@ -30,6 +33,7 @@
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
             text-align: center;
         }
+        #card.show { display: block; }
         #question {
             margin: 0 0 16px;
             font-size: clamp(20px, 4.6vw, 32px);
@@ -37,7 +41,7 @@
             letter-spacing: -0.02em;
         }
         #choices { display: flex; gap: 12px; }
-        button {
+        #choices button {
             flex: 1;
             min-height: 64px;
             border-radius: 999px;
@@ -119,29 +123,187 @@
             position: fixed;
             z-index: 2;
             left: calc(12px + env(safe-area-inset-left));
-            bottom: calc(196px + env(safe-area-inset-bottom));
-            width: 124px;
-            height: 124px;
-            border-radius: 50%;
+            bottom: calc(16px + env(safe-area-inset-bottom));
+            width: 140px;
+            height: 140px;
+            border-radius: 22px;
             border: 3px solid white;
-            background: #143628;
+            background: #1a242c;
             box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+            touch-action: manipulation;
+        }
+        #open-map {
+            position: fixed;
+            z-index: 2;
+            right: calc(12px + env(safe-area-inset-right));
+            bottom: calc(16px + env(safe-area-inset-bottom));
+            min-height: 64px;
+            padding: 0 18px;
+            border: 0;
+            border-radius: 999px;
+            background: rgba(22, 26, 32, 0.94);
+            color: white;
+            font: 700 18px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        body.asking #map,
+        body.asking #open-map { bottom: calc(196px + env(safe-area-inset-bottom)); }
+        body.planning #view,
+        body.planning #maneuver,
+        body.planning #limit,
+        body.planning #speed,
+        body.planning #map,
+        body.planning #card,
+        body.planning #open-map { display: none; }
+        #plan {
+            position: fixed;
+            inset: 0;
+            z-index: 5;
+            background: #d7e0e6;
+        }
+        body.driving #plan { display: none; }
+        #plan-map { display: block; width: 100%; height: 100%; touch-action: none; }
+        #bar {
+            position: absolute;
+            z-index: 2;
+            top: calc(10px + env(safe-area-inset-top));
+            left: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        .chip {
+            flex: 1;
+            min-width: 0;
+            min-height: 64px;
+            padding: 8px 14px;
+            border-radius: 18px;
+            border: 2px solid transparent;
+            background: rgba(22, 26, 32, 0.94);
+            color: white;
+            text-align: left;
+            font: 700 16px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        .chip.on { border-color: #2ad4d8; }
+        .chip small { display: block; font-size: 12px; font-weight: 600; color: #9eb0c4; }
+        .chip b {
+            display: block;
+            margin-top: 2px;
+            font-size: 17px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #summary {
+            position: absolute;
+            z-index: 2;
+            top: calc(84px + env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: calc(100% - 24px);
+            box-sizing: border-box;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: rgba(22, 26, 32, 0.94);
+            font-size: 17px;
+            font-weight: 700;
+            text-align: center;
+            pointer-events: none;
+        }
+        #zooms {
+            position: absolute;
+            z-index: 2;
+            right: 12px;
+            bottom: calc(188px + env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        #zooms button {
+            width: 64px;
+            height: 64px;
+            border: 0;
+            border-radius: 18px;
+            background: rgba(22, 26, 32, 0.94);
+            color: white;
+            font: 700 32px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        #copy {
+            position: absolute;
+            z-index: 2;
+            left: 12px;
+            bottom: calc(188px + env(safe-area-inset-bottom));
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            font-size: 12px;
+            pointer-events: none;
+        }
+        #dock {
+            position: absolute;
+            z-index: 2;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 8px 10px calc(10px + env(safe-area-inset-bottom));
+            background: linear-gradient(transparent, rgba(12, 16, 20, 0.78) 28px);
+        }
+        #places {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+        .place {
+            flex: 0 0 auto;
+            min-height: 56px;
+            padding: 0 16px;
+            border: 0;
+            border-radius: 999px;
+            background: rgba(22, 26, 32, 0.94);
+            color: white;
+            font: 700 16px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        #go {
+            width: 100%;
+            min-height: 64px;
+            border: 0;
+            border-radius: 999px;
+            background: #2ad4d8;
+            color: #062428;
+            font: 800 22px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        #go:disabled { background: #5d6b74; color: #d5dde4; }
+        #boom {
+            position: fixed;
+            z-index: 9;
+            left: 12px;
+            right: 12px;
+            top: 12px;
+            color: #ffb4b4;
+            font-size: 14px;
         }
     </style>
 </head>
-<body>
+<body class="planning">
     <canvas id="view"></canvas>
     <section id="maneuver">
-        <div id="arrow">↱</div>
+        <div id="arrow">↑</div>
         <div>
-            <div id="dist">250 m</div>
-            <div id="street">Szabad út</div>
-            <div id="trip">4,2 km · 12 perc</div>
+            <div id="dist">—</div>
+            <div id="street">Útvonal</div>
+            <div id="trip">—</div>
         </div>
     </section>
     <div id="limit">50</div>
-    <div id="speed"><b id="speed-num">8</b><span>km/h</span></div>
-    <canvas id="map" width="248" height="248"></canvas>
+    <div id="speed"><b id="speed-num">0</b><span>km/h</span></div>
+    <canvas id="map" width="280" height="280"></canvas>
+    <button id="open-map" type="button">Térkép</button>
     <section id="card">
         <p id="question">Ez dugó. Menjünk máshol?</p>
         <div id="choices">
@@ -149,39 +311,163 @@
             <button id="igen" type="button">Igen</button>
         </div>
     </section>
+    <section id="plan">
+        <canvas id="plan-map"></canvas>
+        <div id="bar">
+            <button id="chip-a" class="chip on" type="button"></button>
+            <button id="chip-b" class="chip" type="button"></button>
+        </div>
+        <div id="summary">Válaszd ki: honnan és hova</div>
+        <div id="zooms">
+            <button id="zin" type="button">+</button>
+            <button id="zout" type="button">−</button>
+        </div>
+        <div id="copy">© OpenStreetMap</div>
+        <div id="dock">
+            <div id="places"></div>
+            <button id="go" type="button" disabled>Indítás</button>
+        </div>
+    </section>
+    <div id="boom"></div>
     <script>
         var canvas = document.getElementById("view");
         var ctx = canvas.getContext("2d");
+        var planCanvas = document.getElementById("plan-map");
+        var planCtx = planCanvas.getContext("2d");
         var card = document.getElementById("card");
         var width = 1;
         var height = 1;
         var horizon = 200;
-        var choice = "ask";
+        var choice = "";
         var along = 0;
-        var tripM = 4200;
-        var nextM = 250;
-        var speedKmh = 8;
+        var speedKmh = 0;
         var cam = { x: 0, y: 1.85, z: 10.4 };
         var car = { x: 0, z: 3.6, yaw: 0 };
         var straight = line(0, 16, 0, -3, 8);
+        var ahead = line(0, 16, 0, -80, 28);
         var leftRoad = bend(-1);
         var rightRoad = bend(1);
         var queue = [0x3a4048, 0xd8d4cc, 0x8a3030, 0x22262c, 0xc8c2b8, 0x4a4038, 0x1c2026].map(function (color, index) {
             return { color: color, index: 3 + index * 2 };
         });
+        var places = [
+            { name: "Parlament", lat: 47.507121, lon: 19.045669 },
+            { name: "Hősök tere", lat: 47.51487, lon: 19.07796 },
+            { name: "Keleti", lat: 47.50047, lon: 19.08398 },
+            { name: "Nyugati", lat: 47.51086, lon: 19.05722 },
+            { name: "Széll Kálmán tér", lat: 47.50721, lon: 19.02468 },
+            { name: "Budai vár", lat: 47.49614, lon: 19.03958 },
+            { name: "Móricz Zsigmond körtér", lat: 47.47728, lon: 19.04748 },
+            { name: "Örs vezér tere", lat: 47.50298, lon: 19.13555 },
+            { name: "Déli pályaudvar", lat: 47.50022, lon: 19.02495 },
+            { name: "Lánchíd", lat: 47.49889, lon: 19.04361 }
+        ];
+        var center = { lat: 47.497, lon: 19.040 };
+        var zoom = 14;
+        var aPoint = null;
+        var bPoint = null;
+        var active = "a";
+        var route = null;
+        var altRoute = null;
+        var loading = false;
+        var routeToken = 0;
+        var routeTimer = 0;
+        var tiles = {};
+        var drag = null;
+        var mode = "plan";
+        var traveled = 0;
+        var arrived = false;
+        var saidArrive = false;
+        var asked = false;
+        var jamOn = false;
+        var tripLive = false;
+        var driveGen = 0;
 
         document.getElementById("igen").addEventListener("click", function () { pick("yes"); });
         document.getElementById("nem").addEventListener("click", function () { pick("no"); });
-        if (location.hash === "#igen") {
-            pick("yes");
-            along = 0.5;
-        }
-        if (location.hash === "#nem") pick("no");
-        if (choice === "ask") speak("Ez dugó. Menjünk máshol?");
-
+        document.getElementById("chip-a").addEventListener("click", function () { active = "a"; updateChips(); });
+        document.getElementById("chip-b").addEventListener("click", function () { active = "b"; updateChips(); });
+        document.getElementById("zin").addEventListener("click", function () { setZoom(zoom + 1); });
+        document.getElementById("zout").addEventListener("click", function () { setZoom(zoom - 1); });
+        document.getElementById("go").addEventListener("click", goPressed);
+        document.getElementById("open-map").addEventListener("click", openPlan);
+        document.getElementById("map").addEventListener("click", openPlan);
+        planCanvas.addEventListener("pointerdown", pointerDown);
+        planCanvas.addEventListener("pointermove", pointerMove);
+        planCanvas.addEventListener("pointerup", pointerUp);
+        planCanvas.addEventListener("pointercancel", pointerUp);
+        planCanvas.addEventListener("contextmenu", function (event) { event.preventDefault(); });
+        planCanvas.addEventListener("wheel", function (event) {
+            event.preventDefault();
+            setZoom(zoom + (event.deltaY > 0 ? -1 : 1));
+        });
         window.addEventListener("resize", resize);
+        window.onerror = function (msg) {
+            document.getElementById("boom").textContent = "Hiba: " + msg;
+        };
+
+        addPlaces();
+        applyQuery();
+        updateChips();
+        updateSummary();
         resize();
+        if (aPoint && bPoint) {
+            fetchRoute(function () {
+                if (query("go") === "1" && route && route.distance >= 40) startDrive();
+            });
+        }
         requestAnimationFrame(frame);
+
+        function query(name) {
+            var parts = location.search.replace(/^\?/, "").split("&");
+            var i;
+            for (i = 0; i < parts.length; i++) {
+                var pair = parts[i].split("=");
+                var key = decodeURIComponent(pair[0] || "").replace(/\+/g, " ");
+                if (key === name) return decodeURIComponent(pair.slice(1).join("=") || "").replace(/\+/g, " ");
+            }
+            return "";
+        }
+
+        function applyQuery() {
+            var from = findPlace(query("a"));
+            var to = findPlace(query("b"));
+            if (from) aPoint = from;
+            if (to) bPoint = to;
+            if (aPoint && !bPoint) active = "b";
+        }
+
+        function findPlace(name) {
+            if (!name) return null;
+            var want = name.toLowerCase();
+            var i;
+            for (i = 0; i < places.length; i++) {
+                if (places[i].name.toLowerCase() === want) {
+                    return { lat: places[i].lat, lon: places[i].lon, name: places[i].name };
+                }
+            }
+            return null;
+        }
+
+        function addPlaces() {
+            var row = document.getElementById("places");
+            var i;
+            for (i = 0; i < places.length; i++) {
+                var button = document.createElement("button");
+                button.type = "button";
+                button.className = "place";
+                button.textContent = places[i].name;
+                button.setAttribute("data-name", places[i].name);
+                button.addEventListener("click", onPlace);
+                row.appendChild(button);
+            }
+        }
+
+        function onPlace(event) {
+            var name = event.currentTarget.getAttribute("data-name");
+            var place = findPlace(name);
+            if (place) setPoint(active, place, true);
+        }
 
         function line(x1, z1, x2, z2, steps) {
             var points = [];
@@ -207,15 +493,21 @@
         }
 
         function resize() {
-            width = window.innerWidth;
-            height = window.innerHeight;
+            width = window.innerWidth || 1;
+            height = window.innerHeight || 1;
             var ratio = Math.min(window.devicePixelRatio || 1, 2);
-            canvas.width = Math.max(1, Math.floor(width * ratio));
-            canvas.height = Math.max(1, Math.floor(height * ratio));
-            canvas.style.width = width + "px";
-            canvas.style.height = height + "px";
-            ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+            fitCanvas(canvas, ctx, ratio);
+            fitCanvas(planCanvas, planCtx, ratio);
             horizon = height * (height > width ? 0.4 : 0.46);
+            if (mode === "plan") paintPlan();
+        }
+
+        function fitCanvas(el, context, ratio) {
+            el.width = Math.max(1, Math.floor(width * ratio));
+            el.height = Math.max(1, Math.floor(height * ratio));
+            el.style.width = width + "px";
+            el.style.height = height + "px";
+            context.setTransform(ratio, 0, 0, ratio, 0, 0);
         }
 
         function project(x, y, z) {
@@ -318,12 +610,12 @@
         }
 
         function dome(x, z, y, radius, color) {
-            var center = project(x, y, z);
+            var centerP = project(x, y, z);
             var edge = project(x + radius, y, z);
-            if (!center || !edge) return;
+            if (!centerP || !edge) return;
             ctx.fillStyle = color;
             ctx.beginPath();
-            ctx.arc(center.x, center.y, Math.abs(edge.x - center.x), Math.PI, 0, true);
+            ctx.arc(centerP.x, centerP.y, Math.abs(edge.x - centerP.x), Math.PI, 0, true);
             ctx.fill();
         }
 
@@ -375,31 +667,557 @@
             tree(-13, -16, 2.5);
             tree(10, -10, 2);
             tree(13, -20, 2.3);
-            ribbon(straight, 7.2, "#2c333c", 1);
-            ribbon(leftRoad, 4.6, "#2c333c", 1);
-            ribbon(rightRoad, 4.6, "#2c333c", 1);
-            ribbon(leftRoad.slice(5), 1.2, "#ffb15a", 0.55);
-            ribbon(rightRoad.slice(5), 1.35, "#2ad4d8", 0.72);
-            ribbon(rightRoad.slice(5), 0.22, "#f4ffff", 0.95);
-            var i;
-            for (i = queue.length - 1; i >= 0; i--) {
-                var spot = leftRoad[queue[i].index];
-                var next = leftRoad[queue[i].index + 1];
-                var yaw = Math.atan2(next.x - spot.x, next.z - spot.z) + Math.PI;
-                var hex = queue[i].color.toString(16);
-                while (hex.length < 6) hex = "0" + hex;
-                drawCar(spot.x, spot.z, yaw, "#" + hex, false);
+            if (jamOn) {
+                ribbon(straight, 7.2, "#2c333c", 1);
+                ribbon(leftRoad, 4.6, "#2c333c", 1);
+                ribbon(rightRoad, 4.6, "#2c333c", 1);
+                ribbon(leftRoad.slice(5), 1.2, "#ffb15a", 0.55);
+                ribbon(rightRoad.slice(5), 1.35, "#2ad4d8", 0.72);
+                ribbon(rightRoad.slice(5), 0.22, "#f4ffff", 0.95);
+                var i;
+                for (i = queue.length - 1; i >= 0; i--) {
+                    var spot = leftRoad[queue[i].index];
+                    var next = leftRoad[queue[i].index + 1];
+                    var yaw = Math.atan2(next.x - spot.x, next.z - spot.z) + Math.PI;
+                    var hex = queue[i].color.toString(16);
+                    while (hex.length < 6) hex = "0" + hex;
+                    drawCar(spot.x, spot.z, yaw, "#" + hex, false);
+                }
+            } else {
+                ribbon(ahead, 7.4, "#2c333c", 1);
+                ribbon(ahead, 0.16, "#e7eef2", 0.85);
             }
             drawCar(car.x, car.z, car.yaw, "#d01218", true);
         }
 
+        function world(lat, lon, z) {
+            var n = Math.pow(2, z) * 256;
+            var x = (lon + 180) / 360 * n;
+            var s = Math.sin(lat * Math.PI / 180);
+            if (s > 0.9999) s = 0.9999;
+            if (s < -0.9999) s = -0.9999;
+            var y = (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n;
+            return { x: x, y: y };
+        }
+
+        function sinh(value) {
+            return (Math.exp(value) - Math.exp(-value)) / 2;
+        }
+
+        function unworld(x, y, z) {
+            var n = Math.pow(2, z) * 256;
+            var lon = x / n * 360 - 180;
+            var lat = Math.atan(sinh(Math.PI * (1 - 2 * y / n))) * 180 / Math.PI;
+            if (lat > 85) lat = 85;
+            if (lat < -85) lat = -85;
+            return { lat: lat, lon: lon };
+        }
+
+        function toScreen(lat, lon) {
+            var origin = world(center.lat, center.lon, zoom);
+            var point = world(lat, lon, zoom);
+            return { x: width * 0.5 + (point.x - origin.x), y: height * 0.5 + (point.y - origin.y) };
+        }
+
+        function screenToLatLon(sx, sy) {
+            var origin = world(center.lat, center.lon, zoom);
+            return unworld(origin.x + (sx - width * 0.5), origin.y + (sy - height * 0.5), zoom);
+        }
+
+        function tileImage(z, x, y) {
+            var key = z + "/" + x + "/" + y;
+            if (Object.prototype.hasOwnProperty.call(tiles, key)) return tiles[key];
+            var img = new Image();
+            tiles[key] = img;
+            img.onload = function () {
+                if (mode === "plan") paintPlan();
+            };
+            img.onerror = function () { img.failed = true; };
+            img.src = "https://tile.openstreetmap.org/" + key + ".png";
+            return img;
+        }
+
+        function paintPlan() {
+            if (width < 2 || height < 2) return;
+            planCtx.fillStyle = "#d7e0e6";
+            planCtx.fillRect(0, 0, width, height);
+            var origin = world(center.lat, center.lon, zoom);
+            var left = origin.x - width * 0.5;
+            var top = origin.y - height * 0.5;
+            var x0 = Math.floor(left / 256);
+            var y0 = Math.floor(top / 256);
+            var x1 = Math.floor((left + width) / 256);
+            var y1 = Math.floor((top + height) / 256);
+            var max = Math.pow(2, zoom);
+            var tx;
+            var ty;
+            for (tx = x0; tx <= x1; tx++) {
+                for (ty = y0; ty <= y1; ty++) {
+                    if (ty < 0 || ty >= max) continue;
+                    var wrap = tx % max;
+                    if (wrap < 0) wrap += max;
+                    var img = tileImage(zoom, wrap, ty);
+                    var sx = tx * 256 - left;
+                    var sy = ty * 256 - top;
+                    if (img && img.complete && img.naturalWidth > 0) planCtx.drawImage(img, sx, sy, 256, 256);
+                    else {
+                        planCtx.fillStyle = "#d7e0e6";
+                        planCtx.fillRect(sx, sy, 256, 256);
+                    }
+                }
+            }
+            if (altRoute) drawPlanLine(altRoute.coords, "rgba(255,255,255,0.7)", 4);
+            if (route) drawPlanLine(route.coords, "#128f99", 7);
+            if (aPoint) marker(aPoint.lat, aPoint.lon, "#3ddc84", "A");
+            if (bPoint) marker(bPoint.lat, bPoint.lon, "#e7c56a", "B");
+            if (tripLive && route) {
+                var here = pointAt(traveled);
+                var spot = toScreen(here.lat, here.lon);
+                planCtx.fillStyle = "#ff3b4a";
+                planCtx.beginPath();
+                planCtx.arc(spot.x, spot.y, 8, 0, Math.PI * 2);
+                planCtx.fill();
+            }
+        }
+
+        function drawPlanLine(coords, color, lineWidth) {
+            if (!coords || coords.length < 2) return;
+            planCtx.strokeStyle = color;
+            planCtx.lineWidth = lineWidth;
+            planCtx.lineJoin = "round";
+            planCtx.lineCap = "round";
+            planCtx.beginPath();
+            var i;
+            for (i = 0; i < coords.length; i++) {
+                var point = toScreen(coords[i].lat, coords[i].lon);
+                if (i === 0) planCtx.moveTo(point.x, point.y);
+                else planCtx.lineTo(point.x, point.y);
+            }
+            planCtx.stroke();
+        }
+
+        function marker(lat, lon, fill, letter) {
+            var point = toScreen(lat, lon);
+            planCtx.fillStyle = fill;
+            planCtx.beginPath();
+            planCtx.arc(point.x, point.y, 16, 0, Math.PI * 2);
+            planCtx.fill();
+            planCtx.lineWidth = 3;
+            planCtx.strokeStyle = "white";
+            planCtx.stroke();
+            planCtx.fillStyle = "#062428";
+            planCtx.font = "800 16px Segoe UI, Trebuchet MS, sans-serif";
+            planCtx.textAlign = "center";
+            planCtx.textBaseline = "middle";
+            planCtx.fillText(letter, point.x, point.y + 1);
+        }
+
+        function setZoom(next) {
+            zoom = Math.max(12, Math.min(16, next));
+            paintPlan();
+        }
+
+        function pointerDown(event) {
+            try { planCanvas.setPointerCapture(event.pointerId); } catch (error) { return; }
+            drag = { id: event.pointerId, x: event.clientX, y: event.clientY, lat: center.lat, lon: center.lon, moved: false };
+        }
+
+        function pointerMove(event) {
+            if (!drag || event.pointerId !== drag.id) return;
+            var dx = event.clientX - drag.x;
+            var dy = event.clientY - drag.y;
+            if (dx * dx + dy * dy > 64) drag.moved = true;
+            if (!drag.moved) return;
+            var origin = world(drag.lat, drag.lon, zoom);
+            var next = unworld(origin.x - dx, origin.y - dy, zoom);
+            center.lat = next.lat;
+            center.lon = next.lon;
+            paintPlan();
+        }
+
+        function pointerUp(event) {
+            if (!drag || event.pointerId !== drag.id) return;
+            var moved = drag.moved;
+            var rect = planCanvas.getBoundingClientRect();
+            drag = null;
+            if (moved) return;
+            if (event.type === "pointercancel") return;
+            var latlon = screenToLatLon(event.clientX - rect.left, event.clientY - rect.top);
+            setPoint(active, { lat: latlon.lat, lon: latlon.lon, name: nameFor(latlon.lat, latlon.lon) }, false);
+        }
+
+        function nameFor(lat, lon) {
+            var best = null;
+            var bestD = 350;
+            var i;
+            for (i = 0; i < places.length; i++) {
+                var dist = haversine({ lat: lat, lon: lon }, places[i]);
+                if (dist < bestD) {
+                    bestD = dist;
+                    best = places[i];
+                }
+            }
+            if (best) return best.name;
+            return active === "a" ? "A pont" : "B pont";
+        }
+
+        function setPoint(which, place, recenter) {
+            var point = { lat: place.lat, lon: place.lon, name: place.name };
+            if (which === "a") aPoint = point;
+            else bPoint = point;
+            active = which === "a" ? "b" : "a";
+            tripLive = false;
+            document.getElementById("go").textContent = "Indítás";
+            if (recenter) {
+                center.lat = place.lat;
+                center.lon = place.lon;
+            }
+            updateChips();
+            scheduleRoute();
+        }
+
+        function updateChips() {
+            var a = document.getElementById("chip-a");
+            var b = document.getElementById("chip-b");
+            a.className = "chip" + (active === "a" ? " on" : "");
+            b.className = "chip" + (active === "b" ? " on" : "");
+            a.innerHTML = "<small>A · Honnan</small><b>" + (aPoint ? aPoint.name : "Koppints a térképre") + "</b>";
+            b.innerHTML = "<small>B · Hova</small><b>" + (bPoint ? bPoint.name : "Koppints a térképre") + "</b>";
+        }
+
+        function tooClose() {
+            return aPoint && bPoint && haversine(aPoint, bPoint) < 40;
+        }
+
+        function updateSummary() {
+            var el = document.getElementById("summary");
+            var go = document.getElementById("go");
+            if (!aPoint || !bPoint) {
+                el.textContent = "Válaszd ki: honnan és hova";
+                go.disabled = true;
+                return;
+            }
+            if (tooClose()) {
+                el.textContent = "A és B túl közel van";
+                go.disabled = true;
+                return;
+            }
+            if (loading || !route) {
+                el.textContent = "Útvonal keresése…";
+                go.disabled = true;
+                return;
+            }
+            var mins = Math.max(1, Math.round(route.duration / 60));
+            var text = formatMeters(route.distance) + " · " + mins + " perc";
+            if (route.offline) text = text + " · a hálózat nem válaszolt";
+            el.textContent = text;
+            go.disabled = false;
+        }
+
+        function scheduleRoute() {
+            if (routeTimer) clearTimeout(routeTimer);
+            route = null;
+            altRoute = null;
+            loading = false;
+            updateSummary();
+            paintPlan();
+            if (!aPoint || !bPoint || tooClose()) return;
+            loading = true;
+            updateSummary();
+            routeTimer = setTimeout(function () { fetchRoute(); }, 300);
+        }
+
+        function routeUrl(lon1, lat1, lon2, lat2) {
+            return "https://router.project-osrm.org/route/v1/driving/"
+                + lon1 + "," + lat1 + ";" + lon2 + "," + lat2
+                + "?overview=full&geometries=geojson&steps=true&alternatives=true";
+        }
+
+        function fetchRoute(done) {
+            if (!aPoint || !bPoint) return;
+            var token = ++routeToken;
+            loading = true;
+            updateSummary();
+            fetch(routeUrl(aPoint.lon, aPoint.lat, bPoint.lon, bPoint.lat)).then(function (res) {
+                return res.json();
+            }).then(function (data) {
+                if (token !== routeToken) return;
+                loading = false;
+                if (!data.routes || !data.routes.length) useFallback();
+                else {
+                    route = parseRoute(data.routes[0]);
+                    altRoute = data.routes.length > 1 ? parseRoute(data.routes[1]) : null;
+                    fitPoints(route.coords);
+                }
+                updateSummary();
+                if (mode === "plan") paintPlan();
+                if (done) done();
+            }).catch(function () {
+                if (token !== routeToken) return;
+                loading = false;
+                useFallback();
+                updateSummary();
+                if (mode === "plan") paintPlan();
+                if (done) done();
+            });
+        }
+
+        function useFallback() {
+            var meters = haversine(aPoint, bPoint) * 1.4;
+            route = {
+                distance: meters,
+                duration: meters / (30 / 3.6),
+                coords: [{ lat: aPoint.lat, lon: aPoint.lon }, { lat: bPoint.lat, lon: bPoint.lon }],
+                steps: [
+                    { distance: meters, name: "", modifier: "straight", type: "depart" },
+                    { distance: 0, name: bPoint.name, modifier: "", type: "arrive" }
+                ],
+                offline: true
+            };
+            route.cum = buildCum(route.coords);
+            altRoute = null;
+            fitPoints(route.coords);
+        }
+
+        function parseRoute(raw) {
+            var coords = [];
+            var geometry = raw.geometry && raw.geometry.coordinates ? raw.geometry.coordinates : [];
+            var i;
+            for (i = 0; i < geometry.length; i++) coords.push({ lon: geometry[i][0], lat: geometry[i][1] });
+            var steps = [];
+            var leg = raw.legs && raw.legs[0];
+            if (leg && leg.steps) {
+                for (i = 0; i < leg.steps.length; i++) {
+                    var step = leg.steps[i];
+                    var maneuver = step.maneuver || {};
+                    steps.push({
+                        distance: step.distance || 0,
+                        name: step.name || "",
+                        modifier: maneuver.modifier || "",
+                        type: maneuver.type || ""
+                    });
+                }
+            }
+            var parsed = {
+                distance: raw.distance || 0,
+                duration: raw.duration || 0,
+                coords: coords,
+                steps: steps,
+                offline: false
+            };
+            parsed.cum = buildCum(coords);
+            if (!parsed.distance && parsed.cum.length) parsed.distance = parsed.cum[parsed.cum.length - 1];
+            return parsed;
+        }
+
+        function fitPoints(list) {
+            if (!list || !list.length) return;
+            var minLat = 90;
+            var maxLat = -90;
+            var minLon = 180;
+            var maxLon = -180;
+            var i;
+            for (i = 0; i < list.length; i++) {
+                if (list[i].lat < minLat) minLat = list[i].lat;
+                if (list[i].lat > maxLat) maxLat = list[i].lat;
+                if (list[i].lon < minLon) minLon = list[i].lon;
+                if (list[i].lon > maxLon) maxLon = list[i].lon;
+            }
+            var latPad = (maxLat - minLat) * 0.12 || 0.004;
+            var lonPad = (maxLon - minLon) * 0.12 || 0.004;
+            minLat -= latPad;
+            maxLat += latPad;
+            minLon -= lonPad;
+            maxLon += lonPad;
+            var topInset = 118;
+            var bottomInset = height > width ? 210 : 180;
+            var z;
+            zoom = 12;
+            for (z = 16; z >= 12; z--) {
+                var nw = world(maxLat, minLon, z);
+                var se = world(minLat, maxLon, z);
+                if (se.x - nw.x < width - 80 && se.y - nw.y < height - topInset - bottomInset) {
+                    zoom = z;
+                    break;
+                }
+            }
+            var midLat = (minLat + maxLat) / 2;
+            var midLon = (minLon + maxLon) / 2;
+            var mid = world(midLat, midLon, zoom);
+            var focusX = width * 0.5;
+            var focusY = topInset + (height - topInset - bottomInset) * 0.5;
+            var shifted = unworld(mid.x - (focusX - width * 0.5), mid.y - (focusY - height * 0.5), zoom);
+            center.lat = shifted.lat;
+            center.lon = shifted.lon;
+        }
+
+        function haversine(a, b) {
+            var radius = 6371000;
+            var dLat = (b.lat - a.lat) * Math.PI / 180;
+            var dLon = (b.lon - a.lon) * Math.PI / 180;
+            var s1 = Math.sin(dLat / 2);
+            var s2 = Math.sin(dLon / 2);
+            var h = s1 * s1 + Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) * s2 * s2;
+            if (h > 1) h = 1;
+            return 2 * radius * Math.asin(Math.sqrt(h));
+        }
+
+        function buildCum(coords) {
+            var cum = [0];
+            var i;
+            for (i = 1; i < coords.length; i++) cum.push(cum[i - 1] + haversine(coords[i - 1], coords[i]));
+            return cum;
+        }
+
+        function pointAt(meters) {
+            var coords = route.coords;
+            var cum = route.cum;
+            if (!coords.length) return { lat: center.lat, lon: center.lon };
+            if (coords.length === 1 || meters <= 0) return { lat: coords[0].lat, lon: coords[0].lon };
+            var last = cum[cum.length - 1];
+            if (meters >= last) return { lat: coords[coords.length - 1].lat, lon: coords[coords.length - 1].lon };
+            var i = 0;
+            while (i < cum.length - 2 && cum[i + 1] < meters) i++;
+            var span = cum[i + 1] - cum[i];
+            var t = span ? (meters - cum[i]) / span : 0;
+            return {
+                lat: coords[i].lat + (coords[i + 1].lat - coords[i].lat) * t,
+                lon: coords[i].lon + (coords[i + 1].lon - coords[i].lon) * t
+            };
+        }
+
+        function goPressed() {
+            if (tripLive && route) {
+                mode = "drive";
+                document.body.className = asked && !arrived ? "driving asking" : "driving";
+                frame.last = 0;
+                resize();
+                return;
+            }
+            startDrive();
+        }
+
+        function startDrive() {
+            if (!route || route.distance < 40) return;
+            driveGen += 1;
+            traveled = 0;
+            arrived = false;
+            saidArrive = false;
+            asked = false;
+            jamOn = false;
+            choice = "";
+            along = 0;
+            car.x = 0;
+            car.z = 3.6;
+            car.yaw = 0;
+            cam.x = 0;
+            cam.y = 1.85;
+            cam.z = 10.4;
+            tripLive = true;
+            speedKmh = 40;
+            mode = "drive";
+            document.body.className = "driving";
+            card.className = "";
+            document.getElementById("go").textContent = "Indítás";
+            frame.last = 0;
+            resize();
+        }
+
+        function openPlan() {
+            mode = "plan";
+            document.body.className = "planning";
+            if (tripLive && route) document.getElementById("go").textContent = "Folytatás";
+            resize();
+        }
+
+        function maneuverText(step) {
+            if (!step) return { arrow: "↑", label: "Egyenesen" };
+            var type = step.type || "";
+            var modifier = step.modifier || "";
+            if (type === "arrive") return { arrow: "●", label: "Cél" };
+            if (type === "roundabout" || type === "rotary" || type === "exit roundabout" || type === "roundabout turn") {
+                return { arrow: "↻", label: "Körforgalom" };
+            }
+            if (type === "merge") return { arrow: "↑", label: "Egyenesen" };
+            if (modifier === "uturn") return { arrow: "↩", label: "Fordulj vissza" };
+            if (modifier === "sharp left") return { arrow: "↰", label: "Élesen balra" };
+            if (modifier === "sharp right") return { arrow: "↱", label: "Élesen jobbra" };
+            if (modifier === "left") return { arrow: "↰", label: "Balra" };
+            if (modifier === "right") return { arrow: "↱", label: "Jobbra" };
+            if (modifier === "slight left") return { arrow: "↖", label: "Enyhén balra" };
+            if (modifier === "slight right") return { arrow: "↗", label: "Enyhén jobbra" };
+            if (type === "depart") return { arrow: "↑", label: "Indulás" };
+            return { arrow: "↑", label: "Egyenesen" };
+        }
+
+        function upcoming() {
+            var steps = route.steps || [];
+            if (!steps.length) {
+                return { remain: Math.max(0, route.distance - traveled), arrow: "↑", label: "Egyenesen", street: bPoint ? bPoint.name : "" };
+            }
+            var walked = 0;
+            var i;
+            for (i = 0; i < steps.length; i++) {
+                var end = walked + steps[i].distance;
+                var last = i >= steps.length - 1;
+                var next = last ? steps[i] : steps[i + 1];
+                if (traveled < end - 8 || last) {
+                    var info = maneuverText(last || next.type === "arrive" ? steps[steps.length - 1] : next);
+                    var street = next.name || info.label;
+                    if (last || next.type === "arrive") {
+                        info = { arrow: "●", label: "Cél" };
+                        street = bPoint ? bPoint.name : "Cél";
+                    }
+                    var remain = last ? route.distance - traveled : end - traveled;
+                    return { remain: Math.max(0, remain), arrow: info.arrow, label: info.label, street: street };
+                }
+                walked = end;
+            }
+            return { remain: 0, arrow: "●", label: "Cél", street: bPoint ? bPoint.name : "Cél" };
+        }
+
+        function showJam() {
+            asked = true;
+            jamOn = true;
+            choice = "ask";
+            card.className = "show";
+            document.body.className = "driving asking";
+            document.getElementById("question").textContent = "Ez dugó. Menjünk máshol?";
+            speak("Ez dugó. Menjünk máshol?");
+        }
+
+        function maybeAsk() {
+            if (asked || arrived || !route) return;
+            if (route.distance < 250) return;
+            var gate = Math.min(400, route.distance * 0.35);
+            if (traveled >= gate && route.distance - traveled > 80) showJam();
+        }
+
         function pick(next) {
-            if (choice !== "ask" && location.hash === "") return;
+            if (choice !== "ask") return;
             choice = next;
-            card.className = "done";
+            card.className = "show done";
             var text = next === "yes" ? "Arra megyünk." : "Maradunk ezen az úton.";
             document.getElementById("question").textContent = text;
-            if (location.hash === "") speak(text);
+            speak(text);
+            if (next === "yes") takeOtherRoad();
+        }
+
+        function takeOtherRoad() {
+            if (!bPoint || !route) return;
+            var here = pointAt(traveled);
+            var token = ++routeToken;
+            var gen = driveGen;
+            fetch(routeUrl(here.lon, here.lat, bPoint.lon, bPoint.lat)).then(function (res) {
+                return res.json();
+            }).then(function (data) {
+                if (token !== routeToken || gen !== driveGen) return;
+                if (!data.routes || !data.routes.length) return;
+                var picked = data.routes.length > 1 ? data.routes[1] : data.routes[0];
+                route = parseRoute(picked);
+                traveled = 0;
+                arrived = false;
+            }).catch(function () { return; });
         }
 
         function speak(text) {
@@ -422,6 +1240,7 @@
 
         function frame(time) {
             requestAnimationFrame(frame);
+            if (mode !== "drive") return;
             if (!frame.last) frame.last = time;
             var dt = Math.min(0.05, (time - frame.last) / 1000);
             frame.last = time;
@@ -438,108 +1257,120 @@
             }
             moveTrip(dt);
             paint();
-            drawMap();
-        }
-
-        function drawMap() {
-            var board = document.getElementById("map");
-            var pen = board.getContext("2d");
-            var size = 248;
-            pen.clearRect(0, 0, size, size);
-            pen.fillStyle = "#143628";
-            pen.fillRect(0, 0, size, size);
-            pen.fillStyle = "#2b6f96";
-            pen.beginPath();
-            pen.moveTo(78, 0);
-            pen.bezierCurveTo(118, 70, 70, 160, 96, 248);
-            pen.lineTo(132, 248);
-            pen.bezierCurveTo(108, 160, 156, 70, 118, 0);
-            pen.fill();
-            pen.strokeStyle = "rgba(230, 242, 232, 0.35)";
-            pen.lineWidth = 4;
-            pen.beginPath();
-            pen.moveTo(20, 90);
-            pen.lineTo(220, 70);
-            pen.moveTo(30, 150);
-            pen.lineTo(210, 168);
-            pen.stroke();
-            var fork = { x: 132, y: 168 };
-            var goal = { x: 168, y: 36 };
-            var jam = { x: 78, y: 78 };
-            var free = { x: 176, y: 118 };
-            pen.lineCap = "round";
-            pen.lineJoin = "round";
-            pen.strokeStyle = "rgba(255,255,255,0.55)";
-            pen.lineWidth = 8;
-            pen.beginPath();
-            pen.moveTo(132, 236);
-            pen.lineTo(fork.x, fork.y);
-            pen.stroke();
-            pen.strokeStyle = choice === "no" ? "#ffb15a" : "rgba(255,255,255,0.35)";
-            pen.beginPath();
-            pen.moveTo(fork.x, fork.y);
-            pen.quadraticCurveTo(90, 130, jam.x, jam.y);
-            pen.stroke();
-            pen.strokeStyle = choice === "no" ? "rgba(42,212,216,0.35)" : "#2ad4d8";
-            pen.beginPath();
-            pen.moveTo(fork.x, fork.y);
-            pen.quadraticCurveTo(free.x, free.y, goal.x, goal.y);
-            pen.stroke();
-            pen.fillStyle = "#e7c56a";
-            pen.beginPath();
-            pen.arc(goal.x, goal.y, 8, 0, Math.PI * 2);
-            pen.fill();
-            var gone = Math.max(0, Math.min(1, (4200 - tripM) / 3400));
-            var carX = fork.x;
-            var carY = fork.y;
-            if (choice === "yes") {
-                carX = fork.x + (goal.x - fork.x) * gone;
-                carY = fork.y + (goal.y - fork.y) * gone;
-            } else if (choice === "no") {
-                carX = fork.x + (jam.x - fork.x) * gone * 0.45;
-                carY = fork.y + (jam.y - fork.y) * gone * 0.45;
-            }
-            pen.fillStyle = "#ff3b4a";
-            pen.beginPath();
-            pen.moveTo(carX, carY - 12);
-            pen.lineTo(carX + 8, carY + 8);
-            pen.lineTo(carX - 8, carY + 8);
-            pen.fill();
-            pen.fillStyle = "white";
-            pen.font = "bold 18px Segoe UI, Trebuchet MS, sans-serif";
-            pen.textAlign = "center";
-            pen.fillText("N", 124, 22);
+            drawMini();
         }
 
         function moveTrip(dt) {
-            if (choice === "yes") speedKmh = 42;
-            else if (choice === "no") speedKmh = 6;
-            else speedKmh = 8;
-            var meters = speedKmh / 3.6 * dt;
-            if (choice === "yes") {
-                tripM = Math.max(80, tripM - meters);
-                nextM = tripM;
-            } else if (choice === "no") {
-                tripM = Math.max(900, tripM - meters * 0.35);
-                nextM = Math.max(40, nextM - meters * 0.2);
-            } else {
-                nextM = Math.max(40, nextM - meters * 0.15);
+            if (!route) return;
+            if (arrived) {
+                speedKmh = 0;
+                document.getElementById("dist").textContent = "Megérkeztél.";
+                document.getElementById("street").textContent = bPoint ? bPoint.name : "Cél";
+                document.getElementById("arrow").textContent = "●";
+                document.getElementById("trip").textContent = "0 m · 0 perc";
+                document.getElementById("speed-num").textContent = "0";
+                card.className = "";
+                document.body.className = "driving";
+                if (!saidArrive) {
+                    saidArrive = true;
+                    speak("Megérkeztél.");
+                }
+                return;
             }
-            var showM = choice === "ask" ? nextM : tripM;
-            var mins = Math.max(1, Math.round(tripM / (speedKmh / 3.6) / 60));
-            var eta = new Date(Date.now() + mins * 60000);
+            if (choice === "yes") speedKmh = 42;
+            else if (choice === "no") speedKmh = 12;
+            else if (choice === "ask") speedKmh = 8;
+            else speedKmh = 40;
+            traveled += speedKmh / 3.6 * dt;
+            if (traveled >= route.distance) {
+                traveled = route.distance;
+                arrived = true;
+            }
+            maybeAsk();
+            var left = Math.max(0, route.distance - traveled);
+            var up = upcoming();
+            var secs = speedKmh > 1 ? left / (speedKmh / 3.6) : 0;
+            var mins = arrived ? 0 : Math.max(1, Math.round(secs / 60));
+            var eta = new Date(Date.now() + secs * 1000);
             var minute = eta.getMinutes();
             if (minute < 10) minute = "0" + minute;
-            document.getElementById("dist").textContent = formatMeters(showM);
-            document.getElementById("trip").textContent = formatMeters(tripM) + " · " + mins + " perc · " + eta.getHours() + ":" + minute;
+            var street = up.street && up.street !== up.label ? up.label + " · " + up.street : (up.street || up.label);
+            document.getElementById("dist").textContent = arrived ? "Megérkeztél." : formatMeters(up.remain);
+            document.getElementById("street").textContent = arrived ? (bPoint ? bPoint.name : "Cél") : street;
+            document.getElementById("arrow").textContent = arrived ? "●" : up.arrow;
+            document.getElementById("trip").textContent = formatMeters(left) + " · " + mins + " perc · " + eta.getHours() + ":" + minute;
             document.getElementById("speed-num").textContent = String(Math.round(speedKmh));
-            if (choice === "yes") {
-                document.getElementById("arrow").textContent = "↑";
-                document.getElementById("street").textContent = "Kossuth Lajos tér";
-            } else if (choice === "no") {
-                document.getElementById("arrow").textContent = "↑";
-                document.getElementById("street").textContent = "Dugóban maradunk";
+        }
+
+        function drawMini() {
+            var board = document.getElementById("map");
+            var pen = board.getContext("2d");
+            var w = 280;
+            var h = 280;
+            pen.clearRect(0, 0, w, h);
+            pen.fillStyle = "#1a242c";
+            pen.fillRect(0, 0, w, h);
+            if (!route || !route.coords || !route.coords.length) return;
+            var minLat = 90;
+            var maxLat = -90;
+            var minLon = 180;
+            var maxLon = -180;
+            var i;
+            for (i = 0; i < route.coords.length; i++) {
+                var item = route.coords[i];
+                if (item.lat < minLat) minLat = item.lat;
+                if (item.lat > maxLat) maxLat = item.lat;
+                if (item.lon < minLon) minLon = item.lon;
+                if (item.lon > maxLon) maxLon = item.lon;
             }
+            var padLat = (maxLat - minLat) * 0.18 || 0.002;
+            var padLon = (maxLon - minLon) * 0.18 || 0.002;
+            minLat -= padLat;
+            maxLat += padLat;
+            minLon -= padLon;
+            maxLon += padLon;
+            function xy(lat, lon) {
+                return {
+                    x: 24 + (lon - minLon) / (maxLon - minLon || 1) * (w - 48),
+                    y: 24 + (maxLat - lat) / (maxLat - minLat || 1) * (h - 48)
+                };
+            }
+            pen.strokeStyle = "#2ad4d8";
+            pen.lineWidth = 8;
+            pen.lineJoin = "round";
+            pen.lineCap = "round";
+            pen.beginPath();
+            for (i = 0; i < route.coords.length; i++) {
+                var point = xy(route.coords[i].lat, route.coords[i].lon);
+                if (i === 0) pen.moveTo(point.x, point.y);
+                else pen.lineTo(point.x, point.y);
+            }
+            pen.stroke();
+            var start = xy(route.coords[0].lat, route.coords[0].lon);
+            var goal = xy(route.coords[route.coords.length - 1].lat, route.coords[route.coords.length - 1].lon);
+            miniDot(pen, start, "#3ddc84", "A");
+            miniDot(pen, goal, "#e7c56a", "B");
+            var here = pointAt(traveled);
+            var carP = xy(here.lat, here.lon);
+            pen.fillStyle = "#ff3b4a";
+            pen.beginPath();
+            pen.arc(carP.x, carP.y, 11, 0, Math.PI * 2);
+            pen.fill();
+            pen.strokeStyle = "white";
+            pen.lineWidth = 3;
+            pen.stroke();
+        }
+
+        function miniDot(pen, point, fill, letter) {
+            pen.fillStyle = fill;
+            pen.beginPath();
+            pen.arc(point.x, point.y, 14, 0, Math.PI * 2);
+            pen.fill();
+            pen.fillStyle = "#062428";
+            pen.font = "800 14px Segoe UI, Trebuchet MS, sans-serif";
+            pen.textAlign = "center";
+            pen.textBaseline = "middle";
+            pen.fillText(letter, point.x, point.y + 1);
         }
 
         function formatMeters(meters) {

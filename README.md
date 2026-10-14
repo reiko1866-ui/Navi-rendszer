@@ -1,5 +1,7 @@
 # ToonNav3D
 
-A K706 képernyőjére készül. Az első kép a dugó: az út kettéválik, és a rendszer megkérdezi, menjünk-e máshol.
+A K706 képernyőjére készül.
 
-A lap az `index.html`. Álló képernyőn nézd.
+Nyisd meg az `index.html` lapot. A térképen válaszd ki, honnan (A) és hova (B) mennél, aztán nyomd meg az Indítást. Útközben, ha dugó van, a rendszer megkérdezi: menjünk-e máshol.
+
+Álló és fekvő képernyőn is működik.
