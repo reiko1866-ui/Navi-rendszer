@@ -134,13 +134,20 @@
         }
 
         function project(x, y, z) {
-            var depth = cam.z - z;
-            if (depth < 0.35) return null;
+            var dx = x - cam.x;
+            var dz = z - cam.z;
+            var aheadX = -Math.sin(car.yaw);
+            var aheadZ = -Math.cos(car.yaw);
+            var rightX = Math.cos(car.yaw);
+            var rightZ = -Math.sin(car.yaw);
+            var depth = dx * aheadX + dz * aheadZ;
+            if (depth < 1.4) return null;
+            var side = dx * rightX + dz * rightZ;
             var focal = height * 0.92;
-            return {
-                x: width * 0.5 + (x - cam.x) * focal / depth,
-                y: horizon + (cam.y - y) * focal / depth
-            };
+            var sx = width * 0.5 + side * focal / depth;
+            var sy = horizon + (cam.y - y) * focal / depth;
+            if (Math.abs(sx - width * 0.5) > width * 3 || Math.abs(sy) > height * 3) return null;
+            return { x: sx, y: sy };
         }
 
         function poly(points, color, alpha) {
