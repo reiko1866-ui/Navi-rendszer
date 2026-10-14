@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#14181e">
+    <title>ToonNav3D</title>
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #14181e;
+            font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+            color: white;
+        }
+        #view { display: block; width: 100%; height: 100%; }
+        #card {
+            position: fixed;
+            z-index: 2;
+            left: 16px;
+            right: 16px;
+            bottom: calc(16px + env(safe-area-inset-bottom));
+            padding: 26px 18px 18px;
+            border-radius: 28px;
+            background: rgba(22, 26, 32, 0.94);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+            text-align: center;
+        }
+        #question {
+            margin: 0 0 20px;
+            font-size: clamp(20px, 5.4vw, 30px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        #choices { display: flex; gap: 12px; }
+        button {
+            flex: 1;
+            min-height: 64px;
+            border-radius: 999px;
+            font: 700 22px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        #nem {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.38);
+        }
+        #igen {
+            background: #2ad4d8;
+            color: #062428;
+            border: 0;
+        }
+        #card.done #choices { display: none; }
+        #card.done #question { margin-bottom: 6px; }
+        #missing { position: fixed; inset: 24px; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <section id="card">
+        <p id="question">Ez dugó. Menjünk máshol?</p>
+        <div id="choices">
+            <button id="nem" type="button">Nem</button>
+            <button id="igen" type="button">Igen</button>
+        </div>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        var card = document.getElementById("card");
+        if (!window.THREE) {
+            card.hidden = true;
+            var missing = document.createElement("p");
+            missing.id = "missing";
+            missing.textContent = "A kép nem indult el. A kijelző böngészőjében nyisd meg újra, internetkapcsolat kell.";
+            document.body.appendChild(missing);
+        } else {
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(56, 1, 0.1, 220);
+            var renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            renderer.domElement.id = "view";
+            document.body.insertBefore(renderer.domElement, card);
+
+            scene.add(new THREE.HemisphereLight(0xffc7ae, 0x1a2218, 0.7));
+            scene.add(new THREE.AmbientLight(0xfff0e4, 0.28));
+            var sun = new THREE.DirectionalLight(0xffb089, 0.85);
+            sun.position.set(-12, 18, -30);
+            scene.add(sun);
+            paintSky();
+            scene.fog = new THREE.Fog(0xc48470, 22, 78);
+
+            var ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(240, 240),
+                new THREE.MeshLambertMaterial({ color: 0x243028 })
+            );
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -0.35;
+            scene.add(ground);
+            hill(-18, -12, 16, 0.42);
+            hill(16, -20, 11, 0.36);
+
+            var roadMat = new THREE.MeshLambertMaterial({ color: 0x2c333c });
+            var straight = line(0, 14, 0, -3, 8);
+            var leftRoad = bend(-1);
+            var rightRoad = bend(1);
+            ribbon(straight, 7.2, 0, roadMat);
+            ribbon(leftRoad, 4.6, 0.02, roadMat);
+            ribbon(rightRoad, 4.6, 0.02, roadMat);
+            ribbon(leftRoad.slice(5), 1.15, 0.08, new THREE.MeshBasicMaterial({ color: 0xffb15a, transparent: true, opacity: 0.5 }));
+            ribbon(leftRoad.slice(5), 0.22, 0.1, new THREE.MeshBasicMaterial({ color: 0xffe0b0 }));
+            ribbon(rightRoad.slice(5), 1.45, 0.08, new THREE.MeshBasicMaterial({ color: 0x2ad4d8, transparent: true, opacity: 0.5 }));
+            ribbon(rightRoad.slice(5), 0.18, 0.11, new THREE.MeshBasicMaterial({ color: 0xf3ffff }));
+
+            tree(-9.2, -4, 2.1);
+            tree(-12.4, -12, 2.4);
+            tree(-7.4, -16, 1.7);
+            tree(9.2, -8, 1.8);
+            tree(12.2, -18, 2.2);
+
+            var queue = [];
+            [0x3a4048, 0xd8d4cc, 0x8a3030, 0x22262c, 0xc8c2b8, 0x4a4038, 0x1c2026].forEach(function (color, index) {
+                var jamCar = trafficCar(color);
+                var spot = leftRoad[3 + index * 2];
+                var next = leftRoad[4 + index * 2];
+                place(jamCar, spot, next);
+                queue.push(jamCar);
+                scene.add(jamCar);
+            });
+
+            var car = playerCar();
+            car.position.set(0, 0, 3.2);
+            scene.add(car);
+
+            var choice = "ask";
+            var along = 0;
+            document.getElementById("igen").addEventListener("click", function () { pick("yes"); });
+            document.getElementById("nem").addEventListener("click", function () { pick("no"); });
+            var preset = window.location.hash;
+            if (preset === "#igen") {
+                pick("yes");
+                along = 0.5;
+            }
+            if (preset === "#nem") pick("no");
+            if (choice === "ask") speak("Ez dugó. Menjünk máshol?");
+
+            resize();
+            followCamera(1);
+            renderer.render(scene, camera);
+            window.addEventListener("resize", resize);
+            var clock = new THREE.Clock();
+            requestAnimationFrame(frame);
+        }
+
+        function paintSky() {
+            var canvas = document.createElement("canvas");
+            canvas.width = 4;
+            canvas.height = 256;
+            var pen = canvas.getContext("2d");
+            var fade = pen.createLinearGradient(0, 0, 0, 256);
+            fade.addColorStop(0, "#1a2233");
+            fade.addColorStop(0.42, "#6a4a52");
+            fade.addColorStop(0.72, "#d48968");
+            fade.addColorStop(1, "#e7b08a");
+            pen.fillStyle = fade;
+            pen.fillRect(0, 0, 4, 256);
+            scene.background = new THREE.CanvasTexture(canvas);
+        }
+
+        function hill(x, z, radius, flat) {
+            var mesh = new THREE.Mesh(
+                new THREE.SphereGeometry(radius, 22, 14),
+                new THREE.MeshLambertMaterial({ color: 0x1b2820 })
+            );
+            mesh.scale.y = flat;
+            mesh.position.set(x, -radius * flat * 0.72, z);
+            scene.add(mesh);
+        }
+
+        function line(x1, z1, x2, z2, steps) {
+            var points = [];
+            var i;
+            for (i = 0; i <= steps; i++) {
+                var t = i / steps;
+                points.push({ x: x1 + (x2 - x1) * t, z: z1 + (z2 - z1) * t });
+            }
+            return points;
+        }
+
+        function bend(side) {
+            var points = [];
+            var i;
+            for (i = 0; i <= 24; i++) {
+                var t = i / 24;
+                points.push({
+                    x: side * Math.pow(t, 1.55) * 13,
+                    z: -3 - t * 36
+                });
+            }
+            return points;
+        }
+
+        function ribbon(points, width, y, material) {
+            var i;
+            for (i = 0; i < points.length - 1; i++) {
+                var a = points[i];
+                var b = points[i + 1];
+                var dx = b.x - a.x;
+                var dz = b.z - a.z;
+                var len = Math.sqrt(dx * dx + dz * dz);
+                var mesh = new THREE.Mesh(new THREE.BoxGeometry(width, 0.06, len + 0.55), material);
+                mesh.position.set((a.x + b.x) / 2, y, (a.z + b.z) / 2);
+                mesh.rotation.y = Math.atan2(dx, dz);
+                scene.add(mesh);
+            }
+        }
+
+        function addBox(parent, w, h, d, x, y, z, color, basic) {
+            var material = basic
+                ? new THREE.MeshBasicMaterial({ color: color })
+                : new THREE.MeshLambertMaterial({ color: color });
+            var mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+            mesh.position.set(x, y, z);
+            parent.add(mesh);
+            return mesh;
+        }
+
+        function tree(x, z, scale) {
+            var group = new THREE.Group();
+            addBox(group, 0.16, 0.7 * scale, 0.16, 0, 0.35 * scale, 0, 0x243028, false);
+            var crown = new THREE.Mesh(
+                new THREE.SphereGeometry(0.72 * scale, 12, 10),
+                new THREE.MeshLambertMaterial({ color: 0x15241c })
+            );
+            crown.position.y = 1.05 * scale;
+            group.add(crown);
+            group.position.set(x, 0, z);
+            scene.add(group);
+        }
+
+        function trafficCar(color) {
+            var group = new THREE.Group();
+            addBox(group, 1.35, 0.42, 2.2, 0, 0.48, 0, color, false);
+            addBox(group, 1.05, 0.28, 0.9, 0, 0.78, -0.15, 0x1a1e26, false);
+            addBox(group, 0.28, 0.08, 0.05, -0.4, 0.58, 1.08, 0xff2a2a, true);
+            addBox(group, 0.28, 0.08, 0.05, 0.4, 0.58, 1.08, 0xff2a2a, true);
+            return group;
+        }
+
+        function playerCar() {
+            var group = new THREE.Group();
+            addBox(group, 1.9, 0.46, 2.85, 0, 0.5, 0, 0xd01218, false);
+            addBox(group, 1.45, 0.36, 1.25, 0, 0.86, -0.2, 0x1a2030, false);
+            addBox(group, 1.55, 0.07, 0.05, 0, 0.7, 1.4, 0xff2430, true);
+            var wheelGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.18, 12);
+            wheelGeo.rotateZ(Math.PI / 2);
+            var wheelMat = new THREE.MeshLambertMaterial({ color: 0x14171c });
+            [[-0.98, 0.3, 0.9], [0.98, 0.3, 0.9], [-0.98, 0.3, -0.9], [0.98, 0.3, -0.9]].forEach(function (spot) {
+                var wheel = new THREE.Mesh(wheelGeo, wheelMat);
+                wheel.position.set(spot[0], spot[1], spot[2]);
+                group.add(wheel);
+            });
+            return group;
+        }
+
+        function place(group, spot, next) {
+            var dx = next.x - spot.x;
+            var dz = next.z - spot.z;
+            group.position.set(spot.x, 0, spot.z);
+            group.rotation.y = Math.atan2(dx, dz) + Math.PI;
+        }
+
+        function pick(next) {
+            if (choice !== "ask" && window.location.hash === "") return;
+            choice = next;
+            card.className = "done";
+            var text = next === "yes" ? "Arra megyünk." : "Maradunk ezen az úton.";
+            document.getElementById("question").textContent = text;
+            if (window.location.hash === "") speak(text);
+        }
+
+        function speak(text) {
+            if (!window.speechSynthesis) return;
+            try {
+                var voice = new SpeechSynthesisUtterance(text);
+                voice.lang = "hu-HU";
+                voice.rate = 0.96;
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(voice);
+            } catch (error) {
+                return;
+            }
+        }
+
+        function followCamera(blend) {
+            var behindX = car.position.x + Math.sin(car.rotation.y) * 8.4;
+            var behindZ = car.position.z + Math.cos(car.rotation.y) * 8.4;
+            camera.position.x += (behindX - camera.position.x) * blend;
+            camera.position.y += (3.35 - camera.position.y) * blend;
+            camera.position.z += (behindZ - camera.position.z) * blend;
+            camera.lookAt(
+                car.position.x - Math.sin(car.rotation.y) * 9,
+                0.55,
+                car.position.z - Math.cos(car.rotation.y) * 9
+            );
+        }
+
+        function resize() {
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+            camera.aspect = width / Math.max(height, 1);
+            camera.fov = height > width ? 58 : 46;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+
+        function frame() {
+            requestAnimationFrame(frame);
+            var dt = Math.min(clock.getDelta(), 0.05);
+            if (choice === "yes") {
+                along = Math.min(1, along + dt * 0.12);
+                var index = Math.min(rightRoad.length - 2, Math.floor(along * (rightRoad.length - 2)));
+                var spot = rightRoad[index];
+                var next = rightRoad[index + 1];
+                var local = along * (rightRoad.length - 2) - index;
+                car.position.x = spot.x + (next.x - spot.x) * local;
+                car.position.z = spot.z + (next.z - spot.z) * local;
+                car.rotation.y = Math.atan2(next.x - spot.x, next.z - spot.z) + Math.PI;
+            }
+            followCamera(Math.min(1, dt * 3));
+            renderer.render(scene, camera);
+        }
+    </script>
+</body>
+</html>
