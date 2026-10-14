@@ -115,6 +115,18 @@
         }
         #speed b { display: block; font-size: 22px; line-height: 1; }
         #speed span { display: block; margin-top: 2px; font-size: 11px; color: #9eb0c4; }
+        #map {
+            position: fixed;
+            z-index: 2;
+            left: calc(12px + env(safe-area-inset-left));
+            bottom: calc(196px + env(safe-area-inset-bottom));
+            width: 124px;
+            height: 124px;
+            border-radius: 50%;
+            border: 3px solid white;
+            background: #143628;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+        }
     </style>
 </head>
 <body>
@@ -129,6 +141,7 @@
     </section>
     <div id="limit">50</div>
     <div id="speed"><b id="speed-num">8</b><span>km/h</span></div>
+    <canvas id="map" width="248" height="248"></canvas>
     <section id="card">
         <p id="question">Ez dugó. Menjünk máshol?</p>
         <div id="choices">
@@ -425,6 +438,77 @@
             }
             moveTrip(dt);
             paint();
+            drawMap();
+        }
+
+        function drawMap() {
+            var board = document.getElementById("map");
+            var pen = board.getContext("2d");
+            var size = 248;
+            pen.clearRect(0, 0, size, size);
+            pen.fillStyle = "#143628";
+            pen.fillRect(0, 0, size, size);
+            pen.fillStyle = "#2b6f96";
+            pen.beginPath();
+            pen.moveTo(78, 0);
+            pen.bezierCurveTo(118, 70, 70, 160, 96, 248);
+            pen.lineTo(132, 248);
+            pen.bezierCurveTo(108, 160, 156, 70, 118, 0);
+            pen.fill();
+            pen.strokeStyle = "rgba(230, 242, 232, 0.35)";
+            pen.lineWidth = 4;
+            pen.beginPath();
+            pen.moveTo(20, 90);
+            pen.lineTo(220, 70);
+            pen.moveTo(30, 150);
+            pen.lineTo(210, 168);
+            pen.stroke();
+            var fork = { x: 132, y: 168 };
+            var goal = { x: 168, y: 36 };
+            var jam = { x: 78, y: 78 };
+            var free = { x: 176, y: 118 };
+            pen.lineCap = "round";
+            pen.lineJoin = "round";
+            pen.strokeStyle = "rgba(255,255,255,0.55)";
+            pen.lineWidth = 8;
+            pen.beginPath();
+            pen.moveTo(132, 236);
+            pen.lineTo(fork.x, fork.y);
+            pen.stroke();
+            pen.strokeStyle = choice === "no" ? "#ffb15a" : "rgba(255,255,255,0.35)";
+            pen.beginPath();
+            pen.moveTo(fork.x, fork.y);
+            pen.quadraticCurveTo(90, 130, jam.x, jam.y);
+            pen.stroke();
+            pen.strokeStyle = choice === "no" ? "rgba(42,212,216,0.35)" : "#2ad4d8";
+            pen.beginPath();
+            pen.moveTo(fork.x, fork.y);
+            pen.quadraticCurveTo(free.x, free.y, goal.x, goal.y);
+            pen.stroke();
+            pen.fillStyle = "#e7c56a";
+            pen.beginPath();
+            pen.arc(goal.x, goal.y, 8, 0, Math.PI * 2);
+            pen.fill();
+            var gone = Math.max(0, Math.min(1, (4200 - tripM) / 3400));
+            var carX = fork.x;
+            var carY = fork.y;
+            if (choice === "yes") {
+                carX = fork.x + (goal.x - fork.x) * gone;
+                carY = fork.y + (goal.y - fork.y) * gone;
+            } else if (choice === "no") {
+                carX = fork.x + (jam.x - fork.x) * gone * 0.45;
+                carY = fork.y + (jam.y - fork.y) * gone * 0.45;
+            }
+            pen.fillStyle = "#ff3b4a";
+            pen.beginPath();
+            pen.moveTo(carX, carY - 12);
+            pen.lineTo(carX + 8, carY + 8);
+            pen.lineTo(carX - 8, carY + 8);
+            pen.fill();
+            pen.fillStyle = "white";
+            pen.font = "bold 18px Segoe UI, Trebuchet MS, sans-serif";
+            pen.textAlign = "center";
+            pen.fillText("N", 124, 22);
         }
 
         function moveTrip(dt) {
