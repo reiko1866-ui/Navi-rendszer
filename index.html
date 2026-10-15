@@ -5,40 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>ToonNav3D</title>
     <style>
-        html, body { margin: 0; height: 100%; background: #8ecff0; overflow: hidden; }
+        html, body { margin: 0; height: 100%; background: #3f92d6; overflow: hidden; }
         #view { display: block; width: 100%; height: 100%; touch-action: none; }
         #bar {
             position: fixed;
             z-index: 2;
-            top: calc(12px + env(safe-area-inset-top));
-            right: calc(12px + env(safe-area-inset-right));
+            top: calc(10px + env(safe-area-inset-top));
+            right: calc(10px + env(safe-area-inset-right));
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
         button {
-            min-width: 96px;
-            min-height: 64px;
-            padding: 0 16px;
-            border: 0;
-            border-radius: 999px;
-            background: rgba(18, 24, 32, 0.88);
-            color: white;
-            font: 700 18px "Segoe UI", "Trebuchet MS", sans-serif;
+            min-height: 40px;
+            padding: 0 12px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 10px;
+            background: rgba(14, 20, 28, 0.4);
+            color: #f7f4ee;
+            font: 600 13px "Segoe UI", Roboto, sans-serif;
+            letter-spacing: 0.01em;
             touch-action: manipulation;
         }
         #note {
             position: fixed;
             z-index: 2;
-            left: 50%;
-            bottom: calc(14px + env(safe-area-inset-bottom));
-            transform: translateX(-50%);
+            left: calc(12px + env(safe-area-inset-left));
+            bottom: calc(10px + env(safe-area-inset-bottom));
             margin: 0;
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(18, 24, 32, 0.72);
-            color: white;
-            font: 600 14px "Segoe UI", "Trebuchet MS", sans-serif;
-            white-space: nowrap;
+            padding: 5px 10px;
+            border-radius: 8px;
+            background: rgba(14, 20, 28, 0.36);
+            color: rgba(255, 255, 255, 0.9);
+            font: 600 12px "Segoe UI", Roboto, sans-serif;
         }
         #fail {
             display: none;
@@ -52,8 +50,9 @@
             background: rgba(18, 24, 32, 0.94);
             color: white;
             text-align: center;
-            font: 700 20px "Segoe UI", "Trebuchet MS", sans-serif;
+            font: 700 20px "Segoe UI", Roboto, sans-serif;
         }
+
     </style>
 </head>
 <body>
@@ -81,12 +80,10 @@
     var runButton = document.getElementById("run");
     var night = false;
     var driving = true;
-    var travel = 0;
+    var travel = 0.04;
     var wheels = [];
-    var windows = [];
-    var lamps = [];
-    var headlights = [];
     var clouds = [];
+    var spots = [];
     var clock = null;
     var renderer = null;
     var scene = null;
@@ -94,14 +91,31 @@
     var curve = null;
     var car = null;
     var sun = null;
+    var fill = null;
     var hemi = null;
     var groundMat = null;
     var roadMat = null;
+    var shoulderMat = null;
+    var curbMat = null;
+    var hillMat = null;
+    var mountainMat = null;
+    var cloudMat = null;
+    var townGlass = null;
+    var lampMat = null;
+    var headMat = null;
+    var sky = null;
+    var stars = null;
+    var moon = null;
     var camPos = null;
-    var look = null;
+    var lookPos = null;
     var up = null;
-    var right = null;
     var ahead = null;
+    var prevTangent = null;
+    var tmpA = null;
+    var camBack = 9.4;
+    var camUp = 3.8;
+    var lookAhead = 12.5;
+    var lookUp = 0.75;
 
     function showFail(text) {
         fail.textContent = text;
@@ -118,7 +132,7 @@
     });
 
     try {
-        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
     } catch (error) {
         showFail("Ezen a készüléken nem indult el a 3D kép.");
         return;
@@ -129,36 +143,66 @@
         return;
     }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.35));
     renderer.setSize(window.innerWidth, window.innerHeight, false);
+    renderer.outputEncoding = THREE.sRGBEncoding;
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(58, window.innerWidth / Math.max(1, window.innerHeight), 0.1, 220);
+    camera = new THREE.PerspectiveCamera(47, 1, 0.15, 600);
+    scene.add(camera);
     clock = new THREE.Clock();
-    camPos = new THREE.Vector3(0, 4, 10);
-    look = new THREE.Vector3();
+    camPos = new THREE.Vector3(0, 6, 14);
+    lookPos = new THREE.Vector3(0, 1, 0);
     up = new THREE.Vector3(0, 1, 0);
-    right = new THREE.Vector3();
     ahead = new THREE.Vector3();
+    prevTangent = new THREE.Vector3(0, 0, -1);
+    tmpA = new THREE.Vector3();
 
     var gradient = new THREE.DataTexture(new Uint8Array([
-        70, 74, 82, 255,
-        150, 156, 164, 255,
-        255, 255, 255, 255
-    ]), 3, 1, THREE.RGBAFormat);
+        62, 66, 74, 255,
+        118, 122, 130, 255,
+        176, 180, 186, 255,
+        228, 230, 234, 255
+    ]), 4, 1, THREE.RGBAFormat);
     gradient.magFilter = THREE.NearestFilter;
     gradient.minFilter = THREE.NearestFilter;
     gradient.needsUpdate = true;
 
-    function toon(color, both) {
-        var material = new THREE.MeshToonMaterial({ color: color, gradientMap: gradient });
-        if (both) material.side = THREE.DoubleSide;
+    function toon(color) {
+        return new THREE.MeshToonMaterial({ color: color, gradientMap: gradient });
+    }
+
+    function lambert(color) {
+        var material = new THREE.MeshLambertMaterial({ color: color });
         return material;
+    }
+
+    function basic(color) {
+        return new THREE.MeshBasicMaterial({ color: color });
+    }
+
+    function rnd(n) {
+        var x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+        return x - Math.floor(x);
     }
 
     function resize() {
         var w = window.innerWidth;
         var h = Math.max(1, window.innerHeight);
-        camera.aspect = w / h;
+        var aspect = w / h;
+        camera.aspect = aspect;
+        if (aspect < 0.9) {
+            camera.fov = 60;
+            camBack = 7.8;
+            camUp = 3.35;
+            lookAhead = 9.2;
+            lookUp = 0.8;
+        } else {
+            camera.fov = 46;
+            camBack = 8.5;
+            camUp = 4.05;
+            lookAhead = 12.4;
+            lookUp = 0.7;
+        }
         camera.updateProjectionMatrix();
         renderer.setSize(w, h, false);
     }
@@ -168,71 +212,59 @@
 
     var points = [
         new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(22, 0, -12),
-        new THREE.Vector3(46, 0, -8),
-        new THREE.Vector3(62, 0, 14),
-        new THREE.Vector3(44, 0, 36),
-        new THREE.Vector3(16, 0, 42),
-        new THREE.Vector3(-12, 0, 30),
-        new THREE.Vector3(-28, 0, 8),
-        new THREE.Vector3(-16, 0, -14)
+        new THREE.Vector3(26, 0, -4),
+        new THREE.Vector3(54, 0, -14),
+        new THREE.Vector3(84, 0, -2),
+        new THREE.Vector3(98, 0, 26),
+        new THREE.Vector3(76, 0, 50),
+        new THREE.Vector3(42, 0, 60),
+        new THREE.Vector3(10, 0, 46),
+        new THREE.Vector3(-14, 0, 26),
+        new THREE.Vector3(-20, 0, 4),
+        new THREE.Vector3(-6, 0, -10)
     ];
-    curve = new THREE.CatmullRomCurve3(points, true, "catmullrom", 0.12);
+    curve = new THREE.CatmullRomCurve3(points, true, "catmullrom", 0.5);
+
+    function section(u, center, half, y) {
+        var uu = u;
+        if (uu < 0) uu = 0;
+        if (uu > 0.9999) uu = 0.9999;
+        var p = curve.getPointAt(uu);
+        var t = curve.getTangentAt(uu).normalize();
+        tmpA.crossVectors(t, up);
+        if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
+        tmpA.normalize();
+        var left = p.clone().addScaledVector(tmpA, center - half);
+        var right = p.clone().addScaledVector(tmpA, center + half);
+        left.y = y;
+        right.y = y;
+        return [left, right];
+    }
 
     function sideAt(u, amount) {
-        var p = curve.getPointAt(u);
-        var t = curve.getTangentAt(u).normalize();
-        right.crossVectors(t, up);
-        if (right.lengthSq() < 0.0001) right.set(1, 0, 0);
-        right.normalize();
-        return p.addScaledVector(right, amount);
+        return section(u, amount, 0, 0)[0];
     }
 
-    function section(u, width, lift) {
-        var p = curve.getPointAt(u);
-        var t = curve.getTangentAt(u).normalize();
-        right.crossVectors(t, up);
-        if (right.lengthSq() < 0.0001) right.set(1, 0, 0);
-        right.normalize();
-        var a = p.clone().addScaledVector(right, width);
-        var b = p.clone().addScaledVector(right, -width);
-        a.y = lift;
-        b.y = lift;
-        return [a, b];
+    function yawToward(obj, x, z) {
+        var dx = x - obj.position.x;
+        var dz = z - obj.position.z;
+        obj.rotation.set(0, Math.atan2(-dx, -dz), 0);
     }
 
-    function ribbon(width, lift, segments) {
+    function buildStrip(center, half, y, segments, dash, gap) {
         var positions = [];
         var indices = [];
+        var count = 0;
         var i;
-        for (i = 0; i <= segments; i++) {
-            var pair = section(i / segments, width, lift);
-            positions.push(pair[0].x, pair[0].y, pair[0].z, pair[1].x, pair[1].y, pair[1].z);
-            if (i > 0) {
-                var o = (i - 1) * 2;
-                indices.push(o, o + 1, o + 2, o + 1, o + 3, o + 2);
-            }
-        }
-        var geo = new THREE.BufferGeometry();
-        geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-        geo.setIndex(indices);
-        geo.computeVertexNormals();
-        return geo;
-    }
-
-    function dashes(width, lift, segments) {
-        var positions = [];
-        var indices = [];
-        var i;
-        for (i = 0; i < segments; i += 4) {
-            var u0 = i / segments;
-            var u1 = Math.min(1, (i + 1.5) / segments);
-            var s0 = section(u0, width, lift);
-            var s1 = section(u1, width, lift);
-            var base = positions.length / 3;
-            positions.push(s0[0].x, s0[0].y, s0[0].z, s0[1].x, s0[1].y, s0[1].z);
-            positions.push(s1[0].x, s1[0].y, s1[0].z, s1[1].x, s1[1].y, s1[1].z);
+        for (i = 0; i < segments; i++) {
+            if (dash > 0 && (i % (dash + gap)) >= dash) continue;
+            var a = section(i / segments, center, half, y);
+            var b = section((i + 1) / segments, center, half, y);
+            var base = count;
+            positions.push(a[0].x, a[0].y, a[0].z, a[1].x, a[1].y, a[1].z);
+            positions.push(b[0].x, b[0].y, b[0].z, b[1].x, b[1].y, b[1].z);
             indices.push(base, base + 1, base + 2, base + 1, base + 3, base + 2);
+            count += 4;
         }
         var geo = new THREE.BufferGeometry();
         geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
@@ -241,173 +273,604 @@
         return geo;
     }
 
-    groundMat = toon(0x7db85f);
-    var ground = new THREE.Mesh(new THREE.CircleGeometry(120, 48), groundMat);
+    function addStrip(center, half, y, segments, material, dash, gap) {
+        var mesh = new THREE.Mesh(buildStrip(center, half, y, segments, dash || 0, gap || 0), material);
+        mesh.receiveShadow = false;
+        scene.add(mesh);
+        return mesh;
+    }
+
+    groundMat = lambert(0x3f8c34);
+    var ground = new THREE.Mesh(new THREE.CircleGeometry(240, 56), groundMat);
     ground.rotation.x = -Math.PI / 2;
+    ground.position.y = 0;
     scene.add(ground);
 
-    roadMat = toon(0x4a5566, true);
-    scene.add(new THREE.Mesh(ribbon(2.35, 0.08, 240), roadMat));
-    scene.add(new THREE.Mesh(dashes(0.1, 0.12, 220), toon(0xf0d56a, true)));
-
-    function addHill(x, z, s, color) {
-        var hill = new THREE.Mesh(new THREE.SphereGeometry(s, 18, 12), toon(color));
-        hill.position.set(x, -s * 0.45, z);
-        hill.scale.y = 0.62;
-        scene.add(hill);
+    var patchGeo = new THREE.CircleGeometry(1, 14);
+    var patchMats = [lambert(0x57a843), lambert(0x2f7a2c), lambert(0x469338)];
+    var p;
+    for (p = 0; p < 18; p++) {
+        var patch = new THREE.Mesh(patchGeo, patchMats[p % 3]);
+        var pu = (p + 0.2) / 18;
+        var pside = p % 2 ? 1 : -1;
+        var ppos = sideAt(pu, pside * (12 + rnd(p + 2) * 16));
+        var ps = 4 + rnd(p + 5) * 7;
+        patch.rotation.x = -Math.PI / 2;
+        patch.position.set(ppos.x, 0.02, ppos.z);
+        patch.scale.set(ps, ps, 1);
+        scene.add(patch);
     }
 
-    addHill(-50, -36, 16, 0x69a84e);
-    addHill(70, -28, 18, 0x5e9b46);
-    addHill(54, 58, 14, 0x78b45a);
-    addHill(-40, 48, 20, 0x62964a);
-    addHill(8, -52, 12, 0x86c268);
+    roadMat = lambert(0x3a4250);
+    shoulderMat = lambert(0x5d8a40);
+    curbMat = lambert(0xd5cbb8);
+    var lineMat = basic(0xf5f7f8);
+    addStrip(0, 3.45, 0.07, 320, roadMat, 0, 0);
+    addStrip(3.95, 0.5, 0.045, 240, shoulderMat, 0, 0);
+    addStrip(-3.95, 0.5, 0.045, 240, shoulderMat, 0, 0);
+    addStrip(4.58, 0.16, 0.12, 200, curbMat, 0, 0);
+    addStrip(-4.58, 0.16, 0.12, 200, curbMat, 0, 0);
+    addStrip(3.2, 0.075, 0.105, 320, lineMat, 0, 0);
+    addStrip(-3.2, 0.075, 0.105, 320, lineMat, 0, 0);
+    addStrip(0, 0.09, 0.11, 320, lineMat, 2, 4);
 
-    function addTree(u, dist) {
-        var spot = sideAt(u, dist);
+    function paintSky(isNight) {
+        var pos = sky.geometry.attributes.position;
+        var col = sky.geometry.attributes.color;
+            var top = new THREE.Color(isNight ? 0x0c1730 : 0x2f86d2);
+            var mid = new THREE.Color(isNight ? 0x1d3358 : 0x8ecff2);
+            var hor = new THREE.Color(isNight ? 0x2a4468 : 0xc8ebf8);
+        var i;
+        var c = new THREE.Color();
+        for (i = 0; i < pos.count; i++) {
+            var ny = pos.getY(i) / 500;
+            if (ny < 0) ny = 0;
+            if (ny > 1) ny = 1;
+            if (ny < 0.22) {
+                c.copy(hor).lerp(mid, ny / 0.22);
+            } else {
+                c.copy(mid).lerp(top, (ny - 0.22) / 0.78);
+            }
+            col.setXYZ(i, c.r, c.g, c.b);
+        }
+        col.needsUpdate = true;
+    }
+
+    var skyGeo = new THREE.SphereGeometry(500, 28, 16);
+    skyGeo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(skyGeo.attributes.position.count * 3), 3));
+    sky = new THREE.Mesh(skyGeo, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false }));
+    sky.frustumCulled = false;
+    sky.renderOrder = -2;
+    scene.add(sky);
+
+    var starGeo = new THREE.BufferGeometry();
+    var starPos = [];
+    var s;
+    for (s = 0; s < 90; s++) {
+        var ang = rnd(s + 40) * Math.PI * 2;
+        var elev = 0.25 + rnd(s + 80) * 1.05;
+        var rad = 180;
+        starPos.push(Math.cos(ang) * rad, 40 + elev * 70, Math.sin(ang) * rad);
+    }
+    starGeo.setAttribute("position", new THREE.Float32BufferAttribute(starPos, 3));
+    stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xfff8ee, size: 1.7, sizeAttenuation: true, fog: false }));
+    stars.visible = false;
+    scene.add(stars);
+
+    moon = new THREE.Mesh(new THREE.SphereGeometry(2.1, 14, 12), basic(0xfff4d4));
+    moon.position.set(18, 16, -52);
+    moon.visible = false;
+    camera.add(moon);
+
+    hillMat = toon(0x4d9440);
+    mountainMat = lambert(0x7ea4ba);
+    var moundPts = [];
+    var mi;
+    for (mi = 0; mi <= 7; mi++) {
+        var mt = mi / 7;
+        moundPts.push(new THREE.Vector2(Math.sin(mt * Math.PI * 0.5) * 8, Math.cos(mt * Math.PI * 0.5) * 5));
+    }
+    var moundGeo = new THREE.LatheGeometry(moundPts, 10);
+    var farPts = [];
+    for (mi = 0; mi <= 8; mi++) {
+        var ft = mi / 8;
+        farPts.push(new THREE.Vector2(Math.sin(ft * Math.PI * 0.5) * 18, Math.cos(ft * Math.PI * 0.5) * 12));
+    }
+    var farGeo = new THREE.LatheGeometry(farPts, 9);
+
+    for (mi = 0; mi < 7; mi++) {
+        var hu = (mi + 0.35) / 7;
+        var hside = mi % 2 ? 1 : -1;
+        var hpos = sideAt(hu, hside * (20 + rnd(mi + 15) * 8));
+        var mound = new THREE.Mesh(moundGeo, hillMat);
+        var hs = 0.85 + rnd(mi + 6) * 0.7;
+        mound.position.set(hpos.x, 0, hpos.z);
+        mound.scale.set(hs, 0.42 + rnd(mi + 8) * 0.35, hs * 0.9);
+        scene.add(mound);
+    }
+
+    for (mi = 0; mi < 10; mi++) {
+        var fang = mi / 10 * Math.PI * 2 + 0.2;
+        var fr = 132 + rnd(mi + 21) * 18;
+        var farHill = new THREE.Mesh(farGeo, mountainMat);
+        farHill.position.set(40 + Math.cos(fang) * fr, 0, 20 + Math.sin(fang) * fr);
+        farHill.scale.set(0.9 + rnd(mi) * 0.7, 0.55 + rnd(mi + 3) * 0.9, 0.9 + rnd(mi + 1) * 0.6);
+        scene.add(farHill);
+    }
+
+    var trunkGeo = new THREE.CylinderGeometry(0.11, 0.16, 0.9, 6);
+    var pineGeo = new THREE.ConeGeometry(1.05, 1.45, 7);
+    var pineTopGeo = new THREE.ConeGeometry(0.72, 1.15, 7);
+    var roundGeo = new THREE.IcosahedronGeometry(1, 1);
+    var bushGeo = new THREE.IcosahedronGeometry(0.55, 0);
+    var tuftGeo = new THREE.ConeGeometry(0.16, 0.42, 4);
+    var trunkMat = toon(0x8a5a34);
+    var leafMats = [toon(0x2e8a44), toon(0x3b9b50), toon(0x23763a)];
+    var bushMat = toon(0x347f40);
+
+    function addPine(x, z, sc, leaf) {
         var tree = new THREE.Group();
-        var trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 1.1, 6), toon(0x8a5a32));
-        trunk.position.y = 0.55;
-        var leaf = new THREE.Mesh(new THREE.ConeGeometry(0.95, 1.8, 7), toon(u * 10 % 2 > 1 ? 0x3e9a45 : 0x2f8a3c));
-        leaf.position.y = 1.7;
+        var trunk = new THREE.Mesh(trunkGeo, trunkMat);
+        trunk.position.y = 0.45 * sc;
+        trunk.scale.set(sc, sc, sc);
+        var a = new THREE.Mesh(pineGeo, leaf);
+        a.position.y = 1.35 * sc;
+        a.scale.set(sc, sc, sc);
+        var b = new THREE.Mesh(pineTopGeo, leaf);
+        b.position.y = 2.15 * sc;
+        b.scale.set(sc, sc, sc);
         tree.add(trunk);
-        tree.add(leaf);
-        tree.position.set(spot.x, 0, spot.z);
+        tree.add(a);
+        tree.add(b);
+        tree.position.set(x, 0, z);
         scene.add(tree);
     }
 
-    function addBuilding(u, dist, tall) {
+    function addRound(x, z, sc, leaf) {
+        var tree = new THREE.Group();
+        var trunk = new THREE.Mesh(trunkGeo, trunkMat);
+        trunk.position.y = 0.55 * sc;
+        trunk.scale.set(sc * 1.05, sc * 1.25, sc * 1.05);
+        var crown = new THREE.Mesh(roundGeo, leaf);
+        crown.position.y = 1.55 * sc;
+        crown.scale.set(1.15 * sc, 0.9 * sc, 1.05 * sc);
+        var crown2 = new THREE.Mesh(roundGeo, leaf);
+        crown2.position.set(0.28 * sc, 1.35 * sc, 0.12 * sc);
+        crown2.scale.set(0.75 * sc, 0.65 * sc, 0.7 * sc);
+        tree.add(trunk);
+        tree.add(crown);
+        tree.add(crown2);
+        tree.position.set(x, 0, z);
+        scene.add(tree);
+    }
+
+    var ti;
+    for (ti = 0; ti < 26; ti++) {
+        var tu = (ti + 0.37) / 26;
+        var tside = ti % 2 ? 1 : -1;
+        var tdist = 10.4 + rnd(ti + 1) * 3.2;
+        var tpos = sideAt(tu, tside * tdist);
+        var tsc = 0.72 + rnd(ti + 12) * 0.38;
+        var leaf = leafMats[ti % 3];
+        if (ti % 3 === 0) addRound(tpos.x, tpos.z, tsc, leaf);
+        else addPine(tpos.x, tpos.z, tsc, leaf);
+    }
+
+    for (ti = 0; ti < 16; ti++) {
+        var bu = (ti + 0.12) / 16;
+        var bside = ti % 2 ? -1 : 1;
+        var bpos = sideAt(bu, bside * (6.4 + rnd(ti + 30) * 1.6));
+        var bush = new THREE.Mesh(bushGeo, bushMat);
+        var bsc = 0.75 + rnd(ti + 9) * 0.6;
+        bush.position.set(bpos.x, 0.28 * bsc, bpos.z);
+        bush.scale.set(bsc, bsc * 0.72, bsc);
+        scene.add(bush);
+    }
+
+    for (ti = 0; ti < 34; ti++) {
+        var gu = (ti + 0.08) / 34;
+        var gside = ti % 2 ? 1 : -1;
+        var gpos = sideAt(gu, gside * (5.15 + rnd(ti + 17) * 0.7));
+        var tuft = new THREE.Mesh(tuftGeo, leafMats[ti % 3]);
+        tuft.position.set(gpos.x, 0.16, gpos.z);
+        tuft.rotation.y = rnd(ti) * 3;
+        tuft.scale.set(0.8 + rnd(ti + 4), 0.7 + rnd(ti + 6) * 0.8, 0.8);
+        scene.add(tuft);
+    }
+
+    var flowerMats = [toon(0xee6d88), toon(0xf0c84a), toon(0xf7f4ef)];
+    var flowerGeo = new THREE.SphereGeometry(0.1, 6, 5);
+    for (ti = 0; ti < 12; ti++) {
+        var fu = (ti + 0.55) / 12;
+        var fside = ti % 2 ? 1 : -1;
+        var fpos = sideAt(fu, fside * (6.8 + rnd(ti + 50) * 1.2));
+        var flower = new THREE.Mesh(flowerGeo, flowerMats[ti % 3]);
+        flower.position.set(fpos.x, 0.22, fpos.z);
+        scene.add(flower);
+    }
+
+    townGlass = toon(0xb7d4e4);
+    var wallMats = [toon(0xf4e3cb), toon(0xf3d0bd), toon(0xd7e5ee), toon(0xe8e0d2)];
+    var roofMats = [toon(0xc4624e), toon(0x4d6274), toon(0x8d4d3e)];
+    var doorMat = toon(0x6d4a36);
+
+    function addHouse(u, dist, kind) {
         var spot = sideAt(u, dist);
         var block = new THREE.Group();
-        var h = 1.8 + tall;
-        var body = new THREE.Mesh(new THREE.BoxGeometry(2.2, h, 2.2), toon(tall % 2 ? 0xf2e2c4 : 0xe7d3bf));
-        body.position.y = h * 0.5;
-        var roof = new THREE.Mesh(new THREE.BoxGeometry(2.45, 0.28, 2.45), toon(0xc96b4a));
-        roof.position.y = h + 0.1;
-        var glass = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.7, 0.08), toon(0x9fd0e6));
-        glass.position.set(0, h * 0.62, 1.12);
-        windows.push(glass.material);
-        block.add(body);
+        var h = kind === 1 ? 3.5 : (kind === 2 ? 1.7 : 2.35);
+        var w = kind === 2 ? 3.5 : 2.35;
+        var d = 2.15;
+        var wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMats[kind % wallMats.length]);
+        wall.position.y = h * 0.5;
+        block.add(wall);
+        var roof;
+        if (kind === 1) {
+            roof = new THREE.Mesh(new THREE.BoxGeometry(w + 0.28, 0.26, d + 0.28), roofMats[1]);
+            roof.position.y = h + 0.1;
+        } else {
+            roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(w, d) * 0.62, 1.05, 4), roofMats[kind === 2 ? 2 : 0]);
+            roof.position.y = h + 0.42;
+            roof.rotation.y = Math.PI * 0.25;
+        }
         block.add(roof);
-        block.add(glass);
+        var win = new THREE.Mesh(new THREE.BoxGeometry(Math.min(1.5, w * 0.5), 0.62, 0.06), townGlass);
+        win.position.set(-0.15, h * 0.64, d * 0.5 + 0.02);
+        block.add(win);
+        var win2 = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.42, 0.06), townGlass);
+        win2.position.set(w * 0.28, h * 0.66, d * 0.5 + 0.02);
+        block.add(win2);
+        var door = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.86, 0.06), doorMat);
+        door.position.set(w * 0.22, 0.43, d * 0.5 + 0.03);
+        block.add(door);
+        if (kind === 0) {
+            var chim = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.62, 0.26), toon(0x8d5b48));
+            chim.position.set(-w * 0.28, h + 0.72, -0.2);
+            block.add(chim);
+        }
         block.position.set(spot.x, 0, spot.z);
-        var face = curve.getPointAt(u);
-        block.lookAt(face.x, 0.4, face.z);
+        var face = curve.getPointAt(u > 0.999 ? 0.999 : u);
+        yawToward(block, face.x, face.z);
         scene.add(block);
     }
 
+    var houseU = [0.04, 0.16, 0.3, 0.44, 0.58, 0.7, 0.82, 0.93];
+    var hi;
+    for (hi = 0; hi < houseU.length; hi++) {
+        var hside = hi % 2 ? 1 : -1;
+        addHouse(houseU[hi], hside * (14 + (hi % 3) * 2.2), hi % 3);
+    }
+
+    lampMat = toon(0xffe1a4);
+    var metalMat = toon(0x3a4450);
     function addLamp(u) {
-        var spot = sideAt(u, 3.5);
+        var spot = sideAt(u, 6.15);
         var lamp = new THREE.Group();
-        var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 2.2, 6), toon(0x5c6570));
-        pole.position.y = 1.1;
-        var bulbMat = toon(0xf6e2a2);
-        var bulb = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), bulbMat);
-        bulb.position.y = 2.2;
-        lamps.push(bulbMat);
+        var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 3.25, 6), metalMat);
+        pole.position.y = 1.62;
+        var arm = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.7, 5), metalMat);
+        arm.rotation.x = Math.PI / 2;
+        arm.position.set(0, 3.2, -0.28);
+        var cap = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.08, 0.22), metalMat);
+        cap.position.set(0, 3.18, -0.58);
+        var bulb = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), lampMat);
+        bulb.position.set(0, 3.08, -0.58);
         lamp.add(pole);
+        lamp.add(arm);
+        lamp.add(cap);
         lamp.add(bulb);
         lamp.position.set(spot.x, 0, spot.z);
+        var face = curve.getPointAt(u > 0.999 ? 0.999 : u);
+        yawToward(lamp, face.x, face.z);
         scene.add(lamp);
     }
 
-    var i;
-    for (i = 0; i < 28; i++) addTree((i + 0.35) / 28, (i % 2 ? 1 : -1) * (3.6 + (i % 3) * 0.45));
-    for (i = 0; i < 8; i++) addBuilding((i + 0.2) / 8, (i % 2 ? 1 : -1) * 7.5, i % 3);
-    for (i = 0; i < 12; i++) addLamp((i + 0.5) / 12);
+    for (hi = 0; hi < 8; hi++) addLamp((hi + 0.22) / 8);
 
-    for (i = 0; i < 5; i++) {
-        var cloud = new THREE.Mesh(new THREE.SphereGeometry(2.2 + (i % 3) * 0.4, 10, 8), toon(0xffffff));
-        cloud.position.set(-30 + i * 18, 11 + (i % 2) * 2, -20 + (i % 3) * 8);
-        cloud.scale.y = 0.45;
-        clouds.push(cloud);
-        scene.add(cloud);
+    cloudMat = basic(0xfffefe);
+    var cloudGeo = new THREE.SphereGeometry(1, 8, 6);
+    function addCloud(x, y, z, sc) {
+        var g = new THREE.Group();
+        var a = new THREE.Mesh(cloudGeo, cloudMat);
+        a.scale.set(sc, sc * 0.55, sc * 0.8);
+        var b = new THREE.Mesh(cloudGeo, cloudMat);
+        b.position.set(sc * 0.65, -sc * 0.08, 0.1);
+        b.scale.set(sc * 0.62, sc * 0.4, sc * 0.55);
+        var c = new THREE.Mesh(cloudGeo, cloudMat);
+        c.position.set(-sc * 0.5, -sc * 0.05, 0.15);
+        c.scale.set(sc * 0.5, sc * 0.36, sc * 0.48);
+        g.add(a);
+        g.add(b);
+        g.add(c);
+        g.position.set(x, y, z);
+        clouds.push(g);
+        scene.add(g);
+    }
+
+    addCloud(-16, 46, -36, 5.2);
+    addCloud(48, 52, -48, 4.4);
+    addCloud(102, 44, 8, 5.6);
+    addCloud(18, 50, 78, 4.8);
+    addCloud(-46, 47, 36, 4.2);
+
+    var shadowCanvas = document.createElement("canvas");
+    shadowCanvas.width = 64;
+    shadowCanvas.height = 64;
+    var sg = shadowCanvas.getContext("2d");
+    var grd = sg.createRadialGradient(32, 32, 2, 32, 32, 32);
+    grd.addColorStop(0, "rgba(30,40,30,0.38)");
+    grd.addColorStop(0.55, "rgba(30,40,30,0.16)");
+    grd.addColorStop(1, "rgba(30,40,30,0)");
+    sg.fillStyle = grd;
+    sg.fillRect(0, 0, 64, 64);
+    var shadowTex = new THREE.CanvasTexture(shadowCanvas);
+    var shadowMat = new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false });
+    var blobGeo = new THREE.CircleGeometry(1, 18);
+
+    function addBlob(parent, x, y, z, sx, sz) {
+        var blob = new THREE.Mesh(blobGeo, shadowMat);
+        blob.rotation.x = -Math.PI / 2;
+        blob.position.set(x, y, z);
+        blob.scale.set(sx, sz, 1);
+        blob.renderOrder = 2;
+        parent.add(blob);
+    }
+
+    for (ti = 0; ti < 26; ti++) {
+        var su = (ti + 0.37) / 26;
+        var sside = ti % 2 ? 1 : -1;
+        var spos = sideAt(su, sside * (10.4 + rnd(ti + 1) * 3.2));
+        addBlob(scene, spos.x, 0.03, spos.z, 1.15, 1.0);
     }
 
     car = new THREE.Group();
-    var bodyMat = toon(0xe10600);
-    var body = new THREE.Mesh(new THREE.BoxGeometry(1.55, 0.48, 3.15), bodyMat);
-    body.position.set(0, 0.58, 0.05);
-    var cabin = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.42, 1.35), toon(0x1b2433));
-    cabin.position.set(0, 0.98, 0.28);
-    var nose = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.16, 0.7), toon(0xb10d12));
-    nose.position.set(0, 0.42, -1.15);
-    car.add(body);
-    car.add(cabin);
-    car.add(nose);
+    var model = new THREE.Group();
+    model.rotation.y = Math.PI;
+    car.add(model);
+    var bodyMat = toon(0xc41622);
+    function extrude(shape, depth) {
+        var geo = new THREE.ExtrudeGeometry(shape, {
+            depth: depth,
+            bevelEnabled: true,
+            bevelThickness: 0.045,
+            bevelSize: 0.06,
+            bevelSegments: 2,
+            curveSegments: 8,
+            steps: 1
+        });
+        geo.translate(0, 0, -depth / 2);
+        geo.rotateY(-Math.PI / 2);
+        geo.computeVertexNormals();
+        return geo;
+    }
+    var lowShape = new THREE.Shape();
+    lowShape.moveTo(-2.15, 0.28);
+    lowShape.lineTo(-2.15, 0.48);
+    lowShape.quadraticCurveTo(-1.55, 0.66, -0.2, 0.76);
+    lowShape.lineTo(1.85, 0.74);
+    lowShape.lineTo(2.18, 0.58);
+    lowShape.lineTo(2.18, 0.28);
+    lowShape.lineTo(-2.15, 0.28);
+    var lowBody = new THREE.Mesh(extrude(lowShape, 1.76), bodyMat);
+    model.add(lowBody);
+    var bodyShape = new THREE.Shape();
+    bodyShape.moveTo(-0.2, 0.74);
+    bodyShape.lineTo(0.16, 1.22);
+    bodyShape.quadraticCurveTo(0.48, 1.42, 0.98, 1.36);
+    bodyShape.lineTo(1.22, 1.26);
+    bodyShape.lineTo(1.62, 0.78);
+    bodyShape.lineTo(-0.2, 0.74);
+    var body = new THREE.Mesh(extrude(bodyShape, 1.28), bodyMat);
+    model.add(body);
 
+    var skirt = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.1, 3.7), toon(0x241518));
+    skirt.position.set(0, 0.3, 0.02);
+    model.add(skirt);
+    var frontBumper = new THREE.Mesh(new THREE.BoxGeometry(1.68, 0.14, 0.16), toon(0x8d1520));
+    frontBumper.position.set(0, 0.4, -2.1);
+    model.add(frontBumper);
+    var rearBumper = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.16, 0.18), toon(0x8d1520));
+    rearBumper.position.set(0, 0.38, 2.12);
+    model.add(rearBumper);
+    var grill = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.16, 0.05), toon(0x1c2128));
+    grill.position.set(0, 0.5, -2.14);
+    model.add(grill);
+
+    var glassMat = toon(0x173044);
+    var windshield = new THREE.Mesh(new THREE.BoxGeometry(1.12, 0.58, 0.05), glassMat);
+    windshield.position.set(0, 1.02, 0.05);
+    windshield.rotation.x = 0.58;
+    model.add(windshield);
+    var rearGlass = new THREE.Mesh(new THREE.BoxGeometry(1.02, 0.56, 0.07), glassMat);
+    rearGlass.position.set(0, 1.08, 1.7);
+    rearGlass.rotation.x = -0.42;
+    model.add(rearGlass);
+    function pillar(x) {
+        var post = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.5, 0.1), toon(0x9d121c));
+        post.position.set(x, 1.08, 1.7);
+        post.rotation.x = -0.42;
+        model.add(post);
+    }
+    pillar(-0.52);
+    pillar(0.52);
+    var sideGlassL = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.34, 0.78), glassMat);
+    sideGlassL.position.set(-0.66, 1.08, 0.72);
+    model.add(sideGlassL);
+    var sideGlassR = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.34, 0.78), glassMat);
+    sideGlassR.position.set(0.66, 1.08, 0.72);
+    model.add(sideGlassR);
+
+    var mirrorMat = toon(0x2a3038);
+    function mirror(x) {
+        var m = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.1, 0.08), mirrorMat);
+        m.position.set(x, 0.98, -0.15);
+        model.add(m);
+    }
+    mirror(-0.96);
+    mirror(0.96);
+
+    headMat = toon(0xfff6df);
+    function headLight(x) {
+        var lamp = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 8), headMat);
+        lamp.scale.set(1, 0.82, 0.45);
+        lamp.position.set(x, 0.52, -2.12);
+        model.add(lamp);
+        var spot = new THREE.SpotLight(0xfff1c8, 0, 34, 0.52, 0.7, 1.15);
+        spot.position.set(x, 0.52, -2.05);
+        spot.target.position.set(x * 0.25, 0.1, -16);
+        model.add(spot);
+        model.add(spot.target);
+        spots.push(spot);
+    }
+    headLight(-0.48);
+    headLight(0.48);
+
+    var tailMat = basic(0xff4a32);
+    var reverseMat = basic(0xf4f7fb);
+    function tailLight(x) {
+        var housing = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.18, 0.06), toon(0x6d1218));
+        housing.position.set(x, 0.56, 2.16);
+        var lamp = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.13, 0.05), tailMat);
+        lamp.position.set(x, 0.57, 2.22);
+        var back = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.06, 0.04), reverseMat);
+        back.position.set(x + (x > 0 ? -0.1 : 0.1), 0.54, 2.25);
+        model.add(housing);
+        model.add(lamp);
+        model.add(back);
+    }
+    tailLight(-0.58);
+    tailLight(0.58);
+    var tailBar = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.04, 0.04), tailMat);
+    tailBar.position.set(0, 1.32, 1.05);
+    model.add(tailBar);
+    var hatch = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.025, 0.03), toon(0x8f1520));
+    hatch.position.set(0, 0.82, 2.15);
+    model.add(hatch);
+    var plate = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.16, 0.04), basic(0xf4f1e8));
+    plate.position.set(0, 0.42, 2.24);
+    model.add(plate);
+    function exhaust(x) {
+        var pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.05, 0.1, 8), toon(0x2c3138));
+        pipe.rotation.x = Math.PI / 2;
+        pipe.position.set(x, 0.3, 2.16);
+        model.add(pipe);
+    }
+    exhaust(-0.38);
+    exhaust(0.38);
+
+    var amberMat = basic(0xffb03a);
+    function amber(x) {
+        var lamp = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.08, 0.04), amberMat);
+        lamp.position.set(x, 0.46, -2.14);
+        model.add(lamp);
+    }
+    amber(-0.72);
+    amber(0.72);
+
+    var antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.55, 4), toon(0x2c3138));
+    antenna.position.set(0.35, 1.62, 0.7);
+    model.add(antenna);
+
+    var tireMat = toon(0x1a1d22);
+    var rimMat = toon(0xd5dae2);
     function wheelAt(x, z) {
         var holder = new THREE.Group();
-        holder.position.set(x, 0.32, z);
-        var wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.24, 10), toon(0x1a1d24));
-        wheel.rotation.z = Math.PI / 2;
-        var hub = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.26, 8), toon(0xc5ccd4));
-        hub.rotation.z = Math.PI / 2;
-        holder.add(wheel);
-        holder.add(hub);
-        car.add(holder);
+        holder.position.set(x, 0.36, z);
+        var tire = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.24, 16), tireMat);
+        tire.rotation.z = Math.PI / 2;
+        var rim = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.26, 12), rimMat);
+        rim.rotation.z = Math.PI / 2;
+        holder.add(tire);
+        holder.add(rim);
+        var sp;
+        for (sp = 0; sp < 3; sp++) {
+            var spoke = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.18, 0.04), rimMat);
+            spoke.rotation.x = sp * Math.PI / 1.5;
+            spoke.position.x = x > 0 ? 0.12 : -0.12;
+            holder.add(spoke);
+        }
+        var liner = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.46, 0.62), toon(0x14171c));
+        liner.position.set(x > 0 ? -0.12 : 0.12, 0.08, 0);
+        holder.add(liner);
+        var arch = new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.05, 6, 14), toon(0xb11420));
+        arch.rotation.y = Math.PI / 2;
+        arch.position.set(x, 0.4, z);
+        model.add(arch);
+        model.add(holder);
         wheels.push(holder);
     }
-
-    wheelAt(-0.78, -0.95);
-    wheelAt(0.78, -0.95);
-    wheelAt(-0.78, 0.95);
-    wheelAt(0.78, 0.95);
-
-    function lampFace(x) {
-        var mat = toon(0xfff4d2);
-        var face = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.14, 0.06), mat);
-        face.position.set(x, 0.58, -1.55);
-        headlights.push(mat);
-        car.add(face);
-    }
-
-    lampFace(-0.48);
-    lampFace(0.48);
+    wheelAt(-0.92, -1.28);
+    wheelAt(0.92, -1.28);
+    wheelAt(-0.92, 1.22);
+    wheelAt(0.92, 1.22);
+    addBlob(model, 0, 0.04, 0.05, 1.55, 2.35);
     scene.add(car);
 
-    hemi = new THREE.HemisphereLight(0xfff4e0, 0x6a9a48, 0.85);
-    sun = new THREE.DirectionalLight(0xfff2cc, 1.05);
-    sun.position.set(-18, 28, 12);
+    hemi = new THREE.HemisphereLight(0xfff4e4, 0x5a9a40, 0.58);
+    sun = new THREE.DirectionalLight(0xfff0d4, 0.9);
+    sun.position.set(22, 34, 12);
+    fill = new THREE.DirectionalLight(0xd5e7ff, 0.38);
+    fill.position.set(-16, 12, -10);
     scene.add(hemi);
     scene.add(sun);
+    scene.add(sun.target);
+    scene.add(fill);
+    scene.add(fill.target);
 
     function applySky() {
-        var c;
+        var k;
         if (night) {
-            scene.background = new THREE.Color(0x10182a);
-            scene.fog = new THREE.Fog(0x10182a, 16, 62);
-            hemi.color.set(0x31425c);
-            hemi.groundColor.set(0x12160e);
-            hemi.intensity = 0.45;
-            sun.color.set(0x8ea4c4);
-            sun.intensity = 0.28;
-            groundMat.color.set(0x23402c);
+            scene.fog = new THREE.Fog(0x243656, 32, 170);
+            hemi.color.set(0x9eb0d4);
+            hemi.groundColor.set(0x243c2c);
+            hemi.intensity = 0.36;
+            sun.color.set(0xb7c6e6);
+            sun.intensity = 0.24;
+            fill.intensity = 0.12;
+            groundMat.color.set(0x1c522e);
+            roadMat.color.set(0x3c4554);
+            shoulderMat.color.set(0x1a4a2c);
+            curbMat.color.set(0xa39b8e);
+            hillMat.color.set(0x1b4e2c);
+            mountainMat.color.set(0x3d5574);
+            cloudMat.color.set(0x8ea0be);
+            townGlass.color.set(0xffc56a);
+            townGlass.emissive.setHex(0xffb45a);
+            lampMat.color.set(0xffe6b0);
+            lampMat.emissive.setHex(0xffcc80);
+            headMat.color.set(0xfff8e4);
+            headMat.emissive.setHex(0xfff4d2);
             timeButton.textContent = "Nappal";
+            stars.visible = true;
+            moon.visible = true;
+            for (k = 0; k < spots.length; k++) spots[k].intensity = 1.8;
         } else {
-            scene.background = new THREE.Color(0x8ecff0);
-            scene.fog = new THREE.Fog(0x8ecff0, 26, 88);
-            hemi.color.set(0xfff4e0);
-            hemi.groundColor.set(0x6a9a48);
-            hemi.intensity = 0.9;
-            sun.color.set(0xfff2cc);
-            sun.intensity = 1.05;
-            groundMat.color.set(0x7db85f);
+            scene.fog = new THREE.Fog(0xb9dff6, 70, 280);
+            hemi.color.set(0xfff4e4);
+            hemi.groundColor.set(0x5a9a40);
+            hemi.intensity = 0.58;
+            sun.color.set(0xfff0d4);
+            sun.intensity = 0.9;
+            fill.intensity = 0.32;
+            groundMat.color.set(0x3f8c34);
+            roadMat.color.set(0x3a4250);
+            shoulderMat.color.set(0x5d8a40);
+            curbMat.color.set(0xd5cbb8);
+            hillMat.color.set(0x4d9440);
+            mountainMat.color.set(0x7ea4ba);
+            cloudMat.color.set(0xfffefe);
+            townGlass.color.set(0xb7d4e4);
+            townGlass.emissive.setHex(0x000000);
+            lampMat.color.set(0xf0d7a4);
+            lampMat.emissive.setHex(0x000000);
+            headMat.color.set(0xfff6df);
+            headMat.emissive.setHex(0x332200);
             timeButton.textContent = "Éjszaka";
+            stars.visible = false;
+            moon.visible = false;
+            for (k = 0; k < spots.length; k++) spots[k].intensity = 0;
         }
-        for (c = 0; c < windows.length; c++) {
-            windows[c].emissive = new THREE.Color(night ? 0xffc56a : 0x000000);
-            windows[c].color.set(night ? 0xffd27a : 0x9fd0e6);
-        }
-        for (c = 0; c < lamps.length; c++) {
-            lamps[c].emissive = new THREE.Color(night ? 0xffe7a0 : 0x000000);
-            lamps[c].color.set(night ? 0xfff1c4 : 0xf6e2a2);
-        }
-        for (c = 0; c < headlights.length; c++) {
-            headlights[c].emissive = new THREE.Color(night ? 0xfff6d0 : 0x000000);
-            headlights[c].color.set(night ? 0xfff6d0 : 0xfff4d2);
-        }
-        for (c = 0; c < clouds.length; c++) clouds[c].visible = !night;
+        paintSky(night);
+        renderer.setClearColor(night ? 0x0c1730 : 0x3f92d6, 1);
     }
 
     timeButton.addEventListener("click", function () {
@@ -420,26 +883,41 @@
     });
     applySky();
 
+    var aligned = false;
+
     function frame() {
         var dt = clock.getDelta();
         if (dt > 0.05) dt = 0.05;
-        if (driving) travel = (travel + dt * 0.045) % 1;
+        if (driving) travel = (travel + dt * 0.026) % 1;
         var pos = curve.getPointAt(travel);
         var tangent = curve.getTangentAt(travel).normalize();
+        if (prevTangent.dot(tangent) < 0) tangent.negate();
+        prevTangent.copy(tangent);
+        pos.y = 0.07;
         car.position.copy(pos);
-        ahead.copy(pos).addScaledVector(tangent, 3);
-        car.lookAt(ahead.x, pos.y + 0.4, ahead.z);
+        ahead.copy(pos).addScaledVector(tangent, 4);
+        car.lookAt(ahead.x, pos.y, ahead.z);
         var w;
         for (w = 0; w < wheels.length; w++) {
-            if (driving) wheels[w].rotation.x -= dt * 8;
+            if (driving) wheels[w].rotation.x -= dt * 9;
         }
-        var desired = pos.clone().addScaledVector(tangent, -8.2);
-        desired.y += 3.6;
-        camPos.lerp(desired, 0.08);
+        var desired = pos.clone().addScaledVector(tangent, -camBack);
+        desired.y += camUp;
+        var camK = aligned ? (1 - Math.exp(-dt * 2.4)) : 1;
+        if (camK > 1) camK = 1;
+        camPos.lerp(desired, camK);
         camera.position.copy(camPos);
-        look.copy(pos).addScaledVector(tangent, 7);
-        look.y += 1.15;
-        camera.lookAt(look);
+        var lookTarget = pos.clone().addScaledVector(tangent, lookAhead);
+        lookTarget.y = lookUp;
+        var lookK = aligned ? (1 - Math.exp(-dt * 3.1)) : 1;
+        if (lookK > 1) lookK = 1;
+        lookPos.lerp(lookTarget, lookK);
+        aligned = true;
+        camera.lookAt(lookPos);
+        sun.position.set(pos.x + 18, pos.y + 32, pos.z + 10);
+        sun.target.position.copy(pos);
+        fill.position.set(pos.x - 14, pos.y + 10, pos.z - 12);
+        fill.target.position.copy(pos);
         renderer.render(scene, camera);
         window.requestAnimationFrame(frame);
     }
