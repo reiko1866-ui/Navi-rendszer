@@ -1,9 +1,9 @@
 # ToonNav3D
 
-Rajzfilmes 3D-s mintaút, böngészőben. A K706 fekvő képernyőjére készül, telefonon is megnyílik.
+Rajzfilmes, tengerparti 3D-s mintaút a böngészőben. A K706 fekvő képernyőjére készül, telefonon is megnyílik.
 
-Nyisd meg az `index.html` lapot. Egy piros személyautó megy egy mintakörön. A kamera mögötte és fölötte követi. Az út széles, van felfestése és padkája. Az Éjszaka gomb éjszakai képre vált, a Nappal vissza. A Megáll megállítja az autót, a Megy újraindítja.
+Nyisd meg az `index.html` lapot. Egy kék autó megy egy rövid körön. Jobbra víz van, balra házak, távolabb hegyek és egy vár. Az úton türkiz vezetőcsík fut. A kamera az autó mögött és fölött követi.
 
-Ez még nem navigáció. Nincs benne GPS, címkeresés, útvonaltervezés és időjárás.
+A felső számok és a sebesség a mintakörhöz tartoznak. Ha az alsó autó gombbal megállítod, a sebesség 0 lesz, és a kilométer nem csökken. Ez még nem GPS-navigáció. A nap/hold gomb éjszakára vált.
 
 A korábbi térképes lap megmaradt: `elozo-terkep.html`.
