@@ -465,6 +465,8 @@
         var voiceStep = -1;
         var voiceBand = "";
         var gpsLost = false;
+        var shownHeading = null;
+        var turnTimer = 0;
 
         document.getElementById("igen").addEventListener("click", function () { pick("yes"); });
         document.getElementById("nem").addEventListener("click", function () { pick("no"); });
@@ -774,31 +776,16 @@
             var z = 16;
             var anchorX = width * 0.5;
             var anchorY = height * (height > width ? 0.64 : 0.7);
+            if (shownHeading === null) shownHeading = heading;
             ctx.fillStyle = "#e4e0d8";
             ctx.fillRect(0, 0, width, height);
             ctx.save();
             ctx.translate(anchorX, anchorY);
-            ctx.rotate(-heading * Math.PI / 180);
             var origin = world(here.lat, here.lon, z);
-            var rad = heading * Math.PI / 180;
-            var cos = Math.cos(rad);
-            var sin = Math.sin(rad);
-            var minX = origin.x;
-            var maxX = origin.x;
-            var minY = origin.y;
-            var maxY = origin.y;
-            var corners = [[0, 0], [width, 0], [width, height], [0, height]];
-            var c;
-            for (c = 0; c < corners.length; c++) {
-                var dx = corners[c][0] - anchorX;
-                var dy = corners[c][1] - anchorY;
-                var wx = origin.x + cos * dx - sin * dy;
-                var wy = origin.y + sin * dx + cos * dy;
-                if (wx < minX) minX = wx;
-                if (wx > maxX) maxX = wx;
-                if (wy < minY) minY = wy;
-                if (wy > maxY) maxY = wy;
-            }
+            var minX = origin.x - anchorX;
+            var maxX = origin.x + (width - anchorX);
+            var minY = origin.y - anchorY;
+            var maxY = origin.y + (height - anchorY);
             var x0 = Math.floor(minX / 256) - 1;
             var y0 = Math.floor(minY / 256) - 1;
             var x1 = Math.floor(maxX / 256) + 1;
@@ -832,7 +819,7 @@
                 ctx.stroke();
             }
             ctx.restore();
-            drawNavArrow(anchorX, anchorY);
+            drawNavArrow(anchorX, anchorY, shownHeading);
             ctx.fillStyle = "rgba(22,26,32,0.72)";
             ctx.font = "600 12px Segoe UI, Trebuchet MS, sans-serif";
             ctx.textAlign = "center";
@@ -875,32 +862,67 @@
             ctx.stroke();
         }
 
-        function drawNavArrow(x, y) {
-            var s = Math.max(16, Math.min(width, height) * 0.028);
+        function drawNavArrow(x, y, heading) {
+            var s = Math.max(18, Math.min(width, height) * 0.034);
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate((heading || 0) * Math.PI / 180);
             ctx.fillStyle = "rgba(0,0,0,0.25)";
             ctx.beginPath();
-            ctx.ellipse(x, y + s * 0.2, s * 0.85, s * 0.4, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, s * 0.15, s * 0.9, s * 0.42, 0, 0, Math.PI * 2);
             ctx.fill();
             ctx.fillStyle = "#0e7c86";
             ctx.beginPath();
-            ctx.moveTo(x, y - s * 1.25);
-            ctx.lineTo(x + s * 0.78, y + s * 0.9);
-            ctx.lineTo(x, y + s * 0.28);
-            ctx.lineTo(x - s * 0.78, y + s * 0.9);
+            ctx.moveTo(0, -s * 1.35);
+            ctx.lineTo(s * 0.82, s * 0.95);
+            ctx.lineTo(0, s * 0.28);
+            ctx.lineTo(-s * 0.82, s * 0.95);
             ctx.closePath();
             ctx.fill();
             ctx.lineWidth = 3;
             ctx.strokeStyle = "#ffffff";
             ctx.stroke();
+            ctx.restore();
+        }
+
+        function routeHeading() {
+            if (!route) return 0;
+            var back = pointAt(Math.max(0, traveled - 8));
+            var fore = pointAt(Math.min(route.distance, traveled + 18));
+            if (haversine(back, fore) < 6) fore = pointAt(Math.min(route.distance, traveled + 55));
+            return bearingDeg(back, fore);
+        }
+
+        function turnToward(target) {
+            if (turnTimer) {
+                clearTimeout(turnTimer);
+                turnTimer = 0;
+            }
+            if (shownHeading === null) shownHeading = target;
+            stepTurn(target);
+        }
+
+        function stepTurn(target) {
+            if (mode !== "drive") return;
+            var diff = wrapDeg(target - shownHeading);
+            if (Math.abs(diff) < 2) {
+                shownHeading = target;
+                paintDrive();
+                drawMini();
+                return;
+            }
+            var step = diff * 0.34;
+            if (step > 16) step = 16;
+            if (step < -16) step = -16;
+            shownHeading = (shownHeading + step + 360) % 360;
+            paintDrive();
+            drawMini();
+            turnTimer = setTimeout(function () { stepTurn(target); }, 45);
         }
 
         function currentHeading() {
-            if (gpsHeading !== null && speedKmh > 3) return gpsHeading;
-            var from = gpsFix || aPoint || pointAt(Math.max(0, traveled));
-            var to = pointAt(Math.min(route ? route.distance : 0, traveled + 350));
-            if (!from || !to || !route) return 0;
-            if (haversine(from, to) < 20) to = bPoint || to;
-            return bearingDeg(from, to);
+            if (shownHeading !== null) return shownHeading;
+            return routeHeading();
         }
 
         function bearingDeg(a, b) {
@@ -1966,6 +1988,9 @@
             voiceStep = -1;
             voiceBand = "";
             gpsLost = false;
+            shownHeading = null;
+            if (turnTimer) clearTimeout(turnTimer);
+            turnTimer = 0;
             tripLive = true;
             card.className = "";
             document.getElementById("go").textContent = "Indítás";
@@ -2010,6 +2035,8 @@
             gpsWatch = 0;
             if (gpsTimer) clearInterval(gpsTimer);
             gpsTimer = 0;
+            if (turnTimer) clearTimeout(turnTimer);
+            turnTimer = 0;
         }
 
         function onGpsFail() {
@@ -2074,8 +2101,7 @@
                 }
             }
             refreshHud();
-            paintDrive();
-            drawMini();
+            turnToward(routeHeading());
         }
 
         function rerouteFrom(fix) {
@@ -2097,8 +2123,7 @@
                 voiceStep = -1;
                 voiceBand = "";
                 refreshHud();
-                paintDrive();
-                drawMini();
+                turnToward(routeHeading());
             }).catch(function () { return; });
         }
 
