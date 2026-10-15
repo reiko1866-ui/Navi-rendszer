@@ -811,7 +811,15 @@
                         { name: "Halászbástya", kind: "bastion", lat: 47.5022, lon: 19.0348 },
                         { name: "Bazilika", kind: "basilica", lat: 47.5009, lon: 19.0539 },
                         { name: "Hősök tere", kind: "column", lat: 47.515, lon: 19.0778 },
-                        { name: "Citadella", kind: "citadel", lat: 47.4871, lon: 19.0465 }
+                        { name: "Citadella", kind: "citadel", lat: 47.4871, lon: 19.0465 },
+                        { name: "Nyugati", kind: "station", lat: 47.5109, lon: 19.0573 },
+                        { name: "Keleti", kind: "station", lat: 47.5002, lon: 19.0839 },
+                        { name: "Margit híd", kind: "bridge", lat: 47.5147, lon: 19.0434 },
+                        { name: "Erzsébet híd", kind: "bridge", lat: 47.4925, lon: 19.0516 },
+                        { name: "Műpa", kind: "hall", lat: 47.4692, lon: 19.071 },
+                        { name: "Aquincum", kind: "ruin", lat: 47.5634, lon: 19.0492 },
+                        { name: "Újpest", kind: "town", lat: 47.5615, lon: 19.0856 },
+                        { name: "Megyeri híd", kind: "bridge", lat: 47.6076, lon: 19.0915 }
                     ]
                 }
             ];
@@ -832,48 +840,65 @@
         function drawSkyline(heading) {
             var city = cityNow();
             var from = gpsFix || aPoint || { lat: 47.5, lon: 19.04 };
-            var seen = [];
+            var ahead = [];
             var i;
             if (!city) {
-                for (i = -3; i <= 3; i++) shade(width * 0.5 + i * 46, horizon, 28, 18 + (Math.abs(i) % 3) * 8, "#2a3344");
+                quietHouses();
                 return;
             }
             for (i = 0; i < city.marks.length; i++) {
                 var mark = city.marks[i];
                 var diff = wrapDeg(bearingDeg(from, mark) - heading);
-                var dist = haversine(from, mark);
-                seen.push({ mark: mark, diff: diff, dist: dist });
+                if (Math.abs(diff) > 110) continue;
+                ahead.push({ mark: mark, diff: diff, dist: haversine(from, mark) });
             }
-            seen.sort(function (a, b) { return b.dist - a.dist; });
+            ahead.sort(function (a, b) { return a.dist - b.dist; });
+            var kept = [];
+            var p;
+            for (i = 0; i < ahead.length; i++) {
+                var sx = width * 0.5 + (ahead[i].diff / 110) * (width * 0.46);
+                var close = false;
+                for (p = 0; p < kept.length; p++) if (Math.abs(kept[p].x - sx) < 78) close = true;
+                if (close) continue;
+                ahead[i].x = sx;
+                kept.push(ahead[i]);
+                if (kept.length === 4) break;
+            }
+            if (!kept.length) {
+                quietHouses();
+                return;
+            }
+            kept.sort(function (a, b) { return b.dist - a.dist; });
             var labeled = 0;
             var labelX = [];
-            for (i = 0; i < seen.length; i++) {
-                var item = seen[i];
-                if (Math.abs(item.diff) > 100) continue;
+            for (i = 0; i < kept.length; i++) {
+                var item = kept[i];
                 var scale = 2400 / Math.max(650, item.dist);
                 if (scale > 1.25) scale = 1.25;
                 if (scale < 0.48) scale = 0.48;
-                var x = width * 0.5 + (item.diff / 100) * (width * 0.46);
                 var base = horizon + 4;
-                drawMark(item.mark.kind, x, base, scale);
-                var showName = Math.abs(item.diff) < 36 || scale > 0.7;
+                drawMark(item.mark.kind, item.x, base, scale);
+                var onScreen = item.x > 72 && item.x < width - 72;
+                var showName = onScreen && (Math.abs(item.diff) < 42 || scale > 0.7);
                 var crowded = false;
                 var n;
-                for (n = 0; n < labelX.length; n++) if (Math.abs(labelX[n] - x) < 96) crowded = true;
+                for (n = 0; n < labelX.length; n++) if (Math.abs(labelX[n] - item.x) < 96) crowded = true;
                 if (showName && !crowded && labeled < 3) {
-                    labelX.push(x);
+                    labelX.push(item.x);
                     labeled += 1;
                     ctx.fillStyle = "rgba(255,255,255,0.92)";
                     ctx.font = "700 15px Segoe UI, Trebuchet MS, sans-serif";
                     ctx.textAlign = "center";
-                    ctx.fillText(item.mark.name, x, base - 64 * scale - 10);
+                    ctx.fillText(item.mark.name, item.x, base - 64 * scale - 10);
                 }
             }
-            if (!labeled) {
-                ctx.fillStyle = "rgba(255,255,255,0.55)";
-                ctx.font = "600 13px Segoe UI, Trebuchet MS, sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText(city.name, width * 0.5, horizon - 28);
+        }
+
+        function quietHouses() {
+            var i;
+            for (i = -4; i <= 4; i++) {
+                var h = 12 + (Math.abs(i * 3) % 5) * 6;
+                shade(width * 0.5 + i * width * 0.1, horizon, 18 + (Math.abs(i) % 3) * 10, h, "#2c3848");
             }
         }
 
@@ -929,6 +954,19 @@
                 shade(x, y, 70 * s, 16 * s, "#cbb89a");
                 shade(x - 22 * s, y - 16 * s, 8 * s, 10 * s, "#ddd0b4");
                 shade(x + 18 * s, y - 16 * s, 8 * s, 12 * s, "#ddd0b4");
+            } else if (kind === "station") {
+                shade(x, y, 72 * s, 20 * s, "#e4d3b6");
+                arch(x, y - 20 * s, 16 * s, "#f3e6cc");
+                shade(x, y - 34 * s, 3 * s, 12 * s, "#f7f1e4");
+            } else if (kind === "hall") {
+                shade(x, y, 80 * s, 24 * s, "#d5dce6");
+                shade(x, y - 16 * s, 68 * s, 5 * s, "#7ec8cc");
+            } else if (kind === "ruin") {
+                var r;
+                for (r = -2; r <= 2; r++) shade(x + r * 10 * s, y, 4 * s, 16 * s + (Math.abs(r) % 2) * 10 * s, "#eadcc4");
+            } else if (kind === "town") {
+                shade(x, y, 26 * s, 44 * s, "#e6d4b4");
+                shade(x, y - 44 * s, 8 * s, 10 * s, "#f6efe2");
             }
         }
 
