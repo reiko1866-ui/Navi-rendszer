@@ -1,0 +1,2414 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#14181e">
+    <title>ToonNav3D</title>
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #14181e;
+            font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+            color: white;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        #view { display: block; width: 100%; height: 100%; }
+        #card {
+            display: none;
+            position: fixed;
+            z-index: 2;
+            left: 50%;
+            bottom: calc(14px + env(safe-area-inset-bottom));
+            transform: translateX(-50%);
+            width: min(720px, calc(100% - 28px));
+            box-sizing: border-box;
+            padding: 22px 18px 16px;
+            border-radius: 28px;
+            background: rgba(22, 26, 32, 0.94);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+            text-align: center;
+        }
+        #card.show { display: block; }
+        #question {
+            margin: 0 0 16px;
+            font-size: clamp(20px, 4.6vw, 32px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        #choices { display: flex; gap: 12px; }
+        #choices button {
+            flex: 1;
+            min-height: 64px;
+            border-radius: 999px;
+            font: 700 22px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        #nem {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.38);
+        }
+        #igen {
+            background: #2ad4d8;
+            color: #062428;
+            border: 0;
+        }
+        #card.done #choices { display: none; }
+        #card.done #question { margin-bottom: 4px; }
+        #maneuver {
+            position: fixed;
+            z-index: 2;
+            top: calc(12px + env(safe-area-inset-top));
+            left: calc(12px + env(safe-area-inset-left));
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            max-width: calc(100% - 96px);
+            padding: 10px 14px;
+            border-radius: 18px;
+            background: rgba(22, 26, 32, 0.94);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+        }
+        #arrow {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(42, 212, 216, 0.16);
+            color: #2ad4d8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            flex: 0 0 auto;
+        }
+        #dist { font-size: clamp(26px, 6vw, 40px); font-weight: 800; line-height: 1; }
+        #street { margin-top: 4px; font-size: 16px; color: #d5dde8; }
+        #trip { margin-top: 2px; font-size: 13px; color: #9eb0c4; }
+        #limit {
+            position: fixed;
+            z-index: 2;
+            top: calc(12px + env(safe-area-inset-top));
+            right: calc(12px + env(safe-area-inset-right));
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid #e10600;
+            color: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 800;
+        }
+        #speed {
+            position: fixed;
+            z-index: 2;
+            top: calc(76px + env(safe-area-inset-top));
+            right: calc(12px + env(safe-area-inset-right));
+            min-width: 64px;
+            padding: 6px 8px 5px;
+            border-radius: 14px;
+            background: rgba(22, 26, 32, 0.94);
+            text-align: center;
+        }
+        #speed b { display: block; font-size: 22px; line-height: 1; }
+        #speed span { display: block; margin-top: 2px; font-size: 11px; color: #9eb0c4; }
+        #map {
+            position: fixed;
+            z-index: 2;
+            left: calc(12px + env(safe-area-inset-left));
+            bottom: calc(16px + env(safe-area-inset-bottom));
+            width: 140px;
+            height: 140px;
+            border-radius: 22px;
+            border: 3px solid white;
+            background: #1a242c;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+            touch-action: manipulation;
+        }
+        #open-map {
+            position: fixed;
+            z-index: 2;
+            right: calc(12px + env(safe-area-inset-right));
+            bottom: calc(16px + env(safe-area-inset-bottom));
+            min-height: 64px;
+            padding: 0 18px;
+            border: 0;
+            border-radius: 999px;
+            background: rgba(22, 26, 32, 0.94);
+            color: white;
+            font: 700 18px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        body.asking #map,
+        body.asking #open-map { bottom: calc(196px + env(safe-area-inset-bottom)); }
+        body.planning #view,
+        body.planning #maneuver,
+        body.planning #limit,
+        body.planning #speed,
+        body.planning #map,
+        body.planning #card,
+        body.planning #open-map { display: none; }
+        #plan {
+            position: fixed;
+            inset: 0;
+            z-index: 5;
+            background: #d7e0e6;
+        }
+        body.driving #plan,
+        body.driving #dock,
+        body.driving #bar,
+        body.driving #card { display: none; }
+        body.driving #view { display: block; }
+        body.driving #map { display: block; }
+        body.driving #maneuver,
+        body.driving #limit,
+        body.driving #speed,
+        body.driving #open-map,
+        body.driving #map { z-index: 6; }
+        body.driving #open-map {
+            left: auto;
+            right: calc(12px + env(safe-area-inset-right));
+            transform: none;
+            bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+        #plan-map { display: block; width: 100%; height: 100%; touch-action: none; }
+        #bar {
+            position: absolute;
+            z-index: 2;
+            top: calc(10px + env(safe-area-inset-top));
+            left: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        .chip {
+            flex: 1;
+            min-width: 0;
+            min-height: 64px;
+            padding: 8px 14px;
+            border-radius: 18px;
+            border: 2px solid transparent;
+            background: rgba(22, 26, 32, 0.94);
+            color: white;
+            text-align: left;
+            font: 700 16px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        .chip.on { border-color: #2ad4d8; }
+        .chip small { display: block; font-size: 12px; font-weight: 600; color: #9eb0c4; }
+        .chip b {
+            display: block;
+            margin-top: 2px;
+            font-size: 17px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #summary {
+            margin: 6px 2px;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            color: white;
+        }
+        #zooms {
+            position: absolute;
+            z-index: 2;
+            right: 12px;
+            bottom: calc(54% + 8px);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        #zooms button {
+            width: 64px;
+            height: 64px;
+            border: 0;
+            border-radius: 18px;
+            background: rgba(22, 26, 32, 0.94);
+            color: white;
+            font: 700 32px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        #copy {
+            position: absolute;
+            z-index: 2;
+            left: 12px;
+            bottom: calc(54% + 8px);
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            font-size: 12px;
+            pointer-events: none;
+        }
+        #dock {
+            position: absolute;
+            z-index: 3;
+            left: 10px;
+            right: 10px;
+            bottom: calc(10px + env(safe-area-inset-bottom));
+            max-height: 52%;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            padding: 10px;
+            border-radius: 22px;
+            background: rgba(22, 26, 32, 0.96);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        }
+        #q {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 64px;
+            border: 0;
+            border-radius: 16px;
+            padding: 0 16px;
+            background: white;
+            color: #142028;
+            font: 700 18px "Segoe UI", "Trebuchet MS", sans-serif;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+        #gps {
+            width: 100%;
+            min-height: 56px;
+            margin-top: 8px;
+            border: 0;
+            border-radius: 999px;
+            background: #2ad4d8;
+            color: #062428;
+            font: 800 18px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        #gps:disabled { background: #5d6b74; color: #d5dde4; }
+        #list-label {
+            margin: 10px 4px 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #9eb0c4;
+        }
+        #results { overflow-y: auto; min-height: 52px; flex: 1 1 auto; }
+        .hint { margin: 6px 4px 8px; color: #c5d0dc; font-size: 15px; font-weight: 600; }
+        .hit-row { display: flex; gap: 6px; margin-bottom: 6px; }
+        .hit {
+            flex: 1;
+            min-width: 0;
+            min-height: 56px;
+            padding: 8px 12px;
+            border: 0;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            text-align: left;
+            font: 700 16px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        .hit b, .hit small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hit small { margin-top: 2px; font-size: 13px; font-weight: 600; color: #9eb0c4; }
+        .drop {
+            flex: 0 0 44px;
+            min-height: 56px;
+            border: 0;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            font-size: 22px;
+            touch-action: manipulation;
+        }
+        #go {
+            width: 100%;
+            min-height: 64px;
+            margin-top: 4px;
+            border: 0;
+            border-radius: 999px;
+            background: #2ad4d8;
+            color: #062428;
+            font: 800 22px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+            flex: 0 0 auto;
+        }
+        #go:disabled { background: #5d6b74; color: #d5dde4; }
+        @media (orientation: landscape) {
+            #dock {
+                top: calc(84px + env(safe-area-inset-top));
+                bottom: calc(10px + env(safe-area-inset-bottom));
+                left: calc(10px + env(safe-area-inset-left));
+                right: auto;
+                width: 400px;
+                max-width: 46vw;
+                max-height: none;
+            }
+            #zooms { bottom: calc(12px + env(safe-area-inset-bottom)); }
+            #copy {
+                left: auto;
+                right: 88px;
+                bottom: calc(16px + env(safe-area-inset-bottom));
+            }
+        }
+        #boom {
+            position: fixed;
+            z-index: 9;
+            left: 12px;
+            right: 12px;
+            top: 12px;
+            color: #ffb4b4;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body class="planning">
+    <canvas id="view"></canvas>
+    <section id="maneuver">
+        <div id="arrow">↑</div>
+        <div>
+            <div id="dist">—</div>
+            <div id="street">Útvonal</div>
+            <div id="trip">—</div>
+        </div>
+    </section>
+    <div id="limit">50</div>
+    <div id="speed"><b id="speed-num">0</b><span>km/h</span></div>
+    <canvas id="map" width="280" height="280"></canvas>
+    <button id="open-map" type="button">Térkép</button>
+    <section id="card">
+        <p id="question">Ez dugó. Menjünk máshol?</p>
+        <div id="choices">
+            <button id="nem" type="button">Nem</button>
+            <button id="igen" type="button">Igen</button>
+        </div>
+    </section>
+    <section id="plan">
+        <canvas id="plan-map"></canvas>
+        <div id="bar">
+            <button id="chip-a" class="chip" type="button"></button>
+            <button id="chip-b" class="chip on" type="button"></button>
+        </div>
+        <div id="zooms">
+            <button id="zin" type="button">+</button>
+            <button id="zout" type="button">−</button>
+        </div>
+        <div id="copy">© OpenStreetMap</div>
+        <div id="dock">
+            <input id="q" type="search" inputmode="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Hova? Írd be a címet">
+            <button id="gps" type="button">Ahol vagyok</button>
+            <div id="list-label">Címjegyzék</div>
+            <div id="results"></div>
+            <div id="summary">Ahol vagyok, aztán a pontos cím</div>
+            <button id="go" type="button" disabled>Indítás</button>
+        </div>
+    </section>
+    <div id="boom"></div>
+    <script>
+        var canvas = document.getElementById("view");
+        var ctx = canvas.getContext("2d");
+        var planCanvas = document.getElementById("plan-map");
+        var planCtx = planCanvas.getContext("2d");
+        var card = document.getElementById("card");
+        var width = 1;
+        var height = 1;
+        var horizon = 200;
+        var choice = "";
+        var along = 0;
+        var speedKmh = 0;
+        var speedKnown = false;
+        var gpsWatch = 0;
+        var gpsFix = null;
+        var gpsHeading = null;
+        var cam = { x: 0, y: 1.85, z: 10.4 };
+        var car = { x: 0, z: 3.6, yaw: 0 };
+        var straight = line(0, 16, 0, -3, 8);
+        var ahead = line(0, 16, 0, -80, 28);
+        var leftRoad = bend(-1);
+        var rightRoad = bend(1);
+        var queue = [0x3a4048, 0xd8d4cc, 0x8a3030, 0x22262c, 0xc8c2b8, 0x4a4038, 0x1c2026].map(function (color, index) {
+            return { color: color, index: 3 + index * 2 };
+        });
+        var center = { lat: 47.497, lon: 19.040 };
+        var zoom = 14;
+        var aPoint = null;
+        var bPoint = null;
+        var active = "b";
+        var book = [];
+        var shown = [];
+        var searchTimer = 0;
+        var searchToken = 0;
+        var route = null;
+        var altRoute = null;
+        var loading = false;
+        var routeToken = 0;
+        var routeTimer = 0;
+        var tiles = {};
+        var drag = null;
+        var mode = "plan";
+        var traveled = 0;
+        var arrived = false;
+        var saidArrive = false;
+        var asked = false;
+        var jamOn = false;
+        var tripLive = false;
+        var driveGen = 0;
+        var gpsTimer = 0;
+        var offRoute = false;
+        var offCount = 0;
+        var progressHold = -1;
+        var holdAt = 0;
+        var holdFix = null;
+        var rerouteAt = 0;
+        var voiceStep = -1;
+        var voiceBand = "";
+        var gpsLost = false;
+        var shownHeading = null;
+        var turnTimer = 0;
+
+        document.getElementById("igen").addEventListener("click", function () { pick("yes"); });
+        document.getElementById("nem").addEventListener("click", function () { pick("no"); });
+        document.getElementById("chip-a").addEventListener("click", function () { active = "a"; updateChips(); });
+        document.getElementById("chip-b").addEventListener("click", function () { active = "b"; updateChips(); });
+        document.getElementById("zin").addEventListener("click", function () { setZoom(zoom + 1); });
+        document.getElementById("zout").addEventListener("click", function () { setZoom(zoom - 1); });
+        document.getElementById("go").addEventListener("click", goPressed);
+        document.getElementById("gps").addEventListener("click", useGps);
+        document.getElementById("q").addEventListener("input", onSearchInput);
+        document.getElementById("q").addEventListener("keydown", function (event) {
+            if (event.key === "Enter" && shown.length) pickResult(0);
+        });
+        document.getElementById("results").addEventListener("click", onResultClick);
+        document.getElementById("open-map").addEventListener("click", openPlan);
+        document.getElementById("map").addEventListener("click", openPlan);
+        planCanvas.addEventListener("pointerdown", pointerDown);
+        planCanvas.addEventListener("pointermove", pointerMove);
+        planCanvas.addEventListener("pointerup", pointerUp);
+        planCanvas.addEventListener("pointercancel", pointerUp);
+        planCanvas.addEventListener("contextmenu", function (event) { event.preventDefault(); });
+        planCanvas.addEventListener("wheel", function (event) {
+            event.preventDefault();
+            setZoom(zoom + (event.deltaY > 0 ? -1 : 1));
+        });
+        window.addEventListener("resize", resize);
+        window.onerror = function (msg) {
+            document.getElementById("boom").textContent = "Hiba: " + msg;
+        };
+
+        loadBook();
+        applyQuery();
+        updateChips();
+        updateSummary();
+        showBook();
+        resize();
+
+        function query(name) {
+            var parts = location.search.replace(/^\?/, "").split("&");
+            var i;
+            for (i = 0; i < parts.length; i++) {
+                var pair = parts[i].split("=");
+                var key = decodeURIComponent(pair[0] || "").replace(/\+/g, " ");
+                if (key === name) return decodeURIComponent(pair.slice(1).join("=") || "").replace(/\+/g, " ");
+            }
+            return "";
+        }
+
+        function applyQuery() {
+            var from = query("a");
+            var to = query("b");
+            var left = (from ? 1 : 0) + (to ? 1 : 0);
+            if (!left) return;
+            function finish() {
+                left -= 1;
+                updateChips();
+                if (left > 0) return;
+                if (aPoint && bPoint) {
+                    fetchRoute(function () {
+                        if (query("go") === "1" && route && route.distance >= 40) startDrive();
+                    });
+                }
+            }
+            if (from) lookupQuery(from, "a", finish);
+            if (to) lookupQuery(to, "b", finish);
+        }
+
+        function lookupQuery(text, which, done) {
+            searchNominatim(text, null, function (list) {
+                if (list && list.length) {
+                    if (which === "a") aPoint = list[0];
+                    else bPoint = list[0];
+                }
+                done();
+            });
+        }
+
+        function line(x1, z1, x2, z2, steps) {
+            var points = [];
+            var i;
+            for (i = 0; i <= steps; i++) {
+                var t = i / steps;
+                points.push({ x: x1 + (x2 - x1) * t, z: z1 + (z2 - z1) * t });
+            }
+            return points;
+        }
+
+        function bend(side) {
+            var points = [];
+            var i;
+            for (i = 0; i <= 24; i++) {
+                var t = i / 24;
+                points.push({
+                    x: side * Math.pow(t, 1.55) * 13,
+                    z: -3 - t * 36
+                });
+            }
+            return points;
+        }
+
+        function resize() {
+            width = window.innerWidth || 1;
+            height = window.innerHeight || 1;
+            var ratio = Math.min(window.devicePixelRatio || 1, 2);
+            fitCanvas(canvas, ctx, ratio);
+            fitCanvas(planCanvas, planCtx, ratio);
+            horizon = height * (height > width ? 0.42 : 0.48);
+            if (mode === "drive") {
+                paintDrive();
+                drawMini();
+            } else if (mode === "plan") paintPlan();
+        }
+
+        function fitCanvas(el, context, ratio) {
+            el.width = Math.max(1, Math.floor(width * ratio));
+            el.height = Math.max(1, Math.floor(height * ratio));
+            el.style.width = width + "px";
+            el.style.height = height + "px";
+            context.setTransform(ratio, 0, 0, ratio, 0, 0);
+        }
+
+        function project(x, y, z) {
+            var dx = x - cam.x;
+            var dz = z - cam.z;
+            var aheadX = -Math.sin(car.yaw);
+            var aheadZ = -Math.cos(car.yaw);
+            var rightX = Math.cos(car.yaw);
+            var rightZ = -Math.sin(car.yaw);
+            var depth = dx * aheadX + dz * aheadZ;
+            if (depth < 1.4) return null;
+            var side = dx * rightX + dz * rightZ;
+            var focal = height * 0.92;
+            var sx = width * 0.5 + side * focal / depth;
+            var sy = horizon + (cam.y - y) * focal / depth;
+            if (Math.abs(sx - width * 0.5) > width * 3 || Math.abs(sy) > height * 3) return null;
+            return { x: sx, y: sy };
+        }
+
+        function poly(points, color, alpha) {
+            if (points.some(function (point) { return !point; })) return;
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            var i;
+            for (i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+
+        function ribbon(points, roadWidth, color, alpha) {
+            var i;
+            for (i = points.length - 2; i >= 0; i--) {
+                var a = points[i];
+                var b = points[i + 1];
+                var dx = b.x - a.x;
+                var dz = b.z - a.z;
+                var len = Math.sqrt(dx * dx + dz * dz) || 1;
+                var sideX = -dz / len * roadWidth * 0.5;
+                var sideZ = dx / len * roadWidth * 0.5;
+                poly([
+                    project(a.x + sideX, 0, a.z + sideZ),
+                    project(a.x - sideX, 0, a.z - sideZ),
+                    project(b.x - sideX, 0, b.z - sideZ),
+                    project(b.x + sideX, 0, b.z + sideZ)
+                ], color, alpha);
+            }
+        }
+
+        function face(corners, yaw, origin, color) {
+            var points = corners.map(function (corner) {
+                var x = origin.x + corner[0] * Math.cos(yaw) + corner[2] * Math.sin(yaw);
+                var z = origin.z - corner[0] * Math.sin(yaw) + corner[2] * Math.cos(yaw);
+                return project(x, corner[1], z);
+            });
+            poly(points, color, 1);
+        }
+
+        function drawCar(x, z, yaw, body, big) {
+            var s = big ? 1.05 : 0.72;
+            var origin = { x: x, z: z };
+            face([[-0.85 * s, 0.22, 1.15 * s], [0.85 * s, 0.22, 1.15 * s], [0.85 * s, 0.95 * s, 1.15 * s], [-0.85 * s, 0.95 * s, 1.15 * s]], yaw, origin, body);
+            face([[-0.62 * s, 0.95 * s, 0.15 * s], [0.62 * s, 0.95 * s, 0.15 * s], [0.48 * s, 1.28 * s, -0.3 * s], [-0.48 * s, 1.28 * s, -0.3 * s]], yaw, origin, "#1a2030");
+            face([[-0.62 * s, 0.5, 1.18 * s], [-0.28 * s, 0.5, 1.18 * s], [-0.28 * s, 0.62, 1.18 * s], [-0.62 * s, 0.62, 1.18 * s]], yaw, origin, "#ff2430");
+            face([[0.28 * s, 0.5, 1.18 * s], [0.62 * s, 0.5, 1.18 * s], [0.62 * s, 0.62, 1.18 * s], [0.28 * s, 0.62, 1.18 * s]], yaw, origin, "#ff2430");
+        }
+
+        function tree(x, z, scale) {
+            var base = project(x, 0, z);
+            var top = project(x, 1.6 * scale, z);
+            if (!base || !top) return;
+            var radius = Math.abs(base.y - top.y) * 0.55;
+            ctx.fillStyle = "#15241c";
+            ctx.beginPath();
+            ctx.arc(top.x, top.y + radius * 0.35, radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function sky() {
+            var fade = ctx.createLinearGradient(0, 0, 0, height);
+            fade.addColorStop(0, "#1a2233");
+            fade.addColorStop(0.42, "#6a4a52");
+            fade.addColorStop(0.72, "#d48968");
+            fade.addColorStop(1, "#c98462");
+            ctx.fillStyle = fade;
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = "#243028";
+            ctx.fillRect(0, horizon, width, height - horizon);
+        }
+
+        function block(x, z, w, h, y, color) {
+            poly([
+                project(x - w * 0.5, y, z),
+                project(x + w * 0.5, y, z),
+                project(x + w * 0.5, y + h, z),
+                project(x - w * 0.5, y + h, z)
+            ], color, 1);
+        }
+
+        function dome(x, z, y, radius, color) {
+            var centerP = project(x, y, z);
+            var edge = project(x + radius, y, z);
+            if (!centerP || !edge) return;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(centerP.x, centerP.y, Math.abs(edge.x - centerP.x), Math.PI, 0, true);
+            ctx.fill();
+        }
+
+        function line3(ax, ay, az, bx, by, bz, color) {
+            var a = project(ax, ay, az);
+            var b = project(bx, by, bz);
+            if (!a || !b) return;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+        }
+
+        function city() {
+            var i;
+            for (i = -4; i <= 5; i++) {
+                var h = 2.4 + (Math.abs(i * 3) % 5) * 0.7;
+                block(-22 + i * 3.2, -44, 2.4, h, 0, i % 2 ? "#e7d3b0" : "#d7c4ae");
+                block(-22 + i * 3.2, -44, 2.4, 0.45, h, "#8d4038");
+            }
+            block(-16, -50, 10, 3.2, 2.4, "#c4b49a");
+            block(-16, -50, 3.2, 4.5, 5.2, "#d8c6a4");
+            block(-18.2, -50, 0.35, 3.2, 9.4, "#f4efe4");
+            block(-13.8, -50, 0.35, 2.6, 9.2, "#f4efe4");
+            block(-8, -47, 1.1, 6.4, 0, "#efe4cc");
+            block(-1.5, -47, 1.1, 6.4, 0, "#efe4cc");
+            line3(-8, 6.2, -47, -1.5, 6.2, -47, "#3c4654");
+            line3(-8, 5.2, -47, -4.8, 1.1, -47, "#3c4654");
+            line3(-1.5, 5.2, -47, -4.8, 1.1, -47, "#3c4654");
+            block(9, -56, 16, 4.4, 0, "#f4ead4");
+            block(9, -56, 3.4, 3.6, 4.4, "#f7f0de");
+            for (i = -5; i <= 5; i++) {
+                if (i === 0) continue;
+                block(9 + i * 1.35, -56, 0.28, 1.5, 4.5, "#f7f1e4");
+            }
+            dome(9, -56, 8.2, 2.3, "#d0893e");
+            block(9, -56, 0.16, 2.4, 10.2, "#f8f4ea");
+            block(18, -52, 4.2, 6.2, 0, "#f0e2c4");
+            dome(18, -52, 6.4, 2.1, "#c9844a");
+            block(18, -52, 0.7, 1.6, 8.2, "#f6f1e6");
+        }
+
+        function paint() {
+            sky();
+            city();
+            tree(-10, -6, 2.2);
+            tree(-13, -16, 2.5);
+            tree(10, -10, 2);
+            tree(13, -20, 2.3);
+            if (jamOn) {
+                ribbon(straight, 7.2, "#2c333c", 1);
+                ribbon(leftRoad, 4.6, "#2c333c", 1);
+                ribbon(rightRoad, 4.6, "#2c333c", 1);
+                ribbon(leftRoad.slice(5), 1.2, "#ffb15a", 0.55);
+                ribbon(rightRoad.slice(5), 1.35, "#2ad4d8", 0.72);
+                ribbon(rightRoad.slice(5), 0.22, "#f4ffff", 0.95);
+                var i;
+                for (i = queue.length - 1; i >= 0; i--) {
+                    var spot = leftRoad[queue[i].index];
+                    var next = leftRoad[queue[i].index + 1];
+                    var yaw = Math.atan2(next.x - spot.x, next.z - spot.z) + Math.PI;
+                    var hex = queue[i].color.toString(16);
+                    while (hex.length < 6) hex = "0" + hex;
+                    drawCar(spot.x, spot.z, yaw, "#" + hex, false);
+                }
+            } else {
+                ribbon(ahead, 7.4, "#2c333c", 1);
+                ribbon(ahead, 0.16, "#e7eef2", 0.85);
+            }
+            drawCar(car.x, car.z, car.yaw, "#d01218", true);
+        }
+
+        function paintDrive() {
+            if (!route) return;
+            var here = pointAt(traveled);
+            if (offRoute && gpsFix) here = gpsFix;
+            var heading = currentHeading();
+            var z = 16;
+            var anchorX = width * 0.5;
+            var anchorY = height * (height > width ? 0.64 : 0.7);
+            if (shownHeading === null) shownHeading = heading;
+            ctx.fillStyle = "#e4e0d8";
+            ctx.fillRect(0, 0, width, height);
+            ctx.save();
+            ctx.translate(anchorX, anchorY);
+            var origin = world(here.lat, here.lon, z);
+            var minX = origin.x - anchorX;
+            var maxX = origin.x + (width - anchorX);
+            var minY = origin.y - anchorY;
+            var maxY = origin.y + (height - anchorY);
+            var x0 = Math.floor(minX / 256) - 1;
+            var y0 = Math.floor(minY / 256) - 1;
+            var x1 = Math.floor(maxX / 256) + 1;
+            var y1 = Math.floor(maxY / 256) + 1;
+            var max = Math.pow(2, z);
+            var tx;
+            var ty;
+            for (tx = x0; tx <= x1; tx++) {
+                for (ty = y0; ty <= y1; ty++) {
+                    if (ty < 0 || ty >= max) continue;
+                    var wrap = tx % max;
+                    if (wrap < 0) wrap += max;
+                    var img = tileImage(z, wrap, ty);
+                    var sx = tx * 256 - origin.x;
+                    var sy = ty * 256 - origin.y;
+                    if (img && img.complete && img.naturalWidth > 0) ctx.drawImage(img, sx, sy, 256, 256);
+                }
+            }
+            var parts = routeParts();
+            driveLine(origin, z, parts.behind, "rgba(150,156,164,0.9)", 10);
+            driveLine(origin, z, parts.ahead, "#ffffff", 14);
+            driveLine(origin, z, parts.ahead, "#128f99", 8);
+            if (bPoint) {
+                var goal = world(bPoint.lat, bPoint.lon, z);
+                ctx.fillStyle = "#e7c56a";
+                ctx.beginPath();
+                ctx.arc(goal.x - origin.x, goal.y - origin.y, 9, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = "#ffffff";
+                ctx.stroke();
+            }
+            ctx.restore();
+            drawNavArrow(anchorX, anchorY, shownHeading);
+            ctx.fillStyle = "rgba(22,26,32,0.72)";
+            ctx.font = "600 12px Segoe UI, Trebuchet MS, sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "alphabetic";
+            ctx.fillText("© OpenStreetMap", width * 0.5, height - 10);
+        }
+
+        function routeParts() {
+            var coords = route.coords;
+            var cum = route.cum;
+            var behind = [];
+            var ahead = [];
+            var cut = traveled;
+            var i;
+            for (i = 0; i < coords.length; i++) {
+                if (cum[i] <= cut) behind.push(coords[i]);
+                if (cum[i] >= cut) ahead.push(coords[i]);
+            }
+            var mid = pointAt(cut);
+            if (behind.length) behind.push(mid);
+            if (!ahead.length || ahead[0] !== mid) ahead.unshift(mid);
+            return { behind: behind, ahead: ahead };
+        }
+
+        function driveLine(origin, z, points, color, lineWidth) {
+            if (!points || points.length < 2) return;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.lineJoin = "round";
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            var i;
+            for (i = 0; i < points.length; i++) {
+                var p = world(points[i].lat, points[i].lon, z);
+                var x = p.x - origin.x;
+                var y = p.y - origin.y;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        function drawNavArrow(x, y, heading) {
+            var s = Math.max(18, Math.min(width, height) * 0.034);
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate((heading || 0) * Math.PI / 180);
+            ctx.fillStyle = "rgba(0,0,0,0.25)";
+            ctx.beginPath();
+            ctx.ellipse(0, s * 0.15, s * 0.9, s * 0.42, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#0e7c86";
+            ctx.beginPath();
+            ctx.moveTo(0, -s * 1.35);
+            ctx.lineTo(s * 0.82, s * 0.95);
+            ctx.lineTo(0, s * 0.28);
+            ctx.lineTo(-s * 0.82, s * 0.95);
+            ctx.closePath();
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#ffffff";
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function routeHeading() {
+            if (!route) return 0;
+            var back = pointAt(Math.max(0, traveled - 8));
+            var fore = pointAt(Math.min(route.distance, traveled + 18));
+            if (haversine(back, fore) < 6) fore = pointAt(Math.min(route.distance, traveled + 55));
+            return bearingDeg(back, fore);
+        }
+
+        function turnToward(target) {
+            if (turnTimer) {
+                clearTimeout(turnTimer);
+                turnTimer = 0;
+            }
+            if (shownHeading === null) shownHeading = target;
+            stepTurn(target);
+        }
+
+        function stepTurn(target) {
+            if (mode !== "drive") return;
+            var diff = wrapDeg(target - shownHeading);
+            if (Math.abs(diff) < 2) {
+                shownHeading = target;
+                paintDrive();
+                drawMini();
+                return;
+            }
+            var step = diff * 0.34;
+            if (step > 16) step = 16;
+            if (step < -16) step = -16;
+            shownHeading = (shownHeading + step + 360) % 360;
+            paintDrive();
+            drawMini();
+            turnTimer = setTimeout(function () { stepTurn(target); }, 45);
+        }
+
+        function currentHeading() {
+            if (shownHeading !== null) return shownHeading;
+            return routeHeading();
+        }
+
+        function bearingDeg(a, b) {
+            var lat1 = a.lat * Math.PI / 180;
+            var lat2 = b.lat * Math.PI / 180;
+            var dLon = (b.lon - a.lon) * Math.PI / 180;
+            var y = Math.sin(dLon) * Math.cos(lat2);
+            var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+            return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+        }
+
+        function wrapDeg(value) {
+            var n = value % 360;
+            if (n > 180) n -= 360;
+            if (n < -180) n += 360;
+            return n;
+        }
+
+        function cityNow() {
+            var list = [
+                {
+                    name: "Budapest",
+                    lat: 47.5,
+                    lon: 19.05,
+                    radius: 20000,
+                    marks: [
+                        { name: "Parlament", kind: "parliament", lat: 47.5074, lon: 19.0456 },
+                        { name: "Lánchíd", kind: "bridge", lat: 47.4989, lon: 19.0437 },
+                        { name: "Budai vár", kind: "castle", lat: 47.4961, lon: 19.0396 },
+                        { name: "Halászbástya", kind: "bastion", lat: 47.5022, lon: 19.0348 },
+                        { name: "Bazilika", kind: "basilica", lat: 47.5009, lon: 19.0539 },
+                        { name: "Hősök tere", kind: "column", lat: 47.515, lon: 19.0778 },
+                        { name: "Citadella", kind: "citadel", lat: 47.4871, lon: 19.0465 },
+                        { name: "Nyugati", kind: "station", lat: 47.5109, lon: 19.0573 },
+                        { name: "Keleti", kind: "station", lat: 47.5002, lon: 19.0839 },
+                        { name: "Margit híd", kind: "bridge", lat: 47.5147, lon: 19.0434 },
+                        { name: "Erzsébet híd", kind: "bridge", lat: 47.4925, lon: 19.0516 },
+                        { name: "Műpa", kind: "hall", lat: 47.4692, lon: 19.071 },
+                        { name: "Aquincum", kind: "ruin", lat: 47.5634, lon: 19.0492 },
+                        { name: "Újpest", kind: "town", lat: 47.5615, lon: 19.0856 },
+                        { name: "Megyeri híd", kind: "bridge", lat: 47.6076, lon: 19.0915 }
+                    ]
+                }
+            ];
+            var probes = [];
+            if (aPoint) probes.push(aPoint);
+            if (bPoint) probes.push(bPoint);
+            if (gpsFix) probes.push(gpsFix);
+            var i;
+            var c;
+            for (i = 0; i < probes.length; i++) {
+                for (c = 0; c < list.length; c++) {
+                    if (haversine(probes[i], list[c]) < list[c].radius) return list[c];
+                }
+            }
+            return null;
+        }
+
+        function drawSkyline(heading) {
+            var city = cityNow();
+            var from = gpsFix || aPoint || { lat: 47.5, lon: 19.04 };
+            var ahead = [];
+            var i;
+            if (!city) {
+                quietHouses();
+                return;
+            }
+            for (i = 0; i < city.marks.length; i++) {
+                var mark = city.marks[i];
+                var diff = wrapDeg(bearingDeg(from, mark) - heading);
+                if (Math.abs(diff) > 110) continue;
+                ahead.push({ mark: mark, diff: diff, dist: haversine(from, mark) });
+            }
+            ahead.sort(function (a, b) { return a.dist - b.dist; });
+            var kept = [];
+            var p;
+            for (i = 0; i < ahead.length; i++) {
+                var sx = width * 0.5 + (ahead[i].diff / 110) * (width * 0.46);
+                var close = false;
+                for (p = 0; p < kept.length; p++) if (Math.abs(kept[p].x - sx) < 78) close = true;
+                if (close) continue;
+                ahead[i].x = sx;
+                kept.push(ahead[i]);
+                if (kept.length === 4) break;
+            }
+            if (!kept.length) {
+                quietHouses();
+                return;
+            }
+            kept.sort(function (a, b) { return b.dist - a.dist; });
+            var labeled = 0;
+            var labelX = [];
+            for (i = 0; i < kept.length; i++) {
+                var item = kept[i];
+                var scale = 2400 / Math.max(650, item.dist);
+                if (scale > 1.25) scale = 1.25;
+                if (scale < 0.48) scale = 0.48;
+                var base = horizon + 4;
+                drawMark(item.mark.kind, item.x, base, scale);
+                var onScreen = item.x > 72 && item.x < width - 72;
+                var showName = onScreen && (Math.abs(item.diff) < 42 || scale > 0.7);
+                var crowded = false;
+                var n;
+                for (n = 0; n < labelX.length; n++) if (Math.abs(labelX[n] - item.x) < 96) crowded = true;
+                if (showName && !crowded && labeled < 3) {
+                    labelX.push(item.x);
+                    labeled += 1;
+                    ctx.fillStyle = "rgba(255,255,255,0.92)";
+                    ctx.font = "700 15px Segoe UI, Trebuchet MS, sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(item.mark.name, item.x, base - 64 * scale - 10);
+                }
+            }
+        }
+
+        function quietHouses() {
+            var i;
+            for (i = -4; i <= 4; i++) {
+                var h = 12 + (Math.abs(i * 3) % 5) * 6;
+                shade(width * 0.5 + i * width * 0.1, horizon, 18 + (Math.abs(i) % 3) * 10, h, "#2c3848");
+            }
+        }
+
+        function shade(x, y, w, h, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x - w * 0.5, y - h, w, h);
+        }
+
+        function arch(x, y, r, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, r, Math.PI, 0);
+            ctx.fill();
+        }
+
+        function drawMark(kind, x, y, s) {
+            if (kind === "parliament") {
+                shade(x, y, 86 * s, 28 * s, "#e7d7b4");
+                shade(x - 32 * s, y, 12 * s, 52 * s, "#f4ead2");
+                shade(x + 32 * s, y, 12 * s, 48 * s, "#f4ead2");
+                arch(x, y - 28 * s, 18 * s, "#d7a441");
+                shade(x, y - 46 * s, 3 * s, 16 * s, "#f8f3e6");
+            } else if (kind === "bridge") {
+                shade(x - 26 * s, y, 7 * s, 40 * s, "#efe6d2");
+                shade(x + 26 * s, y, 7 * s, 40 * s, "#efe6d2");
+                shade(x, y, 64 * s, 5 * s, "#d9cbb0");
+                ctx.strokeStyle = "#cbbda6";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(x - 26 * s, y - 34 * s);
+                ctx.quadraticCurveTo(x, y - 6 * s, x + 26 * s, y - 34 * s);
+                ctx.stroke();
+            } else if (kind === "castle") {
+                shade(x, y, 76 * s, 18 * s, "#c9b79a");
+                shade(x, y - 18 * s, 9 * s, 46 * s, "#f6f1e4");
+                arch(x - 20 * s, y - 18 * s, 9 * s, "#eadcbe");
+                arch(x + 18 * s, y - 18 * s, 8 * s, "#eadcbe");
+            } else if (kind === "basilica") {
+                shade(x, y, 40 * s, 22 * s, "#f0e2c4");
+                shade(x - 18 * s, y, 7 * s, 32 * s, "#f6efe0");
+                shade(x + 18 * s, y, 7 * s, 32 * s, "#f6efe0");
+                arch(x, y - 22 * s, 16 * s, "#d0893e");
+                shade(x, y - 38 * s, 3 * s, 12 * s, "#f8f4ea");
+            } else if (kind === "column") {
+                shade(x, y, 34 * s, 8 * s, "#e7dcc4");
+                shade(x, y - 8 * s, 4 * s, 48 * s, "#f7f2e6");
+                arch(x, y - 56 * s, 7 * s, "#f4efe4");
+            } else if (kind === "bastion") {
+                shade(x, y, 62 * s, 12 * s, "#e6d5b8");
+                var k;
+                for (k = -2; k <= 2; k++) arch(x + k * 12 * s, y - 12 * s, 7 * s, "#f3e6cc");
+            } else if (kind === "citadel") {
+                shade(x, y, 70 * s, 16 * s, "#cbb89a");
+                shade(x - 22 * s, y - 16 * s, 8 * s, 10 * s, "#ddd0b4");
+                shade(x + 18 * s, y - 16 * s, 8 * s, 12 * s, "#ddd0b4");
+            } else if (kind === "station") {
+                shade(x, y, 72 * s, 20 * s, "#e4d3b6");
+                arch(x, y - 20 * s, 16 * s, "#f3e6cc");
+                shade(x, y - 34 * s, 3 * s, 12 * s, "#f7f1e4");
+            } else if (kind === "hall") {
+                shade(x, y, 80 * s, 24 * s, "#d5dce6");
+                shade(x, y - 16 * s, 68 * s, 5 * s, "#7ec8cc");
+            } else if (kind === "ruin") {
+                var r;
+                for (r = -2; r <= 2; r++) shade(x + r * 10 * s, y, 4 * s, 16 * s + (Math.abs(r) % 2) * 10 * s, "#eadcc4");
+            } else if (kind === "town") {
+                shade(x, y, 26 * s, 44 * s, "#e6d4b4");
+                shade(x, y - 44 * s, 8 * s, 10 * s, "#f6efe2");
+            }
+        }
+
+        function drawNightRoad() {
+            var bend = 0;
+            var close = 0.7;
+            if (route) {
+                var up = upcoming();
+                if (up.arrow === "↰" || up.arrow === "↖" || up.arrow === "↩") bend = -1;
+                if (up.arrow === "↱" || up.arrow === "↗") bend = 1;
+                if (up.remain < 180) close = 1.35;
+            }
+            var farX = width * 0.5 + bend * width * 0.12 * close;
+            var nearX = width * 0.5;
+            var shift = bend * width * 0.16 * close;
+            var halfFar = Math.max(10, width * 0.02);
+            var halfNear = width * 0.42;
+            function bez(t, a, b, c) {
+                var u = 1 - t;
+                return u * u * a + 2 * u * t * b + t * t * c;
+            }
+            function edge(t, side) {
+                return {
+                    x: bez(t, farX + side * halfFar, width * 0.5 + shift + side * width * 0.16, nearX + side * halfNear),
+                    y: bez(t, horizon, horizon + (height - horizon) * 0.42, height + 8)
+                };
+            }
+            ctx.fillStyle = "#2a3140";
+            ctx.beginPath();
+            var steps = 16;
+            var t;
+            var left = edge(0, -1);
+            ctx.moveTo(left.x, left.y);
+            for (t = 1; t <= steps; t++) {
+                left = edge(t / steps, -1);
+                ctx.lineTo(left.x, left.y);
+            }
+            for (t = steps; t >= 0; t--) {
+                var right = edge(t / steps, 1);
+                ctx.lineTo(right.x, right.y);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = "#2ad4d8";
+            ctx.lineWidth = Math.max(4, width * 0.012);
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            for (t = 0; t <= steps; t++) {
+                var mid = edge(t / steps, 0);
+                if (t === 0) ctx.moveTo(mid.x, mid.y);
+                else ctx.lineTo(mid.x, mid.y);
+            }
+            ctx.stroke();
+            var n;
+            for (n = 0; n < 6; n++) {
+                var at = 0.18 + n * 0.13;
+                var sideL = edge(at, -1);
+                var sideR = edge(at, 1);
+                var r = 4 + at * 16;
+                ctx.fillStyle = "#1b3326";
+                ctx.beginPath();
+                ctx.arc(sideL.x, sideL.y - r * 0.4, r, 0, Math.PI * 2);
+                ctx.arc(sideR.x, sideR.y - r * 0.4, r, 0, Math.PI * 2);
+                ctx.fill();
+                if (n % 2 === 0) {
+                    ctx.strokeStyle = "#3a4454";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(sideL.x, sideL.y);
+                    ctx.lineTo(sideL.x, sideL.y - r * 2.2);
+                    ctx.moveTo(sideR.x, sideR.y);
+                    ctx.lineTo(sideR.x, sideR.y - r * 2.2);
+                    ctx.stroke();
+                    ctx.fillStyle = "#f0d56a";
+                    ctx.beginPath();
+                    ctx.arc(sideL.x, sideL.y - r * 2.2, 3 + at * 2, 0, Math.PI * 2);
+                    ctx.arc(sideR.x, sideR.y - r * 2.2, 3 + at * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        function drawPlayerCar() {
+            var w = Math.min(width * 0.4, height * 0.36, 340);
+            var h = w * 0.7;
+            var x = width * 0.5;
+            var bottom = height - (height > width ? 168 : Math.max(4, h * 0.015));
+            var y = bottom - h;
+            ctx.fillStyle = "rgba(0,0,0,0.4)";
+            ctx.beginPath();
+            ctx.ellipse(x, bottom - h * 0.03, w * 0.46, h * 0.07, 0, 0, Math.PI * 2);
+            ctx.fill();
+            tire(x - w * 0.5, y + h * 0.62, w * 0.15, h * 0.34);
+            tire(x + w * 0.35, y + h * 0.62, w * 0.15, h * 0.34);
+            var paint = ctx.createLinearGradient(x, y, x, bottom);
+            paint.addColorStop(0, "#ff5c54");
+            paint.addColorStop(0.42, "#e10600");
+            paint.addColorStop(1, "#9a1016");
+            ctx.fillStyle = paint;
+            ctx.beginPath();
+            ctx.moveTo(x - w * 0.2, y + h * 0.1);
+            ctx.quadraticCurveTo(x, y + h * 0.012, x + w * 0.2, y + h * 0.1);
+            ctx.lineTo(x + w * 0.33, y + h * 0.28);
+            ctx.quadraticCurveTo(x + w * 0.4, y + h * 0.46, x + w * 0.4, y + h * 0.7);
+            ctx.lineTo(x + w * 0.36, y + h * 0.9);
+            ctx.quadraticCurveTo(x + w * 0.32, y + h * 0.98, x + w * 0.22, y + h * 0.98);
+            ctx.lineTo(x - w * 0.22, y + h * 0.98);
+            ctx.quadraticCurveTo(x - w * 0.32, y + h * 0.98, x - w * 0.36, y + h * 0.9);
+            ctx.lineTo(x - w * 0.4, y + h * 0.7);
+            ctx.quadraticCurveTo(x - w * 0.4, y + h * 0.46, x - w * 0.33, y + h * 0.28);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = "rgba(255,255,255,0.22)";
+            ctx.beginPath();
+            ctx.moveTo(x - w * 0.1, y + h * 0.09);
+            ctx.quadraticCurveTo(x, y + h * 0.035, x + w * 0.08, y + h * 0.1);
+            ctx.lineTo(x + w * 0.02, y + h * 0.15);
+            ctx.quadraticCurveTo(x, y + h * 0.11, x - w * 0.06, y + h * 0.14);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = "#9a1016";
+            roundBox(x - w * 0.24, y + h * 0.175, w * 0.48, h * 0.04, 3);
+            ctx.fillStyle = "#121826";
+            ctx.beginPath();
+            ctx.moveTo(x - w * 0.16, y + h * 0.25);
+            ctx.lineTo(x + w * 0.16, y + h * 0.25);
+            ctx.lineTo(x + w * 0.21, y + h * 0.5);
+            ctx.lineTo(x - w * 0.21, y + h * 0.5);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = "rgba(186,220,255,0.28)";
+            ctx.beginPath();
+            ctx.moveTo(x - w * 0.12, y + h * 0.28);
+            ctx.lineTo(x - w * 0.01, y + h * 0.28);
+            ctx.lineTo(x - w * 0.03, y + h * 0.46);
+            ctx.lineTo(x - w * 0.12, y + h * 0.46);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = "#243044";
+            ctx.lineWidth = Math.max(2, w * 0.012);
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(x + w * 0.02, y + h * 0.47);
+            ctx.lineTo(x + w * 0.13, y + h * 0.34);
+            ctx.stroke();
+            ctx.fillStyle = "#c81018";
+            roundBox(x - w * 0.48, y + h * 0.3, w * 0.1, h * 0.07, 4);
+            roundBox(x + w * 0.38, y + h * 0.3, w * 0.1, h * 0.07, 4);
+            ctx.fillStyle = "#1b2433";
+            roundBox(x - w * 0.465, y + h * 0.315, w * 0.055, h * 0.04, 2);
+            roundBox(x + w * 0.395, y + h * 0.315, w * 0.055, h * 0.04, 2);
+            ctx.strokeStyle = "rgba(70,0,8,0.4)";
+            ctx.lineWidth = Math.max(1.5, w * 0.008);
+            ctx.beginPath();
+            ctx.moveTo(x - w * 0.26, y + h * 0.55);
+            ctx.quadraticCurveTo(x, y + h * 0.575, x + w * 0.26, y + h * 0.55);
+            ctx.stroke();
+            ctx.fillStyle = "#f6f3ec";
+            roundBox(x - w * 0.085, y + h * 0.61, w * 0.17, h * 0.1, 2);
+            ctx.fillStyle = "#1d4e89";
+            ctx.fillRect(x - w * 0.085, y + h * 0.61, w * 0.028, h * 0.1);
+            ctx.fillStyle = "#d7dee6";
+            ctx.fillRect(x - w * 0.04, y + h * 0.645, w * 0.09, Math.max(2, h * 0.012));
+            light(x - w * 0.34, y + h * 0.58, w * 0.15, h * 0.12);
+            light(x + w * 0.19, y + h * 0.58, w * 0.15, h * 0.12);
+            ctx.fillStyle = "#f4f7fa";
+            ctx.beginPath();
+            ctx.arc(x, y + h * 0.755, Math.max(3, w * 0.016), 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#6d1218";
+            roundBox(x - w * 0.34, y + h * 0.8, w * 0.68, h * 0.13, 7);
+            ctx.fillStyle = "#e7edf2";
+            roundBox(x - w * 0.28, y + h * 0.845, w * 0.07, h * 0.03, 2);
+            roundBox(x + w * 0.21, y + h * 0.845, w * 0.07, h * 0.03, 2);
+        }
+
+        function tire(x, y, w, h) {
+            ctx.fillStyle = "#101218";
+            roundBox(x, y, w, h, w * 0.42);
+            ctx.fillStyle = "#9aa6b5";
+            ctx.beginPath();
+            ctx.ellipse(x + w * 0.5, y + h * 0.58, w * 0.24, h * 0.16, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#2a3140";
+            ctx.beginPath();
+            ctx.ellipse(x + w * 0.5, y + h * 0.58, w * 0.08, h * 0.055, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function light(x, y, w, h) {
+            ctx.fillStyle = "rgba(255,36,42,0.32)";
+            ctx.beginPath();
+            ctx.ellipse(x + w * 0.5, y + h * 0.55, w * 0.75, h * 0.95, 0, 0, Math.PI * 2);
+            ctx.fill();
+            var glow = ctx.createLinearGradient(x, y, x + w, y);
+            glow.addColorStop(0, "#ff4a32");
+            glow.addColorStop(0.62, "#ff1c28");
+            glow.addColorStop(1, "#ffc07a");
+            ctx.fillStyle = glow;
+            roundBox(x, y, w, h, h * 0.46);
+            ctx.fillStyle = "rgba(255,255,255,0.78)";
+            roundBox(x + w * 0.14, y + h * 0.24, w * 0.32, h * 0.26, 2);
+        }
+
+        function roundBox(x, y, w, h, r) {
+            var radius = Math.min(r, w * 0.5, h * 0.5);
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + w - radius, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+            ctx.lineTo(x + w, y + h - radius);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+            ctx.lineTo(x + radius, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function world(lat, lon, z) {
+            var n = Math.pow(2, z) * 256;
+            var x = (lon + 180) / 360 * n;
+            var s = Math.sin(lat * Math.PI / 180);
+            if (s > 0.9999) s = 0.9999;
+            if (s < -0.9999) s = -0.9999;
+            var y = (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n;
+            return { x: x, y: y };
+        }
+
+        function sinh(value) {
+            return (Math.exp(value) - Math.exp(-value)) / 2;
+        }
+
+        function unworld(x, y, z) {
+            var n = Math.pow(2, z) * 256;
+            var lon = x / n * 360 - 180;
+            var lat = Math.atan(sinh(Math.PI * (1 - 2 * y / n))) * 180 / Math.PI;
+            if (lat > 85) lat = 85;
+            if (lat < -85) lat = -85;
+            return { lat: lat, lon: lon };
+        }
+
+        function toScreen(lat, lon) {
+            var origin = world(center.lat, center.lon, zoom);
+            var point = world(lat, lon, zoom);
+            return { x: width * 0.5 + (point.x - origin.x), y: height * 0.5 + (point.y - origin.y) };
+        }
+
+        function screenToLatLon(sx, sy) {
+            var origin = world(center.lat, center.lon, zoom);
+            return unworld(origin.x + (sx - width * 0.5), origin.y + (sy - height * 0.5), zoom);
+        }
+
+        function tileImage(z, x, y) {
+            var key = z + "/" + x + "/" + y;
+            if (Object.prototype.hasOwnProperty.call(tiles, key)) return tiles[key];
+            var img = new Image();
+            tiles[key] = img;
+            img.onload = function () {
+                if (mode === "plan") paintPlan();
+                else if (mode === "drive") paintDrive();
+            };
+            img.onerror = function () { img.failed = true; };
+            img.src = "https://tile.openstreetmap.org/" + key + ".png";
+            return img;
+        }
+
+        function paintPlan() {
+            if (width < 2 || height < 2) return;
+            planCtx.fillStyle = "#d7e0e6";
+            planCtx.fillRect(0, 0, width, height);
+            var origin = world(center.lat, center.lon, zoom);
+            var left = origin.x - width * 0.5;
+            var top = origin.y - height * 0.5;
+            var x0 = Math.floor(left / 256);
+            var y0 = Math.floor(top / 256);
+            var x1 = Math.floor((left + width) / 256);
+            var y1 = Math.floor((top + height) / 256);
+            var max = Math.pow(2, zoom);
+            var tx;
+            var ty;
+            for (tx = x0; tx <= x1; tx++) {
+                for (ty = y0; ty <= y1; ty++) {
+                    if (ty < 0 || ty >= max) continue;
+                    var wrap = tx % max;
+                    if (wrap < 0) wrap += max;
+                    var img = tileImage(zoom, wrap, ty);
+                    var sx = tx * 256 - left;
+                    var sy = ty * 256 - top;
+                    if (img && img.complete && img.naturalWidth > 0) planCtx.drawImage(img, sx, sy, 256, 256);
+                    else {
+                        planCtx.fillStyle = "#d7e0e6";
+                        planCtx.fillRect(sx, sy, 256, 256);
+                    }
+                }
+            }
+            if (altRoute) drawPlanLine(altRoute.coords, "rgba(255,255,255,0.7)", 4);
+            if (route) drawPlanLine(route.coords, "#128f99", 7);
+            if (aPoint) marker(aPoint.lat, aPoint.lon, "#3ddc84", "A");
+            if (bPoint) marker(bPoint.lat, bPoint.lon, "#e7c56a", "B");
+            if (tripLive && route) {
+                var here = gpsFix || pointAt(traveled);
+                var spot = toScreen(here.lat, here.lon);
+                planCtx.fillStyle = "#ff3b4a";
+                planCtx.beginPath();
+                planCtx.arc(spot.x, spot.y, 9, 0, Math.PI * 2);
+                planCtx.fill();
+                planCtx.lineWidth = 3;
+                planCtx.strokeStyle = "white";
+                planCtx.stroke();
+            }
+        }
+
+        function drawPlanLine(coords, color, lineWidth) {
+            if (!coords || coords.length < 2) return;
+            planCtx.strokeStyle = color;
+            planCtx.lineWidth = lineWidth;
+            planCtx.lineJoin = "round";
+            planCtx.lineCap = "round";
+            planCtx.beginPath();
+            var i;
+            for (i = 0; i < coords.length; i++) {
+                var point = toScreen(coords[i].lat, coords[i].lon);
+                if (i === 0) planCtx.moveTo(point.x, point.y);
+                else planCtx.lineTo(point.x, point.y);
+            }
+            planCtx.stroke();
+        }
+
+        function marker(lat, lon, fill, letter) {
+            var point = toScreen(lat, lon);
+            planCtx.fillStyle = fill;
+            planCtx.beginPath();
+            planCtx.arc(point.x, point.y, 16, 0, Math.PI * 2);
+            planCtx.fill();
+            planCtx.lineWidth = 3;
+            planCtx.strokeStyle = "white";
+            planCtx.stroke();
+            planCtx.fillStyle = "#062428";
+            planCtx.font = "800 16px Segoe UI, Trebuchet MS, sans-serif";
+            planCtx.textAlign = "center";
+            planCtx.textBaseline = "middle";
+            planCtx.fillText(letter, point.x, point.y + 1);
+        }
+
+        function setZoom(next) {
+            zoom = Math.max(12, Math.min(16, next));
+            paintPlan();
+        }
+
+        function pointerDown(event) {
+            try { planCanvas.setPointerCapture(event.pointerId); } catch (error) { return; }
+            drag = { id: event.pointerId, x: event.clientX, y: event.clientY, lat: center.lat, lon: center.lon, moved: false };
+        }
+
+        function pointerMove(event) {
+            if (!drag || event.pointerId !== drag.id) return;
+            var dx = event.clientX - drag.x;
+            var dy = event.clientY - drag.y;
+            if (dx * dx + dy * dy > 64) drag.moved = true;
+            if (!drag.moved) return;
+            var origin = world(drag.lat, drag.lon, zoom);
+            var next = unworld(origin.x - dx, origin.y - dy, zoom);
+            center.lat = next.lat;
+            center.lon = next.lon;
+            paintPlan();
+        }
+
+        function pointerUp(event) {
+            if (!drag || event.pointerId !== drag.id) return;
+            var moved = drag.moved;
+            var rect = planCanvas.getBoundingClientRect();
+            drag = null;
+            if (moved) return;
+            if (event.type === "pointercancel") return;
+            var latlon = screenToLatLon(event.clientX - rect.left, event.clientY - rect.top);
+            var which = active;
+            setPoint(which, { lat: latlon.lat, lon: latlon.lon, name: "Keresem a címet…", detail: "" }, false, "b");
+            reversePoint(latlon.lat, latlon.lon, function (point) {
+                var current = which === "a" ? aPoint : bPoint;
+                if (!current) return;
+                if (Math.abs(current.lat - latlon.lat) > 0.00002 || Math.abs(current.lon - latlon.lon) > 0.00002) return;
+                current.name = point.name;
+                current.detail = point.detail;
+                updateChips();
+                remember(current);
+                if (!document.getElementById("q").value.replace(/^\s+|\s+$/g, "")) showBook();
+            });
+        }
+
+        function setPoint(which, place, recenter, nextActive) {
+            var point = { lat: place.lat, lon: place.lon, name: place.name, detail: place.detail || "" };
+            if (which === "a") aPoint = point;
+            else bPoint = point;
+            active = nextActive || (which === "a" ? "b" : "a");
+            tripLive = false;
+            document.getElementById("go").textContent = "Indítás";
+            if (recenter) {
+                center.lat = place.lat;
+                center.lon = place.lon;
+                zoom = Math.max(zoom, 15);
+            }
+            updateChips();
+            scheduleRoute();
+        }
+
+        function updateChips() {
+            var a = document.getElementById("chip-a");
+            var b = document.getElementById("chip-b");
+            var field = document.getElementById("q");
+            a.className = "chip" + (active === "a" ? " on" : "");
+            b.className = "chip" + (active === "b" ? " on" : "");
+            a.innerHTML = "<small>A · Honnan</small><b>" + escapeHtml(aPoint ? aPoint.name : "Még nincs") + "</b>";
+            b.innerHTML = "<small>B · Hova</small><b>" + escapeHtml(bPoint ? bPoint.name : "Még nincs") + "</b>";
+            field.placeholder = active === "a" ? "Honnan? Írd be a címet" : "Hova? Írd be a címet";
+        }
+
+        function escapeHtml(text) {
+            return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function loadBook() {
+            book = [];
+            try {
+                var raw = JSON.parse(localStorage.getItem("toonnav-book") || "[]");
+                var i;
+                if (!raw || !raw.length) return;
+                for (i = 0; i < raw.length && book.length < 24; i++) {
+                    if (!raw[i] || typeof raw[i].lat !== "number" || typeof raw[i].lon !== "number" || !raw[i].name) continue;
+                    book.push({ name: raw[i].name, detail: raw[i].detail || "", lat: raw[i].lat, lon: raw[i].lon });
+                }
+            } catch (error) {
+                book = [];
+            }
+        }
+
+        function remember(point) {
+            if (!point || !point.name || point.name === "Keresem a címet…" || point.name === "Kijelölt pont" || point.name === "Ahol vagyok") return;
+            var next = [{ name: point.name, detail: point.detail || "", lat: point.lat, lon: point.lon }];
+            var i;
+            for (i = 0; i < book.length; i++) {
+                if (book[i].name === point.name && haversine(book[i], point) < 40) continue;
+                next.push(book[i]);
+                if (next.length >= 24) break;
+            }
+            book = next;
+            try { localStorage.setItem("toonnav-book", JSON.stringify(book)); } catch (error) { return; }
+        }
+
+        function showBook() {
+            document.getElementById("list-label").textContent = "Címjegyzék";
+            if (!book.length) {
+                setListMessage("Még nincs cím. Írd be, például: Váci utca 1");
+                return;
+            }
+            renderPoints(book, true);
+        }
+
+        function setListMessage(text) {
+            shown = [];
+            document.getElementById("results").innerHTML = "<p class=\"hint\">" + escapeHtml(text) + "</p>";
+        }
+
+        function renderPoints(list, saved) {
+            shown = list;
+            var box = document.getElementById("results");
+            box.innerHTML = "";
+            var i;
+            for (i = 0; i < list.length; i++) {
+                var row = document.createElement("div");
+                row.className = "hit-row";
+                var button = document.createElement("button");
+                button.type = "button";
+                button.className = "hit";
+                button.setAttribute("data-pick", String(i));
+                button.innerHTML = "<b>" + escapeHtml(list[i].name) + "</b><small>" + escapeHtml(list[i].detail || "") + "</small>";
+                row.appendChild(button);
+                if (saved) {
+                    var drop = document.createElement("button");
+                    drop.type = "button";
+                    drop.className = "drop";
+                    drop.setAttribute("data-drop", String(i));
+                    drop.textContent = "×";
+                    row.appendChild(drop);
+                }
+                box.appendChild(row);
+            }
+        }
+
+        function onResultClick(event) {
+            var node = event.target;
+            while (node && node !== event.currentTarget) {
+                if (node.getAttribute && node.getAttribute("data-drop") !== null) {
+                    dropAt(Number(node.getAttribute("data-drop")));
+                    return;
+                }
+                if (node.getAttribute && node.getAttribute("data-pick") !== null) {
+                    pickResult(Number(node.getAttribute("data-pick")));
+                    return;
+                }
+                node = node.parentNode;
+            }
+        }
+
+        function pickResult(index) {
+            var item = shown[index];
+            if (!item) return;
+            setPoint(active, item, true, "b");
+            remember(item);
+            document.getElementById("q").value = "";
+            showBook();
+        }
+
+        function dropAt(index) {
+            var item = shown[index];
+            if (!item) return;
+            var next = [];
+            var i;
+            for (i = 0; i < book.length; i++) {
+                if (book[i].name === item.name && Math.abs(book[i].lat - item.lat) < 0.00001) continue;
+                next.push(book[i]);
+            }
+            book = next;
+            try { localStorage.setItem("toonnav-book", JSON.stringify(book)); } catch (error) {}
+            showBook();
+        }
+
+        function onSearchInput() {
+            if (searchTimer) clearTimeout(searchTimer);
+            var text = document.getElementById("q").value.replace(/^\s+|\s+$/g, "");
+            if (text.length < 2) {
+                searchToken += 1;
+                showBook();
+                return;
+            }
+            document.getElementById("list-label").textContent = "Találatok";
+            setListMessage("Keresés…");
+            searchTimer = setTimeout(function () { runSearch(text); }, 700);
+        }
+
+        function runSearch(text) {
+            var token = ++searchToken;
+            var bias = aPoint || { lat: center.lat, lon: center.lon };
+            searchNominatim(text, bias, function (list) {
+                if (token !== searchToken) return;
+                document.getElementById("list-label").textContent = "Találatok";
+                if (list === null) {
+                    setListMessage("A keresés nem válaszolt. Próbáld újra, vagy koppints a térképre.");
+                    return;
+                }
+                if (!list.length) {
+                    setListMessage("Nincs ilyen cím. Írd utca és házszám szerint.");
+                    return;
+                }
+                renderPoints(list, false);
+            });
+        }
+
+        function searchNominatim(text, bias, done) {
+            var url = "https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=6&countrycodes=hu&q=" + encodeURIComponent(text);
+            if (bias) {
+                url += "&viewbox=" + (bias.lon - 0.5) + "," + (bias.lat + 0.35) + "," + (bias.lon + 0.5) + "," + (bias.lat - 0.35);
+            }
+            fetch(url, { headers: { "Accept-Language": "hu" } }).then(function (res) {
+                return res.json();
+            }).then(function (data) {
+                var list = [];
+                var i;
+                if (!data || !data.length) { done(list); return; }
+                for (i = 0; i < data.length; i++) list.push(pointFromHit(data[i]));
+                done(list);
+            }).catch(function () { done(null); });
+        }
+
+        function pointFromHit(item) {
+            var label = labelFrom(item);
+            return { lat: parseFloat(item.lat), lon: parseFloat(item.lon), name: label.name, detail: label.detail };
+        }
+
+        function labelFrom(item) {
+            var address = item.address || {};
+            var street = address.road || address.pedestrian || address.footway || address.square || address.residential || "";
+            var house = address.house_number || "";
+            var place = address.city || address.town || address.village || address.municipality || "";
+            var title = "";
+            if (street && house) title = street + " " + house;
+            else if (item.name && street && item.name !== street) title = item.name + ", " + street;
+            else if (street) title = street;
+            else if (item.name) title = item.name;
+            else title = (item.display_name || "Cím").split(",")[0];
+            var detail = "";
+            if (address.postcode && place) detail = address.postcode + " " + place;
+            else if (place) detail = place;
+            else if (address.suburb) detail = address.suburb;
+            return { name: title, detail: detail };
+        }
+
+        function reversePoint(lat, lon, done) {
+            var url = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat=" + lat + "&lon=" + lon;
+            fetch(url, { headers: { "Accept-Language": "hu" } }).then(function (res) {
+                return res.json();
+            }).then(function (data) {
+                if (!data || data.error) { done({ name: "Kijelölt pont", detail: "" }); return; }
+                var label = labelFrom(data);
+                done({ name: label.name, detail: label.detail });
+            }).catch(function () { done({ name: "Kijelölt pont", detail: "" }); });
+        }
+
+        function useGps() {
+            var button = document.getElementById("gps");
+            if (!navigator.geolocation) {
+                active = "a";
+                updateChips();
+                setListMessage("Itt nincs GPS. Írd be a címet, ahonnan indulsz.");
+                return;
+            }
+            button.disabled = true;
+            button.textContent = "Keresem…";
+            navigator.geolocation.getCurrentPosition(function (pos) {
+                button.disabled = false;
+                button.textContent = "Ahol vagyok";
+                var lat = pos.coords.latitude;
+                var lon = pos.coords.longitude;
+                setPoint("a", { lat: lat, lon: lon, name: "Ahol vagyok", detail: "" }, true, "b");
+                reversePoint(lat, lon, function (point) {
+                    if (!aPoint) return;
+                    if (Math.abs(aPoint.lat - lat) > 0.0002 || Math.abs(aPoint.lon - lon) > 0.0002) return;
+                    aPoint.name = point.name;
+                    aPoint.detail = point.detail;
+                    updateChips();
+                    remember(aPoint);
+                    if (!document.getElementById("q").value.replace(/^\s+|\s+$/g, "")) showBook();
+                });
+            }, function () {
+                button.disabled = false;
+                button.textContent = "Ahol vagyok";
+                active = "a";
+                updateChips();
+                setListMessage("A GPS nem adott helyzetet. Írd be a címet, ahonnan indulsz.");
+            }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 15000 });
+        }
+
+        function tooClose() {
+            return aPoint && bPoint && haversine(aPoint, bPoint) < 40;
+        }
+
+        function updateSummary() {
+            var el = document.getElementById("summary");
+            var go = document.getElementById("go");
+            if (!aPoint || !bPoint) {
+                if (!aPoint && !bPoint) el.textContent = "Ahol vagyok, aztán a pontos cím";
+                else if (!aPoint) el.textContent = "Honnan indulunk?";
+                else el.textContent = "Hova mennél?";
+                go.disabled = true;
+                return;
+            }
+            if (tooClose()) {
+                el.textContent = "A és B túl közel van";
+                go.disabled = true;
+                return;
+            }
+            if (loading || !route) {
+                el.textContent = "Útvonal keresése…";
+                go.disabled = true;
+                return;
+            }
+            var mins = Math.max(1, Math.round(route.duration / 60));
+            var text = formatMeters(route.distance) + " · " + mins + " perc";
+            if (route.offline) text = text + " · a hálózat nem válaszolt";
+            el.textContent = text;
+            go.disabled = false;
+        }
+
+        function scheduleRoute() {
+            if (routeTimer) clearTimeout(routeTimer);
+            route = null;
+            altRoute = null;
+            loading = false;
+            updateSummary();
+            paintPlan();
+            if (!aPoint || !bPoint || tooClose()) return;
+            loading = true;
+            updateSummary();
+            routeTimer = setTimeout(function () { fetchRoute(); }, 300);
+        }
+
+        function routeUrl(lon1, lat1, lon2, lat2) {
+            return "https://router.project-osrm.org/route/v1/driving/"
+                + lon1 + "," + lat1 + ";" + lon2 + "," + lat2
+                + "?overview=full&geometries=geojson&steps=true&alternatives=true";
+        }
+
+        function fetchRoute(done) {
+            if (!aPoint || !bPoint) return;
+            var token = ++routeToken;
+            loading = true;
+            updateSummary();
+            fetch(routeUrl(aPoint.lon, aPoint.lat, bPoint.lon, bPoint.lat)).then(function (res) {
+                return res.json();
+            }).then(function (data) {
+                if (token !== routeToken) return;
+                loading = false;
+                if (!data.routes || !data.routes.length) useFallback();
+                else {
+                    route = parseRoute(data.routes[0]);
+                    altRoute = data.routes.length > 1 ? parseRoute(data.routes[1]) : null;
+                    fitPoints(route.coords);
+                }
+                updateSummary();
+                if (mode === "plan" || mode === "drive") paintPlan();
+                if (done) done();
+            }).catch(function () {
+                if (token !== routeToken) return;
+                loading = false;
+                useFallback();
+                updateSummary();
+                if (mode === "plan" || mode === "drive") paintPlan();
+                if (done) done();
+            });
+        }
+
+        function useFallback() {
+            var meters = haversine(aPoint, bPoint) * 1.4;
+            route = {
+                distance: meters,
+                duration: meters / (30 / 3.6),
+                coords: [{ lat: aPoint.lat, lon: aPoint.lon }, { lat: bPoint.lat, lon: bPoint.lon }],
+                steps: [
+                    { distance: meters, name: "", modifier: "straight", type: "depart" },
+                    { distance: 0, name: bPoint.name, modifier: "", type: "arrive" }
+                ],
+                offline: true
+            };
+            route.cum = buildCum(route.coords);
+            altRoute = null;
+            fitPoints(route.coords);
+        }
+
+        function parseRoute(raw) {
+            var coords = [];
+            var geometry = raw.geometry && raw.geometry.coordinates ? raw.geometry.coordinates : [];
+            var i;
+            for (i = 0; i < geometry.length; i++) coords.push({ lon: geometry[i][0], lat: geometry[i][1] });
+            var steps = [];
+            var leg = raw.legs && raw.legs[0];
+            if (leg && leg.steps) {
+                for (i = 0; i < leg.steps.length; i++) {
+                    var step = leg.steps[i];
+                    var maneuver = step.maneuver || {};
+                    steps.push({
+                        distance: step.distance || 0,
+                        name: step.name || "",
+                        modifier: maneuver.modifier || "",
+                        type: maneuver.type || ""
+                    });
+                }
+            }
+            var parsed = {
+                distance: raw.distance || 0,
+                duration: raw.duration || 0,
+                coords: coords,
+                steps: steps,
+                offline: false
+            };
+            parsed.cum = buildCum(coords);
+            if (!parsed.distance && parsed.cum.length) parsed.distance = parsed.cum[parsed.cum.length - 1];
+            return parsed;
+        }
+
+        function fitPoints(list, full) {
+            if (!list || !list.length) return;
+            var minLat = 90;
+            var maxLat = -90;
+            var minLon = 180;
+            var maxLon = -180;
+            var i;
+            for (i = 0; i < list.length; i++) {
+                if (list[i].lat < minLat) minLat = list[i].lat;
+                if (list[i].lat > maxLat) maxLat = list[i].lat;
+                if (list[i].lon < minLon) minLon = list[i].lon;
+                if (list[i].lon > maxLon) maxLon = list[i].lon;
+            }
+            var latPad = (maxLat - minLat) * 0.12 || 0.004;
+            var lonPad = (maxLon - minLon) * 0.12 || 0.004;
+            minLat -= latPad;
+            maxLat += latPad;
+            minLon -= lonPad;
+            maxLon += lonPad;
+            var side = full ? 70 : (width > height ? Math.min(400, width * 0.46) + 28 : 16);
+            var topInset = full ? 96 : 108;
+            var bottomInset = full ? 90 : (width > height ? 24 : Math.round(height * 0.5));
+            var z;
+            zoom = 12;
+            for (z = 16; z >= 12; z--) {
+                var nw = world(maxLat, minLon, z);
+                var se = world(minLat, maxLon, z);
+                if (se.x - nw.x < width - side - 80 && se.y - nw.y < height - topInset - bottomInset) {
+                    zoom = z;
+                    break;
+                }
+            }
+            var midLat = (minLat + maxLat) / 2;
+            var midLon = (minLon + maxLon) / 2;
+            var mid = world(midLat, midLon, zoom);
+            var focusX = side + (width - side - 70) * 0.5;
+            var focusY = topInset + (height - topInset - bottomInset) * 0.5;
+            var shifted = unworld(mid.x - (focusX - width * 0.5), mid.y - (focusY - height * 0.5), zoom);
+            center.lat = shifted.lat;
+            center.lon = shifted.lon;
+        }
+
+        function haversine(a, b) {
+            var radius = 6371000;
+            var dLat = (b.lat - a.lat) * Math.PI / 180;
+            var dLon = (b.lon - a.lon) * Math.PI / 180;
+            var s1 = Math.sin(dLat / 2);
+            var s2 = Math.sin(dLon / 2);
+            var h = s1 * s1 + Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) * s2 * s2;
+            if (h > 1) h = 1;
+            return 2 * radius * Math.asin(Math.sqrt(h));
+        }
+
+        function buildCum(coords) {
+            var cum = [0];
+            var i;
+            for (i = 1; i < coords.length; i++) cum.push(cum[i - 1] + haversine(coords[i - 1], coords[i]));
+            return cum;
+        }
+
+        function pointAt(meters) {
+            var coords = route.coords;
+            var cum = route.cum;
+            if (!coords.length) return { lat: center.lat, lon: center.lon };
+            if (coords.length === 1 || meters <= 0) return { lat: coords[0].lat, lon: coords[0].lon };
+            var last = cum[cum.length - 1];
+            if (meters >= last) return { lat: coords[coords.length - 1].lat, lon: coords[coords.length - 1].lon };
+            var i = 0;
+            while (i < cum.length - 2 && cum[i + 1] < meters) i++;
+            var span = cum[i + 1] - cum[i];
+            var t = span ? (meters - cum[i]) / span : 0;
+            return {
+                lat: coords[i].lat + (coords[i + 1].lat - coords[i].lat) * t,
+                lon: coords[i].lon + (coords[i + 1].lon - coords[i].lon) * t
+            };
+        }
+
+        function goPressed() {
+            if (tripLive && route && !arrived) {
+                showNav();
+                return;
+            }
+            startDrive();
+        }
+
+        function startDrive() {
+            if (!route || route.distance < 40) return;
+            driveGen += 1;
+            traveled = 0;
+            arrived = false;
+            saidArrive = false;
+            asked = false;
+            jamOn = false;
+            choice = "";
+            gpsFix = null;
+            gpsHeading = null;
+            speedKnown = false;
+            speedKmh = 0;
+            offRoute = false;
+            offCount = 0;
+            progressHold = -1;
+            holdAt = 0;
+            holdFix = null;
+            rerouteAt = 0;
+            voiceStep = -1;
+            voiceBand = "";
+            gpsLost = false;
+            shownHeading = null;
+            if (turnTimer) clearTimeout(turnTimer);
+            turnTimer = 0;
+            tripLive = true;
+            card.className = "";
+            document.getElementById("go").textContent = "Indítás";
+            fitPoints(route.coords, true);
+            showNav();
+        }
+
+        function showNav() {
+            mode = "drive";
+            document.body.className = "driving";
+            document.getElementById("open-map").textContent = "Leállítás";
+            refreshHud();
+            startGps();
+            resize();
+        }
+
+        function openPlan() {
+            stopGps();
+            mode = "plan";
+            document.body.className = "planning";
+            if (tripLive && route && !arrived) document.getElementById("go").textContent = "Folytatás";
+            resize();
+        }
+
+        function startGps() {
+            stopGps();
+            if (!navigator.geolocation) {
+                gpsLost = true;
+                refreshHud();
+                return;
+            }
+            var opts = { enableHighAccuracy: true, maximumAge: 1000, timeout: 12000 };
+            gpsWatch = navigator.geolocation.watchPosition(onGps, onGpsFail, opts);
+            gpsTimer = setInterval(function () {
+                if (mode !== "drive" || !navigator.geolocation) return;
+                navigator.geolocation.getCurrentPosition(onGps, function () {}, opts);
+            }, 2000);
+        }
+
+        function stopGps() {
+            if (gpsWatch && navigator.geolocation) navigator.geolocation.clearWatch(gpsWatch);
+            gpsWatch = 0;
+            if (gpsTimer) clearInterval(gpsTimer);
+            gpsTimer = 0;
+            if (turnTimer) clearTimeout(turnTimer);
+            turnTimer = 0;
+        }
+
+        function onGpsFail() {
+            if (mode !== "drive" || gpsFix) return;
+            gpsLost = true;
+            gpsHeading = null;
+            speedKnown = false;
+            refreshHud();
+            paintDrive();
+        }
+
+        function onGps(pos) {
+            if (mode !== "drive" || !route || !pos || !pos.coords) return;
+            var lat = pos.coords.latitude;
+            var lon = pos.coords.longitude;
+            var fix = { lat: lat, lon: lon };
+            gpsFix = fix;
+            gpsLost = false;
+            var rawSpeed = pos.coords.speed;
+            if (typeof rawSpeed === "number" && rawSpeed >= 0) {
+                speedKmh = rawSpeed * 3.6;
+                speedKnown = true;
+            }
+            if (typeof pos.coords.heading === "number" && pos.coords.heading >= 0 && speedKmh > 3) gpsHeading = pos.coords.heading;
+            var along = alongRoute(lat, lon);
+            if (!along) return;
+            var acc = pos.coords.accuracy;
+            var limit = 120;
+            if (typeof acc === "number" && acc > 80) limit = Math.min(180, acc + 40);
+            if (along.dist > limit) {
+                offRoute = true;
+                offCount += 1;
+                progressHold = -1;
+                var moved = holdFix ? haversine(holdFix, fix) : 0;
+                if (!holdFix) holdFix = fix;
+                if (offCount >= 3 && Date.now() - rerouteAt > 20000 && bPoint && (speedKmh > 8 || moved > 35)) {
+                    rerouteAt = Date.now();
+                    offCount = 0;
+                    holdFix = fix;
+                    rerouteFrom(fix);
+                }
+            } else {
+                offRoute = false;
+                offCount = 0;
+                holdFix = fix;
+                var forward = along.meters - traveled;
+                var now = Date.now();
+                if (forward > 8) {
+                    if (progressHold >= 0 && now - holdAt > 1500 && along.meters + 12 >= progressHold) {
+                        traveled = along.meters;
+                        progressHold = -1;
+                    } else if (progressHold < 0 || along.meters > progressHold + 8) {
+                        progressHold = along.meters;
+                        holdAt = now;
+                    }
+                } else if (forward < -20) {
+                    progressHold = -1;
+                }
+                if (route.distance - along.meters < 45 && along.dist < 40) {
+                    traveled = route.distance;
+                    arrived = true;
+                }
+            }
+            refreshHud();
+            turnToward(routeHeading());
+        }
+
+        function rerouteFrom(fix) {
+            if (!bPoint) return;
+            speak("Új útvonal.");
+            var token = ++routeToken;
+            var gen = driveGen;
+            fetch(routeUrl(fix.lon, fix.lat, bPoint.lon, bPoint.lat)).then(function (res) {
+                return res.json();
+            }).then(function (data) {
+                if (token !== routeToken || gen !== driveGen || mode !== "drive") return;
+                if (!data.routes || !data.routes.length) return;
+                route = parseRoute(data.routes[0]);
+                traveled = 0;
+                arrived = false;
+                saidArrive = false;
+                offRoute = false;
+                progressHold = -1;
+                voiceStep = -1;
+                voiceBand = "";
+                refreshHud();
+                turnToward(routeHeading());
+            }).catch(function () { return; });
+        }
+
+        function projectSegment(a, b, lat, lon) {
+            var mid = (a.lat + b.lat) * Math.PI / 360;
+            var mx = Math.cos(mid) || 0.01;
+            var ax = a.lon * mx;
+            var ay = a.lat;
+            var bx = b.lon * mx;
+            var by = b.lat;
+            var px = lon * mx;
+            var py = lat;
+            var dx = bx - ax;
+            var dy = by - ay;
+            var len2 = dx * dx + dy * dy;
+            var t = len2 ? ((px - ax) * dx + (py - ay) * dy) / len2 : 0;
+            if (t < 0) t = 0;
+            if (t > 1) t = 1;
+            return { lat: a.lat + (b.lat - a.lat) * t, lon: a.lon + (b.lon - a.lon) * t };
+        }
+
+        function alongRoute(lat, lon) {
+            var coords = route.coords;
+            var cum = route.cum;
+            if (!coords || coords.length < 2) return null;
+            var best = null;
+            var i;
+            for (i = 0; i < coords.length - 1; i++) {
+                var point = projectSegment(coords[i], coords[i + 1], lat, lon);
+                var dist = haversine({ lat: lat, lon: lon }, point);
+                var meters = cum[i] + haversine(coords[i], point);
+                if (!best || dist < best.dist) best = { dist: dist, meters: meters };
+            }
+            return best;
+        }
+
+        function maneuverText(step) {
+            if (!step) return { arrow: "↑", label: "Egyenesen" };
+            var type = step.type || "";
+            var modifier = step.modifier || "";
+            if (type === "arrive") return { arrow: "●", label: "Cél" };
+            if (type === "roundabout" || type === "rotary" || type === "exit roundabout" || type === "roundabout turn") {
+                return { arrow: "↻", label: "Körforgalom" };
+            }
+            if (type === "merge") return { arrow: "↑", label: "Egyenesen" };
+            if (modifier === "uturn") return { arrow: "↩", label: "Fordulj vissza" };
+            if (modifier === "sharp left") return { arrow: "↰", label: "Élesen balra" };
+            if (modifier === "sharp right") return { arrow: "↱", label: "Élesen jobbra" };
+            if (modifier === "left") return { arrow: "↰", label: "Balra" };
+            if (modifier === "right") return { arrow: "↱", label: "Jobbra" };
+            if (modifier === "slight left") return { arrow: "↖", label: "Enyhén balra" };
+            if (modifier === "slight right") return { arrow: "↗", label: "Enyhén jobbra" };
+            if (type === "depart") return { arrow: "↑", label: "Indulás" };
+            return { arrow: "↑", label: "Egyenesen" };
+        }
+
+        function upcoming() {
+            var steps = route.steps || [];
+            if (!steps.length) {
+                return { remain: Math.max(0, route.distance - traveled), arrow: "↑", label: "Egyenesen", street: bPoint ? bPoint.name : "", step: 0 };
+            }
+            var walked = 0;
+            var i;
+            for (i = 0; i < steps.length; i++) {
+                var end = walked + steps[i].distance;
+                var last = i >= steps.length - 1;
+                var next = last ? steps[i] : steps[i + 1];
+                if (traveled < end - 8 || last) {
+                    var info = maneuverText(last || next.type === "arrive" ? steps[steps.length - 1] : next);
+                    var street = next.name || info.label;
+                    if (last || next.type === "arrive") {
+                        info = { arrow: "●", label: "Cél" };
+                        street = bPoint ? bPoint.name : "Cél";
+                    }
+                    var remain = last ? route.distance - traveled : end - traveled;
+                    return { remain: Math.max(0, remain), arrow: info.arrow, label: info.label, street: street, step: i };
+                }
+                walked = end;
+            }
+            return { remain: 0, arrow: "●", label: "Cél", street: bPoint ? bPoint.name : "Cél", step: steps.length };
+        }
+
+        function bandOf(remain) {
+            if (remain < 45) return "now";
+            if (remain < 100) return "near";
+            if (remain < 250) return "mid";
+            return "far";
+        }
+
+        function bandRank(band) {
+            if (band === "now") return 3;
+            if (band === "near") return 2;
+            if (band === "mid") return 1;
+            return 0;
+        }
+
+        function phrase(up) {
+            var n = Math.round(up.remain);
+            if (n > 40) n = Math.round(n / 10) * 10;
+            var text = n + " méter múlva " + up.label;
+            if (up.street && up.street !== up.label) text += ". " + up.street;
+            return text;
+        }
+
+        function cueVoice() {
+            if (!route || arrived || mode !== "drive" || gpsLost || offRoute) return;
+            var up = upcoming();
+            var band = bandOf(up.remain);
+            if (up.step !== voiceStep) {
+                voiceStep = up.step;
+                voiceBand = "";
+            }
+            if (band === voiceBand) return;
+            if (voiceBand !== "" && bandRank(band) < bandRank(voiceBand)) return;
+            voiceBand = band;
+            speak(phrase(up));
+        }
+
+        function showJam() {
+            asked = true;
+            jamOn = true;
+            choice = "ask";
+            card.className = "show";
+            document.body.className = "driving asking";
+            document.getElementById("question").textContent = "Ez dugó. Menjünk máshol?";
+            speak("Ez dugó. Menjünk máshol?");
+        }
+
+        function maybeAsk() {
+            if (asked || arrived || !route) return;
+            if (route.distance < 250) return;
+            var gate = Math.min(400, route.distance * 0.35);
+            if (traveled >= gate && route.distance - traveled > 80) showJam();
+        }
+
+        function pick(next) {
+            if (choice !== "ask") return;
+            choice = next;
+            card.className = "show done";
+            var text = next === "yes" ? "Arra megyünk." : "Maradunk ezen az úton.";
+            document.getElementById("question").textContent = text;
+            speak(text);
+            if (next === "yes") takeOtherRoad();
+        }
+
+        function takeOtherRoad() {
+            if (!bPoint || !route) return;
+            var here = pointAt(traveled);
+            var token = ++routeToken;
+            var gen = driveGen;
+            fetch(routeUrl(here.lon, here.lat, bPoint.lon, bPoint.lat)).then(function (res) {
+                return res.json();
+            }).then(function (data) {
+                if (token !== routeToken || gen !== driveGen) return;
+                if (!data.routes || !data.routes.length) return;
+                var picked = data.routes.length > 1 ? data.routes[1] : data.routes[0];
+                route = parseRoute(picked);
+                traveled = 0;
+                arrived = false;
+            }).catch(function () { return; });
+        }
+
+        function speak(text) {
+            if (!window.speechSynthesis) return;
+            try {
+                var voice = new SpeechSynthesisUtterance(text);
+                voice.lang = "hu-HU";
+                voice.rate = 0.96;
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(voice);
+            } catch (error) {
+                return;
+            }
+        }
+
+        function follow(yaw) {
+            cam.x = car.x + Math.sin(yaw) * 6.6;
+            cam.z = car.z + Math.cos(yaw) * 6.6;
+        }
+
+        function refreshHud() {
+            if (!route) return;
+            var left = Math.max(0, route.distance - traveled);
+            if (arrived) {
+                document.getElementById("dist").textContent = "Megérkeztél.";
+                document.getElementById("street").textContent = bPoint ? bPoint.name : "Cél";
+                document.getElementById("arrow").textContent = "●";
+                document.getElementById("trip").textContent = "0 m · 0 perc";
+                document.getElementById("speed-num").textContent = "0";
+                document.querySelector("#speed span").textContent = "km/h";
+                if (!saidArrive) {
+                    saidArrive = true;
+                    speak("Megérkeztél.");
+                }
+                return;
+            }
+            var up = upcoming();
+            var frac = route.distance ? left / route.distance : 1;
+            var secs = (route.duration || 0) * frac;
+            var mins = Math.max(1, Math.round(secs / 60));
+            var eta = new Date(Date.now() + secs * 1000);
+            var minute = eta.getMinutes();
+            if (minute < 10) minute = "0" + minute;
+            var street = up.street && up.street !== up.label ? up.label + " · " + up.street : (up.street || up.label);
+            if (gpsLost) street = "Nincs GPS";
+            else if (offRoute) street = "Nem az úton vagy";
+            document.getElementById("dist").textContent = formatMeters(up.remain);
+            document.getElementById("street").textContent = street;
+            document.getElementById("arrow").textContent = up.arrow;
+            document.getElementById("trip").textContent = formatMeters(left) + " · " + mins + " perc · " + eta.getHours() + ":" + minute;
+            document.getElementById("speed-num").textContent = speedKnown ? String(Math.round(speedKmh)) : "–";
+            document.querySelector("#speed span").textContent = speedKnown ? "km/h" : "GPS";
+            cueVoice();
+        }
+
+        function drawMini() {
+            var board = document.getElementById("map");
+            var pen = board.getContext("2d");
+            var w = 280;
+            var h = 280;
+            pen.clearRect(0, 0, w, h);
+            pen.fillStyle = "#1a242c";
+            pen.fillRect(0, 0, w, h);
+            if (!route || !route.coords || !route.coords.length) return;
+            var here = pointAt(traveled);
+            if (offRoute && gpsFix) here = gpsFix;
+            var spanLat = 0.008;
+            var spanLon = 0.012;
+            var i;
+            function xy(lat, lon) {
+                return {
+                    x: w * 0.5 + (lon - here.lon) / spanLon * (w * 0.46),
+                    y: h * 0.58 - (lat - here.lat) / spanLat * (h * 0.46)
+                };
+            }
+            pen.strokeStyle = "#2ad4d8";
+            pen.lineWidth = 8;
+            pen.lineJoin = "round";
+            pen.lineCap = "round";
+            pen.beginPath();
+            for (i = 0; i < route.coords.length; i++) {
+                var point = xy(route.coords[i].lat, route.coords[i].lon);
+                if (i === 0) pen.moveTo(point.x, point.y);
+                else pen.lineTo(point.x, point.y);
+            }
+            pen.stroke();
+            var start = xy(route.coords[0].lat, route.coords[0].lon);
+            var goal = xy(route.coords[route.coords.length - 1].lat, route.coords[route.coords.length - 1].lon);
+            miniDot(pen, start, "#3ddc84", "A");
+            miniDot(pen, goal, "#e7c56a", "B");
+            var carP = xy(here.lat, here.lon);
+            var head = currentHeading() * Math.PI / 180;
+            pen.save();
+            pen.translate(carP.x, carP.y);
+            pen.rotate(head);
+            pen.fillStyle = "#0e7c86";
+            pen.beginPath();
+            pen.moveTo(0, -16);
+            pen.lineTo(11, 13);
+            pen.lineTo(0, 4);
+            pen.lineTo(-11, 13);
+            pen.closePath();
+            pen.fill();
+            pen.strokeStyle = "white";
+            pen.lineWidth = 3;
+            pen.stroke();
+            pen.restore();
+        }
+
+        function miniDot(pen, point, fill, letter) {
+            pen.fillStyle = fill;
+            pen.beginPath();
+            pen.arc(point.x, point.y, 14, 0, Math.PI * 2);
+            pen.fill();
+            pen.fillStyle = "#062428";
+            pen.font = "800 14px Segoe UI, Trebuchet MS, sans-serif";
+            pen.textAlign = "center";
+            pen.textBaseline = "middle";
+            pen.fillText(letter, point.x, point.y + 1);
+        }
+
+        function formatMeters(meters) {
+            if (meters >= 1000) return (meters / 1000).toFixed(1).replace(".", ",") + " km";
+            return Math.round(meters) + " m";
+        }
+    </script>
+</body>
+</html>
