@@ -1010,17 +1010,125 @@
         }
 
         function drawPlayerCar() {
-            var w = Math.min(width * 0.3, height * 0.26, 240);
-            var h = w * 0.62;
+            var w = Math.min(width * 0.4, height * 0.36, 340);
+            var h = w * 0.7;
             var x = width * 0.5;
-            var y = height - h * 0.22;
-            ctx.fillStyle = "#d01218";
-            roundBox(x - w * 0.5, y - h, w, h * 0.72, 16);
-            ctx.fillStyle = "#141820";
-            roundBox(x - w * 0.32, y - h * 0.96, w * 0.64, h * 0.34, 12);
-            ctx.fillStyle = "#ff2430";
-            roundBox(x - w * 0.38, y - h * 0.42, w * 0.16, h * 0.1, 4);
-            roundBox(x + w * 0.22, y - h * 0.42, w * 0.16, h * 0.1, 4);
+            var bottom = height - (height > width ? 168 : Math.max(4, h * 0.015));
+            var y = bottom - h;
+            ctx.fillStyle = "rgba(0,0,0,0.4)";
+            ctx.beginPath();
+            ctx.ellipse(x, bottom - h * 0.03, w * 0.46, h * 0.07, 0, 0, Math.PI * 2);
+            ctx.fill();
+            tire(x - w * 0.5, y + h * 0.62, w * 0.15, h * 0.34);
+            tire(x + w * 0.35, y + h * 0.62, w * 0.15, h * 0.34);
+            var paint = ctx.createLinearGradient(x, y, x, bottom);
+            paint.addColorStop(0, "#ff5c54");
+            paint.addColorStop(0.42, "#e10600");
+            paint.addColorStop(1, "#9a1016");
+            ctx.fillStyle = paint;
+            ctx.beginPath();
+            ctx.moveTo(x - w * 0.2, y + h * 0.1);
+            ctx.quadraticCurveTo(x, y + h * 0.012, x + w * 0.2, y + h * 0.1);
+            ctx.lineTo(x + w * 0.33, y + h * 0.28);
+            ctx.quadraticCurveTo(x + w * 0.4, y + h * 0.46, x + w * 0.4, y + h * 0.7);
+            ctx.lineTo(x + w * 0.36, y + h * 0.9);
+            ctx.quadraticCurveTo(x + w * 0.32, y + h * 0.98, x + w * 0.22, y + h * 0.98);
+            ctx.lineTo(x - w * 0.22, y + h * 0.98);
+            ctx.quadraticCurveTo(x - w * 0.32, y + h * 0.98, x - w * 0.36, y + h * 0.9);
+            ctx.lineTo(x - w * 0.4, y + h * 0.7);
+            ctx.quadraticCurveTo(x - w * 0.4, y + h * 0.46, x - w * 0.33, y + h * 0.28);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = "rgba(255,255,255,0.22)";
+            ctx.beginPath();
+            ctx.moveTo(x - w * 0.1, y + h * 0.09);
+            ctx.quadraticCurveTo(x, y + h * 0.035, x + w * 0.08, y + h * 0.1);
+            ctx.lineTo(x + w * 0.02, y + h * 0.15);
+            ctx.quadraticCurveTo(x, y + h * 0.11, x - w * 0.06, y + h * 0.14);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = "#9a1016";
+            roundBox(x - w * 0.24, y + h * 0.175, w * 0.48, h * 0.04, 3);
+            ctx.fillStyle = "#121826";
+            ctx.beginPath();
+            ctx.moveTo(x - w * 0.16, y + h * 0.25);
+            ctx.lineTo(x + w * 0.16, y + h * 0.25);
+            ctx.lineTo(x + w * 0.21, y + h * 0.5);
+            ctx.lineTo(x - w * 0.21, y + h * 0.5);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = "rgba(186,220,255,0.28)";
+            ctx.beginPath();
+            ctx.moveTo(x - w * 0.12, y + h * 0.28);
+            ctx.lineTo(x - w * 0.01, y + h * 0.28);
+            ctx.lineTo(x - w * 0.03, y + h * 0.46);
+            ctx.lineTo(x - w * 0.12, y + h * 0.46);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = "#243044";
+            ctx.lineWidth = Math.max(2, w * 0.012);
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(x + w * 0.02, y + h * 0.47);
+            ctx.lineTo(x + w * 0.13, y + h * 0.34);
+            ctx.stroke();
+            ctx.fillStyle = "#c81018";
+            roundBox(x - w * 0.48, y + h * 0.3, w * 0.1, h * 0.07, 4);
+            roundBox(x + w * 0.38, y + h * 0.3, w * 0.1, h * 0.07, 4);
+            ctx.fillStyle = "#1b2433";
+            roundBox(x - w * 0.465, y + h * 0.315, w * 0.055, h * 0.04, 2);
+            roundBox(x + w * 0.395, y + h * 0.315, w * 0.055, h * 0.04, 2);
+            ctx.strokeStyle = "rgba(70,0,8,0.4)";
+            ctx.lineWidth = Math.max(1.5, w * 0.008);
+            ctx.beginPath();
+            ctx.moveTo(x - w * 0.26, y + h * 0.55);
+            ctx.quadraticCurveTo(x, y + h * 0.575, x + w * 0.26, y + h * 0.55);
+            ctx.stroke();
+            ctx.fillStyle = "#f6f3ec";
+            roundBox(x - w * 0.085, y + h * 0.61, w * 0.17, h * 0.1, 2);
+            ctx.fillStyle = "#1d4e89";
+            ctx.fillRect(x - w * 0.085, y + h * 0.61, w * 0.028, h * 0.1);
+            ctx.fillStyle = "#d7dee6";
+            ctx.fillRect(x - w * 0.04, y + h * 0.645, w * 0.09, Math.max(2, h * 0.012));
+            light(x - w * 0.34, y + h * 0.58, w * 0.15, h * 0.12);
+            light(x + w * 0.19, y + h * 0.58, w * 0.15, h * 0.12);
+            ctx.fillStyle = "#f4f7fa";
+            ctx.beginPath();
+            ctx.arc(x, y + h * 0.755, Math.max(3, w * 0.016), 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#6d1218";
+            roundBox(x - w * 0.34, y + h * 0.8, w * 0.68, h * 0.13, 7);
+            ctx.fillStyle = "#e7edf2";
+            roundBox(x - w * 0.28, y + h * 0.845, w * 0.07, h * 0.03, 2);
+            roundBox(x + w * 0.21, y + h * 0.845, w * 0.07, h * 0.03, 2);
+        }
+
+        function tire(x, y, w, h) {
+            ctx.fillStyle = "#101218";
+            roundBox(x, y, w, h, w * 0.42);
+            ctx.fillStyle = "#9aa6b5";
+            ctx.beginPath();
+            ctx.ellipse(x + w * 0.5, y + h * 0.58, w * 0.24, h * 0.16, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#2a3140";
+            ctx.beginPath();
+            ctx.ellipse(x + w * 0.5, y + h * 0.58, w * 0.08, h * 0.055, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function light(x, y, w, h) {
+            ctx.fillStyle = "rgba(255,36,42,0.32)";
+            ctx.beginPath();
+            ctx.ellipse(x + w * 0.5, y + h * 0.55, w * 0.75, h * 0.95, 0, 0, Math.PI * 2);
+            ctx.fill();
+            var glow = ctx.createLinearGradient(x, y, x + w, y);
+            glow.addColorStop(0, "#ff4a32");
+            glow.addColorStop(0.62, "#ff1c28");
+            glow.addColorStop(1, "#ffc07a");
+            ctx.fillStyle = glow;
+            roundBox(x, y, w, h, h * 0.46);
+            ctx.fillStyle = "rgba(255,255,255,0.78)";
+            roundBox(x + w * 0.14, y + h * 0.24, w * 0.32, h * 0.26, 2);
         }
 
         function roundBox(x, y, w, h, r) {
