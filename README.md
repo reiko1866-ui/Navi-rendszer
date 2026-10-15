@@ -2,6 +2,6 @@
 
 A K706 képernyőjére készül.
 
-Nyisd meg az `index.html` lapot. A térképen válaszd ki, honnan (A) és hova (B) mennél, aztán nyomd meg az Indítást. Útközben, ha dugó van, a rendszer megkérdezi: menjünk-e máshol.
+Nyisd meg az `index.html` lapot. Az Ahol vagyok a GPS-helyzet. A keresőbe írd a pontos címet, ahova mennél, és válaszd ki a címjegyzékből. Aztán Indítás. Útközben, ha dugó van, a rendszer megkérdezi: menjünk-e máshol.
 
 Álló és fekvő képernyőn is működik.

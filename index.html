@@ -196,26 +196,17 @@
             text-overflow: ellipsis;
         }
         #summary {
-            position: absolute;
-            z-index: 2;
-            top: calc(84px + env(safe-area-inset-top));
-            left: 50%;
-            transform: translateX(-50%);
-            max-width: calc(100% - 24px);
-            box-sizing: border-box;
-            padding: 8px 16px;
-            border-radius: 999px;
-            background: rgba(22, 26, 32, 0.94);
-            font-size: 17px;
+            margin: 6px 2px;
+            font-size: 16px;
             font-weight: 700;
             text-align: center;
-            pointer-events: none;
+            color: white;
         }
         #zooms {
             position: absolute;
             z-index: 2;
             right: 12px;
-            bottom: calc(188px + env(safe-area-inset-bottom));
+            bottom: calc(54% + 8px);
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -234,7 +225,7 @@
             position: absolute;
             z-index: 2;
             left: 12px;
-            bottom: calc(188px + env(safe-area-inset-bottom));
+            bottom: calc(54% + 8px);
             padding: 2px 6px;
             border-radius: 6px;
             background: rgba(255, 255, 255, 0.9);
@@ -244,41 +235,108 @@
         }
         #dock {
             position: absolute;
-            z-index: 2;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding: 8px 10px calc(10px + env(safe-area-inset-bottom));
-            background: linear-gradient(transparent, rgba(12, 16, 20, 0.78) 28px);
-        }
-        #places {
+            z-index: 3;
+            left: 10px;
+            right: 10px;
+            bottom: calc(10px + env(safe-area-inset-bottom));
+            max-height: 52%;
             display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 8px;
+            flex-direction: column;
+            box-sizing: border-box;
+            padding: 10px;
+            border-radius: 22px;
+            background: rgba(22, 26, 32, 0.96);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
         }
-        .place {
-            flex: 0 0 auto;
-            min-height: 56px;
+        #q {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 64px;
+            border: 0;
+            border-radius: 16px;
             padding: 0 16px;
+            background: white;
+            color: #142028;
+            font: 700 18px "Segoe UI", "Trebuchet MS", sans-serif;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+        #gps {
+            width: 100%;
+            min-height: 56px;
+            margin-top: 8px;
             border: 0;
             border-radius: 999px;
-            background: rgba(22, 26, 32, 0.94);
+            background: #2ad4d8;
+            color: #062428;
+            font: 800 18px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        #gps:disabled { background: #5d6b74; color: #d5dde4; }
+        #list-label {
+            margin: 10px 4px 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #9eb0c4;
+        }
+        #results { overflow-y: auto; min-height: 52px; flex: 1 1 auto; }
+        .hint { margin: 6px 4px 8px; color: #c5d0dc; font-size: 15px; font-weight: 600; }
+        .hit-row { display: flex; gap: 6px; margin-bottom: 6px; }
+        .hit {
+            flex: 1;
+            min-width: 0;
+            min-height: 56px;
+            padding: 8px 12px;
+            border: 0;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
             color: white;
+            text-align: left;
             font: 700 16px "Segoe UI", "Trebuchet MS", sans-serif;
+            touch-action: manipulation;
+        }
+        .hit b, .hit small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hit small { margin-top: 2px; font-size: 13px; font-weight: 600; color: #9eb0c4; }
+        .drop {
+            flex: 0 0 44px;
+            min-height: 56px;
+            border: 0;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            font-size: 22px;
             touch-action: manipulation;
         }
         #go {
             width: 100%;
             min-height: 64px;
+            margin-top: 4px;
             border: 0;
             border-radius: 999px;
             background: #2ad4d8;
             color: #062428;
             font: 800 22px "Segoe UI", "Trebuchet MS", sans-serif;
             touch-action: manipulation;
+            flex: 0 0 auto;
         }
         #go:disabled { background: #5d6b74; color: #d5dde4; }
+        @media (orientation: landscape) {
+            #dock {
+                top: calc(84px + env(safe-area-inset-top));
+                bottom: calc(10px + env(safe-area-inset-bottom));
+                left: calc(10px + env(safe-area-inset-left));
+                right: auto;
+                width: 400px;
+                max-width: 46vw;
+                max-height: none;
+            }
+            #zooms { bottom: calc(12px + env(safe-area-inset-bottom)); }
+            #copy {
+                left: auto;
+                right: 88px;
+                bottom: calc(16px + env(safe-area-inset-bottom));
+            }
+        }
         #boom {
             position: fixed;
             z-index: 9;
@@ -314,17 +372,20 @@
     <section id="plan">
         <canvas id="plan-map"></canvas>
         <div id="bar">
-            <button id="chip-a" class="chip on" type="button"></button>
-            <button id="chip-b" class="chip" type="button"></button>
+            <button id="chip-a" class="chip" type="button"></button>
+            <button id="chip-b" class="chip on" type="button"></button>
         </div>
-        <div id="summary">Válaszd ki: honnan és hova</div>
         <div id="zooms">
             <button id="zin" type="button">+</button>
             <button id="zout" type="button">−</button>
         </div>
         <div id="copy">© OpenStreetMap</div>
         <div id="dock">
-            <div id="places"></div>
+            <input id="q" type="search" inputmode="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Hova? Írd be a címet">
+            <button id="gps" type="button">Ahol vagyok</button>
+            <div id="list-label">Címjegyzék</div>
+            <div id="results"></div>
+            <div id="summary">Ahol vagyok, aztán a pontos cím</div>
             <button id="go" type="button" disabled>Indítás</button>
         </div>
     </section>
@@ -350,23 +411,15 @@
         var queue = [0x3a4048, 0xd8d4cc, 0x8a3030, 0x22262c, 0xc8c2b8, 0x4a4038, 0x1c2026].map(function (color, index) {
             return { color: color, index: 3 + index * 2 };
         });
-        var places = [
-            { name: "Parlament", lat: 47.507121, lon: 19.045669 },
-            { name: "Hősök tere", lat: 47.51487, lon: 19.07796 },
-            { name: "Keleti", lat: 47.50047, lon: 19.08398 },
-            { name: "Nyugati", lat: 47.51086, lon: 19.05722 },
-            { name: "Széll Kálmán tér", lat: 47.50721, lon: 19.02468 },
-            { name: "Budai vár", lat: 47.49614, lon: 19.03958 },
-            { name: "Móricz Zsigmond körtér", lat: 47.47728, lon: 19.04748 },
-            { name: "Örs vezér tere", lat: 47.50298, lon: 19.13555 },
-            { name: "Déli pályaudvar", lat: 47.50022, lon: 19.02495 },
-            { name: "Lánchíd", lat: 47.49889, lon: 19.04361 }
-        ];
         var center = { lat: 47.497, lon: 19.040 };
         var zoom = 14;
         var aPoint = null;
         var bPoint = null;
-        var active = "a";
+        var active = "b";
+        var book = [];
+        var shown = [];
+        var searchTimer = 0;
+        var searchToken = 0;
         var route = null;
         var altRoute = null;
         var loading = false;
@@ -390,6 +443,12 @@
         document.getElementById("zin").addEventListener("click", function () { setZoom(zoom + 1); });
         document.getElementById("zout").addEventListener("click", function () { setZoom(zoom - 1); });
         document.getElementById("go").addEventListener("click", goPressed);
+        document.getElementById("gps").addEventListener("click", useGps);
+        document.getElementById("q").addEventListener("input", onSearchInput);
+        document.getElementById("q").addEventListener("keydown", function (event) {
+            if (event.key === "Enter" && shown.length) pickResult(0);
+        });
+        document.getElementById("results").addEventListener("click", onResultClick);
         document.getElementById("open-map").addEventListener("click", openPlan);
         document.getElementById("map").addEventListener("click", openPlan);
         planCanvas.addEventListener("pointerdown", pointerDown);
@@ -406,16 +465,12 @@
             document.getElementById("boom").textContent = "Hiba: " + msg;
         };
 
-        addPlaces();
+        loadBook();
         applyQuery();
         updateChips();
         updateSummary();
+        showBook();
         resize();
-        if (aPoint && bPoint) {
-            fetchRoute(function () {
-                if (query("go") === "1" && route && route.distance >= 40) startDrive();
-            });
-        }
         requestAnimationFrame(frame);
 
         function query(name) {
@@ -430,43 +485,32 @@
         }
 
         function applyQuery() {
-            var from = findPlace(query("a"));
-            var to = findPlace(query("b"));
-            if (from) aPoint = from;
-            if (to) bPoint = to;
-            if (aPoint && !bPoint) active = "b";
-        }
-
-        function findPlace(name) {
-            if (!name) return null;
-            var want = name.toLowerCase();
-            var i;
-            for (i = 0; i < places.length; i++) {
-                if (places[i].name.toLowerCase() === want) {
-                    return { lat: places[i].lat, lon: places[i].lon, name: places[i].name };
+            var from = query("a");
+            var to = query("b");
+            var left = (from ? 1 : 0) + (to ? 1 : 0);
+            if (!left) return;
+            function finish() {
+                left -= 1;
+                updateChips();
+                if (left > 0) return;
+                if (aPoint && bPoint) {
+                    fetchRoute(function () {
+                        if (query("go") === "1" && route && route.distance >= 40) startDrive();
+                    });
                 }
             }
-            return null;
+            if (from) lookupQuery(from, "a", finish);
+            if (to) lookupQuery(to, "b", finish);
         }
 
-        function addPlaces() {
-            var row = document.getElementById("places");
-            var i;
-            for (i = 0; i < places.length; i++) {
-                var button = document.createElement("button");
-                button.type = "button";
-                button.className = "place";
-                button.textContent = places[i].name;
-                button.setAttribute("data-name", places[i].name);
-                button.addEventListener("click", onPlace);
-                row.appendChild(button);
-            }
-        }
-
-        function onPlace(event) {
-            var name = event.currentTarget.getAttribute("data-name");
-            var place = findPlace(name);
-            if (place) setPoint(active, place, true);
+        function lookupQuery(text, which, done) {
+            searchNominatim(text, null, function (list) {
+                if (list && list.length) {
+                    if (which === "a") aPoint = list[0];
+                    else bPoint = list[0];
+                }
+                done();
+            });
         }
 
         function line(x1, z1, x2, z2, steps) {
@@ -843,34 +887,31 @@
             if (moved) return;
             if (event.type === "pointercancel") return;
             var latlon = screenToLatLon(event.clientX - rect.left, event.clientY - rect.top);
-            setPoint(active, { lat: latlon.lat, lon: latlon.lon, name: nameFor(latlon.lat, latlon.lon) }, false);
+            var which = active;
+            setPoint(which, { lat: latlon.lat, lon: latlon.lon, name: "Keresem a címet…", detail: "" }, false, "b");
+            reversePoint(latlon.lat, latlon.lon, function (point) {
+                var current = which === "a" ? aPoint : bPoint;
+                if (!current) return;
+                if (Math.abs(current.lat - latlon.lat) > 0.00002 || Math.abs(current.lon - latlon.lon) > 0.00002) return;
+                current.name = point.name;
+                current.detail = point.detail;
+                updateChips();
+                remember(current);
+                if (!document.getElementById("q").value.replace(/^\s+|\s+$/g, "")) showBook();
+            });
         }
 
-        function nameFor(lat, lon) {
-            var best = null;
-            var bestD = 350;
-            var i;
-            for (i = 0; i < places.length; i++) {
-                var dist = haversine({ lat: lat, lon: lon }, places[i]);
-                if (dist < bestD) {
-                    bestD = dist;
-                    best = places[i];
-                }
-            }
-            if (best) return best.name;
-            return active === "a" ? "A pont" : "B pont";
-        }
-
-        function setPoint(which, place, recenter) {
-            var point = { lat: place.lat, lon: place.lon, name: place.name };
+        function setPoint(which, place, recenter, nextActive) {
+            var point = { lat: place.lat, lon: place.lon, name: place.name, detail: place.detail || "" };
             if (which === "a") aPoint = point;
             else bPoint = point;
-            active = which === "a" ? "b" : "a";
+            active = nextActive || (which === "a" ? "b" : "a");
             tripLive = false;
             document.getElementById("go").textContent = "Indítás";
             if (recenter) {
                 center.lat = place.lat;
                 center.lon = place.lon;
+                zoom = Math.max(zoom, 15);
             }
             updateChips();
             scheduleRoute();
@@ -879,10 +920,237 @@
         function updateChips() {
             var a = document.getElementById("chip-a");
             var b = document.getElementById("chip-b");
+            var field = document.getElementById("q");
             a.className = "chip" + (active === "a" ? " on" : "");
             b.className = "chip" + (active === "b" ? " on" : "");
-            a.innerHTML = "<small>A · Honnan</small><b>" + (aPoint ? aPoint.name : "Koppints a térképre") + "</b>";
-            b.innerHTML = "<small>B · Hova</small><b>" + (bPoint ? bPoint.name : "Koppints a térképre") + "</b>";
+            a.innerHTML = "<small>A · Honnan</small><b>" + escapeHtml(aPoint ? aPoint.name : "Még nincs") + "</b>";
+            b.innerHTML = "<small>B · Hova</small><b>" + escapeHtml(bPoint ? bPoint.name : "Még nincs") + "</b>";
+            field.placeholder = active === "a" ? "Honnan? Írd be a címet" : "Hova? Írd be a címet";
+        }
+
+        function escapeHtml(text) {
+            return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function loadBook() {
+            book = [];
+            try {
+                var raw = JSON.parse(localStorage.getItem("toonnav-book") || "[]");
+                var i;
+                if (!raw || !raw.length) return;
+                for (i = 0; i < raw.length && book.length < 24; i++) {
+                    if (!raw[i] || typeof raw[i].lat !== "number" || typeof raw[i].lon !== "number" || !raw[i].name) continue;
+                    book.push({ name: raw[i].name, detail: raw[i].detail || "", lat: raw[i].lat, lon: raw[i].lon });
+                }
+            } catch (error) {
+                book = [];
+            }
+        }
+
+        function remember(point) {
+            if (!point || !point.name || point.name === "Keresem a címet…" || point.name === "Kijelölt pont" || point.name === "Ahol vagyok") return;
+            var next = [{ name: point.name, detail: point.detail || "", lat: point.lat, lon: point.lon }];
+            var i;
+            for (i = 0; i < book.length; i++) {
+                if (book[i].name === point.name && haversine(book[i], point) < 40) continue;
+                next.push(book[i]);
+                if (next.length >= 24) break;
+            }
+            book = next;
+            try { localStorage.setItem("toonnav-book", JSON.stringify(book)); } catch (error) { return; }
+        }
+
+        function showBook() {
+            document.getElementById("list-label").textContent = "Címjegyzék";
+            if (!book.length) {
+                setListMessage("Még nincs cím. Írd be, például: Váci utca 1");
+                return;
+            }
+            renderPoints(book, true);
+        }
+
+        function setListMessage(text) {
+            shown = [];
+            document.getElementById("results").innerHTML = "<p class=\"hint\">" + escapeHtml(text) + "</p>";
+        }
+
+        function renderPoints(list, saved) {
+            shown = list;
+            var box = document.getElementById("results");
+            box.innerHTML = "";
+            var i;
+            for (i = 0; i < list.length; i++) {
+                var row = document.createElement("div");
+                row.className = "hit-row";
+                var button = document.createElement("button");
+                button.type = "button";
+                button.className = "hit";
+                button.setAttribute("data-pick", String(i));
+                button.innerHTML = "<b>" + escapeHtml(list[i].name) + "</b><small>" + escapeHtml(list[i].detail || "") + "</small>";
+                row.appendChild(button);
+                if (saved) {
+                    var drop = document.createElement("button");
+                    drop.type = "button";
+                    drop.className = "drop";
+                    drop.setAttribute("data-drop", String(i));
+                    drop.textContent = "×";
+                    row.appendChild(drop);
+                }
+                box.appendChild(row);
+            }
+        }
+
+        function onResultClick(event) {
+            var node = event.target;
+            while (node && node !== event.currentTarget) {
+                if (node.getAttribute && node.getAttribute("data-drop") !== null) {
+                    dropAt(Number(node.getAttribute("data-drop")));
+                    return;
+                }
+                if (node.getAttribute && node.getAttribute("data-pick") !== null) {
+                    pickResult(Number(node.getAttribute("data-pick")));
+                    return;
+                }
+                node = node.parentNode;
+            }
+        }
+
+        function pickResult(index) {
+            var item = shown[index];
+            if (!item) return;
+            setPoint(active, item, true, "b");
+            remember(item);
+            document.getElementById("q").value = "";
+            showBook();
+        }
+
+        function dropAt(index) {
+            var item = shown[index];
+            if (!item) return;
+            var next = [];
+            var i;
+            for (i = 0; i < book.length; i++) {
+                if (book[i].name === item.name && Math.abs(book[i].lat - item.lat) < 0.00001) continue;
+                next.push(book[i]);
+            }
+            book = next;
+            try { localStorage.setItem("toonnav-book", JSON.stringify(book)); } catch (error) {}
+            showBook();
+        }
+
+        function onSearchInput() {
+            if (searchTimer) clearTimeout(searchTimer);
+            var text = document.getElementById("q").value.replace(/^\s+|\s+$/g, "");
+            if (text.length < 2) {
+                searchToken += 1;
+                showBook();
+                return;
+            }
+            document.getElementById("list-label").textContent = "Találatok";
+            setListMessage("Keresés…");
+            searchTimer = setTimeout(function () { runSearch(text); }, 700);
+        }
+
+        function runSearch(text) {
+            var token = ++searchToken;
+            var bias = aPoint || { lat: center.lat, lon: center.lon };
+            searchNominatim(text, bias, function (list) {
+                if (token !== searchToken) return;
+                document.getElementById("list-label").textContent = "Találatok";
+                if (list === null) {
+                    setListMessage("A keresés nem válaszolt. Próbáld újra, vagy koppints a térképre.");
+                    return;
+                }
+                if (!list.length) {
+                    setListMessage("Nincs ilyen cím. Írd utca és házszám szerint.");
+                    return;
+                }
+                renderPoints(list, false);
+            });
+        }
+
+        function searchNominatim(text, bias, done) {
+            var url = "https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=6&countrycodes=hu&q=" + encodeURIComponent(text);
+            if (bias) {
+                url += "&viewbox=" + (bias.lon - 0.5) + "," + (bias.lat + 0.35) + "," + (bias.lon + 0.5) + "," + (bias.lat - 0.35);
+            }
+            fetch(url, { headers: { "Accept-Language": "hu" } }).then(function (res) {
+                return res.json();
+            }).then(function (data) {
+                var list = [];
+                var i;
+                if (!data || !data.length) { done(list); return; }
+                for (i = 0; i < data.length; i++) list.push(pointFromHit(data[i]));
+                done(list);
+            }).catch(function () { done(null); });
+        }
+
+        function pointFromHit(item) {
+            var label = labelFrom(item);
+            return { lat: parseFloat(item.lat), lon: parseFloat(item.lon), name: label.name, detail: label.detail };
+        }
+
+        function labelFrom(item) {
+            var address = item.address || {};
+            var street = address.road || address.pedestrian || address.footway || address.square || address.residential || "";
+            var house = address.house_number || "";
+            var place = address.city || address.town || address.village || address.municipality || "";
+            var title = "";
+            if (street && house) title = street + " " + house;
+            else if (item.name && street && item.name !== street) title = item.name + ", " + street;
+            else if (street) title = street;
+            else if (item.name) title = item.name;
+            else title = (item.display_name || "Cím").split(",")[0];
+            var detail = "";
+            if (address.postcode && place) detail = address.postcode + " " + place;
+            else if (place) detail = place;
+            else if (address.suburb) detail = address.suburb;
+            return { name: title, detail: detail };
+        }
+
+        function reversePoint(lat, lon, done) {
+            var url = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat=" + lat + "&lon=" + lon;
+            fetch(url, { headers: { "Accept-Language": "hu" } }).then(function (res) {
+                return res.json();
+            }).then(function (data) {
+                if (!data || data.error) { done({ name: "Kijelölt pont", detail: "" }); return; }
+                var label = labelFrom(data);
+                done({ name: label.name, detail: label.detail });
+            }).catch(function () { done({ name: "Kijelölt pont", detail: "" }); });
+        }
+
+        function useGps() {
+            var button = document.getElementById("gps");
+            if (!navigator.geolocation) {
+                active = "a";
+                updateChips();
+                setListMessage("Itt nincs GPS. Írd be a címet, ahonnan indulsz.");
+                return;
+            }
+            button.disabled = true;
+            button.textContent = "Keresem…";
+            navigator.geolocation.getCurrentPosition(function (pos) {
+                button.disabled = false;
+                button.textContent = "Ahol vagyok";
+                var lat = pos.coords.latitude;
+                var lon = pos.coords.longitude;
+                setPoint("a", { lat: lat, lon: lon, name: "Ahol vagyok", detail: "" }, true, "b");
+                reversePoint(lat, lon, function (point) {
+                    if (!aPoint) return;
+                    if (Math.abs(aPoint.lat - lat) > 0.0002 || Math.abs(aPoint.lon - lon) > 0.0002) return;
+                    aPoint.name = point.name;
+                    aPoint.detail = point.detail;
+                    updateChips();
+                    remember(aPoint);
+                    if (!document.getElementById("q").value.replace(/^\s+|\s+$/g, "")) showBook();
+                });
+            }, function () {
+                button.disabled = false;
+                button.textContent = "Ahol vagyok";
+                active = "a";
+                updateChips();
+                setListMessage("A GPS nem adott helyzetet. Írd be a címet, ahonnan indulsz.");
+            }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 15000 });
         }
 
         function tooClose() {
@@ -893,7 +1161,9 @@
             var el = document.getElementById("summary");
             var go = document.getElementById("go");
             if (!aPoint || !bPoint) {
-                el.textContent = "Válaszd ki: honnan és hova";
+                if (!aPoint && !bPoint) el.textContent = "Ahol vagyok, aztán a pontos cím";
+                else if (!aPoint) el.textContent = "Honnan indulunk?";
+                else el.textContent = "Hova mennél?";
                 go.disabled = true;
                 return;
             }
@@ -1029,14 +1299,15 @@
             maxLat += latPad;
             minLon -= lonPad;
             maxLon += lonPad;
-            var topInset = 118;
-            var bottomInset = height > width ? 210 : 180;
+            var side = width > height ? Math.min(400, width * 0.46) + 28 : 16;
+            var topInset = 108;
+            var bottomInset = width > height ? 24 : Math.round(height * 0.5);
             var z;
             zoom = 12;
             for (z = 16; z >= 12; z--) {
                 var nw = world(maxLat, minLon, z);
                 var se = world(minLat, maxLon, z);
-                if (se.x - nw.x < width - 80 && se.y - nw.y < height - topInset - bottomInset) {
+                if (se.x - nw.x < width - side - 80 && se.y - nw.y < height - topInset - bottomInset) {
                     zoom = z;
                     break;
                 }
@@ -1044,7 +1315,7 @@
             var midLat = (minLat + maxLat) / 2;
             var midLon = (minLon + maxLon) / 2;
             var mid = world(midLat, midLon, zoom);
-            var focusX = width * 0.5;
+            var focusX = side + (width - side - 70) * 0.5;
             var focusY = topInset + (height - topInset - bottomInset) * 0.5;
             var shifted = unworld(mid.x - (focusX - width * 0.5), mid.y - (focusY - height * 0.5), zoom);
             center.lat = shifted.lat;
