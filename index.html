@@ -86,8 +86,8 @@
             font-size: 26px;
             flex: 0 0 auto;
         }
-        #dist { font-size: clamp(20px, 4.5vw, 28px); font-weight: 800; line-height: 1; }
-        #street { margin-top: 3px; font-size: 14px; color: #d5dde8; }
+        #dist { font-size: clamp(26px, 6vw, 40px); font-weight: 800; line-height: 1; }
+        #street { margin-top: 4px; font-size: 16px; color: #d5dde8; }
         #trip { margin-top: 2px; font-size: 13px; color: #9eb0c4; }
         #limit {
             position: fixed;
@@ -767,19 +767,131 @@
         }
 
         function paintDrive() {
-            var fade = ctx.createLinearGradient(0, 0, 0, height);
-            fade.addColorStop(0, "#05070e");
-            fade.addColorStop(0.38, "#10192c");
-            fade.addColorStop(0.52, "#243246");
-            fade.addColorStop(1, "#15191f");
-            ctx.fillStyle = fade;
+            if (!route) return;
+            var here = pointAt(traveled);
+            if (offRoute && gpsFix) here = gpsFix;
+            var heading = currentHeading();
+            var z = 16;
+            var anchorX = width * 0.5;
+            var anchorY = height * (height > width ? 0.64 : 0.7);
+            ctx.fillStyle = "#e4e0d8";
             ctx.fillRect(0, 0, width, height);
-            horizon = height * (height > width ? 0.4 : 0.46);
-            ctx.fillStyle = "#121814";
-            ctx.fillRect(0, horizon, width, height - horizon);
-            drawSkyline(currentHeading());
-            drawNightRoad();
-            drawPlayerCar();
+            ctx.save();
+            ctx.translate(anchorX, anchorY);
+            ctx.rotate(-heading * Math.PI / 180);
+            var origin = world(here.lat, here.lon, z);
+            var rad = heading * Math.PI / 180;
+            var cos = Math.cos(rad);
+            var sin = Math.sin(rad);
+            var minX = origin.x;
+            var maxX = origin.x;
+            var minY = origin.y;
+            var maxY = origin.y;
+            var corners = [[0, 0], [width, 0], [width, height], [0, height]];
+            var c;
+            for (c = 0; c < corners.length; c++) {
+                var dx = corners[c][0] - anchorX;
+                var dy = corners[c][1] - anchorY;
+                var wx = origin.x + cos * dx - sin * dy;
+                var wy = origin.y + sin * dx + cos * dy;
+                if (wx < minX) minX = wx;
+                if (wx > maxX) maxX = wx;
+                if (wy < minY) minY = wy;
+                if (wy > maxY) maxY = wy;
+            }
+            var x0 = Math.floor(minX / 256) - 1;
+            var y0 = Math.floor(minY / 256) - 1;
+            var x1 = Math.floor(maxX / 256) + 1;
+            var y1 = Math.floor(maxY / 256) + 1;
+            var max = Math.pow(2, z);
+            var tx;
+            var ty;
+            for (tx = x0; tx <= x1; tx++) {
+                for (ty = y0; ty <= y1; ty++) {
+                    if (ty < 0 || ty >= max) continue;
+                    var wrap = tx % max;
+                    if (wrap < 0) wrap += max;
+                    var img = tileImage(z, wrap, ty);
+                    var sx = tx * 256 - origin.x;
+                    var sy = ty * 256 - origin.y;
+                    if (img && img.complete && img.naturalWidth > 0) ctx.drawImage(img, sx, sy, 256, 256);
+                }
+            }
+            var parts = routeParts();
+            driveLine(origin, z, parts.behind, "rgba(150,156,164,0.9)", 10);
+            driveLine(origin, z, parts.ahead, "#ffffff", 14);
+            driveLine(origin, z, parts.ahead, "#128f99", 8);
+            if (bPoint) {
+                var goal = world(bPoint.lat, bPoint.lon, z);
+                ctx.fillStyle = "#e7c56a";
+                ctx.beginPath();
+                ctx.arc(goal.x - origin.x, goal.y - origin.y, 9, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = "#ffffff";
+                ctx.stroke();
+            }
+            ctx.restore();
+            drawNavArrow(anchorX, anchorY);
+            ctx.fillStyle = "rgba(22,26,32,0.72)";
+            ctx.font = "600 12px Segoe UI, Trebuchet MS, sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "alphabetic";
+            ctx.fillText("© OpenStreetMap", width * 0.5, height - 10);
+        }
+
+        function routeParts() {
+            var coords = route.coords;
+            var cum = route.cum;
+            var behind = [];
+            var ahead = [];
+            var cut = traveled;
+            var i;
+            for (i = 0; i < coords.length; i++) {
+                if (cum[i] <= cut) behind.push(coords[i]);
+                if (cum[i] >= cut) ahead.push(coords[i]);
+            }
+            var mid = pointAt(cut);
+            if (behind.length) behind.push(mid);
+            if (!ahead.length || ahead[0] !== mid) ahead.unshift(mid);
+            return { behind: behind, ahead: ahead };
+        }
+
+        function driveLine(origin, z, points, color, lineWidth) {
+            if (!points || points.length < 2) return;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.lineJoin = "round";
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            var i;
+            for (i = 0; i < points.length; i++) {
+                var p = world(points[i].lat, points[i].lon, z);
+                var x = p.x - origin.x;
+                var y = p.y - origin.y;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        function drawNavArrow(x, y) {
+            var s = Math.max(16, Math.min(width, height) * 0.028);
+            ctx.fillStyle = "rgba(0,0,0,0.25)";
+            ctx.beginPath();
+            ctx.ellipse(x, y + s * 0.2, s * 0.85, s * 0.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#0e7c86";
+            ctx.beginPath();
+            ctx.moveTo(x, y - s * 1.25);
+            ctx.lineTo(x + s * 0.78, y + s * 0.9);
+            ctx.lineTo(x, y + s * 0.28);
+            ctx.lineTo(x - s * 0.78, y + s * 0.9);
+            ctx.closePath();
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#ffffff";
+            ctx.stroke();
         }
 
         function currentHeading() {
@@ -1237,7 +1349,8 @@
             var img = new Image();
             tiles[key] = img;
             img.onload = function () {
-                if (mode === "plan" || mode === "drive") paintPlan();
+                if (mode === "plan") paintPlan();
+                else if (mode === "drive") paintDrive();
             };
             img.onerror = function () { img.failed = true; };
             img.src = "https://tile.openstreetmap.org/" + key + ".png";
@@ -2237,13 +2350,22 @@
             miniDot(pen, start, "#3ddc84", "A");
             miniDot(pen, goal, "#e7c56a", "B");
             var carP = xy(here.lat, here.lon);
-            pen.fillStyle = "#ff3b4a";
+            var head = currentHeading() * Math.PI / 180;
+            pen.save();
+            pen.translate(carP.x, carP.y);
+            pen.rotate(head);
+            pen.fillStyle = "#0e7c86";
             pen.beginPath();
-            pen.arc(carP.x, carP.y, 11, 0, Math.PI * 2);
+            pen.moveTo(0, -16);
+            pen.lineTo(11, 13);
+            pen.lineTo(0, 4);
+            pen.lineTo(-11, 13);
+            pen.closePath();
             pen.fill();
             pen.strokeStyle = "white";
             pen.lineWidth = 3;
             pen.stroke();
+            pen.restore();
         }
 
         function miniDot(pen, point, fill, letter) {
