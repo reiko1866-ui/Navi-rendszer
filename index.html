@@ -161,23 +161,22 @@
             z-index: 5;
             background: #d7e0e6;
         }
-        body.driving #view,
+        body.driving #plan,
         body.driving #dock,
         body.driving #bar,
-        body.driving #map,
         body.driving #card { display: none; }
-        body.driving #plan { display: block; }
+        body.driving #view { display: block; }
+        body.driving #map { display: block; }
         body.driving #maneuver,
         body.driving #limit,
         body.driving #speed,
-        body.driving #open-map { z-index: 6; }
-        body.driving #zooms,
-        body.driving #copy { bottom: calc(16px + env(safe-area-inset-bottom)); }
+        body.driving #open-map,
+        body.driving #map { z-index: 6; }
         body.driving #open-map {
-            left: 50%;
-            right: auto;
-            transform: translateX(-50%);
-            min-width: 180px;
+            left: auto;
+            right: calc(12px + env(safe-area-inset-right));
+            transform: none;
+            bottom: calc(16px + env(safe-area-inset-bottom));
         }
         #plan-map { display: block; width: 100%; height: 100%; touch-action: none; }
         #bar {
@@ -422,6 +421,7 @@
         var speedKnown = false;
         var gpsWatch = 0;
         var gpsFix = null;
+        var gpsHeading = null;
         var cam = { x: 0, y: 1.85, z: 10.4 };
         var car = { x: 0, z: 3.6, yaw: 0 };
         var straight = line(0, 16, 0, -3, 8);
@@ -561,8 +561,11 @@
             var ratio = Math.min(window.devicePixelRatio || 1, 2);
             fitCanvas(canvas, ctx, ratio);
             fitCanvas(planCanvas, planCtx, ratio);
-            horizon = height * (height > width ? 0.4 : 0.46);
-            if (mode === "plan" || mode === "drive") paintPlan();
+            horizon = height * (height > width ? 0.42 : 0.48);
+            if (mode === "drive") {
+                paintDrive();
+                drawMini();
+            } else if (mode === "plan") paintPlan();
         }
 
         function fitCanvas(el, context, ratio) {
@@ -751,6 +754,289 @@
                 ribbon(ahead, 0.16, "#e7eef2", 0.85);
             }
             drawCar(car.x, car.z, car.yaw, "#d01218", true);
+        }
+
+        function paintDrive() {
+            var fade = ctx.createLinearGradient(0, 0, 0, height);
+            fade.addColorStop(0, "#05070e");
+            fade.addColorStop(0.38, "#10192c");
+            fade.addColorStop(0.52, "#243246");
+            fade.addColorStop(1, "#15191f");
+            ctx.fillStyle = fade;
+            ctx.fillRect(0, 0, width, height);
+            horizon = height * (height > width ? 0.4 : 0.46);
+            ctx.fillStyle = "#121814";
+            ctx.fillRect(0, horizon, width, height - horizon);
+            drawSkyline(currentHeading());
+            drawNightRoad();
+            drawPlayerCar();
+        }
+
+        function currentHeading() {
+            if (gpsHeading !== null && speedKmh > 3) return gpsHeading;
+            var from = gpsFix || aPoint || pointAt(Math.max(0, traveled));
+            var to = pointAt(Math.min(route ? route.distance : 0, traveled + 350));
+            if (!from || !to || !route) return 0;
+            if (haversine(from, to) < 20) to = bPoint || to;
+            return bearingDeg(from, to);
+        }
+
+        function bearingDeg(a, b) {
+            var lat1 = a.lat * Math.PI / 180;
+            var lat2 = b.lat * Math.PI / 180;
+            var dLon = (b.lon - a.lon) * Math.PI / 180;
+            var y = Math.sin(dLon) * Math.cos(lat2);
+            var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+            return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+        }
+
+        function wrapDeg(value) {
+            var n = value % 360;
+            if (n > 180) n -= 360;
+            if (n < -180) n += 360;
+            return n;
+        }
+
+        function cityNow() {
+            var list = [
+                {
+                    name: "Budapest",
+                    lat: 47.5,
+                    lon: 19.05,
+                    radius: 20000,
+                    marks: [
+                        { name: "Parlament", kind: "parliament", lat: 47.5074, lon: 19.0456 },
+                        { name: "Lánchíd", kind: "bridge", lat: 47.4989, lon: 19.0437 },
+                        { name: "Budai vár", kind: "castle", lat: 47.4961, lon: 19.0396 },
+                        { name: "Halászbástya", kind: "bastion", lat: 47.5022, lon: 19.0348 },
+                        { name: "Bazilika", kind: "basilica", lat: 47.5009, lon: 19.0539 },
+                        { name: "Hősök tere", kind: "column", lat: 47.515, lon: 19.0778 },
+                        { name: "Citadella", kind: "citadel", lat: 47.4871, lon: 19.0465 }
+                    ]
+                }
+            ];
+            var probes = [];
+            if (aPoint) probes.push(aPoint);
+            if (bPoint) probes.push(bPoint);
+            if (gpsFix) probes.push(gpsFix);
+            var i;
+            var c;
+            for (i = 0; i < probes.length; i++) {
+                for (c = 0; c < list.length; c++) {
+                    if (haversine(probes[i], list[c]) < list[c].radius) return list[c];
+                }
+            }
+            return null;
+        }
+
+        function drawSkyline(heading) {
+            var city = cityNow();
+            var from = gpsFix || aPoint || { lat: 47.5, lon: 19.04 };
+            var seen = [];
+            var i;
+            if (!city) {
+                for (i = -3; i <= 3; i++) shade(width * 0.5 + i * 46, horizon, 28, 18 + (Math.abs(i) % 3) * 8, "#2a3344");
+                return;
+            }
+            for (i = 0; i < city.marks.length; i++) {
+                var mark = city.marks[i];
+                var diff = wrapDeg(bearingDeg(from, mark) - heading);
+                var dist = haversine(from, mark);
+                seen.push({ mark: mark, diff: diff, dist: dist });
+            }
+            seen.sort(function (a, b) { return b.dist - a.dist; });
+            var labeled = 0;
+            var labelX = [];
+            for (i = 0; i < seen.length; i++) {
+                var item = seen[i];
+                if (Math.abs(item.diff) > 100) continue;
+                var scale = 2400 / Math.max(650, item.dist);
+                if (scale > 1.25) scale = 1.25;
+                if (scale < 0.48) scale = 0.48;
+                var x = width * 0.5 + (item.diff / 100) * (width * 0.46);
+                var base = horizon + 4;
+                drawMark(item.mark.kind, x, base, scale);
+                var showName = Math.abs(item.diff) < 36 || scale > 0.7;
+                var crowded = false;
+                var n;
+                for (n = 0; n < labelX.length; n++) if (Math.abs(labelX[n] - x) < 96) crowded = true;
+                if (showName && !crowded && labeled < 3) {
+                    labelX.push(x);
+                    labeled += 1;
+                    ctx.fillStyle = "rgba(255,255,255,0.92)";
+                    ctx.font = "700 15px Segoe UI, Trebuchet MS, sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(item.mark.name, x, base - 64 * scale - 10);
+                }
+            }
+            if (!labeled) {
+                ctx.fillStyle = "rgba(255,255,255,0.55)";
+                ctx.font = "600 13px Segoe UI, Trebuchet MS, sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(city.name, width * 0.5, horizon - 28);
+            }
+        }
+
+        function shade(x, y, w, h, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x - w * 0.5, y - h, w, h);
+        }
+
+        function arch(x, y, r, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, r, Math.PI, 0);
+            ctx.fill();
+        }
+
+        function drawMark(kind, x, y, s) {
+            if (kind === "parliament") {
+                shade(x, y, 86 * s, 28 * s, "#e7d7b4");
+                shade(x - 32 * s, y, 12 * s, 52 * s, "#f4ead2");
+                shade(x + 32 * s, y, 12 * s, 48 * s, "#f4ead2");
+                arch(x, y - 28 * s, 18 * s, "#d7a441");
+                shade(x, y - 46 * s, 3 * s, 16 * s, "#f8f3e6");
+            } else if (kind === "bridge") {
+                shade(x - 26 * s, y, 7 * s, 40 * s, "#efe6d2");
+                shade(x + 26 * s, y, 7 * s, 40 * s, "#efe6d2");
+                shade(x, y, 64 * s, 5 * s, "#d9cbb0");
+                ctx.strokeStyle = "#cbbda6";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(x - 26 * s, y - 34 * s);
+                ctx.quadraticCurveTo(x, y - 6 * s, x + 26 * s, y - 34 * s);
+                ctx.stroke();
+            } else if (kind === "castle") {
+                shade(x, y, 76 * s, 18 * s, "#c9b79a");
+                shade(x, y - 18 * s, 9 * s, 46 * s, "#f6f1e4");
+                arch(x - 20 * s, y - 18 * s, 9 * s, "#eadcbe");
+                arch(x + 18 * s, y - 18 * s, 8 * s, "#eadcbe");
+            } else if (kind === "basilica") {
+                shade(x, y, 40 * s, 22 * s, "#f0e2c4");
+                shade(x - 18 * s, y, 7 * s, 32 * s, "#f6efe0");
+                shade(x + 18 * s, y, 7 * s, 32 * s, "#f6efe0");
+                arch(x, y - 22 * s, 16 * s, "#d0893e");
+                shade(x, y - 38 * s, 3 * s, 12 * s, "#f8f4ea");
+            } else if (kind === "column") {
+                shade(x, y, 34 * s, 8 * s, "#e7dcc4");
+                shade(x, y - 8 * s, 4 * s, 48 * s, "#f7f2e6");
+                arch(x, y - 56 * s, 7 * s, "#f4efe4");
+            } else if (kind === "bastion") {
+                shade(x, y, 62 * s, 12 * s, "#e6d5b8");
+                var k;
+                for (k = -2; k <= 2; k++) arch(x + k * 12 * s, y - 12 * s, 7 * s, "#f3e6cc");
+            } else if (kind === "citadel") {
+                shade(x, y, 70 * s, 16 * s, "#cbb89a");
+                shade(x - 22 * s, y - 16 * s, 8 * s, 10 * s, "#ddd0b4");
+                shade(x + 18 * s, y - 16 * s, 8 * s, 12 * s, "#ddd0b4");
+            }
+        }
+
+        function drawNightRoad() {
+            var bend = 0;
+            if (route) {
+                var up = upcoming();
+                if (up.arrow === "↰" || up.arrow === "↖" || up.arrow === "↩") bend = -1;
+                if (up.arrow === "↱" || up.arrow === "↗") bend = 1;
+            }
+            var farX = width * 0.5 + bend * width * 0.1;
+            var nearX = width * 0.5;
+            var shift = bend * width * 0.16;
+            var halfFar = Math.max(10, width * 0.02);
+            var halfNear = width * 0.42;
+            function bez(t, a, b, c) {
+                var u = 1 - t;
+                return u * u * a + 2 * u * t * b + t * t * c;
+            }
+            function edge(t, side) {
+                return {
+                    x: bez(t, farX + side * halfFar, width * 0.5 + shift + side * width * 0.16, nearX + side * halfNear),
+                    y: bez(t, horizon, horizon + (height - horizon) * 0.42, height + 8)
+                };
+            }
+            ctx.fillStyle = "#2a3140";
+            ctx.beginPath();
+            var steps = 16;
+            var t;
+            var left = edge(0, -1);
+            ctx.moveTo(left.x, left.y);
+            for (t = 1; t <= steps; t++) {
+                left = edge(t / steps, -1);
+                ctx.lineTo(left.x, left.y);
+            }
+            for (t = steps; t >= 0; t--) {
+                var right = edge(t / steps, 1);
+                ctx.lineTo(right.x, right.y);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = "#2ad4d8";
+            ctx.lineWidth = Math.max(4, width * 0.012);
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            for (t = 0; t <= steps; t++) {
+                var mid = edge(t / steps, 0);
+                if (t === 0) ctx.moveTo(mid.x, mid.y);
+                else ctx.lineTo(mid.x, mid.y);
+            }
+            ctx.stroke();
+            var n;
+            for (n = 0; n < 6; n++) {
+                var at = 0.18 + n * 0.13;
+                var sideL = edge(at, -1);
+                var sideR = edge(at, 1);
+                var r = 4 + at * 16;
+                ctx.fillStyle = "#1b3326";
+                ctx.beginPath();
+                ctx.arc(sideL.x, sideL.y - r * 0.4, r, 0, Math.PI * 2);
+                ctx.arc(sideR.x, sideR.y - r * 0.4, r, 0, Math.PI * 2);
+                ctx.fill();
+                if (n % 2 === 0) {
+                    ctx.strokeStyle = "#3a4454";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(sideL.x, sideL.y);
+                    ctx.lineTo(sideL.x, sideL.y - r * 2.2);
+                    ctx.moveTo(sideR.x, sideR.y);
+                    ctx.lineTo(sideR.x, sideR.y - r * 2.2);
+                    ctx.stroke();
+                    ctx.fillStyle = "#f0d56a";
+                    ctx.beginPath();
+                    ctx.arc(sideL.x, sideL.y - r * 2.2, 3 + at * 2, 0, Math.PI * 2);
+                    ctx.arc(sideR.x, sideR.y - r * 2.2, 3 + at * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        function drawPlayerCar() {
+            var w = Math.min(width * 0.3, height * 0.26, 240);
+            var h = w * 0.62;
+            var x = width * 0.5;
+            var y = height - h * 0.22;
+            ctx.fillStyle = "#d01218";
+            roundBox(x - w * 0.5, y - h, w, h * 0.72, 16);
+            ctx.fillStyle = "#141820";
+            roundBox(x - w * 0.32, y - h * 0.96, w * 0.64, h * 0.34, 12);
+            ctx.fillStyle = "#ff2430";
+            roundBox(x - w * 0.38, y - h * 0.42, w * 0.16, h * 0.1, 4);
+            roundBox(x + w * 0.22, y - h * 0.42, w * 0.16, h * 0.1, 4);
+        }
+
+        function roundBox(x, y, w, h, r) {
+            var radius = Math.min(r, w * 0.5, h * 0.5);
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + w - radius, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+            ctx.lineTo(x + w, y + h - radius);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+            ctx.lineTo(x + radius, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            ctx.fill();
         }
 
         function world(lat, lon, z) {
@@ -1397,6 +1683,7 @@
             jamOn = false;
             choice = "";
             gpsFix = null;
+            gpsHeading = null;
             speedKnown = false;
             speedKmh = 0;
             tripLive = true;
@@ -1441,8 +1728,10 @@
         function onGpsFail() {
             if (mode !== "drive") return;
             gpsFix = null;
+            gpsHeading = null;
             speedKnown = false;
             refreshHud();
+            paintDrive();
         }
 
         function onGps(pos) {
@@ -1450,6 +1739,7 @@
             var lat = pos.coords.latitude;
             var lon = pos.coords.longitude;
             gpsFix = { lat: lat, lon: lon };
+            if (typeof pos.coords.heading === "number" && pos.coords.heading >= 0) gpsHeading = pos.coords.heading;
             var rawSpeed = pos.coords.speed;
             if (typeof rawSpeed === "number" && rawSpeed >= 0) {
                 speedKmh = rawSpeed * 3.6;
@@ -1470,7 +1760,8 @@
                 }
             }
             refreshHud();
-            paintPlan();
+            paintDrive();
+            drawMini();
         }
 
         function projectSegment(a, b, lat, lon) {
