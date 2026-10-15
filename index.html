@@ -161,7 +161,24 @@
             z-index: 5;
             background: #d7e0e6;
         }
-        body.driving #plan { display: none; }
+        body.driving #view,
+        body.driving #dock,
+        body.driving #bar,
+        body.driving #map,
+        body.driving #card { display: none; }
+        body.driving #plan { display: block; }
+        body.driving #maneuver,
+        body.driving #limit,
+        body.driving #speed,
+        body.driving #open-map { z-index: 6; }
+        body.driving #zooms,
+        body.driving #copy { bottom: calc(16px + env(safe-area-inset-bottom)); }
+        body.driving #open-map {
+            left: 50%;
+            right: auto;
+            transform: translateX(-50%);
+            min-width: 180px;
+        }
         #plan-map { display: block; width: 100%; height: 100%; touch-action: none; }
         #bar {
             position: absolute;
@@ -402,6 +419,9 @@
         var choice = "";
         var along = 0;
         var speedKmh = 0;
+        var speedKnown = false;
+        var gpsWatch = 0;
+        var gpsFix = null;
         var cam = { x: 0, y: 1.85, z: 10.4 };
         var car = { x: 0, z: 3.6, yaw: 0 };
         var straight = line(0, 16, 0, -3, 8);
@@ -471,7 +491,6 @@
         updateSummary();
         showBook();
         resize();
-        requestAnimationFrame(frame);
 
         function query(name) {
             var parts = location.search.replace(/^\?/, "").split("&");
@@ -543,7 +562,7 @@
             fitCanvas(canvas, ctx, ratio);
             fitCanvas(planCanvas, planCtx, ratio);
             horizon = height * (height > width ? 0.4 : 0.46);
-            if (mode === "plan") paintPlan();
+            if (mode === "plan" || mode === "drive") paintPlan();
         }
 
         function fitCanvas(el, context, ratio) {
@@ -774,7 +793,7 @@
             var img = new Image();
             tiles[key] = img;
             img.onload = function () {
-                if (mode === "plan") paintPlan();
+                if (mode === "plan" || mode === "drive") paintPlan();
             };
             img.onerror = function () { img.failed = true; };
             img.src = "https://tile.openstreetmap.org/" + key + ".png";
@@ -815,12 +834,15 @@
             if (aPoint) marker(aPoint.lat, aPoint.lon, "#3ddc84", "A");
             if (bPoint) marker(bPoint.lat, bPoint.lon, "#e7c56a", "B");
             if (tripLive && route) {
-                var here = pointAt(traveled);
+                var here = gpsFix || pointAt(traveled);
                 var spot = toScreen(here.lat, here.lon);
                 planCtx.fillStyle = "#ff3b4a";
                 planCtx.beginPath();
-                planCtx.arc(spot.x, spot.y, 8, 0, Math.PI * 2);
+                planCtx.arc(spot.x, spot.y, 9, 0, Math.PI * 2);
                 planCtx.fill();
+                planCtx.lineWidth = 3;
+                planCtx.strokeStyle = "white";
+                planCtx.stroke();
             }
         }
 
@@ -1220,14 +1242,14 @@
                     fitPoints(route.coords);
                 }
                 updateSummary();
-                if (mode === "plan") paintPlan();
+                if (mode === "plan" || mode === "drive") paintPlan();
                 if (done) done();
             }).catch(function () {
                 if (token !== routeToken) return;
                 loading = false;
                 useFallback();
                 updateSummary();
-                if (mode === "plan") paintPlan();
+                if (mode === "plan" || mode === "drive") paintPlan();
                 if (done) done();
             });
         }
@@ -1280,7 +1302,7 @@
             return parsed;
         }
 
-        function fitPoints(list) {
+        function fitPoints(list, full) {
             if (!list || !list.length) return;
             var minLat = 90;
             var maxLat = -90;
@@ -1299,9 +1321,9 @@
             maxLat += latPad;
             minLon -= lonPad;
             maxLon += lonPad;
-            var side = width > height ? Math.min(400, width * 0.46) + 28 : 16;
-            var topInset = 108;
-            var bottomInset = width > height ? 24 : Math.round(height * 0.5);
+            var side = full ? 70 : (width > height ? Math.min(400, width * 0.46) + 28 : 16);
+            var topInset = full ? 96 : 108;
+            var bottomInset = full ? 90 : (width > height ? 24 : Math.round(height * 0.5));
             var z;
             zoom = 12;
             for (z = 16; z >= 12; z--) {
@@ -1358,11 +1380,8 @@
         }
 
         function goPressed() {
-            if (tripLive && route) {
-                mode = "drive";
-                document.body.className = asked && !arrived ? "driving asking" : "driving";
-                frame.last = 0;
-                resize();
+            if (tripLive && route && !arrived) {
+                showNav();
                 return;
             }
             startDrive();
@@ -1377,28 +1396,114 @@
             asked = false;
             jamOn = false;
             choice = "";
-            along = 0;
-            car.x = 0;
-            car.z = 3.6;
-            car.yaw = 0;
-            cam.x = 0;
-            cam.y = 1.85;
-            cam.z = 10.4;
+            gpsFix = null;
+            speedKnown = false;
+            speedKmh = 0;
             tripLive = true;
-            speedKmh = 40;
-            mode = "drive";
-            document.body.className = "driving";
             card.className = "";
             document.getElementById("go").textContent = "Indítás";
-            frame.last = 0;
+            fitPoints(route.coords, true);
+            showNav();
+        }
+
+        function showNav() {
+            mode = "drive";
+            document.body.className = "driving";
+            document.getElementById("open-map").textContent = "Leállítás";
+            refreshHud();
+            startGps();
             resize();
         }
 
         function openPlan() {
+            stopGps();
             mode = "plan";
             document.body.className = "planning";
-            if (tripLive && route) document.getElementById("go").textContent = "Folytatás";
+            if (tripLive && route && !arrived) document.getElementById("go").textContent = "Folytatás";
             resize();
+        }
+
+        function startGps() {
+            stopGps();
+            if (!navigator.geolocation) return;
+            gpsWatch = navigator.geolocation.watchPosition(onGps, onGpsFail, {
+                enableHighAccuracy: true,
+                maximumAge: 2000,
+                timeout: 15000
+            });
+        }
+
+        function stopGps() {
+            if (gpsWatch && navigator.geolocation) navigator.geolocation.clearWatch(gpsWatch);
+            gpsWatch = 0;
+        }
+
+        function onGpsFail() {
+            if (mode !== "drive") return;
+            gpsFix = null;
+            speedKnown = false;
+            refreshHud();
+        }
+
+        function onGps(pos) {
+            if (mode !== "drive" || !route) return;
+            var lat = pos.coords.latitude;
+            var lon = pos.coords.longitude;
+            gpsFix = { lat: lat, lon: lon };
+            var rawSpeed = pos.coords.speed;
+            if (typeof rawSpeed === "number" && rawSpeed >= 0) {
+                speedKmh = rawSpeed * 3.6;
+                speedKnown = true;
+            }
+            var along = alongRoute(lat, lon);
+            if (along && along.dist < 80) {
+                var moving = along.meters > 25 || speedKmh > 3;
+                if (moving && along.meters + 30 >= traveled) traveled = along.meters;
+                if (route.distance - along.meters < 45 && along.dist < 50) {
+                    traveled = route.distance;
+                    arrived = true;
+                }
+                if (moving) {
+                    center.lat = lat;
+                    center.lon = lon;
+                    zoom = 16;
+                }
+            }
+            refreshHud();
+            paintPlan();
+        }
+
+        function projectSegment(a, b, lat, lon) {
+            var mid = (a.lat + b.lat) * Math.PI / 360;
+            var mx = Math.cos(mid) || 0.01;
+            var ax = a.lon * mx;
+            var ay = a.lat;
+            var bx = b.lon * mx;
+            var by = b.lat;
+            var px = lon * mx;
+            var py = lat;
+            var dx = bx - ax;
+            var dy = by - ay;
+            var len2 = dx * dx + dy * dy;
+            var t = len2 ? ((px - ax) * dx + (py - ay) * dy) / len2 : 0;
+            if (t < 0) t = 0;
+            if (t > 1) t = 1;
+            return { lat: a.lat + (b.lat - a.lat) * t, lon: a.lon + (b.lon - a.lon) * t };
+        }
+
+        function alongRoute(lat, lon) {
+            var coords = route.coords;
+            var cum = route.cum;
+            if (!coords || coords.length < 2) return null;
+            var best = null;
+            var i;
+            for (i = 0; i < coords.length - 1; i++) {
+                var point = projectSegment(coords[i], coords[i + 1], lat, lon);
+                var dist = haversine({ lat: lat, lon: lon }, point);
+                var meters = cum[i] + haversine(coords[i], point);
+                if (!best || dist < best.dist) best = { dist: dist, meters: meters };
+            }
+            return best;
         }
 
         function maneuverText(step) {
@@ -1509,68 +1614,36 @@
             cam.z = car.z + Math.cos(yaw) * 6.6;
         }
 
-        function frame(time) {
-            requestAnimationFrame(frame);
-            if (mode !== "drive") return;
-            if (!frame.last) frame.last = time;
-            var dt = Math.min(0.05, (time - frame.last) / 1000);
-            frame.last = time;
-            if (choice === "yes") {
-                along = Math.min(1, along + dt * 0.12);
-                var index = Math.min(rightRoad.length - 2, Math.floor(along * (rightRoad.length - 2)));
-                var spot = rightRoad[index];
-                var next = rightRoad[index + 1];
-                var local = along * (rightRoad.length - 2) - index;
-                car.x = spot.x + (next.x - spot.x) * local;
-                car.z = spot.z + (next.z - spot.z) * local;
-                car.yaw = Math.atan2(next.x - spot.x, next.z - spot.z) + Math.PI;
-                follow(car.yaw);
-            }
-            moveTrip(dt);
-            paint();
-            drawMini();
-        }
-
-        function moveTrip(dt) {
+        function refreshHud() {
             if (!route) return;
+            var left = Math.max(0, route.distance - traveled);
             if (arrived) {
-                speedKmh = 0;
                 document.getElementById("dist").textContent = "Megérkeztél.";
                 document.getElementById("street").textContent = bPoint ? bPoint.name : "Cél";
                 document.getElementById("arrow").textContent = "●";
                 document.getElementById("trip").textContent = "0 m · 0 perc";
                 document.getElementById("speed-num").textContent = "0";
-                card.className = "";
-                document.body.className = "driving";
+                document.querySelector("#speed span").textContent = "km/h";
                 if (!saidArrive) {
                     saidArrive = true;
                     speak("Megérkeztél.");
                 }
                 return;
             }
-            if (choice === "yes") speedKmh = 42;
-            else if (choice === "no") speedKmh = 12;
-            else if (choice === "ask") speedKmh = 8;
-            else speedKmh = 40;
-            traveled += speedKmh / 3.6 * dt;
-            if (traveled >= route.distance) {
-                traveled = route.distance;
-                arrived = true;
-            }
-            maybeAsk();
-            var left = Math.max(0, route.distance - traveled);
             var up = upcoming();
-            var secs = speedKmh > 1 ? left / (speedKmh / 3.6) : 0;
-            var mins = arrived ? 0 : Math.max(1, Math.round(secs / 60));
+            var frac = route.distance ? left / route.distance : 1;
+            var secs = (route.duration || 0) * frac;
+            var mins = Math.max(1, Math.round(secs / 60));
             var eta = new Date(Date.now() + secs * 1000);
             var minute = eta.getMinutes();
             if (minute < 10) minute = "0" + minute;
             var street = up.street && up.street !== up.label ? up.label + " · " + up.street : (up.street || up.label);
-            document.getElementById("dist").textContent = arrived ? "Megérkeztél." : formatMeters(up.remain);
-            document.getElementById("street").textContent = arrived ? (bPoint ? bPoint.name : "Cél") : street;
-            document.getElementById("arrow").textContent = arrived ? "●" : up.arrow;
+            document.getElementById("dist").textContent = formatMeters(up.remain);
+            document.getElementById("street").textContent = street;
+            document.getElementById("arrow").textContent = up.arrow;
             document.getElementById("trip").textContent = formatMeters(left) + " · " + mins + " perc · " + eta.getHours() + ":" + minute;
-            document.getElementById("speed-num").textContent = String(Math.round(speedKmh));
+            document.getElementById("speed-num").textContent = speedKnown ? String(Math.round(speedKmh)) : "–";
+            document.querySelector("#speed span").textContent = speedKnown ? "km/h" : "GPS";
         }
 
         function drawMini() {
