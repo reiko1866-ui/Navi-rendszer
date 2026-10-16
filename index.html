@@ -185,6 +185,8 @@
     var wheels = [];
     var chevrons = [];
     var spots = [];
+    var beams = [];
+    var clouds = [];
     var clock = null;
     var renderer = null;
     var scene = null;
@@ -197,6 +199,7 @@
     var groundMat = null;
     var roadMat = null;
     var waterMat = null;
+    var deepMat = null;
     var shoreMat = null;
     var hillMat = null;
     var mountainMat = null;
@@ -204,6 +207,7 @@
     var townGlass = null;
     var lampMat = null;
     var headMat = null;
+    var cloudMat = null;
     var sky = null;
     var stars = null;
     var moon = null;
@@ -219,6 +223,9 @@
     var lookAhead = 18;
     var lookUp = 1.15;
     var hudTick = 0;
+    var mood = 0;
+    var moodTarget = 0;
+    var moodDirty = true;
 
     function showFail(text) {
         fail.textContent = text;
@@ -261,10 +268,10 @@
     tmpA = new THREE.Vector3();
 
     var gradient = new THREE.DataTexture(new Uint8Array([
-        58, 62, 72, 255,
-        120, 124, 132, 255,
-        186, 190, 196, 255,
-        236, 238, 242, 255
+        168, 174, 180, 255,
+        198, 204, 208, 255,
+        226, 230, 232, 255,
+        255, 255, 255, 255
     ]), 4, 1, THREE.RGBAFormat);
     gradient.magFilter = THREE.NearestFilter;
     gradient.minFilter = THREE.NearestFilter;
@@ -402,10 +409,23 @@
         return geo;
     }
 
-    groundMat = lambert(0x63b84a);
+    groundMat = lambert(0x5eaf48);
     var ground = new THREE.Mesh(new THREE.CircleGeometry(260, 64), groundMat);
     ground.rotation.x = -Math.PI / 2;
     scene.add(ground);
+
+    var patchGeo = new THREE.CircleGeometry(1, 12);
+    var patchMats = [lambert(0x73c45a), lambert(0x4e9a3c), lambert(0x8bc86a)];
+    var pi;
+    for (pi = 0; pi < 14; pi++) {
+        var patch = new THREE.Mesh(patchGeo, patchMats[pi % 3]);
+        var ppos = sideAt((pi + 0.2) / 14, -8.5 - rnd(pi + 3) * 6);
+        var ps = 2.2 + rnd(pi + 9) * 2.4;
+        patch.rotation.x = -Math.PI / 2;
+        patch.position.set(ppos.x, 0.025, ppos.z);
+        patch.scale.set(ps, ps, 1);
+        scene.add(patch);
+    }
 
     shoreMat = lambert(0xe6d2a4);
     var shore = new THREE.Mesh(new THREE.CircleGeometry(81.6, 48), shoreMat);
@@ -413,11 +433,17 @@
     shore.position.y = 0.02;
     scene.add(shore);
 
-    waterMat = lambert(0x187fc4);
+    waterMat = lambert(0x1d86cc);
     var water = new THREE.Mesh(new THREE.CircleGeometry(80.4, 56), waterMat);
     water.rotation.x = -Math.PI / 2;
     water.position.y = 0.04;
     scene.add(water);
+
+    deepMat = lambert(0x146eae);
+    var deep = new THREE.Mesh(new THREE.CircleGeometry(52, 40), deepMat);
+    deep.rotation.x = -Math.PI / 2;
+    deep.position.y = 0.05;
+    scene.add(deep);
 
     roadMat = lambert(0x3c4452);
     var lineMat = basic(0xf7f8fa);
@@ -437,7 +463,6 @@
 
     var postGeo = new THREE.CylinderGeometry(0.05, 0.06, 1.05, 6);
     var postMat = toon(0xc5ced6);
-    var pi;
     for (pi = 0; pi < 28; pi++) {
         var post = new THREE.Mesh(postGeo, postMat);
         var pp = sideAt((pi + 0.2) / 28, 4.85);
@@ -445,21 +470,32 @@
         scene.add(post);
     }
 
-    function paintSky(isNight) {
+    var dayTop = new THREE.Color(0x3a96f5);
+    var dayMid = new THREE.Color(0x8ad4fb);
+    var dayHor = new THREE.Color(0xe7f7ff);
+    var nightTop = new THREE.Color(0x0c1834);
+    var nightMid = new THREE.Color(0x1c3a68);
+    var nightHor = new THREE.Color(0x2a4a72);
+    var skyTop = new THREE.Color();
+    var skyMid = new THREE.Color();
+    var skyHor = new THREE.Color();
+    var mixA = new THREE.Color();
+    var mixB = new THREE.Color();
+
+    function paintSky(t) {
         var pos = sky.geometry.attributes.position;
         var col = sky.geometry.attributes.color;
-        var top = new THREE.Color(isNight ? 0x0c1834 : 0x2f8ef0);
-        var mid = new THREE.Color(isNight ? 0x1c3a68 : 0x79d0fb);
-        var hor = new THREE.Color(isNight ? 0x2a4a72 : 0xe5f6ff);
+        skyTop.copy(dayTop).lerp(nightTop, t);
+        skyMid.copy(dayMid).lerp(nightMid, t);
+        skyHor.copy(dayHor).lerp(nightHor, t);
         var i;
-        var c = new THREE.Color();
         for (i = 0; i < pos.count; i++) {
             var ny = pos.getY(i) / 520;
             if (ny < 0) ny = 0;
             if (ny > 1) ny = 1;
-            if (ny < 0.18) c.copy(hor).lerp(mid, ny / 0.18);
-            else c.copy(mid).lerp(top, (ny - 0.18) / 0.82);
-            col.setXYZ(i, c.r, c.g, c.b);
+            if (ny < 0.2) mixA.copy(skyHor).lerp(skyMid, ny / 0.2);
+            else mixA.copy(skyMid).lerp(skyTop, (ny - 0.2) / 0.8);
+            col.setXYZ(i, mixA.r, mixA.g, mixA.b);
         }
         col.needsUpdate = true;
     }
@@ -479,78 +515,127 @@
         starPos.push(Math.cos(ang) * 200, 50 + rnd(si + 80) * 90, Math.sin(ang) * 200);
     }
     starGeo.setAttribute("position", new THREE.Float32BufferAttribute(starPos, 3));
-    stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xfff6e8, size: 1.8, sizeAttenuation: true, fog: false }));
+    stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xfff6e8, size: 1.8, sizeAttenuation: true, fog: false, transparent: true, opacity: 0 }));
     stars.visible = false;
     scene.add(stars);
 
-    moon = new THREE.Mesh(new THREE.SphereGeometry(2.2, 14, 12), basic(0xfff6dc));
-    moon.position.set(18, 15, -48);
+    moon = new THREE.Mesh(new THREE.SphereGeometry(2.2, 14, 12), new THREE.MeshBasicMaterial({ color: 0xfff6dc, transparent: true, opacity: 0, fog: false }));
+    moon.position.set(22, 18, -62);
     moon.visible = false;
     camera.add(moon);
+    var sunDisc = new THREE.Mesh(new THREE.SphereGeometry(3.4, 16, 12), new THREE.MeshBasicMaterial({ color: 0xfff6c8, fog: false, transparent: true, opacity: 1 }));
+    sunDisc.position.set(-26, 24, -78);
+    camera.add(sunDisc);
 
-    hillMat = toon(0x5aaa46);
+    hillMat = lambert(0x6fbe58);
     mountainMat = lambert(0x7ea6c8);
     snowMat = lambert(0xf7fbff);
-    var moundPts = [];
+    var riseGeo = new THREE.ConeGeometry(11, 3.6, 7);
+    var peakGeo = new THREE.ConeGeometry(12, 12, 8);
+    var peakSmall = new THREE.ConeGeometry(8, 8.5, 7);
+    var snowGeo = new THREE.ConeGeometry(2.2, 2.8, 6);
     var mi;
-    for (mi = 0; mi <= 7; mi++) {
-        var mt = mi / 7;
-        moundPts.push(new THREE.Vector2(Math.sin(mt * Math.PI * 0.5) * 8, Math.cos(mt * Math.PI * 0.5) * 4.5));
-    }
-    var moundGeo = new THREE.LatheGeometry(moundPts, 10);
-    var farPts = [];
-    for (mi = 0; mi <= 8; mi++) {
-        var ft = mi / 8;
-        farPts.push(new THREE.Vector2(Math.sin(ft * Math.PI * 0.5) * 16, Math.cos(ft * Math.PI * 0.5) * 14));
-    }
-    var farGeo = new THREE.LatheGeometry(farPts, 9);
-    var snowGeo = new THREE.ConeGeometry(5.5, 4.2, 8);
 
-    for (mi = 0; mi < 9; mi++) {
-        var fang = mi / 9 * Math.PI * 2;
-        var fr = 168 + rnd(mi + 3) * 24;
-        var farHill = new THREE.Mesh(farGeo, mountainMat);
-        farHill.position.set(Math.cos(fang) * fr, 0, Math.sin(fang) * fr);
-        farHill.scale.set(1.1 + rnd(mi), 0.7 + rnd(mi + 2) * 0.9, 1 + rnd(mi + 1));
-        scene.add(farHill);
+    for (mi = 0; mi < 5; mi++) {
+        var hpos = sideAt((mi + 0.2) / 5, -38);
+        var rise = new THREE.Mesh(riseGeo, hillMat);
+        var hs = 0.9 + rnd(mi + 2) * 0.5;
+        rise.scale.set(hs, 0.8 + rnd(mi) * 0.35, hs * 0.85);
+        rise.position.set(hpos.x, 0.2, hpos.z);
+        scene.add(rise);
+    }
+
+    for (mi = 0; mi < 8; mi++) {
+        var fang = mi / 8 * Math.PI * 2 + 0.35;
+        var fr = 230 + rnd(mi + 3) * 18;
+        var peak = new THREE.Mesh(peakGeo, mountainMat);
+        var ps = 0.85 + rnd(mi) * 0.4;
+        peak.scale.set(ps, 0.5 + rnd(mi + 2) * 0.35, ps * 0.9);
+        var baseY = 12 * peak.scale.y * 0.5 - 1.4;
+        peak.position.set(Math.cos(fang) * fr, baseY, Math.sin(fang) * fr);
+        scene.add(peak);
+        var side = new THREE.Mesh(peakSmall, mountainMat);
+        var sang = fang + 0.18;
+        side.scale.set(ps * 0.8, 0.7 + rnd(mi + 4) * 0.3, ps * 0.8);
+        side.position.set(Math.cos(sang) * (fr - 8), 8.5 * side.scale.y * 0.5 - 1.2, Math.sin(sang) * (fr - 8));
+        scene.add(side);
         if (mi % 2 === 0) {
             var snow = new THREE.Mesh(snowGeo, snowMat);
-            snow.position.set(farHill.position.x, 11 * farHill.scale.y, farHill.position.z);
-            snow.scale.set(farHill.scale.x * 0.55, 1, farHill.scale.z * 0.55);
+            snow.position.set(peak.position.x, peak.position.y + 12 * peak.scale.y * 0.42, peak.position.z);
+            snow.scale.set(ps, 0.85, ps);
             scene.add(snow);
         }
     }
 
-    var trunkGeo = new THREE.CylinderGeometry(0.1, 0.16, 0.8, 6);
-    var roundGeo = new THREE.IcosahedronGeometry(1, 1);
-    var bushGeo = new THREE.IcosahedronGeometry(0.45, 0);
+    var trunkGeo = new THREE.CylinderGeometry(0.11, 0.17, 0.9, 6);
+    var roundGeo = new THREE.IcosahedronGeometry(1, 0);
+    var bushGeo = new THREE.IcosahedronGeometry(0.42, 0);
+    var tuftGeo = new THREE.ConeGeometry(0.16, 0.42, 4);
+    var flowerGeo = new THREE.SphereGeometry(0.09, 6, 5);
+    var cypressA = new THREE.ConeGeometry(0.38, 1.7, 7);
+    var cypressB = new THREE.ConeGeometry(0.24, 1.15, 7);
+    var pineA = new THREE.ConeGeometry(0.85, 1.15, 7);
+    var pineB = new THREE.ConeGeometry(0.62, 0.95, 7);
     var trunkMat = toon(0x8a5a34);
-    var leafMats = [toon(0x2f8f46), toon(0x49a85a), toon(0xd2a43a), toon(0x1f6d3c)];
-    var flowerMats = [toon(0xee6d92), toon(0xf2c14b), toon(0xf7f3ea)];
+    var leafMats = [toon(0x2f8f46), toon(0x49a85a), toon(0xd2a43a), toon(0x1f6d3c), toon(0x3e7a32)];
+    var flowerMats = [toon(0xee6d92), toon(0xf2c14b), toon(0xf7f3ea), toon(0xe07a3a)];
+
+    var shadowCanvas = document.createElement("canvas");
+    shadowCanvas.width = 64;
+    shadowCanvas.height = 64;
+    var sg = shadowCanvas.getContext("2d");
+    var grd = sg.createRadialGradient(32, 32, 2, 32, 32, 32);
+    grd.addColorStop(0, "rgba(20,36,28,0.32)");
+    grd.addColorStop(0.55, "rgba(20,36,28,0.12)");
+    grd.addColorStop(1, "rgba(20,36,28,0)");
+    sg.fillStyle = grd;
+    sg.fillRect(0, 0, 64, 64);
+    var shadowMat = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(shadowCanvas), transparent: true, depthWrite: false });
+    var blobGeo = new THREE.CircleGeometry(1, 14);
+
+    function addBlob(x, z, sx, sz) {
+        var blob = new THREE.Mesh(blobGeo, shadowMat);
+        blob.rotation.x = -Math.PI / 2;
+        blob.position.set(x, 0.03, z);
+        blob.scale.set(sx, sz, 1);
+        blob.renderOrder = 1;
+        scene.add(blob);
+    }
 
     function addRound(x, z, sc, leaf) {
         var tree = new THREE.Group();
         var trunk = new THREE.Mesh(trunkGeo, trunkMat);
-        trunk.position.y = 0.45 * sc;
-        trunk.scale.set(sc, sc * 1.1, sc);
+        trunk.position.y = 0.48 * sc;
+        trunk.scale.set(sc, sc * 1.15, sc);
         var crown = new THREE.Mesh(roundGeo, leaf);
-        crown.position.y = 1.45 * sc;
-        crown.scale.set(1.15 * sc, 0.95 * sc, 1.05 * sc);
+        crown.position.y = 1.55 * sc;
+        crown.scale.set(1.2 * sc, 0.95 * sc, 1.1 * sc);
+        var crown2 = new THREE.Mesh(roundGeo, leaf);
+        crown2.position.set(0.35 * sc, 1.25 * sc, 0.1 * sc);
+        crown2.scale.set(0.72 * sc, 0.6 * sc, 0.68 * sc);
+        var crown3 = new THREE.Mesh(roundGeo, leaf);
+        crown3.position.set(-0.28 * sc, 1.85 * sc, -0.05 * sc);
+        crown3.scale.set(0.55 * sc, 0.48 * sc, 0.5 * sc);
         tree.add(trunk);
         tree.add(crown);
+        tree.add(crown2);
+        tree.add(crown3);
         tree.position.set(x, 0, z);
         scene.add(tree);
+        addBlob(x, z, 1.15 * sc, 0.9 * sc);
     }
 
     function addCypress(x, z, sc) {
         var tree = new THREE.Group();
         var trunk = new THREE.Mesh(trunkGeo, trunkMat);
-        trunk.position.y = 0.35;
-        trunk.scale.set(0.7, 0.8, 0.7);
-        var a = new THREE.Mesh(new THREE.ConeGeometry(0.42 * sc, 2.1 * sc, 7), leafMats[3]);
-        a.position.y = 1.15 * sc;
-        var b = new THREE.Mesh(new THREE.ConeGeometry(0.28 * sc, 1.3 * sc, 7), leafMats[3]);
-        b.position.y = 2.15 * sc;
+        trunk.position.y = 0.32;
+        trunk.scale.set(0.65, 0.75, 0.65);
+        var a = new THREE.Mesh(cypressA, leafMats[3]);
+        a.position.y = 1.05 * sc;
+        a.scale.set(sc, sc, sc);
+        var b = new THREE.Mesh(cypressB, leafMats[3]);
+        b.position.y = 2.05 * sc;
+        b.scale.set(sc, sc, sc);
         tree.add(trunk);
         tree.add(a);
         tree.add(b);
@@ -558,83 +643,169 @@
         scene.add(tree);
     }
 
+    function addPine(x, z, sc, leaf) {
+        var tree = new THREE.Group();
+        var trunk = new THREE.Mesh(trunkGeo, trunkMat);
+        trunk.position.y = 0.4 * sc;
+        trunk.scale.set(sc * 0.8, sc, sc * 0.8);
+        var a = new THREE.Mesh(pineA, leaf);
+        a.position.y = 1.15 * sc;
+        a.scale.set(sc, sc, sc);
+        var b = new THREE.Mesh(pineB, leaf);
+        b.position.y = 1.85 * sc;
+        b.scale.set(sc, sc, sc);
+        tree.add(trunk);
+        tree.add(a);
+        tree.add(b);
+        tree.position.set(x, 0, z);
+        scene.add(tree);
+        addBlob(x, z, 0.9 * sc, 0.75 * sc);
+    }
+
     var ti;
-    for (ti = 0; ti < 18; ti++) {
-        var tu = (ti + 0.15) / 18;
-        var tpos = sideAt(tu, -7.4 - rnd(ti + 2) * 3.5);
-        var leaf = leafMats[ti % 3];
-        if (ti % 4 === 0) addCypress(tpos.x, tpos.z, 1.15 + rnd(ti) * 0.45);
-        else addRound(tpos.x, tpos.z, 0.85 + rnd(ti + 4) * 0.45, leaf);
+    for (ti = 0; ti < 26; ti++) {
+        var tu = (ti + 0.08) / 26;
+        var tpos = sideAt(tu, -7.6 - rnd(ti + 2) * 3.4);
+        var leaf = leafMats[ti % 5];
+        var kind = ti % 5;
+        if (kind === 0) addCypress(tpos.x, tpos.z, 1.45 + rnd(ti) * 0.55);
+        else if (kind === 1) addPine(tpos.x, tpos.z, 1.15 + rnd(ti + 1) * 0.45, leaf);
+        else addRound(tpos.x, tpos.z, 1.05 + rnd(ti + 4) * 0.55, leaf);
     }
 
     for (ti = 0; ti < 16; ti++) {
-        var bu = (ti + 0.4) / 16;
-        var bpos = sideAt(bu, -5.7);
-        var bush = new THREE.Mesh(bushGeo, ti % 3 === 0 ? flowerMats[0] : leafMats[1]);
-        var bsc = 0.7 + rnd(ti + 8) * 0.45;
+        var bu = (ti + 0.2) / 16;
+        var bpos = sideAt(bu, -6.35 - rnd(ti) * 0.7);
+        var bush = new THREE.Mesh(bushGeo, ti % 5 === 0 ? flowerMats[ti % 4] : leafMats[ti % 3]);
+        var bsc = 0.85 + rnd(ti + 8) * 0.55;
         bush.position.set(bpos.x, 0.28 * bsc, bpos.z);
-        bush.scale.set(bsc * 1.3, bsc * 0.7, bsc);
+        bush.scale.set(bsc * 1.4, bsc * 0.75, bsc * 1.1);
         scene.add(bush);
     }
 
-    townGlass = toon(0xb9d7ea);
+    for (ti = 0; ti < 10; ti++) {
+        var su = (ti + 0.4) / 10;
+        var spos = sideAt(su, 6.5);
+        var shoreBush = new THREE.Mesh(bushGeo, leafMats[ti % 3]);
+        var ssc = 0.7 + rnd(ti + 4) * 0.35;
+        shoreBush.position.set(spos.x, 0.22 * ssc, spos.z);
+        shoreBush.scale.set(ssc * 1.3, ssc * 0.65, ssc);
+        scene.add(shoreBush);
+    }
+
+    for (ti = 0; ti < 20; ti++) {
+        var gu = (ti + 0.04) / 20;
+        var gpos = sideAt(gu, -5.9 - rnd(ti) * 0.35);
+        var tuft = new THREE.Mesh(tuftGeo, leafMats[ti % 3]);
+        tuft.position.set(gpos.x, 0.22, gpos.z);
+        tuft.rotation.y = rnd(ti + 11) * 3;
+        tuft.scale.set(1.1 + rnd(ti) * 0.4, 1.15 + rnd(ti + 2) * 0.7, 1);
+        scene.add(tuft);
+    }
+
+    for (ti = 0; ti < 14; ti++) {
+        var fu = (ti + 0.18) / 14;
+        var fpos = sideAt(fu, -6.2 - rnd(ti + 6) * 0.45);
+        var petal;
+        for (petal = 0; petal < 3; petal++) {
+            var flower = new THREE.Mesh(flowerGeo, flowerMats[(ti + petal) % 4]);
+            flower.position.set(fpos.x + (petal - 1) * 0.22, 0.36, fpos.z + rnd(ti + petal) * 0.14);
+            flower.scale.set(4.2, 3.1, 4.2);
+            scene.add(flower);
+        }
+    }
+
+    townGlass = toon(0xc5e4f4);
     var wallMats = [toon(0xf6e2c6), toon(0xf3d3b4), toon(0xf8efe2), toon(0xf0d8c0)];
     var roofMats = [toon(0xd4652e), toon(0xc24e28), toon(0xe07a3a)];
     var doorMat = toon(0x6d4632);
+    var trimMat = toon(0x8d5a3c);
+    var frameMat = toon(0xf7f4ee);
 
     function addHouse(u, dist, kind) {
         var spot = sideAt(u, dist);
         var block = new THREE.Group();
-        var h = kind === 1 ? 3.4 : (kind === 2 ? 1.8 : 2.5);
-        var w = kind === 2 ? 3.6 : 2.5;
-        var d = 2.3;
+        var h = kind === 1 ? 3.3 : (kind === 2 ? 1.85 : 2.45);
+        var w = kind === 2 ? 3.5 : 2.45;
+        var d = 2.25;
         var wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMats[kind % 4]);
         wall.position.y = h * 0.5;
         block.add(wall);
-        var roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(w, d) * 0.62, 1.15, 4), roofMats[kind % 3]);
-        roof.position.y = h + 0.45;
+        var eave = new THREE.Mesh(new THREE.BoxGeometry(w + 0.45, 0.16, d + 0.4), roofMats[kind % 3]);
+        eave.position.y = h + 0.06;
+        block.add(eave);
+        var roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(w, d) * 0.58, 1.05, 4), roofMats[kind % 3]);
+        roof.position.y = h + 0.55;
         roof.rotation.y = Math.PI * 0.25;
         block.add(roof);
-        var win = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 0.06), townGlass);
-        win.position.set(-0.45, h * 0.62, -d * 0.5 - 0.03);
+        var frame = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.78, 0.05), frameMat);
+        frame.position.set(-0.42, h * 0.64, -d * 0.5 - 0.02);
+        block.add(frame);
+        var win = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.58, 0.05), townGlass);
+        win.position.set(-0.42, h * 0.64, -d * 0.5 - 0.05);
         block.add(win);
-        var win2 = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.55, 0.06), townGlass);
-        win2.position.set(0.5, h * 0.64, -d * 0.5 - 0.03);
+        var shutL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.58, 0.04), trimMat);
+        shutL.position.set(-0.78, h * 0.64, -d * 0.5 - 0.04);
+        var shutR = shutL.clone();
+        shutR.position.x = -0.06;
+        block.add(shutL);
+        block.add(shutR);
+        var win2 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.46, 0.05), townGlass);
+        win2.position.set(0.55, h * 0.66, -d * 0.5 - 0.05);
         block.add(win2);
-        var door = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.9, 0.06), doorMat);
-        door.position.set(0.15, 0.45, -d * 0.5 - 0.04);
+        var door = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.88, 0.05), doorMat);
+        door.position.set(0.12, 0.44, -d * 0.5 - 0.05);
         block.add(door);
-        if (kind === 0) {
-            var chim = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.7, 0.24), toon(0x8d5340));
-            chim.position.set(-0.7, h + 0.7, 0.2);
+        var step = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.08, 0.28), toon(0xd9d3c6));
+        step.position.set(0.12, 0.04, -d * 0.5 - 0.16);
+        block.add(step);
+        if (kind !== 2) {
+            var chim = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.62, 0.22), toon(0x8d5340));
+            chim.position.set(-w * 0.28, h + 0.7, 0.25);
             block.add(chim);
         }
+        if (kind === 1) {
+            var balcony = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.08, 0.35), toon(0xe7d7c4));
+            balcony.position.set(-0.2, h * 0.42, -d * 0.5 - 0.16);
+            block.add(balcony);
+        }
+        var box = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.16, 0.22), toon(0xc4553a));
+        box.position.set(-0.7, 0.55, -d * 0.5 - 0.08);
+        var bloom = new THREE.Mesh(flowerGeo, flowerMats[kind % 4]);
+        bloom.position.set(-0.7, 0.72, -d * 0.5 - 0.08);
+        bloom.scale.set(1.6, 1.2, 1.6);
+        block.add(box);
+        block.add(bloom);
         block.position.set(spot.x, 0, spot.z);
         var face = curve.getPointAt(u > 0.999 ? 0.999 : u);
         yawToward(block, face.x, face.z);
         scene.add(block);
+        addBlob(spot.x, spot.z, w * 0.55, d * 0.4);
     }
 
     var houseU = [0.012, 0.035, 0.058, 0.082, 0.11, 0.15, 0.2, 0.46, 0.55, 0.64];
     var hi;
     for (hi = 0; hi < houseU.length; hi++) {
-        addHouse(houseU[hi], -9.5 - (hi % 3) * 2.4, hi % 3);
+        addHouse(houseU[hi], -10.2 - (hi % 3) * 2.2, hi % 3);
     }
 
     lampMat = toon(0xffe3a8);
     var metalMat = toon(0x3d4652);
     function addLamp(u) {
-        var spot = sideAt(u, -6.3);
+        var spot = sideAt(u, -6.35);
         var lamp = new THREE.Group();
-        var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 3.3, 6), metalMat);
-        pole.position.y = 1.65;
-        var arm = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.7, 5), metalMat);
+        var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.07, 3.2, 6), metalMat);
+        pole.position.y = 1.6;
+        var arm = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.62, 5), metalMat);
         arm.rotation.x = Math.PI / 2;
-        arm.position.set(0, 3.25, -0.28);
-        var bulb = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 6), lampMat);
-        bulb.position.set(0, 3.12, -0.55);
+        arm.position.set(0, 3.15, -0.24);
+        var cap = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.06, 0.22), metalMat);
+        cap.position.set(0, 3.16, -0.5);
+        var bulb = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), lampMat);
+        bulb.position.set(0, 3.06, -0.5);
         lamp.add(pole);
         lamp.add(arm);
+        lamp.add(cap);
         lamp.add(bulb);
         lamp.position.set(spot.x, 0, spot.z);
         var face = curve.getPointAt(u > 0.999 ? 0.999 : u);
@@ -644,64 +815,91 @@
     for (hi = 0; hi < 10; hi++) addLamp((hi + 0.05) / 10);
 
     var castle = new THREE.Group();
-    var castleHill = new THREE.Mesh(moundGeo, hillMat);
-    castleHill.scale.set(2.4, 1.3, 2.2);
+    var castleHill = new THREE.Mesh(riseGeo, hillMat);
+    castleHill.scale.set(2.4, 1.6, 2.1);
+    castleHill.position.y = 1.1;
     castle.add(castleHill);
-    var keep = new THREE.Mesh(new THREE.BoxGeometry(3.2, 4.2, 2.6), toon(0xf0e2c8));
-    keep.position.y = 5.2;
+    var keep = new THREE.Mesh(new THREE.BoxGeometry(3.2, 4.2, 2.6), toon(0xf3e6d0));
+    keep.position.y = 4.8;
     castle.add(keep);
-    var keepRoof = new THREE.Mesh(new THREE.ConeGeometry(2.3, 1.8, 4), toon(0xb54332));
-    keepRoof.position.y = 8.1;
+    var keepRoof = new THREE.Mesh(new THREE.ConeGeometry(2.3, 1.7, 4), toon(0xb54332));
+    keepRoof.position.y = 7.6;
     keepRoof.rotation.y = Math.PI * 0.25;
     castle.add(keepRoof);
-    var towerGeo = new THREE.CylinderGeometry(0.7, 0.85, 5.2, 8);
-    var towerRoof = new THREE.ConeGeometry(1.05, 1.5, 8);
-    var tx = [-2.2, 2.2, -2.2, 2.2];
-    var tz = [-1.6, -1.6, 1.6, 1.6];
+    var towerGeo = new THREE.CylinderGeometry(0.62, 0.78, 5.1, 8);
+    var towerRoof = new THREE.ConeGeometry(0.95, 1.4, 8);
+    var tx = [-2.15, 2.15, -2.15, 2.15];
+    var tz = [-1.5, -1.5, 1.5, 1.5];
     for (hi = 0; hi < 4; hi++) {
-        var tower = new THREE.Mesh(towerGeo, toon(0xf6ead4));
-        tower.position.set(tx[hi], 5.4, tz[hi]);
+        var tower = new THREE.Mesh(towerGeo, toon(0xf7ecda));
+        tower.position.set(tx[hi], 5.0, tz[hi]);
         var cap = new THREE.Mesh(towerRoof, toon(hi % 2 ? 0xb54332 : 0xd4652e));
-        cap.position.set(tx[hi], 8.6, tz[hi]);
+        cap.position.set(tx[hi], 8.15, tz[hi]);
+        var slot = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.28, 0.06), townGlass);
+        slot.position.set(tx[hi], 5.4, tz[hi] - 0.78);
         castle.add(tower);
         castle.add(cap);
+        castle.add(slot);
     }
     castle.position.set(6, 0, 128);
-    castle.scale.set(1.7, 1.7, 1.7);
+    castle.scale.set(1.65, 1.65, 1.65);
     scene.add(castle);
 
     boat = new THREE.Group();
-    var hull = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.28, 0.55), basic(0xf7fbff));
+    var hull = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.28, 0.55), basic(0xf7fbff));
     hull.position.y = 0.2;
-    var mast = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1.5, 5), toon(0x6d5438));
-    mast.position.y = 1.0;
-    var sail = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 1.05), basic(0xfffefe));
-    sail.position.set(0.2, 1.05, 0);
+    var mast = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1.6, 5), toon(0x6d5438));
+    mast.position.y = 1.05;
+    var sail = new THREE.Mesh(new THREE.PlaneGeometry(0.72, 1.1), basic(0xfffefe));
+    sail.position.set(0.22, 1.1, 0);
     boat.add(hull);
     boat.add(mast);
     boat.add(sail);
-    boat.position.set(22, 0.05, 28);
-    boat.rotation.y = 0.6;
+    boat.position.set(18, 0.05, 24);
+    boat.rotation.y = 0.7;
     scene.add(boat);
 
-    var cloudMat = basic(0xfffefe);
+    var boat2 = new THREE.Group();
+    var hull2 = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.22, 0.4), basic(0xf4efe4));
+    hull2.position.y = 0.16;
+    var sail2 = new THREE.Mesh(new THREE.PlaneGeometry(0.45, 0.7), basic(0xfff6ea));
+    sail2.position.set(0.12, 0.7, 0);
+    boat2.add(hull2);
+    boat2.add(sail2);
+    boat2.position.set(-8, 0.05, 36);
+    boat2.rotation.y = -0.4;
+    scene.add(boat2);
+
+    cloudMat = basic(0xfffefe);
     var cloudGeo = new THREE.SphereGeometry(1, 8, 6);
     function addCloud(x, y, z, sc) {
         var g = new THREE.Group();
         var a = new THREE.Mesh(cloudGeo, cloudMat);
-        a.scale.set(sc, sc * 0.45, sc * 0.7);
+        a.scale.set(sc, sc * 0.62, sc * 0.78);
         var b = new THREE.Mesh(cloudGeo, cloudMat);
-        b.position.set(sc * 0.6, -0.1, 0);
-        b.scale.set(sc * 0.55, sc * 0.32, sc * 0.5);
+        b.position.set(sc * 0.46, sc * 0.02, 0);
+        b.scale.set(sc * 0.72, sc * 0.5, sc * 0.62);
+        var c = new THREE.Mesh(cloudGeo, cloudMat);
+        c.position.set(-sc * 0.4, sc * 0.04, 0);
+        c.scale.set(sc * 0.64, sc * 0.46, sc * 0.55);
+        var d = new THREE.Mesh(cloudGeo, cloudMat);
+        d.position.set(sc * 0.05, sc * 0.22, 0);
+        d.scale.set(sc * 0.55, sc * 0.4, sc * 0.48);
         g.add(a);
         g.add(b);
+        g.add(c);
+        g.add(d);
         g.position.set(x, y, z);
+        g.userData.spd = 0.35 + rnd(x + z) * 0.4;
+        clouds.push(g);
         scene.add(g);
     }
-    addCloud(-30, 48, 80, 6);
-    addCloud(40, 54, 120, 5);
-    addCloud(120, 46, 20, 5.5);
-    addCloud(-80, 50, -40, 4.5);
+    var ci;
+    for (ci = 0; ci < 8; ci++) {
+        var cu = (ci + 0.18) / 8;
+        var cpos = sideAt(cu, ci % 2 === 0 ? -24 : 22);
+        addCloud(cpos.x, 22 + rnd(ci + 5) * 8, cpos.z, 5.4 + rnd(ci + 1) * 1.6);
+    }
 
     var guideGeo = new THREE.BufferGeometry();
     guideGeo.setAttribute("position", new THREE.Float32BufferAttribute([
@@ -730,7 +928,7 @@
             depth: depth,
             bevelEnabled: true,
             bevelThickness: 0.04,
-            bevelSize: 0.05,
+            bevelSize: 0.055,
             bevelSegments: 2,
             curveSegments: 8,
             steps: 1
@@ -741,184 +939,246 @@
         return geo;
     }
 
-    var bodyMat = toon(0x1a62e6);
+    var bodyMat = toon(0x1a62e8);
     var lowShape = new THREE.Shape();
-    lowShape.moveTo(-2.3, 0.22);
-    lowShape.lineTo(-2.3, 0.42);
-    lowShape.quadraticCurveTo(-1.5, 0.62, -0.15, 0.7);
-    lowShape.lineTo(1.7, 0.68);
-    lowShape.lineTo(2.28, 0.5);
-    lowShape.lineTo(2.28, 0.22);
-    lowShape.lineTo(-2.3, 0.22);
-    model.add(new THREE.Mesh(extrude(lowShape, 1.9), bodyMat));
+    lowShape.moveTo(-2.25, 0.22);
+    lowShape.lineTo(-2.25, 0.4);
+    lowShape.quadraticCurveTo(-1.45, 0.58, -0.2, 0.66);
+    lowShape.lineTo(1.55, 0.64);
+    lowShape.lineTo(2.2, 0.48);
+    lowShape.lineTo(2.2, 0.22);
+    lowShape.lineTo(-2.25, 0.22);
+    model.add(new THREE.Mesh(extrude(lowShape, 1.5), bodyMat));
 
     var topShape = new THREE.Shape();
-    topShape.moveTo(-0.45, 0.68);
-    topShape.lineTo(0.05, 1.16);
-    topShape.quadraticCurveTo(0.4, 1.32, 0.85, 1.26);
-    topShape.lineTo(1.15, 1.16);
-    topShape.lineTo(1.55, 0.74);
-    topShape.lineTo(-0.45, 0.68);
-    model.add(new THREE.Mesh(extrude(topShape, 1.38), toon(0x1248c4)));
+    topShape.moveTo(-0.35, 0.64);
+    topShape.lineTo(0.08, 1.12);
+    topShape.quadraticCurveTo(0.42, 1.28, 0.9, 1.22);
+    topShape.lineTo(1.2, 1.08);
+    topShape.lineTo(1.52, 0.7);
+    topShape.lineTo(-0.35, 0.64);
+    model.add(new THREE.Mesh(extrude(topShape, 1.12), toon(0x1248c8)));
 
-    var skirt = new THREE.Mesh(new THREE.BoxGeometry(1.82, 0.08, 4.15), toon(0x12161c));
-    skirt.position.set(0, 0.24, 0);
+    var skirt = new THREE.Mesh(new THREE.BoxGeometry(1.42, 0.08, 4.05), toon(0x12161c));
+    skirt.position.set(0, 0.24, 0.02);
     model.add(skirt);
-    var glassMat = toon(0x10283c);
-    var windshield = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.52, 0.05), glassMat);
-    windshield.position.set(0, 0.98, -0.05);
-    windshield.rotation.x = 0.62;
+    function fender(x, z) {
+        var flare = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.2, 0.86), bodyMat);
+        flare.position.set(x, 0.46, z);
+        model.add(flare);
+    }
+    fender(-0.84, -1.32);
+    fender(0.84, -1.32);
+    fender(-0.84, 1.2);
+    fender(0.84, 1.2);
+    var lip = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.06, 0.22), toon(0x0f4ec4));
+    lip.position.set(0, 0.74, 1.72);
+    model.add(lip);
+    var bumper = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.16, 0.22), toon(0x0e3f9e));
+    bumper.position.set(0, 0.36, 2.18);
+    model.add(bumper);
+    var glassMat = toon(0x163044);
+    var windshield = new THREE.Mesh(new THREE.BoxGeometry(1.12, 0.5, 0.05), glassMat);
+    windshield.position.set(0, 0.96, 0.02);
+    windshield.rotation.x = 0.58;
     model.add(windshield);
-    var rearGlass = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.58, 0.08), glassMat);
-    rearGlass.position.set(0, 0.98, 1.58);
-    rearGlass.rotation.x = -0.42;
+    var rearGlass = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.42, 0.07), glassMat);
+    rearGlass.position.set(0, 0.98, 1.48);
+    rearGlass.rotation.x = -0.48;
     model.add(rearGlass);
-    var sideL = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.32, 0.85), glassMat);
-    sideL.position.set(-0.7, 1.05, 0.45);
+    var sideL = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.3, 0.72), glassMat);
+    sideL.position.set(-0.68, 1.02, 0.5);
     model.add(sideL);
     var sideR = sideL.clone();
-    sideR.position.x = 0.7;
+    sideR.position.x = 0.68;
     model.add(sideR);
 
     function mirror(x) {
-        var m = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.1, 0.08), toon(0x1b2430));
-        m.position.set(x, 0.92, -0.15);
-        model.add(m);
+        var arm = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.05, 0.05), toon(0x1b2430));
+        arm.position.set(x * 0.92, 0.9, -0.12);
+        var head = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.1, 0.08), toon(0x243040));
+        head.position.set(x, 0.92, -0.16);
+        model.add(arm);
+        model.add(head);
     }
     mirror(-1.02);
     mirror(1.02);
 
-    headMat = toon(0xfff4d8);
+    headMat = toon(0xfff6df);
+    var glowMat = new THREE.MeshBasicMaterial({ color: 0xfff1c4, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
+    var glow = new THREE.Mesh(new THREE.CircleGeometry(1, 18), glowMat);
+    glow.rotation.x = -Math.PI / 2;
+    glow.position.set(0, 0.05, -3.6);
+    glow.scale.set(1.55, 3.8, 1);
+    glow.renderOrder = 3;
+    model.add(glow);
     function headLight(x) {
-        var lamp = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.1, 0.06), headMat);
-        lamp.position.set(x, 0.5, -2.28);
+        var lamp = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.12, 0.06), headMat);
+        lamp.position.set(x, 0.48, -2.22);
         model.add(lamp);
-        var spot = new THREE.SpotLight(0xfff1c8, 0, 36, 0.5, 0.65, 1.1);
-        spot.position.set(x, 0.5, -2.2);
-        spot.target.position.set(x * 0.2, 0.15, -18);
+        var spot = new THREE.SpotLight(0xfff3cc, 0, 32, 0.72, 0.85, 1);
+        spot.position.set(x, 0.62, -2.15);
+        spot.target.position.set(x * 0.12, 0.02, -16);
         model.add(spot);
         model.add(spot.target);
         spots.push(spot);
     }
-    headLight(-0.62);
-    headLight(0.62);
+    headLight(-0.58);
+    headLight(0.58);
 
-    var tailMat = basic(0xff3a3a);
-    var lightBar = new THREE.Mesh(new THREE.BoxGeometry(1.55, 0.07, 0.05), tailMat);
-    lightBar.position.set(0, 0.7, 2.32);
+    var tailMat = basic(0xff3b3b);
+    var lightBar = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.07, 0.045), tailMat);
+    lightBar.position.set(0, 0.72, 2.28);
     model.add(lightBar);
     function tail(x) {
-        var lamp = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.07, 0.04), tailMat);
-        lamp.position.set(x, 0.62, 2.28);
+        var lamp = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.13, 0.05), tailMat);
+        lamp.position.set(x, 0.5, 2.32);
         model.add(lamp);
     }
-    tail(-0.55);
-    tail(0.55);
-    var plate = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.12, 0.03), basic(0xf4f1e8));
-    plate.position.set(0, 0.48, 2.3);
+    tail(-0.52);
+    tail(0.52);
+    var plate = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.12, 0.03), basic(0xf4f1e8));
+    plate.position.set(0, 0.46, 2.31);
     model.add(plate);
+    var antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.42, 4), toon(0x2a3038));
+    antenna.position.set(0.28, 1.42, 0.55);
+    model.add(antenna);
 
-    var tireMat = toon(0x1a1d22);
-    var rimMat = toon(0xd5dae2);
+    var tireGeo = new THREE.CylinderGeometry(0.34, 0.34, 0.22, 16);
+    var rimGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.24, 12);
+    var spokeGeo = new THREE.BoxGeometry(0.03, 0.28, 0.025);
+    var archGeo = new THREE.TorusGeometry(0.38, 0.055, 5, 8, Math.PI);
+    var tireMat = toon(0x171a20);
+    var rimMat = toon(0xe4e8ee);
+    var archMat = toon(0x0d3c9c);
     function wheelAt(x, z) {
         var holder = new THREE.Group();
         holder.position.set(x, 0.34, z);
-        var tire = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.24, 16), tireMat);
+        var tire = new THREE.Mesh(tireGeo, tireMat);
         tire.rotation.z = Math.PI / 2;
-        var rim = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.26, 12), rimMat);
+        var rim = new THREE.Mesh(rimGeo, rimMat);
         rim.rotation.z = Math.PI / 2;
         holder.add(tire);
         holder.add(rim);
+        var s;
+        for (s = 0; s < 5; s++) {
+            var spoke = new THREE.Mesh(spokeGeo, rimMat);
+            spoke.rotation.x = s * Math.PI * 2 / 5;
+            spoke.position.x = x > 0 ? 0.1 : -0.1;
+            holder.add(spoke);
+        }
         model.add(holder);
         wheels.push(holder);
+        var arch = new THREE.Mesh(archGeo, archMat);
+        arch.rotation.y = Math.PI / 2;
+        arch.position.set(x, 0.36, z);
+        model.add(arch);
     }
-    wheelAt(-0.98, -1.45);
-    wheelAt(0.98, -1.45);
-    wheelAt(-0.98, 1.35);
-    wheelAt(0.98, 1.35);
+    wheelAt(-0.96, -1.4);
+    wheelAt(0.96, -1.4);
+    wheelAt(-0.96, 1.28);
+    wheelAt(0.96, 1.28);
 
-    var shadowCanvas = document.createElement("canvas");
-    shadowCanvas.width = 64;
-    shadowCanvas.height = 64;
-    var sg = shadowCanvas.getContext("2d");
-    var grd = sg.createRadialGradient(32, 32, 2, 32, 32, 32);
-    grd.addColorStop(0, "rgba(20,30,40,0.35)");
-    grd.addColorStop(1, "rgba(20,30,40,0)");
-    sg.fillStyle = grd;
-    sg.fillRect(0, 0, 64, 64);
-    var shadowMat = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(shadowCanvas), transparent: true, depthWrite: false });
-    var blob = new THREE.Mesh(new THREE.CircleGeometry(1, 16), shadowMat);
-    blob.rotation.x = -Math.PI / 2;
-    blob.position.set(0, 0.05, 0.1);
-    blob.scale.set(1.35, 2.3, 1);
-    model.add(blob);
+    var carBlob = new THREE.Mesh(blobGeo, shadowMat);
+    carBlob.rotation.x = -Math.PI / 2;
+    carBlob.position.set(0, 0.05, 0.05);
+    carBlob.scale.set(1.25, 2.15, 1);
+    carBlob.renderOrder = 2;
+    model.add(carBlob);
     scene.add(car);
 
-    hemi = new THREE.HemisphereLight(0xfff6e8, 0x5aaa48, 0.7);
-    sun = new THREE.DirectionalLight(0xfff1d2, 1.05);
+    hemi = new THREE.HemisphereLight(0xfff4e2, 0x67b84e, 0.72);
+    sun = new THREE.DirectionalLight(0xfff0cc, 1.12);
     sun.position.set(30, 40, 16);
-    fill = new THREE.DirectionalLight(0xd5e8ff, 0.35);
+    fill = new THREE.DirectionalLight(0xd7eaff, 0.32);
     fill.position.set(-20, 12, -8);
     scene.add(hemi);
     scene.add(sun);
     scene.add(sun.target);
     scene.add(fill);
     scene.add(fill.target);
+    scene.fog = new THREE.Fog(0xd4eefc, 95, 290);
 
-    function applySky() {
+    var dayFog = new THREE.Color(0xd4eefc);
+    var nightFog = new THREE.Color(0x1a3358);
+    var fogCol = new THREE.Color();
+    var dayHemi = new THREE.Color(0xfff4e2);
+    var nightHemi = new THREE.Color(0x9eb4d8);
+    var dayGroundL = new THREE.Color(0x67b84e);
+    var nightGroundL = new THREE.Color(0x1c3a2c);
+    var daySun = new THREE.Color(0xfff0cc);
+    var nightSun = new THREE.Color(0xb7c8e6);
+    var dayClear = new THREE.Color(0x3a96f5);
+    var nightClear = new THREE.Color(0x0c1834);
+    var glassDay = new THREE.Color(0xc5e4f4);
+    var glassNight = new THREE.Color(0xffc56a);
+    var glassGlow = new THREE.Color(0xffb45a);
+    var lampDay = new THREE.Color(0xffe3a8);
+    var lampNight = new THREE.Color(0xffe6b0);
+    var lampGlow = new THREE.Color(0xffcc80);
+    var headGlow = new THREE.Color(0xfff4d0);
+    var black = new THREE.Color(0x000000);
+    var cloudDay = new THREE.Color(0xfffefe);
+    var cloudNight = new THREE.Color(0x8ea4c4);
+    var groundDay = new THREE.Color(0x5eaf48);
+    var groundNight = new THREE.Color(0x1a4e30);
+    var roadDay = new THREE.Color(0x3c4452);
+    var roadNight = new THREE.Color(0x3a4354);
+    var waterDay = new THREE.Color(0x1d86cc);
+    var waterNight = new THREE.Color(0x123e68);
+    var deepDay = new THREE.Color(0x146eae);
+    var deepNight = new THREE.Color(0x0d3058);
+    var shoreDay = new THREE.Color(0xe6d2a4);
+    var shoreNight = new THREE.Color(0x8a7450);
+    var hillDay = new THREE.Color(0x5aaa46);
+    var hillNight = new THREE.Color(0x184828);
+    var mountDay = new THREE.Color(0x7ea6c8);
+    var mountNight = new THREE.Color(0x35506e);
+    var snowDay = new THREE.Color(0xf7fbff);
+    var snowNight = new THREE.Color(0xd5deea);
+
+    function updateMood(t) {
+        fogCol.copy(dayFog).lerp(nightFog, t);
+        scene.fog.color.copy(fogCol);
+        scene.fog.near = 95 + (38 - 95) * t;
+        scene.fog.far = 290 + (195 - 290) * t;
+        hemi.color.copy(dayHemi).lerp(nightHemi, t);
+        hemi.groundColor.copy(dayGroundL).lerp(nightGroundL, t);
+        hemi.intensity = 0.72 + (0.4 - 0.72) * t;
+        sun.color.copy(daySun).lerp(nightSun, t);
+        sun.intensity = 1.12 + (0.28 - 1.12) * t;
+        fill.intensity = 0.32 + (0.14 - 0.32) * t;
+        groundMat.color.copy(groundDay).lerp(groundNight, t);
+        roadMat.color.copy(roadDay).lerp(roadNight, t);
+        waterMat.color.copy(waterDay).lerp(waterNight, t);
+        deepMat.color.copy(deepDay).lerp(deepNight, t);
+        shoreMat.color.copy(shoreDay).lerp(shoreNight, t);
+        hillMat.color.copy(hillDay).lerp(hillNight, t);
+        mountainMat.color.copy(mountDay).lerp(mountNight, t);
+        snowMat.color.copy(snowDay).lerp(snowNight, t);
+        cloudMat.color.copy(cloudDay).lerp(cloudNight, t);
+        townGlass.color.copy(glassDay).lerp(glassNight, t);
+        townGlass.emissive.copy(black).lerp(glassGlow, t);
+        lampMat.color.copy(lampDay).lerp(lampNight, t);
+        lampMat.emissive.copy(black).lerp(lampGlow, t);
+        headMat.emissive.copy(black).lerp(headGlow, t);
+        stars.material.opacity = t;
+        stars.visible = t > 0.04;
+        moon.material.opacity = t;
+        moon.visible = t > 0.04;
+        sunDisc.material.opacity = 1 - t;
+        sunDisc.visible = t < 0.96;
+        glowMat.opacity = t * 0.62;
+        glow.visible = t > 0.04;
+        var lightsOn = t > 0.04;
         var k;
-        document.body.className = night ? "night" : "";
-        if (night) {
-            scene.fog = new THREE.Fog(0x1a3358, 40, 200);
-            hemi.color.set(0x9eb4d8);
-            hemi.groundColor.set(0x1c3a2c);
-            hemi.intensity = 0.38;
-            sun.color.set(0xb7c8e6);
-            sun.intensity = 0.26;
-            fill.intensity = 0.12;
-            groundMat.color.set(0x1a4e30);
-            roadMat.color.set(0x343c4a);
-            waterMat.color.set(0x0f3f6c);
-            shoreMat.color.set(0x8a7450);
-            hillMat.color.set(0x184828);
-            mountainMat.color.set(0x35506e);
-            snowMat.color.set(0xd5deea);
-            cloudMat.color.set(0x8ea4c4);
-            townGlass.color.set(0xffc56a);
-            townGlass.emissive.setHex(0xffb45a);
-            lampMat.color.set(0xffe6b0);
-            lampMat.emissive.setHex(0xffcc80);
-            headMat.emissive.setHex(0xfff4d0);
-            stars.visible = true;
-            moon.visible = true;
-            for (k = 0; k < spots.length; k++) spots[k].intensity = 1.7;
-        } else {
-            scene.fog = new THREE.Fog(0xc8e8fb, 90, 280);
-            hemi.color.set(0xfff6e8);
-            hemi.groundColor.set(0x5aaa48);
-            hemi.intensity = 0.7;
-            sun.color.set(0xfff1d2);
-            sun.intensity = 1.05;
-            fill.intensity = 0.35;
-            groundMat.color.set(0x63b84a);
-            roadMat.color.set(0x3c4452);
-            waterMat.color.set(0x187fc4);
-            shoreMat.color.set(0xe6d2a4);
-            hillMat.color.set(0x5aaa46);
-            mountainMat.color.set(0x7ea6c8);
-            snowMat.color.set(0xf7fbff);
-            cloudMat.color.set(0xfffefe);
-            townGlass.color.set(0xb9d7ea);
-            townGlass.emissive.setHex(0x000000);
-            lampMat.color.set(0xffe3a8);
-            lampMat.emissive.setHex(0x000000);
-            headMat.emissive.setHex(0x000000);
-            stars.visible = false;
-            moon.visible = false;
-            for (k = 0; k < spots.length; k++) spots[k].intensity = 0;
+        for (k = 0; k < spots.length; k++) {
+            spots[k].intensity = t * 6;
+            spots[k].visible = lightsOn;
         }
-        paintSky(night);
-        renderer.setClearColor(night ? 0x0c1834 : 0x2f8ef0, 1);
+        paintSky(t);
+        mixB.copy(dayClear).lerp(nightClear, t);
+        renderer.setClearColor(mixB, 1);
     }
 
     function comma(v, digits) {
@@ -951,14 +1211,16 @@
 
     timeButton.addEventListener("click", function () {
         night = !night;
-        applySky();
+        moodTarget = night ? 1 : 0;
+        moodDirty = true;
+        document.body.className = night ? "night" : "";
     });
     runButton.addEventListener("click", function () {
         driving = !driving;
         runButton.setAttribute("aria-label", driving ? "Megáll" : "Megy");
         paintHud();
     });
-    applySky();
+    updateMood(0);
     paintHud();
     paintClock();
     window.setInterval(paintClock, 1000);
@@ -968,6 +1230,16 @@
     function frame() {
         var dt = clock.getDelta();
         if (dt > 0.05) dt = 0.05;
+        if (Math.abs(moodTarget - mood) > 0.001) {
+            mood = mood + (moodTarget - mood) * (1 - Math.exp(-dt * 1.7));
+            moodDirty = true;
+        } else if (moodDirty) {
+            mood = moodTarget;
+        }
+        if (moodDirty) {
+            updateMood(mood);
+            moodDirty = Math.abs(moodTarget - mood) > 0.001;
+        }
         if (driving) travel = (travel + dt * 0.0067) % 1;
         var pos = curve.getPointAt(travel);
         var tangent = curve.getTangentAt(travel).normalize();
@@ -997,6 +1269,10 @@
             cp.y = 0.16;
             chevrons[w].position.copy(cp);
             chevrons[w].lookAt(cp.x + ct.x, cp.y, cp.z + ct.z);
+        }
+        for (w = 0; w < clouds.length; w++) {
+            clouds[w].position.x += dt * clouds[w].userData.spd;
+            if (clouds[w].position.x > 150) clouds[w].position.x = -150;
         }
         var desired = pos.clone().addScaledVector(tangent, -camBack);
         desired.y += camUp;
