@@ -1111,18 +1111,22 @@
     topShape.lineTo(-1.45, 0.7);
     model.add(new THREE.Mesh(extrude(topShape, 1.16), toon(0x1248c8)));
 
-    var skirt = new THREE.Mesh(new THREE.BoxGeometry(1.62, 0.08, 4.05), toon(0x12161c));
+    var skirt = new THREE.Mesh(new THREE.BoxGeometry(1.62, 0.08, 3.7), toon(0x12161c));
     skirt.position.set(0, 0.24, 0.02);
     model.add(skirt);
+    var wheelX = 0.98;
+    var wheelY = 0.36;
+    var wheelFront = -1.25;
+    var wheelRear = 1.35;
     function fender(x, z) {
-        var flare = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.14, 0.72), bodyMat);
-        flare.position.set(x, 0.72, z);
+        var flare = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.16, 0.82), bodyMat);
+        flare.position.set(x, wheelY + 0.24, z);
         model.add(flare);
     }
-    fender(-1.08, -1.28);
-    fender(1.08, -1.28);
-    fender(-1.08, 1.18);
-    fender(1.08, 1.18);
+    fender(-wheelX, wheelFront);
+    fender(wheelX, wheelFront);
+    fender(-wheelX, wheelRear);
+    fender(wheelX, wheelRear);
     var lip = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.05, 0.18), toon(0x3d8ef5));
     lip.position.set(0, 1.22, 0.15);
     model.add(lip);
@@ -1133,37 +1137,37 @@
     bumper.position.set(0, 0.34, 2.18);
     model.add(bumper);
     var stripeL = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.05, 2.2), toon(0x6eb6ff));
-    stripeL.position.set(-0.84, 0.62, 0.1);
+    stripeL.position.set(-0.86, 0.58, 0.05);
     model.add(stripeL);
     var stripeR = stripeL.clone();
-    stripeR.position.x = 0.84;
+    stripeR.position.x = 0.86;
     model.add(stripeR);
     var glassMat = toon(0x163044);
-    var windshield = new THREE.Mesh(new THREE.BoxGeometry(1.12, 0.5, 0.05), glassMat);
-    windshield.position.set(0, 0.96, 0.02);
-    windshield.rotation.x = 0.58;
+    var windshield = new THREE.Mesh(new THREE.BoxGeometry(0.96, 0.5, 0.04), glassMat);
+    windshield.position.set(0, 0.96, -1.22);
+    windshield.rotation.x = 0.72;
     model.add(windshield);
-    var rearGlass = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.32, 0.06), glassMat);
-    rearGlass.position.set(0, 0.98, 1.38);
-    rearGlass.rotation.x = -0.55;
+    var rearGlass = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.42, 0.04), glassMat);
+    rearGlass.position.set(0, 1.02, 0.88);
+    rearGlass.rotation.x = -0.8;
     model.add(rearGlass);
-    var sideL = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.3, 0.72), glassMat);
-    sideL.position.set(-0.68, 1.02, 0.5);
+    var sideL = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.28, 0.62), glassMat);
+    sideL.position.set(-0.62, 1.0, -0.05);
     model.add(sideL);
     var sideR = sideL.clone();
-    sideR.position.x = 0.68;
+    sideR.position.x = 0.62;
     model.add(sideR);
 
-    function mirror(x) {
-        var arm = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.05, 0.05), toon(0x1b2430));
-        arm.position.set(x * 0.92, 0.9, -0.12);
-        var head = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.1, 0.08), toon(0x243040));
-        head.position.set(x, 0.92, -0.16);
+    function mirror(side) {
+        var arm = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.05, 0.05), toon(0x1b2430));
+        arm.position.set(side * 0.7, 0.9, -0.95);
+        var head = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.1, 0.08), toon(0x243040));
+        head.position.set(side * 0.82, 0.92, -1.0);
         model.add(arm);
         model.add(head);
     }
-    mirror(-1.02);
-    mirror(1.02);
+    mirror(-1);
+    mirror(1);
 
     headMat = toon(0xfff6df);
     var glowMat = new THREE.MeshBasicMaterial({ color: 0xfff1c4, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
@@ -1174,11 +1178,11 @@
     glow.renderOrder = 3;
     model.add(glow);
     function headLight(x) {
-        var lamp = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.12, 0.06), headMat);
-        lamp.position.set(x, 0.48, -2.22);
+        var lamp = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.1, 0.06), headMat);
+        lamp.position.set(x, 0.4, -2.1);
         model.add(lamp);
         var spot = new THREE.SpotLight(0xfff3cc, 0, 32, 0.72, 0.85, 1);
-        spot.position.set(x, 0.62, -2.15);
+        spot.position.set(x, 0.42, -2.08);
         spot.target.position.set(x * 0.12, 0.02, -16);
         model.add(spot);
         model.add(spot.target);
@@ -1225,24 +1229,23 @@
     antenna.position.set(0.28, 1.42, 0.55);
     model.add(antenna);
 
-    var tireGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.24, 18);
-    var rimGeo = new THREE.CylinderGeometry(0.21, 0.21, 0.26, 14);
-    var hubGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.28, 10);
-    var spokeGeo = new THREE.BoxGeometry(0.028, 0.32, 0.02);
-    var archGeo = new THREE.TorusGeometry(0.38, 0.055, 5, 8, Math.PI);
+    var tireGeo = new THREE.CylinderGeometry(0.36, 0.36, 0.22, 18);
+    var rimGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.24, 14);
+    var hubGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.26, 10);
+    var spokeGeo = new THREE.BoxGeometry(0.028, 0.3, 0.02);
+    var archGeo = new THREE.TorusGeometry(0.4, 0.05, 5, 8, Math.PI);
     var tireMat = toon(0x171a20);
     var rimMat = toon(0xe4e8ee);
     var archMat = toon(0x0d3c9c);
     function wheelAt(x, z) {
         var holder = new THREE.Group();
-        holder.position.set(x, 0.38, z);
+        holder.position.set(x, wheelY, z);
         var tire = new THREE.Mesh(tireGeo, tireMat);
         tire.rotation.z = Math.PI / 2;
         var rim = new THREE.Mesh(rimGeo, rimMat);
         rim.rotation.z = Math.PI / 2;
         var hub = new THREE.Mesh(hubGeo, toon(0xb9c2cc));
         hub.rotation.z = Math.PI / 2;
-        hub.position.x = x > 0 ? 0.02 : -0.02;
         holder.add(tire);
         holder.add(rim);
         holder.add(hub);
@@ -1250,20 +1253,19 @@
         for (s = 0; s < 5; s++) {
             var spoke = new THREE.Mesh(spokeGeo, rimMat);
             spoke.rotation.x = s * Math.PI * 2 / 5;
-            spoke.position.x = x > 0 ? 0.1 : -0.1;
             holder.add(spoke);
         }
         model.add(holder);
         wheels.push(holder);
         var arch = new THREE.Mesh(archGeo, archMat);
         arch.rotation.y = Math.PI / 2;
-        arch.position.set(x, 0.5, z);
+        arch.position.set(x, wheelY, z);
         model.add(arch);
     }
-    wheelAt(-1.12, -1.28);
-    wheelAt(1.12, -1.28);
-    wheelAt(-1.12, 1.18);
-    wheelAt(1.12, 1.18);
+    wheelAt(-wheelX, wheelFront);
+    wheelAt(wheelX, wheelFront);
+    wheelAt(-wheelX, wheelRear);
+    wheelAt(wheelX, wheelRear);
 
     var carBlob = new THREE.Mesh(blobGeo, shadowMat);
     carBlob.rotation.x = -Math.PI / 2;
