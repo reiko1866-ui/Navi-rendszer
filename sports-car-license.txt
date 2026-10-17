@@ -1,2 +1,9 @@
-The Grab3D CC0 sports car is no longer part of this page.
-The navigation view uses a stylized hatchback built in index.html.
+The navigation car is the Sedan from Kenney's Car Kit (3.1).
+
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+Author: Kenney (www.kenney.nl)
+Source: https://kenney.nl/assets/car-kit
+
+The model and its color atlas are embedded in index.html so the page does not request another file.
+Credit is not required. Kenney is credited here anyway.
