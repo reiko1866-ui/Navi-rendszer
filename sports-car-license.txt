@@ -1,9 +1,5 @@
-The navigation car is the Sedan from Kenney's Car Kit (3.1).
+The navigation car is original geometry built in index.html.
 
-License: CC0 1.0 Universal
-https://creativecommons.org/publicdomain/zero/1.0/
-Author: Kenney (www.kenney.nl)
-Source: https://kenney.nl/assets/car-kit
+It is a stylized compact hatchback: a lofted body, separate glass, lamps, and wheels. No third-party car mesh is embedded.
 
-The model and its color atlas are embedded in index.html so the page does not request another file.
-Credit is not required. Kenney is credited here anyway.
+The previous Kenney Car Kit sedan is no longer used.
