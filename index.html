@@ -4135,6 +4135,14 @@
 
     function addStrip(center, half, y, segments, material, dash, gap, vSpan) {
         var mesh = new THREE.Mesh(buildStrip(center, half, y, segments, dash || 0, gap || 0, vSpan), material);
+        mesh.userData.sampleRoad = true;
+        scene.add(mesh);
+        return mesh;
+    }
+
+    function addWall(offset, y0, y1, segments, towardRoad, material) {
+        var mesh = new THREE.Mesh(buildWall(offset, y0, y1, segments, towardRoad), material);
+        mesh.userData.sampleRoad = true;
         scene.add(mesh);
         return mesh;
     }
@@ -4305,10 +4313,10 @@
     addStrip(3.98, 0.13, 0.1, 200, lambert(0xf3efe4), 0, 0);
     addStrip(-3.98, 0.13, 0.1, 200, lambert(0xe7e2d4), 0, 0);
 
-    scene.add(new THREE.Mesh(buildWall(-4.9, 0.08, 0.36, 180, true), lambert(0xe4ddd0)));
-    scene.add(new THREE.Mesh(buildWall(-5.15, 0.08, 0.55, 160, true), toon(0x8d8680)));
-    scene.add(new THREE.Mesh(buildWall(4.85, 0.55, 0.68, 200, false), lambert(0xb7c3ce)));
-    scene.add(new THREE.Mesh(buildWall(4.85, 0.86, 0.96, 200, false), lambert(0xd5dee6)));
+    addWall(-4.9, 0.08, 0.36, 180, true, lambert(0xe4ddd0));
+    addWall(-5.15, 0.08, 0.55, 160, true, toon(0x8d8680));
+    addWall(4.85, 0.55, 0.68, 200, false, lambert(0xb7c3ce));
+    addWall(4.85, 0.86, 0.96, 200, false, lambert(0xd5dee6));
 
     var postGeo = new THREE.CylinderGeometry(0.05, 0.06, 1.05, 6);
     var postMat = toon(0xc5ced6);
@@ -5614,7 +5622,15 @@
             uvs.push(i * 0.05, 0, i * 0.05, 1);
             if (i > 0) {
                 var base = (i - 1) * 2;
-                indices.push(base, base + 1, base + 2, base + 1, base + 3, base + 2);
+                var ax = positions[base * 3];
+                var az = positions[base * 3 + 2];
+                var bx = positions[(base + 1) * 3];
+                var bz = positions[(base + 1) * 3 + 2];
+                var cx = positions[(base + 2) * 3];
+                var cz = positions[(base + 2) * 3 + 2];
+                var face = (bx - ax) * (cz - az) - (bz - az) * (cx - ax);
+                if (face < 0) indices.push(base, base + 1, base + 2, base + 1, base + 3, base + 2);
+                else indices.push(base, base + 2, base + 1, base + 1, base + 2, base + 3);
             }
         }
         var geo = new THREE.BufferGeometry();
@@ -5675,6 +5691,16 @@
         return Number(lon).toFixed(6) + "," + Number(lat).toFixed(6);
     }
 
+    function setSampleRoadVisible(on) {
+        if (!coast) return;
+        var i;
+        for (i = 0; i < coast.children.length; i++) {
+            if (coast.children[i].userData && coast.children[i].userData.sampleRoad) {
+                coast.children[i].visible = on;
+            }
+        }
+    }
+
     function showSample() {
         var wasRoute = routeActive;
         routeActive = false;
@@ -5689,7 +5715,12 @@
             routeRoot.position.set(0, 0, 0);
         }
         if (routeGround) routeGround.visible = false;
-        if (coast) coast.visible = true;
+        if (coast) {
+            coast.visible = true;
+            coast.position.set(0, 0, 0);
+            coast.rotation.set(0, 0, 0);
+        }
+        setSampleRoadVisible(true);
         if (sampleCurve) curve = sampleCurve;
         if (wasRoute) {
             travel = 0.02;
@@ -5781,10 +5812,11 @@
         routeActive = true;
         followOrigin = true;
         travel = 0.0008;
-        prevTangent.set(0, 0, 1);
+        prevTangent.copy(curve.getTangentAt(0.001)).normalize();
         aligned = false;
-        coast.visible = false;
-        routeGround.visible = true;
+        coast.visible = true;
+        routeGround.visible = false;
+        setSampleRoadVisible(false);
         routeRoot.visible = true;
         buildRouteRoad();
         dressRoute();
@@ -5948,7 +5980,7 @@
         if (u > 0.999) u = 0.999;
         var pos = curve.getPointAt(u);
         var tangent = curve.getTangentAt(u).normalize();
-        if (prevTangent.dot(tangent) < 0) tangent.negate();
+        if (!routeActive && prevTangent.dot(tangent) < 0) tangent.negate();
         prevTangent.copy(tangent);
         tmpA.crossVectors(tangent, up);
         if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
@@ -5957,6 +5989,13 @@
         pos.y = 0.02;
         if (followOrigin) {
             routeRoot.position.set(-pos.x, 0, -pos.z);
+            var sp = sampleCurve.getPointAt(0.02);
+            var st = sampleCurve.getTangentAt(0.02).normalize();
+            var yaw = Math.atan2(tangent.x, tangent.z) - Math.atan2(st.x, st.z);
+            var cyaw = Math.cos(yaw);
+            var syaw = Math.sin(yaw);
+            coast.rotation.y = yaw;
+            coast.position.set(-(sp.x * cyaw + sp.z * syaw), 0, -(-sp.x * syaw + sp.z * cyaw));
             car.position.set(0, 0.02, 0);
             ahead.set(tangent.x * 6, pos.y, tangent.z * 6);
         } else {
@@ -5977,7 +6016,7 @@
             if (cu > 0.999) cu = 0.999;
             var cp = curve.getPointAt(cu);
             var ct = curve.getTangentAt(cu).normalize();
-            if (tangent.dot(ct) < 0) ct.negate();
+            if (!routeActive && tangent.dot(ct) < 0) ct.negate();
             tmpA.crossVectors(ct, up).normalize();
             cp.addScaledVector(tmpA, 1.25);
             cp.y = 0.16;
