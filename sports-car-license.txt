@@ -1,0 +1,17 @@
+CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
+
+To the extent possible under law, Grab3D has waived all copyright and related or neighboring rights to the
+3D models, textures and images in this package. This work is published from: Germany.
+
+https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Origin / AI disclosure
+----------------------
+Method: procedural (no AI-generated geometry or textures, AI-assisted code)
+Built procedurally with Blender scripts. The scripts were written with the help of an AI coding assistant. No
+generative AI model produced the geometry or textures directly.
+If your platform asks whether AI was used in the creation process, note that the generator scripts were
+written with an AI coding assistant.
+
+Source: Grab3D sports car (https://grab3d.com/models/vehicles/sports-car/), downloaded 2026-10-17.
+The mesh is the original CC0 model. The base color was recolored to vivid blue and the round tail-lamp lenses were marked red. The normal map and metallic-roughness map were removed. A 512 px emissive mask marks the headlights and tail lamps. Files are embedded in index.html so the page does not request another file.
