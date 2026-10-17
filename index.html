@@ -42,6 +42,53 @@
             top: 46%;
             display: flex; flex-direction: column; gap: 8px;
         }
+        #garage-open {
+            width: 52px; min-height: 52px; border-radius: 16px;
+            font-size: 10px; font-weight: 750; letter-spacing: 0.02em;
+        }
+        #garage {
+            position: fixed; z-index: 5;
+            left: 50%; bottom: calc(72px + env(safe-area-inset-bottom));
+            transform: translateX(-50%);
+            width: min(640px, calc(100vw - 20px));
+            padding: 12px; border-radius: 18px;
+            background: rgba(8, 16, 30, 0.9);
+            border: 1px solid rgba(255,255,255,0.14);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+        }
+        #garage-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        #garage-head b { font-size: 15px; }
+        #garage-close {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 999px; padding: 4px 10px; font-size: 12px;
+        }
+        #garage-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        #garage-list button {
+            text-align: left; border-radius: 14px; padding: 10px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            min-height: 72px;
+        }
+        #garage-list button b { display: block; font-size: 13px; }
+        #garage-list button small { display: block; margin-top: 4px; opacity: 0.72; font-size: 11px; line-height: 1.3; }
+        #garage-list button[aria-pressed="true"] { border-color: #3ec6ff; background: rgba(62,198,255,0.16); }
+        #car-credit {
+            position: fixed; z-index: 2;
+            left: calc(12px + env(safe-area-inset-left));
+            top: calc(78px + env(safe-area-inset-top));
+            max-width: min(340px, 46vw);
+            margin: 0; padding: 4px 8px; border-radius: 8px;
+            background: rgba(8, 16, 30, 0.55);
+            font-size: 11px; line-height: 1.35;
+        }
+        #car-credit:empty { display: none; }
+        #car-credit a { color: #b9e6ff; }
+        body.driving #garage { display: none; }
+        @media (max-aspect-ratio: 4/5) {
+            #garage-list { grid-template-columns: 1fr; }
+            #garage { bottom: calc(64px + env(safe-area-inset-bottom)); }
+        }
         #time {
             width: 52px; min-height: 64px; border-radius: 16px; padding: 6px 0;
             display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
@@ -187,7 +234,20 @@
             <span class="sun">☀</span>
             <span class="moon">☾</span>
         </button>
+        <button id="garage-open" type="button">Garázs</button>
     </div>
+    <section id="garage" hidden aria-label="Autóválasztó">
+        <div id="garage-head">
+            <b>Garázs</b>
+            <button id="garage-close" type="button">Bezár</button>
+        </div>
+        <div id="garage-list">
+            <button type="button" data-car="sf90"><b>Ferrari F1 SF90</b><small>valvetin · CC BY 4.0</small></button>
+            <button type="button" data-car="openwheel"><b>Nyitott kerekű</b><small>3D Assets · CC0</small></button>
+            <button type="button" data-car="compact"><b>Sportkompakt</b><small>saját modell</small></button>
+        </div>
+    </section>
+    <p id="car-credit"></p>
     <div id="speedo">
         <div id="speed-hole">
             <b id="speed" title="Minta sebesség, nem a jármű mérése">58</b>
@@ -5779,12 +5839,182 @@
         spots[spotI].distance = 16;
         spots[spotI].layers.set(1);
     }
+    car.add(glow);
+    car.add(carBlob);
+    for (spotI = 0; spotI < spots.length; spotI++) {
+        car.add(spots[spotI]);
+        car.add(spots[spotI].target);
+    }
     scene.traverse(function (obj) { obj.layers.enable(1); });
     car.traverse(function (obj) { obj.layers.set(0); });
     for (spotI = 0; spotI < spots.length; spotI++) spots[spotI].layers.set(1);
     camera.layers.enable(1);
 
     scene.add(car);
+
+    var carCatalog = {};
+    var wantedCar = "compact";
+    try { wantedCar = localStorage.getItem("toonnav-car") || "compact"; } catch (err) {}
+    carCatalog.compact = { group: model, wheels: wheels.slice() };
+    var ferrariPaint = new THREE.MeshPhongMaterial({ color: 0xc1121f, specular: 0x5a3030, shininess: 42, side: THREE.DoubleSide });
+    var ferrariTire = new THREE.MeshPhongMaterial({ color: 0x141414, specular: 0x222222, shininess: 8, side: THREE.DoubleSide });
+    var ferrariDecal = new THREE.MeshPhongMaterial({ color: 0xf2f2f2, specular: 0x888888, shininess: 18, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
+    var openPaint = new THREE.MeshPhongMaterial({ color: 0xd7d2c8, specular: 0x888888, shininess: 28, side: THREE.DoubleSide });
+
+    function paintFor(material, id) {
+        var name = material && material.name ? material.name : "";
+        if (id === "sf90") {
+            if (name === "Tire") return ferrariTire;
+            if (name === "Decals") return ferrariDecal;
+            return ferrariPaint;
+        }
+        if (/tyre|tire|rubber/i.test(name)) return ferrariTire;
+        return openPaint;
+    }
+    function straightenSf90(root) {
+        root.traverse(function (obj) {
+            if (!obj.quaternion) return;
+            var q = obj.quaternion;
+            var axisSwap = Math.abs(q.x) < 0.02 && Math.abs(q.w) < 0.02 && Math.abs(Math.abs(q.y) - 0.7071) < 0.03 && Math.abs(Math.abs(q.z) - 0.7071) < 0.03 && q.y * q.z > 0;
+            var flipZ = Math.abs(q.x) < 0.02 && Math.abs(q.y) < 0.02 && Math.abs(q.w) < 0.02 && Math.abs(Math.abs(q.z) - 1) < 0.02;
+            if (axisSwap || flipZ) obj.quaternion.identity();
+        });
+    }
+    function collectSpins(root) {
+        var nodes = [];
+        root.traverse(function (obj) {
+            var n = obj.name || "";
+            if (!obj.parent || obj.isMesh || !obj.children.length) return;
+            if (/steering/i.test(n)) return;
+            if (/^(Rim|Tire)[_\s.]/.test(n) || /wheel/i.test(n)) nodes.push(obj);
+        });
+        nodes = nodes.filter(function (node) {
+            var p = node.parent;
+            while (p) {
+                if (nodes.indexOf(p) >= 0) return false;
+                p = p.parent;
+            }
+            return true;
+        });
+        var spins = [];
+        var i;
+        for (i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            var wrapper = new THREE.Group();
+            var parent = node.parent;
+            wrapper.position.copy(node.position);
+            parent.add(wrapper);
+            node.position.set(0, 0, 0);
+            wrapper.add(node);
+            spins.push(wrapper);
+        }
+        return spins;
+    }
+    function finishImport(id, source, scale, yaw) {
+        var holder = new THREE.Group();
+        holder.add(source);
+        holder.scale.set(scale, scale, scale);
+        if (id === "sf90") straightenSf90(source);
+        if (yaw) holder.rotation.y = yaw;
+        var spins = collectSpins(source);
+        source.traverse(function (obj) {
+            if (!obj.isMesh) return;
+            var matName = obj.material && obj.material.name ? obj.material.name : "";
+            if (id === "sf90" && matName === "Decals") {
+                obj.visible = false;
+                return;
+            }
+            if (obj.geometry && !obj.geometry.getAttribute("normal")) obj.geometry.computeVertexNormals();
+            obj.material = paintFor(obj.material, id);
+        });
+        holder.updateMatrixWorld(true);
+        var box = new THREE.Box3().setFromObject(holder);
+        holder.position.y -= box.min.y;
+        holder.visible = false;
+        car.add(holder);
+        carCatalog[id] = {
+            group: holder,
+            wheels: spins,
+            length: box.max.z - box.min.z,
+            height: box.max.y - box.min.y,
+            width: box.max.x - box.min.x,
+            noseZ: box.max.z
+        };
+        if (wantedCar === id) selectCar(id);
+        paintGarage();
+    }
+    function loadCarFile(id, url, scale, yaw) {
+        var loader = new THREE.GLTFLoader();
+        loader.load(url, function (gltf) {
+            finishImport(id, gltf.scene, scale, yaw);
+        }, undefined, function () {
+            var button = document.querySelector('#garage-list button[data-car="' + id + '"]');
+            if (button) {
+                var note = button.querySelector("small");
+                if (note) note.textContent = "A modellfájl nem tölthető";
+            }
+        });
+    }
+    function selectCar(id) {
+        wantedCar = id;
+        if (!carCatalog[id]) {
+            paintGarage();
+            return;
+        }
+        var key;
+        for (key in carCatalog) carCatalog[key].group.visible = key === id;
+        wheels = carCatalog[id].wheels;
+        var nose = carCatalog[id].noseZ;
+        var spotI2;
+        if (nose) {
+            glow.position.set(0, 0.22, nose + 0.6);
+            for (spotI2 = 0; spotI2 < spots.length; spotI2++) {
+                var beam = spotI2 === 0 ? -1 : 1;
+                spots[spotI2].position.set(beam * 0.42, 0.34, nose - 0.2);
+                spots[spotI2].target.position.set(beam * 0.08, 0.05, nose + 14);
+            }
+        } else {
+            glow.position.set(0, 0.16, 6.4);
+            for (spotI2 = 0; spotI2 < spots.length; spotI2++) {
+                var beamC = spotI2 === 0 ? -1 : 1;
+                spots[spotI2].position.set(beamC * 0.52, 0.58, 2.12);
+                spots[spotI2].target.position.set(beamC * 0.1, 0.08, 16);
+            }
+        }
+        try { localStorage.setItem("toonnav-car", id); } catch (err) {}
+        paintGarage();
+    }
+    function paintGarage() {
+        var buttons = document.querySelectorAll("#garage-list button");
+        var i;
+        for (i = 0; i < buttons.length; i++) {
+            buttons[i].setAttribute("aria-pressed", buttons[i].getAttribute("data-car") === wantedCar ? "true" : "false");
+        }
+        var credit = document.getElementById("car-credit");
+        if (!credit) return;
+        if (wantedCar === "sf90") {
+            credit.innerHTML = 'Ferrari F1 2019 (SF90) — <a href="https://sketchfab.com/valvetin" target="_blank" rel="noopener">valvetin</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Geometria egyszerűsítve: 654 656 → 508 616 háromszög.';
+        } else if (wantedCar === "openwheel") {
+            credit.innerHTML = 'Nyitott kerekű — <a href="https://3dassets.dev/u/3dassets" target="_blank" rel="noopener">3D Assets</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0</a>.';
+        } else {
+            credit.textContent = "";
+        }
+    }
+    function syncBody() {
+        document.body.className = (night ? "night " : "") + (driving ? "driving" : "");
+    }
+    loadCarFile("sf90", "models/ferrari-sf90.glb", 1, 0);
+    loadCarFile("openwheel", "models/openwheel.glb", 1, 0);
+    if (carCatalog[wantedCar]) selectCar(wantedCar);
+    else {
+        var pendingCar = wantedCar;
+        selectCar("compact");
+        if (pendingCar && pendingCar !== "compact") {
+            wantedCar = pendingCar;
+            try { localStorage.setItem("toonnav-car", pendingCar); } catch (err) {}
+            paintGarage();
+        }
+    }
 
     hemi = new THREE.HemisphereLight(0xfff4e2, 0x67b84e, 0.52);
     sun = new THREE.DirectionalLight(0xfff0cc, 0.62);
@@ -5968,13 +6198,32 @@
         night = !night;
         moodTarget = night ? 1 : 0;
         moodDirty = true;
-        document.body.className = night ? "night" : "";
+        syncBody();
+    });
+    var garagePanel = document.getElementById("garage");
+    document.getElementById("garage-open").addEventListener("click", function () {
+        driving = false;
+        runButton.setAttribute("aria-label", "Megy");
+        garagePanel.hidden = false;
+        syncBody();
+        paintHud();
+    });
+    document.getElementById("garage-close").addEventListener("click", function () {
+        garagePanel.hidden = true;
+    });
+    document.getElementById("garage-list").addEventListener("click", function (event) {
+        var button = event.target.closest("button");
+        if (!button) return;
+        selectCar(button.getAttribute("data-car"));
     });
     runButton.addEventListener("click", function () {
         driving = !driving;
+        if (driving) garagePanel.hidden = true;
         runButton.setAttribute("aria-label", driving ? "Megáll" : "Megy");
+        syncBody();
         paintHud();
     });
+    syncBody();
     updateMood(0);
     paintHud();
     paintClock();

@@ -2,7 +2,9 @@
 
 Rajzfilmes, tengerparti 3D-s mintaút a böngészőben. A K706 fekvő képernyőjére készül, telefonon is megnyílik.
 
-Nyisd meg az `index.html` lapot. Egy kék autó megy egy rövid körön. Jobbra víz van, balra házak, fák, virágágyások, egy kápolna és egy szélmalom, távolabb hegyek és egy vár. Az úton türkiz vezetőcsík fut. A kamera az autó mögött és fölött követi.
+Nyisd meg az `index.html` lapot. Egy autó megy egy rövid körön. Jobbra víz van, balra házak, fák, virágágyások, egy kápolna és egy szélmalom, távolabb hegyek és egy vár. Az úton türkiz vezetőcsík fut. A kamera az autó mögött és fölött követi.
+
+A jobb oldali Garázs gomb megállítja a kocsit, és három autót kínál: Ferrari F1 SF90 (valvetin, CC BY 4.0), egy nyitott kerekű formula-autó (3D Assets, CC0), és a saját sportkompakt. A választás a böngészőben megmarad. Vezetés közben a panel nem látszik. A források és a licenc a `sports-car-license.txt` fájlban vannak.
 
 A felső számok és a sebesség a mintakörhöz tartoznak. Ha az alsó autó gombbal megállítod, a sebesség 0 lesz, és a kilométer nem csökken. Ez még nem GPS-navigáció. A 18°C, a 22°C és a 90-es tábla minta, nem élő adat. A nap/hold gomb fokozatosan vált éjszakára: az út látható marad, és az autó fényszórója felkapcsol.
 
