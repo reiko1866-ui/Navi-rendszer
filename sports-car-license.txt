@@ -1,17 +1,43 @@
-CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
+ToonNav3D can show three cars. The choice is stored in localStorage under the key toonnav-car.
 
-To the extent possible under law, Grab3D has waived all copyright and related or neighboring rights to the
-3D models, textures and images in this package. This work is published from: Germany.
+1. Ferrari F1 2019 (SF90)
+Author: valvetin
+https://sketchfab.com/valvetin
+Model page: https://sketchfab.com/3d-models/ferrari-f1-2019-1b050bffe4e749b586b4782ee7ff4fd0
+License: Creative Commons Attribution 4.0 International
+https://creativecommons.org/licenses/by/4.0/
+Commercial use is allowed. The author must be credited.
 
-https://creativecommons.org/publicdomain/zero/1.0/legalcode
+Sketchfab marks the model as downloadable, but the official download API
+(GET /v3/models/1b050bffe4e749b586b4782ee7ff4fd0/download) answers 401 without
+a logged-in user token. The file in models/ferrari-sf90.glb is the same
+654,656-triangle mesh, redistributed by FetchCFD as "F1 CAD" and credited
+there to Valvetin under CC Attribution 4.0:
+https://fetchcfd.com/view-project/4315-f1-cad-
+https://fetchcfd.com/threeDViewGltf/4315-f1-cad--in-3D
+Public file: https://s3-eu-west-1.amazonaws.com/fetchcfd/original/file-1713040493830.glb
 
-Origin / AI disclosure
-----------------------
-Method: procedural (no AI-generated geometry or textures, AI-assisted code)
-Built procedurally with Blender scripts. The scripts were written with the help of an AI coding assistant. No
-generative AI model produced the geometry or textures directly.
-If your platform asks whether AI was used in the creation process, note that the generator scripts were
-written with an AI coding assistant.
+Change from that file: border-preserving simplification reduced the triangle
+count from 654,656 to 508,616 (about 6.4 MB). The GLB contains no livery
+images, so untextured decal shells are hidden and the body is solid Ferrari
+red. The app recomputes normals. Wheel hubs stay separate so the tires can spin.
 
-Source: Grab3D sports car (https://grab3d.com/models/vehicles/sports-car/), downloaded 2026-10-17.
-The mesh is the original CC0 model. The base color was recolored to vivid blue and the round tail-lamp lenses were marked red. The normal map and metallic-roughness map were removed. A 512 px emissive mask marks the headlights and tail lamps. Files are embedded in index.html so the page does not request another file.
+2. 1980s turbo flat-bottom racer (intended)
+Pack: https://3dassets.dev/packs/grand-prix-circuit-and-open-wheel
+Asset: https://3dassets.dev/assets/grand-prix-circuit-and-open-wheel-turbo-flat-bottom-7e7ade37
+Direct file: https://cdn.3dassets.dev/assets/15176/v1/model.glb
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+Contributor: 3D Assets (@3dassets), https://3dassets.dev/u/3dassets
+Published size: 8,864 triangles, nose +Z, axles along X.
+
+This file is not in the repository. On 2026-10-17 the site answered
+"no available server" (HTTP 503) and cdn.3dassets.dev had no DNS record.
+The garage still offers the car. Until models/openwheel.glb is present,
+choosing it keeps the previous car and the card says the file could not be loaded.
+
+3. Sports compact
+Original geometry built in index.html: lofted body, greenhouse, lamps, mirrors
+and wheels. No third-party mesh. CC0 candidates that were inspected and not
+used: the Kenney Car Kit sedan, and the Kiln generic hatchback
+(https://assets.kilnstudio.tools/packs/vehicles/r4-local-review/models/hatchback.glb, CC0-1.0).
