@@ -1,5 +1,5 @@
 The navigation car is original geometry built in index.html.
 
-It is a stylized compact hatchback: a lofted body, separate glass, lamps, and wheels. No third-party car mesh is embedded.
+It is a stylized sports compact: a lofted body and greenhouse, separate lamps, mirrors, and wheels. No third-party car mesh is embedded.
 
-The previous Kenney Car Kit sedan is no longer used.
+CC0 candidates were inspected and not used: the Kenney Car Kit sedan, and the Kiln generic hatchback (https://assets.kilnstudio.tools/packs/vehicles/r4-local-review/models/hatchback.glb, CC0-1.0). Both are low-poly faceted shells, not a premium compact.
