@@ -3830,6 +3830,7 @@
     var groundMat = null;
     var roadMat = null;
     var waterMat = null;
+    var waterShineMat = null;
     var deepMat = null;
     var shoreMat = null;
     var hillMat = null;
@@ -4071,14 +4072,19 @@
     }
 
     var grassTex = paintCanvas(128, function (g, size) {
-        g.fillStyle = "#62b44e";
+        g.fillStyle = "#5eae48";
         g.fillRect(0, 0, size, size);
         var n;
-        for (n = 0; n < 12; n++) {
-            g.fillStyle = n % 2 === 0 ? "rgba(92,176,68,0.4)" : "rgba(40,120,48,0.28)";
+        for (n = 0; n < 18; n++) {
+            var tone = n % 3;
+            g.fillStyle = tone === 0 ? "rgba(126,196,72,0.45)" : (tone === 1 ? "rgba(36,112,46,0.32)" : "rgba(168,214,86,0.28)");
             g.beginPath();
-            g.arc(rnd(n + 2) * size, rnd(n + 8) * size, 16 + rnd(n + 4) * 18, 0, Math.PI * 2);
+            g.arc(rnd(n + 2) * size, rnd(n + 8) * size, 10 + rnd(n + 4) * 16, 0, Math.PI * 2);
             g.fill();
+        }
+        for (n = 0; n < 10; n++) {
+            g.fillStyle = "rgba(236,214,92,0.18)";
+            g.fillRect(rnd(n + 30) * size, rnd(n + 40) * size, 2, 7 + rnd(n) * 6);
         }
     });
     grassTex.repeat.set(22, 22);
@@ -4107,43 +4113,82 @@
     scene.add(shore);
 
     var waterTex = paintCanvas(128, function (g, size) {
-        g.fillStyle = "#1d86cc";
+        var wash = g.createLinearGradient(0, 0, size, size);
+        wash.addColorStop(0, "#1aa4c8");
+        wash.addColorStop(0.55, "#148cb8");
+        wash.addColorStop(1, "#0e749e");
+        g.fillStyle = wash;
         g.fillRect(0, 0, size, size);
-        g.strokeStyle = "rgba(186,230,255,0.35)";
-        g.lineWidth = 3;
         var n;
-        for (n = 0; n < 7; n++) {
+        for (n = 0; n < 8; n++) {
+            g.strokeStyle = n % 2 === 0 ? "rgba(214,255,246,0.42)" : "rgba(10,90,120,0.28)";
+            g.lineWidth = n % 2 === 0 ? 3 : 2;
             g.beginPath();
-            g.moveTo(0, 8 + n * 18);
-            g.bezierCurveTo(30, 2 + n * 18, 70, 16 + n * 18, 128, 6 + n * 18);
+            g.moveTo(0, 6 + n * 16);
+            g.bezierCurveTo(28, n * 16, 64, 18 + n * 16, 96, 4 + n * 16);
+            g.bezierCurveTo(112, n * 16, 120, 12 + n * 16, 128, 8 + n * 16);
             g.stroke();
         }
     });
-    waterTex.repeat.set(6, 6);
+    waterTex.repeat.set(5, 5);
     waterMat = new THREE.MeshLambertMaterial({ map: waterTex, color: 0xffffff });
-    var water = new THREE.Mesh(new THREE.CircleGeometry(80.4, 56), waterMat);
+    var water = new THREE.Mesh(new THREE.CircleGeometry(80.4, 48), waterMat);
     water.rotation.x = -Math.PI / 2;
     water.position.y = 0.04;
     scene.add(water);
 
-    deepMat = lambert(0x146eae);
-    var deep = new THREE.Mesh(new THREE.CircleGeometry(52, 40), deepMat);
+    var shineTex = paintCanvas(128, function (g, size) {
+        g.clearRect(0, 0, size, size);
+        var n;
+        g.lineWidth = 2;
+        for (n = 0; n < 5; n++) {
+            g.strokeStyle = "rgba(255,255,255,0.7)";
+            g.beginPath();
+            g.moveTo(0, 18 + n * 22);
+            g.bezierCurveTo(36, 8 + n * 22, 78, 28 + n * 22, 128, 12 + n * 22);
+            g.stroke();
+        }
+    });
+    shineTex.repeat.set(3, 3);
+    waterShineMat = new THREE.MeshBasicMaterial({ map: shineTex, color: 0xd9fff4, transparent: true, opacity: 0.34, depthWrite: false });
+    var waterShine = new THREE.Mesh(new THREE.CircleGeometry(78.8, 40), waterShineMat);
+    waterShine.rotation.x = -Math.PI / 2;
+    waterShine.position.y = 0.062;
+    waterShine.renderOrder = 1;
+    scene.add(waterShine);
+
+    var foam = new THREE.Mesh(new THREE.RingGeometry(76.8, 80.6, 40), new THREE.MeshBasicMaterial({ color: 0xeffffe, transparent: true, opacity: 0.62, depthWrite: false, side: THREE.DoubleSide }));
+    foam.rotation.x = -Math.PI / 2;
+    foam.position.y = 0.055;
+    foam.renderOrder = 1;
+    scene.add(foam);
+
+    deepMat = lambert(0x0c6f9a);
+    var deep = new THREE.Mesh(new THREE.CircleGeometry(48, 32), deepMat);
     deep.rotation.x = -Math.PI / 2;
-    deep.position.y = 0.05;
+    deep.position.y = 0.045;
     scene.add(deep);
 
     var asphaltTex = paintCanvas(128, function (g, size) {
-        g.fillStyle = "#4a5362";
+        g.fillStyle = "#4c5564";
         g.fillRect(0, 0, size, size);
         var n;
-        for (n = 0; n < 22; n++) {
-            var shade = 70 + Math.floor(rnd(n + 15) * 28);
-            g.fillStyle = "rgba(" + shade + "," + (shade + 4) + "," + (shade + 10) + ",0.35)";
+        var shade;
+        for (n = 0; n < 40; n++) {
+            shade = 62 + Math.floor(rnd(n + 15) * 36);
+            g.fillStyle = "rgba(" + shade + "," + (shade + 3) + "," + (shade + 8) + ",0.45)";
+            g.fillRect(rnd(n + 3) * size, rnd(n + 9) * size, 2 + rnd(n) * 5, 2 + rnd(n + 1) * 4);
+        }
+        g.strokeStyle = "rgba(28,32,40,0.28)";
+        g.lineWidth = 1;
+        for (n = 0; n < 6; n++) {
             g.beginPath();
-            g.arc(rnd(n + 40) * size, rnd(n + 50) * size, 4 + rnd(n + 6) * 9, 0, Math.PI * 2);
-            g.fill();
+            g.moveTo(rnd(n + 40) * size, 0);
+            g.lineTo(rnd(n + 48) * size, size);
+            g.stroke();
         }
     });
+    asphaltTex.repeat.set(18, 2);
     roadMat = new THREE.MeshLambertMaterial({ map: asphaltTex, color: 0xffffff });
     var lineMat = basic(0xf7f8fa);
     var guideMat = basic(0x3ae7ff);
@@ -4154,8 +4199,10 @@
     addStrip(-3.72, 0.08, 0.11, 360, lineMat, 0, 0);
     addStrip(0, 0.07, 0.115, 360, lineMat, 2, 5);
     addStrip(1.35, 0.22, 0.14, 360, guideMat, 0, 0);
+    addStrip(3.98, 0.13, 0.1, 200, lambert(0xf3efe4), 0, 0);
+    addStrip(-3.98, 0.13, 0.1, 200, lambert(0xe7e2d4), 0, 0);
 
-    scene.add(new THREE.Mesh(buildWall(-4.9, 0.08, 1.05, 220, true), lambert(0xd7d0c2)));
+    scene.add(new THREE.Mesh(buildWall(-4.9, 0.08, 0.36, 180, true), lambert(0xe4ddd0)));
     scene.add(new THREE.Mesh(buildWall(-5.15, 0.08, 0.55, 160, true), toon(0x8d8680)));
     scene.add(new THREE.Mesh(buildWall(4.85, 0.55, 0.68, 200, false), lambert(0xb7c3ce)));
     scene.add(new THREE.Mesh(buildWall(4.85, 0.86, 0.96, 200, false), lambert(0xd5dee6)));
@@ -4229,18 +4276,19 @@
     hillMat = lambert(0x6fbe58);
     mountainMat = lambert(0x7ea6c8);
     snowMat = lambert(0xf7fbff);
+    var domeGeo = new THREE.SphereGeometry(7, 8, 6);
     var riseGeo = new THREE.ConeGeometry(11, 3.6, 7);
     var peakGeo = new THREE.ConeGeometry(12, 12, 8);
     var peakSmall = new THREE.ConeGeometry(8, 8.5, 7);
     var snowGeo = new THREE.ConeGeometry(2.2, 2.8, 6);
     var mi;
 
-    for (mi = 0; mi < 5; mi++) {
-        var hpos = sideAt((mi + 0.2) / 5, -38);
-        var rise = new THREE.Mesh(riseGeo, hillMat);
-        var hs = 0.9 + rnd(mi + 2) * 0.5;
-        rise.scale.set(hs, 0.8 + rnd(mi) * 0.35, hs * 0.85);
-        rise.position.set(hpos.x, 0.2, hpos.z);
+    for (mi = 0; mi < 6; mi++) {
+        var hpos = sideAt((mi + 0.15) / 6, -34 - rnd(mi + 2) * 8);
+        var rise = new THREE.Mesh(domeGeo, hillMat);
+        var hs = 1.15 + rnd(mi + 2) * 0.7;
+        rise.scale.set(hs * 1.35, 0.28 + rnd(mi) * 0.1, hs);
+        rise.position.set(hpos.x, -1.15, hpos.z);
         scene.add(rise);
     }
 
@@ -4266,13 +4314,13 @@
         }
     }
 
-    var footGeo = new THREE.ConeGeometry(16, 5.5, 8);
+    var footGeo = new THREE.SphereGeometry(12, 8, 6);
     for (mi = 0; mi < 7; mi++) {
         var footAng = mi / 7 * Math.PI * 2 + 0.5;
-        var foot = new THREE.Mesh(footGeo, hillMat);
-        var fs = 0.8 + rnd(mi + 6) * 0.45;
-        foot.scale.set(fs, 0.42 + rnd(mi + 1) * 0.2, fs * 0.75);
-        foot.position.set(Math.cos(footAng) * 168, 5.5 * foot.scale.y * 0.5 - 1.6, Math.sin(footAng) * 168);
+        var foot = new THREE.Mesh(footGeo, mi % 2 === 0 ? hillMat : mountainMat);
+        var fs = 0.85 + rnd(mi + 6) * 0.4;
+        foot.scale.set(fs * 1.5, 0.16 + rnd(mi + 1) * 0.06, fs);
+        foot.position.set(Math.cos(footAng) * 175, -1.5, Math.sin(footAng) * 175);
         scene.add(foot);
     }
 
@@ -4325,10 +4373,14 @@
         var crown3 = new THREE.Mesh(roundGeo, leaf);
         crown3.position.set(-0.28 * sc, 1.85 * sc, -0.05 * sc);
         crown3.scale.set(0.55 * sc, 0.48 * sc, 0.5 * sc);
+        var crown4 = new THREE.Mesh(roundGeo, leafMats[4]);
+        crown4.position.set(0.08 * sc, 2.15 * sc, 0.12 * sc);
+        crown4.scale.set(0.4 * sc, 0.34 * sc, 0.38 * sc);
         tree.add(trunk);
         tree.add(crown);
         tree.add(crown2);
         tree.add(crown3);
+        tree.add(crown4);
         tree.position.set(x, 0, z);
         scene.add(tree);
         addBlob(x, z, 1.15 * sc, 0.9 * sc);
@@ -4363,9 +4415,13 @@
         var b = new THREE.Mesh(pineB, leaf);
         b.position.y = 1.85 * sc;
         b.scale.set(sc, sc, sc);
+        var c = new THREE.Mesh(pineB, leafMats[4]);
+        c.position.y = 2.4 * sc;
+        c.scale.set(sc * 0.55, sc * 0.62, sc * 0.55);
         tree.add(trunk);
         tree.add(a);
         tree.add(b);
+        tree.add(c);
         tree.position.set(x, 0, z);
         scene.add(tree);
         addBlob(x, z, 0.9 * sc, 0.75 * sc);
@@ -4444,6 +4500,41 @@
         bed.renderOrder = 2;
         scene.add(bed);
     }
+
+    var hedgeGeo = new THREE.BoxGeometry(2.4, 0.72, 0.9);
+    for (ti = 0; ti < 10; ti++) {
+        var hedgeU = (ti + 0.28) / 10;
+        var hedgePos = sideAt(hedgeU, -5.85);
+        var hedge = new THREE.Mesh(hedgeGeo, leafMats[ti % 3]);
+        hedge.position.set(hedgePos.x, 0.36, hedgePos.z);
+        var hedgeFace = curve.getPointAt(hedgeU);
+        yawToward(hedge, hedgeFace.x, hedgeFace.z);
+        scene.add(hedge);
+    }
+
+    var rockGeo = new THREE.IcosahedronGeometry(0.42, 0);
+    var rockMat = toon(0xc2bbb0);
+    for (ti = 0; ti < 8; ti++) {
+        var rockPos = sideAt((ti + 0.33) / 8, 6.4 + rnd(ti + 3) * 0.8);
+        var rock = new THREE.Mesh(rockGeo, rockMat);
+        var rs = 0.7 + rnd(ti + 5) * 0.8;
+        rock.scale.set(rs * 1.3, rs * 0.55, rs);
+        rock.position.set(rockPos.x, 0.16 * rs, rockPos.z);
+        rock.rotation.y = rnd(ti + 9) * 4;
+        scene.add(rock);
+    }
+
+    var isleGeo = new THREE.SphereGeometry(4.2, 8, 6);
+    var isleSpots = [[16, 12, 1.25], [-14, 20, 0.9], [4, -16, 1.45], [-24, -6, 0.75]];
+    for (ti = 0; ti < isleSpots.length; ti++) {
+        var isle = new THREE.Mesh(isleGeo, hillMat);
+        var isc = isleSpots[ti][2];
+        isle.scale.set(isc * 1.4, 0.3, isc);
+        isle.position.set(isleSpots[ti][0], -0.85, isleSpots[ti][1]);
+        scene.add(isle);
+    }
+    addRound(16, 12, 0.85, leafMats[1]);
+    addPine(5, -15, 0.7, leafMats[0]);
 
     townGlass = toon(0xc5e4f4);
     var wallMats = [toon(0xf6e2c6), toon(0xf3d3b4), toon(0xf7c9c0), toon(0xd7e6f6), toon(0xf8efe2)];
@@ -4828,7 +4919,7 @@
     scene.add(sun.target);
     scene.add(fill);
     scene.add(fill.target);
-    scene.fog = new THREE.Fog(0xd4eefc, 95, 290);
+    scene.fog = new THREE.Fog(0xd7f0fc, 82, 250);
 
     var dayFog = new THREE.Color(0xd4eefc);
     var nightFog = new THREE.Color(0x1a3358);
@@ -4857,7 +4948,7 @@
     var roadNight = new THREE.Color(0xc5ceda);
     var waterDay = new THREE.Color(0xffffff);
     var waterNight = new THREE.Color(0x6a90b0);
-    var deepDay = new THREE.Color(0x146eae);
+    var deepDay = new THREE.Color(0x0c6f9a);
     var deepNight = new THREE.Color(0x0d3058);
     var shoreDay = new THREE.Color(0xffffff);
     var shoreNight = new THREE.Color(0xb7a078);
@@ -4871,8 +4962,8 @@
     function updateMood(t) {
         fogCol.copy(dayFog).lerp(nightFog, t);
         scene.fog.color.copy(fogCol);
-        scene.fog.near = 95 + (38 - 95) * t;
-        scene.fog.far = 290 + (195 - 290) * t;
+        scene.fog.near = 82 + (34 - 82) * t;
+        scene.fog.far = 250 + (170 - 250) * t;
         hemi.color.copy(dayHemi).lerp(nightHemi, t);
         hemi.groundColor.copy(dayGroundL).lerp(nightGroundL, t);
         hemi.intensity = 0.72 + (0.4 - 0.72) * t;
@@ -4882,6 +4973,7 @@
         groundMat.color.copy(groundDay).lerp(groundNight, t);
         roadMat.color.copy(roadDay).lerp(roadNight, t);
         waterMat.color.copy(waterDay).lerp(waterNight, t);
+        if (waterShineMat) waterShineMat.opacity = 0.36 + (0.12 - 0.36) * t;
         deepMat.color.copy(deepDay).lerp(deepNight, t);
         shoreMat.color.copy(shoreDay).lerp(shoreNight, t);
         hillMat.color.copy(hillDay).lerp(hillNight, t);
@@ -5009,7 +5101,8 @@
             clouds[w].position.x += dt * clouds[w].userData.spd;
             if (clouds[w].position.x > 150) clouds[w].position.x = -150;
         }
-        if (waterMat.map) waterMat.map.offset.x += dt * 0.015;
+        if (waterMat.map) waterMat.map.offset.x += dt * 0.012;
+        if (waterShineMat && waterShineMat.map) waterShineMat.map.offset.x -= dt * 0.02;
         if (millBlades) millBlades.rotation.z += dt * 0.7;
         var desired = pos.clone().addScaledVector(tangent, -camBack);
         desired.y += camUp;
