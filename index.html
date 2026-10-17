@@ -92,6 +92,54 @@
         }
         #run { background: rgba(255,255,255,0.08); }
         #climate { font-size: 14px; font-weight: 700; width: auto; padding: 0 8px; }
+        #goal {
+            position: fixed; z-index: 3;
+            top: calc(92px + env(safe-area-inset-top));
+            left: calc(12px + env(safe-area-inset-left));
+            width: min(336px, calc(100vw - 90px));
+            max-height: min(340px, calc(100vh - 330px));
+            overflow: auto;
+            padding: 10px 12px 8px;
+            border-radius: 18px;
+            background: rgba(8, 16, 30, 0.78);
+            border: 1px solid rgba(255,255,255,0.14);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        }
+        #goal-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+        #goal-head b { font-size: 14px; letter-spacing: 0.01em; }
+        #goal-head small, #goal-attr, #gps-note, #goal-note { font-size: 11px; line-height: 1.35; opacity: 0.78; }
+        #goal-form { display: flex; gap: 6px; margin-top: 8px; }
+        #goal-q {
+            flex: 1; min-width: 0; height: 40px; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.08); color: #fff;
+            padding: 0 10px; font: 16px/1.2 "Segoe UI", Roboto, sans-serif;
+        }
+        #goal-q::placeholder { color: rgba(255,255,255,0.55); }
+        #goal-go, #gps {
+            height: 40px; border: 0; border-radius: 12px; padding: 0 12px;
+            font-weight: 750; font-size: 14px;
+        }
+        #goal-go { background: #3ae7ff; color: #04222c; }
+        #gps { background: rgba(255,255,255,0.12); color: #fff; }
+        #goal button:disabled { opacity: 0.55; }
+        #goal-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+        #gps-note, #goal-note, #goal-attr { margin: 0; }
+        #goal-note { margin-top: 8px; }
+        #gps-note.ok { color: #b8f3c8; opacity: 1; }
+        #gps-note.bad, #goal-note.warn { color: #ffd7a1; opacity: 1; }
+        #goal-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+        #goal-list:empty { display: none; }
+        #goal-list button {
+            display: block; width: 100%; text-align: left; color: #fff;
+            border-radius: 12px; border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06); padding: 8px 10px;
+        }
+        #goal-list button.picked { border-color: #3ae7ff; }
+        #goal-list b { display: block; font-size: 14px; }
+        #goal-list small { display: block; margin-top: 2px; opacity: 0.72; font-size: 11px; }
+        #goal-attr { margin-top: 8px; }
+        #goal-attr a { color: #9be7ff; }
         #fail {
             display: none; position: fixed; z-index: 4;
             left: 16px; right: 16px; top: 40%;
@@ -107,6 +155,7 @@
             #speed { font-size: 26px; }
             #dist { font-size: 18px; }
             #side { top: auto; bottom: calc(120px + env(safe-area-inset-bottom)); }
+            #goal { width: min(336px, calc(100vw - 24px)); max-height: min(280px, calc(100vh - 280px)); }
         }
 </style>
 </head>
@@ -123,12 +172,12 @@
         <div>
             <b id="dist">2,4 km</b>
             <span id="street">Mintaút</span>
-            <span id="hint">nem GPS</span>
+            <span id="hint">minta, nem GPS</span>
         </div>
     </div>
     <div id="status">
         <span aria-hidden="true">☀</span>
-        <span>18°C</span>
+        <span title="Minta, nem élő időjárás">18°C</span>
         <span id="clock">--:--</span>
     </div>
     <div id="side">
@@ -139,10 +188,10 @@
     </div>
     <div id="speedo">
         <div id="speed-hole">
-            <b id="speed">58</b>
+            <b id="speed" title="Minta sebesség, nem a jármű mérése">58</b>
             <span id="unit">km/h</span>
         </div>
-        <div id="limit">90</div>
+        <div id="limit" title="Minta tábla, nem élő sebességkorlátozás">90</div>
     </div>
     <div id="eta">
         <div><b id="left">2,4 km</b><small>Minta szakasz</small></div>
@@ -153,9 +202,26 @@
         <span aria-hidden="true">♪</span>
         <span aria-hidden="true">☎</span>
         <span aria-hidden="true">✶</span>
-        <span id="climate">22°C</span>
+        <span id="climate" title="Minta, nem élő klíma">22°C</span>
         <button id="run" type="button" aria-label="Megáll">🚗</button>
     </div>
+    <section id="goal" aria-label="Cél keresése">
+        <div id="goal-head">
+            <b>Cél</b>
+            <small>a 3D a mintaúton marad</small>
+        </div>
+        <form id="goal-form">
+            <input id="goal-q" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="120" placeholder="Cím vagy város" aria-label="Cím vagy város">
+            <button id="goal-go" type="submit">Keresés</button>
+        </form>
+        <div id="goal-row">
+            <button id="gps" type="button">GPS</button>
+            <p id="gps-note">GPS: még nincs lekérdezve</p>
+        </div>
+        <p id="goal-note">A találat nem indít útvonalat.</p>
+        <ul id="goal-list"></ul>
+        <p id="goal-attr">Keresés: <a href="https://photon.komoot.io/" target="_blank" rel="noopener">Photon</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></p>
+    </section>
     <div id="fail"></div>
 
 <script>
@@ -5051,6 +5117,176 @@
     paintHud();
     paintClock();
     window.setInterval(paintClock, 1000);
+
+    var goalForm = document.getElementById("goal-form");
+    var goalInput = document.getElementById("goal-q");
+    var goalGo = document.getElementById("goal-go");
+    var goalList = document.getElementById("goal-list");
+    var goalNote = document.getElementById("goal-note");
+    var gpsButton = document.getElementById("gps");
+    var gpsNote = document.getElementById("gps-note");
+    var photonUrl = "https://photon.komoot.io/api/";
+    var gpsFix = null;
+    var searchCache = {};
+    var searchSeq = 0;
+    var lastSearchAt = 0;
+    var chosenGoal = null;
+
+    function setGpsNote(text, kind) {
+        gpsNote.textContent = text;
+        gpsNote.className = kind ? kind : "";
+    }
+
+    function formatCoord(lat, lon) {
+        var ns = lat >= 0 ? "É" : "D";
+        var ew = lon >= 0 ? "K" : "Ny";
+        return comma(Math.abs(lat), 5) + "° " + ns + ", " + comma(Math.abs(lon), 5) + "° " + ew;
+    }
+
+    function placeTitle(props) {
+        if (props.name) return props.name;
+        if (props.street) return props.housenumber ? props.street + " " + props.housenumber : props.street;
+        if (props.city) return props.city;
+        if (props.country) return props.country;
+        return "Hely";
+    }
+
+    function placeDetail(props) {
+        var parts = [];
+        var street = "";
+        if (props.street) street = props.housenumber ? props.street + " " + props.housenumber : props.street;
+        if (street && street !== props.name) parts.push(street);
+        if (props.city && props.city !== props.name) parts.push(props.city);
+        else if (props.locality && props.locality !== props.name) parts.push(props.locality);
+        else if (props.state && props.state !== props.name) parts.push(props.state);
+        if (props.country) parts.push(props.country);
+        return parts.join(", ");
+    }
+
+    function askGps() {
+        if (!navigator.geolocation) {
+            setGpsNote("GPS: ez a böngésző nem ad helyet.", "bad");
+            return;
+        }
+        if (window.isSecureContext === false) {
+            setGpsNote("GPS: a lap nem biztonságos címen fut, a lekérés nem indul.", "bad");
+            return;
+        }
+        setGpsNote("GPS: engedély kérése…", "wait");
+        gpsButton.disabled = true;
+        navigator.geolocation.getCurrentPosition(function (pos) {
+            gpsButton.disabled = false;
+            var c = pos.coords;
+            gpsFix = { lat: c.latitude, lon: c.longitude, acc: c.accuracy };
+            var acc = typeof c.accuracy === "number" ? " (±" + Math.round(c.accuracy) + " m)" : "";
+            setGpsNote("GPS helyzet: " + formatCoord(c.latitude, c.longitude) + acc + ". Az autót nem ez vezeti.", "ok");
+        }, function (err) {
+            gpsButton.disabled = false;
+            var code = err && err.code;
+            if (code === 1) setGpsNote("GPS: az engedélyt megtagadták. Androidon a böngésző helyengedélye is kell.", "bad");
+            else if (code === 2) setGpsNote("GPS: a hely most nem érhető el.", "bad");
+            else if (code === 3) setGpsNote("GPS: a lekérés túl sokáig tartott. Próbáld újra.", "bad");
+            else setGpsNote("GPS: a helyet nem sikerült lekérni.", "bad");
+        }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 30000 });
+    }
+
+    function showPlaces(features) {
+        while (goalList.firstChild) goalList.removeChild(goalList.firstChild);
+        if (!features.length) {
+            goalNote.textContent = "Nincs találat. A Mintaút ettől még megy.";
+            goalNote.className = "warn";
+            return;
+        }
+        goalNote.textContent = "Válassz egy találatot. Ez még nem indít valódi navigációt.";
+        goalNote.className = "";
+        var i;
+        for (i = 0; i < features.length; i++) {
+            (function (feature) {
+                var coords = feature.geometry && feature.geometry.coordinates;
+                var props = feature.properties || {};
+                if (!coords || coords.length < 2) return;
+                var lon = Number(coords[0]);
+                var lat = Number(coords[1]);
+                if (!isFinite(lat) || !isFinite(lon)) return;
+                var li = document.createElement("li");
+                var btn = document.createElement("button");
+                btn.type = "button";
+                var strong = document.createElement("b");
+                strong.textContent = placeTitle(props);
+                var small = document.createElement("small");
+                var detail = placeDetail(props);
+                small.textContent = (detail ? detail + " · " : "") + formatCoord(lat, lon);
+                btn.appendChild(strong);
+                btn.appendChild(small);
+                btn.addEventListener("click", function () {
+                    chosenGoal = { name: placeTitle(props), lat: lat, lon: lon };
+                    var buttons = goalList.getElementsByTagName("button");
+                    var b;
+                    for (b = 0; b < buttons.length; b++) buttons[b].className = "";
+                    btn.className = "picked";
+                    goalNote.textContent = "Kiválasztott cél: " + chosenGoal.name + " (" + formatCoord(lat, lon) + "). Valódi útvonal nincs: a 3D autó a Mintaúton megy, próba sebességgel.";
+                    goalNote.className = "";
+                });
+                li.appendChild(btn);
+                goalList.appendChild(li);
+            })(features[i]);
+        }
+    }
+
+    function runSearch(query) {
+        var q = String(query || "").replace(/^\s+|\s+$/g, "");
+        if (!q) {
+            goalNote.textContent = "Írj be egy címet vagy várost.";
+            goalNote.className = "warn";
+            return;
+        }
+        if (q.length > 120) q = q.substring(0, 120);
+        if (!window.fetch) {
+            goalNote.textContent = "Ez a böngésző nem tud címkeresést indítani.";
+            goalNote.className = "warn";
+            return;
+        }
+        var bias = gpsFix ? gpsFix.lat.toFixed(1) + "," + gpsFix.lon.toFixed(1) : "";
+        var key = q.toLowerCase() + "|" + bias;
+        if (searchCache[key]) {
+            showPlaces(searchCache[key]);
+            return;
+        }
+        var now = Date.now();
+        if (now - lastSearchAt < 1200) {
+            goalNote.textContent = "A kereső másodpercenként egy kérést fogad. Várj egy pillanatot.";
+            goalNote.className = "warn";
+            return;
+        }
+        lastSearchAt = now;
+        var seq = ++searchSeq;
+        goalGo.disabled = true;
+        goalNote.textContent = "Keresés…";
+        goalNote.className = "";
+        var url = photonUrl + "?q=" + encodeURIComponent(q) + "&limit=5&lang=default";
+        if (gpsFix) url += "&lat=" + encodeURIComponent(String(gpsFix.lat)) + "&lon=" + encodeURIComponent(String(gpsFix.lon));
+        fetch(url, { headers: { "Accept": "application/json" }, cache: "no-store" }).then(function (res) {
+            if (!res.ok) throw new Error(String(res.status));
+            return res.json();
+        }).then(function (data) {
+            if (seq !== searchSeq) return;
+            goalGo.disabled = false;
+            var features = data && data.features ? data.features : [];
+            searchCache[key] = features;
+            showPlaces(features);
+        }).catch(function () {
+            if (seq !== searchSeq) return;
+            goalGo.disabled = false;
+            goalNote.textContent = "A címkeresés most nem válaszol. A Mintaút ettől függetlenül megy.";
+            goalNote.className = "warn";
+        });
+    }
+
+    goalForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        runSearch(goalInput.value);
+    });
+    gpsButton.addEventListener("click", askGps);
 
     var aligned = false;
 
