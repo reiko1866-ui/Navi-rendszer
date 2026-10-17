@@ -3898,6 +3898,8 @@
     var routeSeq = 0;
     var lastRouteAt = 0;
     var routeCache = {};
+    var routeSnap = null;
+    var snapMaxM = 2000;
     var sampleCurve = null;
     var propRoot = null;
     var directAdd = null;
@@ -5268,18 +5270,23 @@
             var c = pos.coords;
             gpsFix = { lat: c.latitude, lon: c.longitude, acc: c.accuracy };
             var acc = typeof c.accuracy === "number" ? " (±" + Math.round(c.accuracy) + " m)" : "";
-            setGpsNote("GPS helyzet: " + formatCoord(c.latitude, c.longitude) + acc + ". Ez az indulópont, nem a sebesség.", "ok");
+            setGpsNote("GPS helyzet: " + formatCoord(c.latitude, c.longitude) + acc + ". Ez a helyzet, nem az út közepe és nem a sebesség.", "ok");
             if (chosenGoal) planRoute();
         }, function (err) {
             gpsButton.disabled = false;
             var code = err && err.code;
-            if (code === 1) setGpsNote("GPS: az engedélyt megtagadták. Androidon a böngésző helyengedélye is kell.", "bad");
-            else if (code === 2) setGpsNote("GPS: a hely most nem érhető el.", "bad");
+            if (code === 1) {
+                gpsFix = null;
+                setGpsNote("GPS: az engedélyt megtagadták. Androidon a böngésző helyengedélye is kell.", "bad");
+            } else if (code === 2) setGpsNote("GPS: a hely most nem érhető el.", "bad");
             else if (code === 3) setGpsNote("GPS: a lekérés túl sokáig tartott. Próbáld újra.", "bad");
             else setGpsNote("GPS: a helyet nem sikerült lekérni.", "bad");
-            if (chosenGoal && !routeActive) {
-                goalNote.textContent = "A cél rögzítve, de GPS-helyzet nélkül nincs indulópont. Engedély vagy GPS-adat szükséges.";
-                goalNote.className = "warn";
+            if (code === 1 || !gpsFix) {
+                showSample();
+                if (chosenGoal) {
+                    goalNote.textContent = "A cél rögzítve, de érvényes GPS-helyzet nélkül nincs indulópont. Engedély vagy GPS-adat szükséges.";
+                    goalNote.className = "warn";
+                }
             }
         }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 30000 });
     }
@@ -5607,7 +5614,7 @@
             uvs.push(i * 0.05, 0, i * 0.05, 1);
             if (i > 0) {
                 var base = (i - 1) * 2;
-                indices.push(base, base + 2, base + 1, base + 1, base + 2, base + 3);
+                indices.push(base, base + 1, base + 2, base + 1, base + 3, base + 2);
             }
         }
         var geo = new THREE.BufferGeometry();
@@ -5659,17 +5666,110 @@
         propRoot = null;
     }
 
-    function applyRoute(route) {
+    function formatAway(m) {
+        if (m >= 950) return comma(m / 1000, 1) + " km-re";
+        return String(Math.round(m)) + " m-re";
+    }
+
+    function osrmPair(lon, lat) {
+        return Number(lon).toFixed(6) + "," + Number(lat).toFixed(6);
+    }
+
+    function showSample() {
+        var wasRoute = routeActive;
+        routeActive = false;
+        followOrigin = false;
+        routeMeters = 0;
+        routeSeconds = 0;
+        routeSteps = [];
+        routeSnap = null;
+        if (routeRoot) {
+            clearRouteRoot();
+            routeRoot.visible = false;
+            routeRoot.position.set(0, 0, 0);
+        }
+        if (routeGround) routeGround.visible = false;
+        if (coast) coast.visible = true;
+        if (sampleCurve) curve = sampleCurve;
+        if (wasRoute) {
+            travel = 0.02;
+            aligned = false;
+            prevTangent.set(0, 0, 1);
+        }
+        document.getElementById("goal-mode").textContent = "a 3D a mintaúton marad";
+        paintHud();
+    }
+
+    function routeFail(text) {
+        showSample();
+        goalNote.textContent = text;
+        goalNote.className = "warn";
+    }
+
+    function readSnap(data, index) {
+        var wps = data && data.waypoints;
+        var wp = wps && wps[index || 0];
+        if (!wp || !wp.location || wp.location.length < 2) return null;
+        var lon = Number(wp.location[0]);
+        var lat = Number(wp.location[1]);
+        if (!isFinite(lon) || !isFinite(lat)) return null;
+        return {
+            lon: lon,
+            lat: lat,
+            name: wp.name || "",
+            distance: typeof wp.distance === "number" ? wp.distance : null
+        };
+    }
+
+    function segmentIndex(data) {
+        var msg = data && data.message ? String(data.message) : "";
+        var found = /coordinate\s+(\d+)/.exec(msg);
+        return found ? Number(found[1]) : -1;
+    }
+
+    function fetchOsrm(url) {
+        return fetch(url, { headers: { "Accept": "application/json" }, cache: "no-store" }).then(function (res) {
+            if (res.status === 429) throw new Error("limit");
+            return res.json().then(function (data) {
+                if (!data || typeof data !== "object") throw new Error("http");
+                return data;
+            }, function () {
+                throw new Error("http");
+            });
+        });
+    }
+
+    function routeUrl(startLon, startLat, goalLon, goalLat, startRadius) {
+        return "https://routing.openstreetmap.de/routed-car/route/v1/driving/"
+            + osrmPair(startLon, startLat) + ";"
+            + osrmPair(goalLon, goalLat)
+            + "?overview=full&geometries=geojson&steps=true&alternatives=false&radiuses="
+            + startRadius + ";" + snapMaxM;
+    }
+
+    function waitOsrm(seq, run) {
+        var wait = 1100 - (Date.now() - lastRouteAt);
+        if (wait < 0) wait = 0;
+        window.setTimeout(function () {
+            if (seq !== routeSeq || !gpsFix || !chosenGoal) return;
+            lastRouteAt = Date.now();
+            run();
+        }, wait);
+    }
+
+    function applyRoute(route, snap) {
         var coords = route.geometry && route.geometry.coordinates;
         if (!coords || coords.length < 2 || !route.distance) {
-            goalNote.textContent = "Az útvonalnak nincs járható vonala. A Mintaút marad.";
-            goalNote.className = "warn";
+            routeFail("Az útvonalnak nincs járható vonala. A navigáció nem indult. A Mintaút marad.");
+            return;
+        }
+        if (route.distance < 40) {
+            routeFail("A cél a közeli közúton lényegében a jelenlegi helyzet. Válassz távolabbi címet. A Mintaút marad.");
             return;
         }
         var points = projectCoords(coords);
         if (points.length < 2) {
-            goalNote.textContent = "Az útvonal túl rövid. A Mintaút marad.";
-            goalNote.className = "warn";
+            routeFail("Az útvonal túl rövid. A navigáció nem indult. A Mintaút marad.");
             return;
         }
         clearRouteRoot();
@@ -5677,6 +5777,7 @@
         routeMeters = route.distance;
         routeSeconds = route.duration || 0;
         routeSteps = readSteps(route);
+        routeSnap = snap || null;
         routeActive = true;
         followOrigin = true;
         travel = 0.0008;
@@ -5688,31 +5789,101 @@
         buildRouteRoad();
         dressRoute();
         var mins = Math.max(1, Math.round(routeSeconds / 60));
-        goalNote.textContent = "Valódi közút: " + comma(routeMeters / 1000, 1) + " km, " + mins + " perc. A 3D haladás szimulált, a sebesség nem GPS.";
+        var snapText = "";
+        if (snap && typeof snap.distance === "number" && snap.distance >= 12) {
+            var road = snap.name ? snap.name : "a legközelebbi közút";
+            snapText = " Indulás: " + road + ", a GPS-től " + formatAway(snap.distance) + ".";
+            setGpsNote("A GPS nincs az út közepén. Indulás: " + road + ", " + formatAway(snap.distance) + ". A sebesség nem GPS.", "ok");
+        }
+        goalNote.textContent = "Valódi közút: " + comma(routeMeters / 1000, 1) + " km, " + mins + " perc." + snapText + " A 3D haladás szimulált, a sebesség nem GPS.";
         document.getElementById("goal-mode").textContent = "valós közút, szimulált haladás";
         goalNote.className = "";
         paintHud();
     }
 
+    function acceptRoute(key, data, gpsDistance, fallbackName) {
+        var snap = readSnap(data, 0);
+        if (!snap || snap.distance === null) {
+            routeFail("Az útvonaltervező nem adott közúti indulópontot. A navigáció nem indult. A Mintaút marad.");
+            return;
+        }
+        if (typeof gpsDistance === "number") snap.distance = gpsDistance;
+        if (!snap.name && fallbackName) snap.name = fallbackName;
+        if (snap.distance > snapMaxM + 1) {
+            var farName = snap.name ? " (" + snap.name + ")" : "";
+            routeFail("A GPS nincs úton. A legközelebbi autóút " + formatAway(snap.distance) + farName + ". Ez túl messze van indulópontnak. A navigáció nem indult. A Mintaút marad.");
+            return;
+        }
+        routeCache[key] = { route: data.routes[0], snap: snap };
+        applyRoute(data.routes[0], snap);
+    }
+
+    function handleNoSegment(seq, key, data) {
+        if (segmentIndex(data) === 1) {
+            routeFail("A kiválasztott cél 2 km-en belül nincs autóúton. A navigáció nem indult. A Mintaút marad.");
+            return;
+        }
+        goalNote.textContent = "A GPS nincs a közúton. Keresem a legközelebbi autóutat…";
+        goalNote.className = "";
+        waitOsrm(seq, function () {
+            var url = "https://routing.openstreetmap.de/routed-car/nearest/v1/driving/"
+                + osrmPair(gpsFix.lon, gpsFix.lat) + "?number=1";
+            fetchOsrm(url).then(function (near) {
+                if (seq !== routeSeq) return;
+                var snap = near && near.code === "Ok" ? readSnap(near, 0) : null;
+                if (!snap || snap.distance === null) {
+                    routeFail("A GPS közelében nincs autóút, ezért nincs indulópont. A navigáció nem indult. A Mintaút marad.");
+                    return;
+                }
+                var road = snap.name ? " (" + snap.name + ")" : "";
+                if (snap.distance > snapMaxM + 1) {
+                    routeFail("A GPS nincs úton. A legközelebbi autóút " + formatAway(snap.distance) + road + ". Ez túl messze van indulópontnak. A navigáció nem indult. A Mintaút marad.");
+                    return;
+                }
+                goalNote.textContent = "Indulás a legközelebbi közútról" + (snap.name ? ": " + snap.name : "") + ", " + formatAway(snap.distance) + " a GPS-től…";
+                goalNote.className = "";
+                waitOsrm(seq, function () {
+                    fetchOsrm(routeUrl(snap.lon, snap.lat, chosenGoal.lon, chosenGoal.lat, 80)).then(function (again) {
+                        if (seq !== routeSeq) return;
+                        if (!again || again.code !== "Ok" || !again.routes || !again.routes.length) {
+                            if (again && again.code === "NoSegment" && segmentIndex(again) === 1) {
+                                routeFail("A kiválasztott cél 2 km-en belül nincs autóúton. A navigáció nem indult. A Mintaút marad.");
+                            } else {
+                                routeFail("A legközelebbi közútról sincs járható útvonal a célhoz. A navigáció nem indult. A Mintaút marad.");
+                            }
+                            return;
+                        }
+                        acceptRoute(key, again, snap.distance, snap.name);
+                    }).catch(function (err) {
+                        if (seq !== routeSeq) return;
+                        if (err && err.message === "limit") routeFail("Az útvonaltervező korlátja megtelt. A Mintaút marad, később újra próbálhatod.");
+                        else routeFail("A közúti útvonal most nem érhető el. A navigáció nem indult. A Mintaút marad.");
+                    });
+                });
+            }).catch(function (err) {
+                if (seq !== routeSeq) return;
+                if (err && err.message === "limit") routeFail("Az útvonaltervező korlátja megtelt. A Mintaút marad, később újra próbálhatod.");
+                else routeFail("A GPS nincs úton, és a legközelebbi közutat sem sikerült lekérni. A navigáció nem indult. A Mintaút marad.");
+            });
+        });
+    }
+
     function planRoute() {
         if (!gpsFix || !chosenGoal) {
-            goalNote.textContent = "Valódi közúti útvonalhoz engedély vagy GPS-adat szükséges.";
-            goalNote.className = "warn";
+            routeFail("Valódi közúti útvonalhoz engedély vagy GPS-adat szükséges. A navigáció nem indult.");
             return;
         }
         if (Math.abs(gpsFix.lat - chosenGoal.lat) < 0.00008 && Math.abs(gpsFix.lon - chosenGoal.lon) < 0.00008) {
-            goalNote.textContent = "A cél a jelenlegi GPS-helyzet. Válassz egy távolabbi címet. A Mintaút marad.";
-            goalNote.className = "warn";
+            routeFail("A cél a jelenlegi GPS-helyzet. Válassz egy távolabbi címet. A Mintaút marad.");
             return;
         }
         if (!window.fetch) {
-            goalNote.textContent = "Ez a böngésző nem tud útvonalat kérni. A Mintaút marad.";
-            goalNote.className = "warn";
+            routeFail("Ez a böngésző nem tud útvonalat kérni. A Mintaút marad.");
             return;
         }
         var key = gpsFix.lat.toFixed(4) + "," + gpsFix.lon.toFixed(4) + ">" + chosenGoal.lat.toFixed(4) + "," + chosenGoal.lon.toFixed(4);
         if (routeCache[key]) {
-            applyRoute(routeCache[key]);
+            applyRoute(routeCache[key].route, routeCache[key].snap);
             return;
         }
         var now = Date.now();
@@ -5723,30 +5894,23 @@
         }
         lastRouteAt = now;
         var seq = ++routeSeq;
-        goalNote.textContent = "Közúti útvonal kérése a GPS-helyzettől…";
+        goalNote.textContent = "Közúti útvonal kérése. Ha a GPS nem az úton van, a közeli közút lesz az indulás…";
         goalNote.className = "";
-        var url = "https://routing.openstreetmap.de/routed-car/route/v1/driving/"
-            + gpsFix.lon.toFixed(6) + "," + gpsFix.lat.toFixed(6) + ";"
-            + chosenGoal.lon.toFixed(6) + "," + chosenGoal.lat.toFixed(6)
-            + "?overview=full&geometries=geojson&steps=true&alternatives=false";
-        fetch(url, { headers: { "Accept": "application/json" }, cache: "no-store" }).then(function (res) {
-            if (res.status === 429) throw new Error("limit");
-            if (!res.ok) throw new Error("http");
-            return res.json();
-        }).then(function (data) {
+        fetchOsrm(routeUrl(gpsFix.lon, gpsFix.lat, chosenGoal.lon, chosenGoal.lat, snapMaxM)).then(function (data) {
             if (seq !== routeSeq) return;
-            if (!data || data.code !== "Ok" || !data.routes || !data.routes.length) {
-                goalNote.textContent = "Erre a célra nincs autóval járható közút. A Mintaút marad.";
-                goalNote.className = "warn";
+            if (data.code === "NoSegment") {
+                handleNoSegment(seq, key, data);
                 return;
             }
-            routeCache[key] = data.routes[0];
-            applyRoute(data.routes[0]);
+            if (!data || data.code !== "Ok" || !data.routes || !data.routes.length) {
+                routeFail("Erre a célra nincs autóval járható közút. A navigáció nem indult. A Mintaút marad.");
+                return;
+            }
+            acceptRoute(key, data);
         }).catch(function (err) {
             if (seq !== routeSeq) return;
-            if (err && err.message === "limit") goalNote.textContent = "Az útvonaltervező korlátja megtelt. A Mintaút marad, később újra próbálhatod.";
-            else goalNote.textContent = "A közúti útvonal most nem érhető el. A Mintaút marad.";
-            goalNote.className = "warn";
+            if (err && err.message === "limit") routeFail("Az útvonaltervező korlátja megtelt. A Mintaút marad, később újra próbálhatod.");
+            else routeFail("A közúti útvonal most nem érhető el. A navigáció nem indult. A Mintaút marad.");
         });
     }
 
