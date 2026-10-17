@@ -63,6 +63,8 @@
         }
         #speed { font-size: 32px; font-weight: 750; line-height: 1; }
         #unit { font-size: 12px; opacity: 0.75; }
+        #speed-kind { display: none; font-size: 9px; line-height: 1.1; opacity: 0.8; }
+        #speed-kind.on { display: block; }
         #limit {
             position: absolute; right: -6px; bottom: 6px;
             width: 34px; height: 34px; border-radius: 50%;
@@ -190,12 +192,13 @@
         <div id="speed-hole">
             <b id="speed" title="Minta sebesség, nem a jármű mérése">58</b>
             <span id="unit">km/h</span>
+            <span id="speed-kind"></span>
         </div>
         <div id="limit" title="Minta tábla, nem élő sebességkorlátozás">90</div>
     </div>
     <div id="eta">
-        <div><b id="left">2,4 km</b><small>Minta szakasz</small></div>
-        <div><b id="mins">2 perc</b><small>Ebből a körből</small></div>
+        <div><b id="left">2,4 km</b><small id="left-kind">Minta szakasz</small></div>
+        <div><b id="mins">2 perc</b><small id="mins-kind">Ebből a körből</small></div>
     </div>
     <div id="dock">
         <span aria-hidden="true">⌂</span>
@@ -208,7 +211,7 @@
     <section id="goal" aria-label="Cél keresése">
         <div id="goal-head">
             <b>Cél</b>
-            <small>a 3D a mintaúton marad</small>
+            <small id="goal-mode">a 3D a mintaúton marad</small>
         </div>
         <form id="goal-form">
             <input id="goal-q" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="120" placeholder="Cím vagy város" aria-label="Cím vagy város">
@@ -220,7 +223,7 @@
         </div>
         <p id="goal-note">A találat nem indít útvonalat.</p>
         <ul id="goal-list"></ul>
-        <p id="goal-attr">Keresés: <a href="https://photon.komoot.io/" target="_blank" rel="noopener">Photon</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></p>
+        <p id="goal-attr">Keresés: <a href="https://photon.komoot.io/" target="_blank" rel="noopener">Photon</a> · Útvonal: <a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noopener">OSRM / FOSSGIS</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noopener">térkép javítása</a></p>
     </section>
     <div id="fail"></div>
 
@@ -3876,9 +3879,29 @@
     var speedEl = document.getElementById("speed");
     var speedo = document.getElementById("speedo");
     var clockEl = document.getElementById("clock");
+    var streetEl = document.getElementById("street");
+    var hintEl = document.getElementById("hint");
+    var leftKindEl = document.getElementById("left-kind");
+    var minsKindEl = document.getElementById("mins-kind");
+    var speedKindEl = document.getElementById("speed-kind");
     var night = false;
     var driving = true;
     var travel = 0.01;
+    var coast = null;
+    var routeRoot = null;
+    var routeGround = null;
+    var routeActive = false;
+    var followOrigin = false;
+    var routeMeters = 0;
+    var routeSeconds = 0;
+    var routeSteps = [];
+    var routeSeq = 0;
+    var lastRouteAt = 0;
+    var routeCache = {};
+    var sampleCurve = null;
+    var propRoot = null;
+    var directAdd = null;
+    var placingCoast = false;
     var wheels = [];
     var chevrons = [];
     var spots = [];
@@ -4043,6 +4066,7 @@
         new THREE.Vector3(64, 0, -64)
     ];
     curve = new THREE.CatmullRomCurve3(points, true, "catmullrom", 0.5);
+    sampleCurve = curve;
 
     function section(u, center, half, y) {
         var uu = u;
@@ -4155,6 +4179,17 @@
     });
     grassTex.repeat.set(22, 22);
     groundMat = new THREE.MeshLambertMaterial({ map: grassTex, color: 0xffffff });
+    coast = new THREE.Group();
+    scene.add(coast);
+    directAdd = scene.add.bind(scene);
+    placingCoast = true;
+    scene.add = function (obj) {
+        if (placingCoast) {
+            coast.add(obj);
+            return coast;
+        }
+        return directAdd(obj);
+    };
     var ground = new THREE.Mesh(new THREE.CircleGeometry(260, 64), groundMat);
     ground.rotation.x = -Math.PI / 2;
     scene.add(ground);
@@ -4312,6 +4347,7 @@
         col.needsUpdate = true;
     }
 
+    placingCoast = false;
     var skyGeo = new THREE.SphereGeometry(520, 28, 16);
     skyGeo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(skyGeo.attributes.position.count * 3), 3));
     sky = new THREE.Mesh(skyGeo, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false }));
@@ -4330,6 +4366,7 @@
     stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xfff6e8, size: 1.8, sizeAttenuation: true, fog: false, transparent: true, opacity: 0 }));
     stars.visible = false;
     scene.add(stars);
+    placingCoast = true;
 
     moon = new THREE.Mesh(new THREE.SphereGeometry(2.2, 14, 12), new THREE.MeshBasicMaterial({ color: 0xfff6dc, transparent: true, opacity: 0, fog: false }));
     moon.position.set(22, 18, -62);
@@ -4422,7 +4459,12 @@
         blob.position.set(x, 0.03, z);
         blob.scale.set(sx, sz, 1);
         blob.renderOrder = 1;
-        scene.add(blob);
+        placeProp(blob);
+    }
+
+    function placeProp(obj) {
+        if (propRoot) propRoot.add(obj);
+        else scene.add(obj);
     }
 
     function addRound(x, z, sc, leaf) {
@@ -4448,7 +4490,7 @@
         tree.add(crown3);
         tree.add(crown4);
         tree.position.set(x, 0, z);
-        scene.add(tree);
+        placeProp(tree);
         addBlob(x, z, 1.15 * sc, 0.9 * sc);
     }
 
@@ -4467,7 +4509,7 @@
         tree.add(a);
         tree.add(b);
         tree.position.set(x, 0, z);
-        scene.add(tree);
+        placeProp(tree);
     }
 
     function addPine(x, z, sc, leaf) {
@@ -4489,7 +4531,7 @@
         tree.add(b);
         tree.add(c);
         tree.position.set(x, 0, z);
-        scene.add(tree);
+        placeProp(tree);
         addBlob(x, z, 0.9 * sc, 0.75 * sc);
     }
 
@@ -4856,6 +4898,16 @@
         addCloud(cpos.x, 22 + rnd(ci + 5) * 8, cpos.z, 5.4 + rnd(ci + 1) * 1.6);
     }
 
+    placingCoast = false;
+    scene.add = directAdd;
+    routeRoot = new THREE.Group();
+    routeRoot.visible = false;
+    scene.add(routeRoot);
+    routeGround = new THREE.Mesh(new THREE.CircleGeometry(520, 40), groundMat);
+    routeGround.rotation.x = -Math.PI / 2;
+    routeGround.visible = false;
+    scene.add(routeGround);
+
     var guideGeo = new THREE.BufferGeometry();
     guideGeo.setAttribute("position", new THREE.Float32BufferAttribute([
         0, 0.02, 0.55,
@@ -5078,16 +5130,53 @@
         return v.toFixed(digits).replace(".", ",");
     }
 
+    function roadNameAt(u) {
+        var i;
+        for (i = 0; i < routeSteps.length; i++) {
+            if (u <= routeSteps[i].u1 + 0.00001) {
+                return routeSteps[i].name ? routeSteps[i].name : "közút";
+            }
+        }
+        if (chosenGoal && chosenGoal.name) return chosenGoal.name;
+        return "közút";
+    }
+
     function paintHud() {
-        var remain = 2.4 * (1 - travel);
-        if (remain < 0.1) remain = 0.1;
-        var km = comma(remain, 1) + " km";
+        var arrived = routeActive && travel >= 0.999;
+        var remainKm;
+        var mins;
+        var km;
+        if (routeActive) {
+            remainKm = routeMeters * (1 - Math.min(travel, 1)) / 1000;
+            if (remainKm < 0) remainKm = 0;
+            km = comma(remainKm, 1) + " km";
+            mins = Math.round(routeSeconds * (1 - Math.min(travel, 1)) / 60);
+            if (mins < 1 && remainKm > 0.05) mins = 1;
+            if (arrived) mins = 0;
+            streetEl.textContent = arrived ? "Cél" : roadNameAt(travel);
+            hintEl.textContent = "valódi közút, szimulált haladás";
+            leftKindEl.textContent = "Hátralévő út";
+            minsKindEl.textContent = "Tervezett idő";
+            speedKindEl.textContent = "szimulált";
+            speedKindEl.className = "on";
+        } else {
+            remainKm = 2.4 * (1 - travel);
+            if (remainKm < 0.1) remainKm = 0.1;
+            km = comma(remainKm, 1) + " km";
+            mins = Math.round(remainKm / 58 * 60);
+            if (mins < 1) mins = 1;
+            streetEl.textContent = "Mintaút";
+            hintEl.textContent = "minta, nem GPS";
+            leftKindEl.textContent = "Minta szakasz";
+            minsKindEl.textContent = "Ebből a körből";
+            speedKindEl.textContent = "";
+            speedKindEl.className = "";
+            document.getElementById("goal-mode").textContent = "a 3D a mintaúton marad";
+        }
         distEl.textContent = km;
         leftEl.textContent = km;
-        var mins = Math.round(remain / 58 * 60);
-        if (mins < 1) mins = 1;
         minsEl.textContent = mins + " perc";
-        var speed = driving ? 58 : 0;
+        var speed = driving && !arrived ? 58 : 0;
         speedEl.textContent = String(speed);
         var deg = Math.round(28 + (speed / 90) * 230);
         speedo.style.background = "conic-gradient(#3ec6ff 0 " + deg + "deg, rgba(255,255,255,0.16) " + deg + "deg 360deg)";
@@ -5179,7 +5268,8 @@
             var c = pos.coords;
             gpsFix = { lat: c.latitude, lon: c.longitude, acc: c.accuracy };
             var acc = typeof c.accuracy === "number" ? " (±" + Math.round(c.accuracy) + " m)" : "";
-            setGpsNote("GPS helyzet: " + formatCoord(c.latitude, c.longitude) + acc + ". Az autót nem ez vezeti.", "ok");
+            setGpsNote("GPS helyzet: " + formatCoord(c.latitude, c.longitude) + acc + ". Ez az indulópont, nem a sebesség.", "ok");
+            if (chosenGoal) planRoute();
         }, function (err) {
             gpsButton.disabled = false;
             var code = err && err.code;
@@ -5187,6 +5277,10 @@
             else if (code === 2) setGpsNote("GPS: a hely most nem érhető el.", "bad");
             else if (code === 3) setGpsNote("GPS: a lekérés túl sokáig tartott. Próbáld újra.", "bad");
             else setGpsNote("GPS: a helyet nem sikerült lekérni.", "bad");
+            if (chosenGoal && !routeActive) {
+                goalNote.textContent = "A cél rögzítve, de GPS-helyzet nélkül nincs indulópont. Engedély vagy GPS-adat szükséges.";
+                goalNote.className = "warn";
+            }
         }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 30000 });
     }
 
@@ -5224,8 +5318,13 @@
                     var b;
                     for (b = 0; b < buttons.length; b++) buttons[b].className = "";
                     btn.className = "picked";
-                    goalNote.textContent = "Kiválasztott cél: " + chosenGoal.name + " (" + formatCoord(lat, lon) + "). Valódi útvonal nincs: a 3D autó a Mintaúton megy, próba sebességgel.";
-                    goalNote.className = "";
+                    if (!gpsFix) {
+                        goalNote.textContent = "A cél rögzítve. Valódi közúti útvonalhoz engedély vagy GPS-adat szükséges.";
+                        goalNote.className = "warn";
+                        askGps();
+                    } else {
+                        planRoute();
+                    }
                 });
                 li.appendChild(btn);
                 goalList.appendChild(li);
@@ -5282,6 +5381,375 @@
         });
     }
 
+    var shoulderA = lambert(0x8fce6a);
+    var shoulderB = lambert(0x7fbf62);
+    var curbMatA = lambert(0xf3efe4);
+    var curbMatB = lambert(0xe7e2d4);
+
+    function disposeObj(obj) {
+        if (obj.geometry) obj.geometry.dispose();
+        var c;
+        if (obj.children) {
+            for (c = 0; c < obj.children.length; c++) disposeObj(obj.children[c]);
+        }
+    }
+
+    function clearRouteRoot() {
+        var i;
+        for (i = routeRoot.children.length - 1; i >= 0; i--) {
+            disposeObj(routeRoot.children[i]);
+            routeRoot.remove(routeRoot.children[i]);
+        }
+    }
+
+    function projectCoords(coords) {
+        var lat0 = coords[0][1];
+        var lon0 = coords[0][0];
+        var mLat = 111320;
+        var mLon = 111320 * Math.cos(lat0 * Math.PI / 180);
+        var raw = [];
+        var i;
+        for (i = 0; i < coords.length; i++) {
+            var x = (coords[i][0] - lon0) * mLon;
+            var z = -((coords[i][1] - lat0) * mLat);
+            if (raw.length) {
+                var prev = raw[raw.length - 1];
+                var dx = x - prev.x;
+                var dz = z - prev.z;
+                if (dx * dx + dz * dz < 9) continue;
+            }
+            raw.push(new THREE.Vector3(x, 0, z));
+        }
+        if (raw.length < 2) return raw;
+        return densify(simplifyLine(raw, 12, 700), 16);
+    }
+
+    function densify(points, maxLen) {
+        var out = [points[0]];
+        var i;
+        for (i = 1; i < points.length; i++) {
+            var a = points[i - 1];
+            var b = points[i];
+            var dx = b.x - a.x;
+            var dz = b.z - a.z;
+            var len = Math.sqrt(dx * dx + dz * dz);
+            var steps = Math.ceil(len / maxLen);
+            if (steps < 1) steps = 1;
+            var k;
+            for (k = 1; k <= steps; k++) {
+                var f = k / steps;
+                out.push(new THREE.Vector3(a.x + dx * f, 0, a.z + dz * f));
+            }
+        }
+        return out;
+    }
+
+    function simplifyLine(points, epsilon, cap) {
+        var keep = [];
+        var i;
+        for (i = 0; i < points.length; i++) keep.push(false);
+        keep[0] = true;
+        keep[points.length - 1] = true;
+        var stack = [[0, points.length - 1]];
+        while (stack.length) {
+            var range = stack.pop();
+            var a = range[0];
+            var b = range[1];
+            if (b <= a + 1) continue;
+            var ax = points[a].x;
+            var az = points[a].z;
+            var bx = points[b].x;
+            var bz = points[b].z;
+            var dx = bx - ax;
+            var dz = bz - az;
+            var len2 = dx * dx + dz * dz;
+            var best = -1;
+            var bestDist = 0;
+            var k;
+            for (k = a + 1; k < b; k++) {
+                var dist;
+                if (len2 < 0.01) {
+                    var ex = points[k].x - ax;
+                    var ez = points[k].z - az;
+                    dist = Math.sqrt(ex * ex + ez * ez);
+                } else {
+                    var t = ((points[k].x - ax) * dx + (points[k].z - az) * dz) / len2;
+                    if (t < 0) t = 0;
+                    if (t > 1) t = 1;
+                    var px = ax + t * dx;
+                    var pz = az + t * dz;
+                    var ox = points[k].x - px;
+                    var oz = points[k].z - pz;
+                    dist = Math.sqrt(ox * ox + oz * oz);
+                }
+                if (dist > bestDist) {
+                    bestDist = dist;
+                    best = k;
+                }
+            }
+            if (best >= 0 && bestDist > epsilon) {
+                keep[best] = true;
+                stack.push([a, best]);
+                stack.push([best, b]);
+            }
+        }
+        var out = [];
+        for (i = 0; i < points.length; i++) if (keep[i]) out.push(points[i]);
+        if (out.length > cap) {
+            if (epsilon > 5000) return [points[0], points[points.length - 1]];
+            return simplifyLine(points, epsilon * 1.7, cap);
+        }
+        return out;
+    }
+
+    function readSteps(route) {
+        var total = route.distance || 1;
+        var steps = [];
+        var cursor = 0;
+        var legs = route.legs || [];
+        var li;
+        var si;
+        for (li = 0; li < legs.length; li++) {
+            var list = legs[li].steps || [];
+            for (si = 0; si < list.length; si++) {
+                var step = list[si];
+                var dist = step.distance || 0;
+                steps.push({
+                    u0: cursor / total,
+                    u1: (cursor + dist) / total,
+                    name: step.name || ""
+                });
+                cursor += dist;
+            }
+        }
+        return steps;
+    }
+
+    function RouteCurve(points) {
+        this.points = points;
+        this.lengths = [0];
+        var i;
+        for (i = 1; i < points.length; i++) {
+            this.lengths.push(this.lengths[i - 1] + points[i].distanceTo(points[i - 1]));
+        }
+        this.total = this.lengths[this.lengths.length - 1] || 1;
+    }
+
+    RouteCurve.prototype.frameAt = function (u) {
+        var dist = u * this.total;
+        if (dist < 0) dist = 0;
+        if (dist > this.total) dist = this.total;
+        var lo = 0;
+        var hi = this.lengths.length - 1;
+        while (lo < hi) {
+            var mid = (lo + hi) >> 1;
+            if (this.lengths[mid] < dist) lo = mid + 1;
+            else hi = mid;
+        }
+        var i = lo < 1 ? 1 : lo;
+        var span = this.lengths[i] - this.lengths[i - 1];
+        var f = span > 0.001 ? (dist - this.lengths[i - 1]) / span : 0;
+        var a = this.points[i - 1];
+        var b = this.points[i];
+        return { ax: a.x, az: a.z, bx: b.x, bz: b.z, f: f };
+    };
+
+    RouteCurve.prototype.getPointAt = function (u) {
+        var fr = this.frameAt(u);
+        return new THREE.Vector3(fr.ax + (fr.bx - fr.ax) * fr.f, 0, fr.az + (fr.bz - fr.az) * fr.f);
+    };
+
+    RouteCurve.prototype.getTangentAt = function (u) {
+        var fr = this.frameAt(u);
+        var x = fr.bx - fr.ax;
+        var z = fr.bz - fr.az;
+        var len = Math.sqrt(x * x + z * z);
+        if (len < 0.001) return new THREE.Vector3(0, 0, 1);
+        return new THREE.Vector3(x / len, 0, z / len);
+    };
+
+    function buildStripAlong(points, center, half, y) {
+        var positions = [];
+        var uvs = [];
+        var indices = [];
+        var prevX = 1;
+        var prevZ = 0;
+        var i;
+        for (i = 0; i < points.length; i++) {
+            var tx;
+            var tz;
+            if (i < points.length - 1) {
+                tx = points[i + 1].x - points[i].x;
+                tz = points[i + 1].z - points[i].z;
+            } else {
+                tx = points[i].x - points[i - 1].x;
+                tz = points[i].z - points[i - 1].z;
+            }
+            var tlen = Math.sqrt(tx * tx + tz * tz);
+            if (tlen < 0.001) {
+                tx = prevX;
+                tz = prevZ;
+            } else {
+                tx /= tlen;
+                tz /= tlen;
+            }
+            var sx = -tz;
+            var sz = tx;
+            if (i > 0 && sx * prevX + sz * prevZ < 0) {
+                sx = -sx;
+                sz = -sz;
+            }
+            prevX = sx;
+            prevZ = sz;
+            var p = points[i];
+            positions.push(p.x + sx * (center - half), y, p.z + sz * (center - half));
+            positions.push(p.x + sx * (center + half), y, p.z + sz * (center + half));
+            uvs.push(i * 0.05, 0, i * 0.05, 1);
+            if (i > 0) {
+                var base = (i - 1) * 2;
+                indices.push(base, base + 2, base + 1, base + 1, base + 2, base + 3);
+            }
+        }
+        var geo = new THREE.BufferGeometry();
+        geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+        geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+        geo.setIndex(indices);
+        geo.computeVertexNormals();
+        return geo;
+    }
+
+    function addRouteMesh(geo, material) {
+        var mesh = new THREE.Mesh(geo, material);
+        mesh.frustumCulled = false;
+        routeRoot.add(mesh);
+    }
+
+    function buildRouteRoad() {
+        var pts = curve.points;
+        addRouteMesh(buildStripAlong(pts, 0, 4.15, 0.08), roadMat);
+        addRouteMesh(buildStripAlong(pts, 4.55, 0.42, 0.06), shoulderA);
+        addRouteMesh(buildStripAlong(pts, -4.55, 0.42, 0.06), shoulderB);
+        addRouteMesh(buildStripAlong(pts, 3.72, 0.08, 0.11), lineMat);
+        addRouteMesh(buildStripAlong(pts, -3.72, 0.08, 0.11), lineMat);
+        addRouteMesh(buildStripAlong(pts, 1.35, 0.22, 0.14), guideMat);
+        addRouteMesh(buildStripAlong(pts, 3.98, 0.13, 0.1), curbMatA);
+        addRouteMesh(buildStripAlong(pts, -3.98, 0.13, 0.1), curbMatB);
+    }
+
+    function dressRoute() {
+        propRoot = routeRoot;
+        var n;
+        for (n = 0; n < 28; n++) {
+            var u = (n + 0.35) / 28;
+            if (u > 0.985) u = 0.985;
+            var side = n % 2 === 0 ? -(12 + rnd(n + 1) * 8) : (14 + rnd(n + 4) * 10);
+            var spot = sideAt(u, side);
+            if (n % 3 === 0) addPine(spot.x, spot.z, 1.25 + rnd(n) * 0.4, leafMats[n % 5]);
+            else addRound(spot.x, spot.z, 1.05 + rnd(n + 2) * 0.45, leafMats[n % 6]);
+        }
+        for (n = 0; n < 8; n++) {
+            var hu = (n + 0.2) / 8;
+            if (hu > 0.97) hu = 0.97;
+            var hp = sideAt(hu, n % 2 ? 90 : -100);
+            var hill = new THREE.Mesh(domeGeo, n % 2 ? mountainMat : hillMat);
+            hill.scale.set(6 + rnd(n) * 3, 1.4, 4.5 + rnd(n + 2) * 2);
+            hill.position.set(hp.x, -3, hp.z);
+            routeRoot.add(hill);
+        }
+        propRoot = null;
+    }
+
+    function applyRoute(route) {
+        var coords = route.geometry && route.geometry.coordinates;
+        if (!coords || coords.length < 2 || !route.distance) {
+            goalNote.textContent = "Az útvonalnak nincs járható vonala. A Mintaút marad.";
+            goalNote.className = "warn";
+            return;
+        }
+        var points = projectCoords(coords);
+        if (points.length < 2) {
+            goalNote.textContent = "Az útvonal túl rövid. A Mintaút marad.";
+            goalNote.className = "warn";
+            return;
+        }
+        clearRouteRoot();
+        curve = new RouteCurve(points);
+        routeMeters = route.distance;
+        routeSeconds = route.duration || 0;
+        routeSteps = readSteps(route);
+        routeActive = true;
+        followOrigin = true;
+        travel = 0.0008;
+        prevTangent.set(0, 0, 1);
+        aligned = false;
+        coast.visible = false;
+        routeGround.visible = true;
+        routeRoot.visible = true;
+        buildRouteRoad();
+        dressRoute();
+        var mins = Math.max(1, Math.round(routeSeconds / 60));
+        goalNote.textContent = "Valódi közút: " + comma(routeMeters / 1000, 1) + " km, " + mins + " perc. A 3D haladás szimulált, a sebesség nem GPS.";
+        document.getElementById("goal-mode").textContent = "valós közút, szimulált haladás";
+        goalNote.className = "";
+        paintHud();
+    }
+
+    function planRoute() {
+        if (!gpsFix || !chosenGoal) {
+            goalNote.textContent = "Valódi közúti útvonalhoz engedély vagy GPS-adat szükséges.";
+            goalNote.className = "warn";
+            return;
+        }
+        if (Math.abs(gpsFix.lat - chosenGoal.lat) < 0.00008 && Math.abs(gpsFix.lon - chosenGoal.lon) < 0.00008) {
+            goalNote.textContent = "A cél a jelenlegi GPS-helyzet. Válassz egy távolabbi címet. A Mintaút marad.";
+            goalNote.className = "warn";
+            return;
+        }
+        if (!window.fetch) {
+            goalNote.textContent = "Ez a böngésző nem tud útvonalat kérni. A Mintaút marad.";
+            goalNote.className = "warn";
+            return;
+        }
+        var key = gpsFix.lat.toFixed(4) + "," + gpsFix.lon.toFixed(4) + ">" + chosenGoal.lat.toFixed(4) + "," + chosenGoal.lon.toFixed(4);
+        if (routeCache[key]) {
+            applyRoute(routeCache[key]);
+            return;
+        }
+        var now = Date.now();
+        if (now - lastRouteAt < 1100) {
+            goalNote.textContent = "Az útvonaltervező másodpercenként egy kérést fogad. Várj egy pillanatot.";
+            goalNote.className = "warn";
+            return;
+        }
+        lastRouteAt = now;
+        var seq = ++routeSeq;
+        goalNote.textContent = "Közúti útvonal kérése a GPS-helyzettől…";
+        goalNote.className = "";
+        var url = "https://routing.openstreetmap.de/routed-car/route/v1/driving/"
+            + gpsFix.lon.toFixed(6) + "," + gpsFix.lat.toFixed(6) + ";"
+            + chosenGoal.lon.toFixed(6) + "," + chosenGoal.lat.toFixed(6)
+            + "?overview=full&geometries=geojson&steps=true&alternatives=false";
+        fetch(url, { headers: { "Accept": "application/json" }, cache: "no-store" }).then(function (res) {
+            if (res.status === 429) throw new Error("limit");
+            if (!res.ok) throw new Error("http");
+            return res.json();
+        }).then(function (data) {
+            if (seq !== routeSeq) return;
+            if (!data || data.code !== "Ok" || !data.routes || !data.routes.length) {
+                goalNote.textContent = "Erre a célra nincs autóval járható közút. A Mintaút marad.";
+                goalNote.className = "warn";
+                return;
+            }
+            routeCache[key] = data.routes[0];
+            applyRoute(data.routes[0]);
+        }).catch(function (err) {
+            if (seq !== routeSeq) return;
+            if (err && err.message === "limit") goalNote.textContent = "Az útvonaltervező korlátja megtelt. A Mintaút marad, később újra próbálhatod.";
+            else goalNote.textContent = "A közúti útvonal most nem érhető el. A Mintaút marad.";
+            goalNote.className = "warn";
+        });
+    }
+
     goalForm.addEventListener("submit", function (event) {
         event.preventDefault();
         runSearch(goalInput.value);
@@ -5303,9 +5771,19 @@
             updateMood(mood);
             moodDirty = Math.abs(moodTarget - mood) > 0.001;
         }
-        if (driving) travel = (travel + dt * 0.0067) % 1;
-        var pos = curve.getPointAt(travel);
-        var tangent = curve.getTangentAt(travel).normalize();
+        if (driving) {
+            if (routeActive) {
+                if (travel < 1 && routeMeters > 1) travel += dt * ((58 / 3.6) / routeMeters);
+                if (travel > 1) travel = 1;
+            } else {
+                travel = (travel + dt * 0.0067) % 1;
+            }
+        }
+        var u = travel;
+        if (u < 0.0001) u = 0.0001;
+        if (u > 0.999) u = 0.999;
+        var pos = curve.getPointAt(u);
+        var tangent = curve.getTangentAt(u).normalize();
         if (prevTangent.dot(tangent) < 0) tangent.negate();
         prevTangent.copy(tangent);
         tmpA.crossVectors(tangent, up);
@@ -5313,16 +5791,25 @@
         tmpA.normalize();
         pos.addScaledVector(tmpA, 1.25);
         pos.y = 0.02;
-        car.position.copy(pos);
-        ahead.copy(pos).addScaledVector(tangent, 6);
+        if (followOrigin) {
+            routeRoot.position.set(-pos.x, 0, -pos.z);
+            car.position.set(0, 0.02, 0);
+            ahead.set(tangent.x * 6, pos.y, tangent.z * 6);
+        } else {
+            car.position.copy(pos);
+            ahead.copy(pos).addScaledVector(tangent, 6);
+        }
         car.lookAt(ahead.x, pos.y, ahead.z);
+        var rolling = driving && !(routeActive && travel >= 0.999);
         var w;
         for (w = 0; w < wheels.length; w++) {
-            if (driving) wheels[w].rotation.x -= dt * 7;
+            if (rolling) wheels[w].rotation.x -= dt * 7;
         }
         for (w = 0; w < chevrons.length; w++) {
-            var cu = (travel + 0.012 + w * 0.014) % 1;
-            if (cu < 0) cu += 1;
+            var cu;
+            if (routeActive && routeMeters > 1) cu = travel + (8 + w * 10) / routeMeters;
+            else cu = (travel + 0.012 + w * 0.014) % 1;
+            if (cu < 0.0001) cu = 0.0001;
             if (cu > 0.999) cu = 0.999;
             var cp = curve.getPointAt(cu);
             var ct = curve.getTangentAt(cu).normalize();
@@ -5330,8 +5817,13 @@
             tmpA.crossVectors(ct, up).normalize();
             cp.addScaledVector(tmpA, 1.25);
             cp.y = 0.16;
-            chevrons[w].position.copy(cp);
-            chevrons[w].lookAt(cp.x + ct.x, cp.y, cp.z + ct.z);
+            if (followOrigin) {
+                chevrons[w].position.set(cp.x - pos.x, cp.y, cp.z - pos.z);
+                chevrons[w].lookAt(cp.x - pos.x + ct.x, cp.y, cp.z - pos.z + ct.z);
+            } else {
+                chevrons[w].position.copy(cp);
+                chevrons[w].lookAt(cp.x + ct.x, cp.y, cp.z + ct.z);
+            }
         }
         for (w = 0; w < clouds.length; w++) {
             clouds[w].position.x += dt * clouds[w].userData.spd;
@@ -5340,21 +5832,25 @@
         if (waterMat.map) waterMat.map.offset.x += dt * 0.012;
         if (waterShineMat && waterShineMat.map) waterShineMat.map.offset.x -= dt * 0.02;
         if (millBlades) millBlades.rotation.z += dt * 0.7;
-        var desired = pos.clone().addScaledVector(tangent, -camBack);
-        desired.y += camUp;
+        var desired = followOrigin
+            ? new THREE.Vector3(-tangent.x * camBack, camUp, -tangent.z * camBack)
+            : pos.clone().addScaledVector(tangent, -camBack);
+        if (!followOrigin) desired.y += camUp;
         var camK = aligned ? (1 - Math.exp(-dt * 2.2)) : 1;
         camPos.lerp(desired, camK);
         camera.position.copy(camPos);
-        var lookTarget = pos.clone().addScaledVector(tangent, lookAhead);
-        lookTarget.y = lookUp;
+        var lookTarget = followOrigin
+            ? new THREE.Vector3(tangent.x * lookAhead, lookUp, tangent.z * lookAhead)
+            : pos.clone().addScaledVector(tangent, lookAhead);
+        if (!followOrigin) lookTarget.y = lookUp;
         var lookK = aligned ? (1 - Math.exp(-dt * 2.8)) : 1;
         lookPos.lerp(lookTarget, lookK);
         camera.lookAt(lookPos);
         aligned = true;
-        sun.position.set(pos.x + 24, 42, pos.z + 12);
-        sun.target.position.copy(pos);
-        fill.position.set(pos.x - 16, 14, pos.z - 10);
-        fill.target.position.copy(pos);
+        sun.position.set(car.position.x + 24, 42, car.position.z + 12);
+        sun.target.position.copy(car.position);
+        fill.position.set(car.position.x - 16, 14, car.position.z - 10);
+        fill.target.position.copy(car.position);
         hudTick += dt;
         if (hudTick > 0.2) {
             hudTick = 0;
