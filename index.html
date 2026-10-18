@@ -2,239 +2,232 @@
 <html lang="hu">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
 <title>ToonNav3D</title>
 <style>
         html, body { margin: 0; height: 100%; background: #2f8ef0; overflow: hidden; color: #fff; font-family: "Segoe UI", Roboto, sans-serif; }
         #view { display: block; width: 100%; height: 100%; touch-action: none; }
-        button { font-family: inherit; color: inherit; touch-action: manipulation; }
-        #maneuver, #status, #eta, #dock, #side button {
-            background: rgba(8, 16, 30, 0.78);
+        button, input { font-family: inherit; color: inherit; touch-action: manipulation; }
+        #cluster {
+            position: fixed; z-index: 4;
+            top: calc(6px + env(safe-area-inset-top));
+            left: calc(6px + env(safe-area-inset-left));
+            width: min(400px, calc(100vw - 12px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+            display: flex; flex-direction: column; gap: 6px;
+            max-height: calc(100dvh - 12px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+            overflow: hidden;
+            pointer-events: none;
+        }
+        body.sheet-open #sheet { flex: 1 1 auto; }
+        #cluster > * { pointer-events: auto; }
+        #maneuver, #sheet, #speed-pill, #tools button, #garage {
+            background: rgba(8, 16, 30, 0.88);
             border: 1px solid rgba(255,255,255,0.14);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.22);
         }
         #maneuver {
-            position: fixed; z-index: 2;
-            top: calc(12px + env(safe-area-inset-top));
-            left: calc(12px + env(safe-area-inset-left));
-            display: flex; align-items: center; gap: 10px;
-            min-width: 168px; padding: 8px 14px 8px 8px; border-radius: 18px;
+            display: flex; align-items: center; gap: 8px;
+            min-height: 44px; padding: 4px 8px 4px 4px; border-radius: 14px;
         }
         #arrow {
-            width: 42px; height: 42px; border-radius: 12px;
+            width: 36px; height: 36px; border-radius: 10px;
             background: rgba(255,255,255,0.08);
             display: grid; place-items: center; flex: none;
         }
-        #dist { display: block; font-size: 22px; font-weight: 750; letter-spacing: -0.03em; line-height: 1.1; }
-        #street { display: block; font-size: 13px; opacity: 0.86; }
-        #hint { display: block; font-size: 11px; opacity: 0.62; }
-        #status {
-            position: fixed; z-index: 2;
-            top: calc(12px + env(safe-area-inset-top));
-            right: calc(12px + env(safe-area-inset-right));
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 12px; border-radius: 999px; font-weight: 700;
+        #arrow svg { display: block; }
+        #maneuver-text { min-width: 0; flex: 1; }
+        #dist { display: block; font-size: 16px; font-weight: 750; letter-spacing: -0.03em; line-height: 1.1; }
+        #street, #hint {
+            display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        #clock { opacity: 0.92; }
-        #side {
-            position: fixed; z-index: 2;
-            right: calc(12px + env(safe-area-inset-right));
-            top: 46%;
-            display: flex; flex-direction: column; gap: 8px;
+        #street { font-size: 13px; opacity: 0.9; }
+        #hint { font-size: 11px; opacity: 0.68; }
+        #clock { flex: none; font-size: 12px; font-weight: 700; opacity: 0.9; padding-right: 4px; }
+        #sheet {
+            border-radius: 14px; display: flex; flex-direction: column;
+            min-height: 0; overflow: hidden;
         }
-        #garage-open {
-            width: 52px; min-height: 52px; border-radius: 16px;
-            font-size: 10px; font-weight: 750; letter-spacing: 0.02em;
+        #sheet-toggle {
+            width: 100%; min-height: 44px; border: 0; background: transparent;
+            display: flex; align-items: center; gap: 8px;
+            padding: 0 10px; text-align: left; font-size: 15px; font-weight: 700;
         }
-        #garage {
-            position: fixed; z-index: 5;
-            left: 50%; bottom: calc(72px + env(safe-area-inset-bottom));
-            transform: translateX(-50%);
-            width: min(640px, calc(100vw - 20px));
-            padding: 12px; border-radius: 18px;
-            background: rgba(8, 16, 30, 0.9);
-            border: 1px solid rgba(255,255,255,0.14);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+        #sheet-label {
+            flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        #garage-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-        #garage-head b { font-size: 15px; }
-        #garage-close {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.14);
-            border-radius: 999px; padding: 4px 10px; font-size: 12px;
+        #sheet-chev { flex: none; opacity: 0.8; }
+        #sheet-body {
+            display: flex; flex-direction: column; gap: 6px;
+            padding: 0 8px 8px; min-height: 0; overflow: hidden;
         }
-        #garage-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        #garage-list button {
-            text-align: left; border-radius: 14px; padding: 10px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            min-height: 72px;
-        }
-        #garage-list button b { display: block; font-size: 13px; }
-        #garage-list button small { display: block; margin-top: 4px; opacity: 0.72; font-size: 11px; line-height: 1.3; }
-        #garage-list button[aria-pressed="true"] { border-color: #3ec6ff; background: rgba(62,198,255,0.16); }
-        #car-credit {
-            position: fixed; z-index: 2;
-            left: calc(12px + env(safe-area-inset-left));
-            top: calc(78px + env(safe-area-inset-top));
-            max-width: min(340px, 46vw);
-            margin: 0; padding: 4px 8px; border-radius: 8px;
-            background: rgba(8, 16, 30, 0.55);
-            font-size: 11px; line-height: 1.35;
-        }
-        #car-credit:empty { display: none; }
-        #car-credit a { color: #b9e6ff; }
-        body.driving #garage { display: none; }
-        @media (max-aspect-ratio: 4/5) {
-            #garage-list { grid-template-columns: 1fr; }
-            #garage { bottom: calc(64px + env(safe-area-inset-bottom)); }
-        }
-        #time {
-            width: 52px; min-height: 64px; border-radius: 16px; padding: 6px 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-            font-size: 18px;
-        }
-        body.night #time .sun, body:not(.night) #time .moon { opacity: 0.35; }
-        #speedo {
-            position: fixed; z-index: 2;
-            left: calc(14px + env(safe-area-inset-left));
-            bottom: calc(78px + env(safe-area-inset-bottom));
-            width: 112px; height: 112px; border-radius: 50%;
-            display: grid; place-items: center;
-            background: conic-gradient(#3ec6ff 0 210deg, rgba(255,255,255,0.16) 210deg 360deg);
-        }
-        #speed-hole {
-            width: 84px; height: 84px; border-radius: 50%;
-            background: #101826;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        #speed { font-size: 32px; font-weight: 750; line-height: 1; }
-        #unit { font-size: 12px; opacity: 0.75; }
-        #speed-kind { display: none; font-size: 9px; line-height: 1.1; opacity: 0.8; }
-        #speed-kind.on { display: block; }
-        #limit {
-            position: absolute; right: -6px; bottom: 6px;
-            width: 34px; height: 34px; border-radius: 50%;
-            background: #fff; color: #111; border: 3px solid #e23b3b;
-            display: grid; place-items: center; font-size: 13px; font-weight: 800;
-        }
-        #eta {
-            position: fixed; z-index: 2;
-            right: calc(14px + env(safe-area-inset-right));
-            bottom: calc(78px + env(safe-area-inset-bottom));
-            display: flex; gap: 14px; align-items: center;
-            padding: 8px 14px; border-radius: 16px;
-        }
-        #eta b { display: block; font-size: 16px; }
-        #eta small { display: block; opacity: 0.7; font-size: 11px; }
-        #dock {
-            position: fixed; z-index: 2; left: 12px; right: 12px;
-            bottom: calc(8px + env(safe-area-inset-bottom));
-            height: 58px; border-radius: 18px;
-            display: flex; align-items: center; justify-content: space-around;
-            padding: 0 8px;
-        }
-        #dock span, #run {
-            width: 42px; height: 42px; border: 0; border-radius: 12px;
-            background: transparent; color: rgba(255,255,255,0.8);
-            display: grid; place-items: center; font-size: 18px;
-        }
-        #run { background: rgba(255,255,255,0.08); }
-        #climate { font-size: 14px; font-weight: 700; width: auto; padding: 0 8px; }
-        #goal {
-            position: fixed; z-index: 3;
-            top: calc(92px + env(safe-area-inset-top));
-            left: calc(12px + env(safe-area-inset-left));
-            width: min(336px, calc(100vw - 90px));
-            max-height: min(340px, calc(100vh - 330px));
-            overflow: auto;
-            padding: 10px 12px 8px;
-            border-radius: 18px;
-            background: rgba(8, 16, 30, 0.78);
-            border: 1px solid rgba(255,255,255,0.14);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-        }
-        #goal-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-        #goal-head b { font-size: 14px; letter-spacing: 0.01em; }
-        #goal-head small, #goal-attr, #gps-note, #goal-note { font-size: 11px; line-height: 1.35; opacity: 0.78; }
-        #goal-form { display: flex; gap: 6px; margin-top: 8px; }
-        #goal-q {
-            flex: 1; min-width: 0; height: 40px; border-radius: 12px;
+        body.sheet-open #sheet-body { flex: 1 1 auto; }
+        #sheet-body[hidden] { display: none; }
+        .field { display: flex; align-items: center; gap: 6px; min-width: 0; }
+        .field label { flex: none; width: 58px; font-size: 12px; font-weight: 700; opacity: 0.86; }
+        .field input {
+            flex: 1; min-width: 0; height: 40px; border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.18);
             background: rgba(255,255,255,0.08); color: #fff;
-            padding: 0 10px; font: 16px/1.2 "Segoe UI", Roboto, sans-serif;
+            padding: 0 8px; font-size: 16px;
         }
-        #goal-q::placeholder { color: rgba(255,255,255,0.55); }
-        #goal-go, #gps {
-            height: 40px; border: 0; border-radius: 12px; padding: 0 12px;
-            font-weight: 750; font-size: 14px;
+        .field input.active { border-color: #3ae7ff; }
+        .field input::placeholder { color: rgba(255,255,255,0.5); }
+        #gps, #search-btn {
+            flex: none; height: 40px; min-width: 44px; border: 0; border-radius: 10px;
+            padding: 0 10px; font-weight: 750; font-size: 13px;
         }
-        #goal-go { background: #3ae7ff; color: #04222c; }
-        #gps { background: rgba(255,255,255,0.12); color: #fff; }
-        #goal button:disabled { opacity: 0.55; }
-        #goal-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
-        #gps-note, #goal-note, #goal-attr { margin: 0; }
-        #goal-note { margin-top: 8px; }
-        #gps-note.ok { color: #b8f3c8; opacity: 1; }
-        #gps-note.bad, #goal-note.warn { color: #ffd7a1; opacity: 1; }
-        #goal-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+        #gps { background: rgba(255,255,255,0.12); }
+        #search-btn { background: #3ae7ff; color: #04222c; }
+        #sheet button:disabled { opacity: 0.55; }
+        #nav-note { margin: 0; font-size: 12px; line-height: 1.35; opacity: 0.86; }
+        #nav-note:empty { display: none; }
+        #nav-note.warn { color: #ffd7a1; opacity: 1; }
+        #nav-note.ok { color: #b8f3c8; opacity: 1; }
+        #goal-list {
+            list-style: none; margin: 0; padding: 0;
+            display: flex; flex-direction: column; gap: 4px;
+            overflow: auto; -webkit-overflow-scrolling: touch;
+            min-height: 0;
+        }
         #goal-list:empty { display: none; }
         #goal-list button {
             display: block; width: 100%; text-align: left; color: #fff;
-            border-radius: 12px; border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(255,255,255,0.06); padding: 8px 10px;
+            border-radius: 10px; border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06); padding: 8px 10px; min-height: 44px;
         }
-        #goal-list button.picked { border-color: #3ae7ff; }
         #goal-list b { display: block; font-size: 14px; }
         #goal-list small { display: block; margin-top: 2px; opacity: 0.72; font-size: 11px; }
-        #goal-attr { margin-top: 8px; }
+        #route-box { border-radius: 10px; background: rgba(255,255,255,0.05); }
+        #route-box[hidden] { display: none; }
+        #route-box summary {
+            min-height: 40px; padding: 8px 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+        }
+        #route-facts { padding: 0 10px 8px; }
+        #route-facts p { margin: 0 0 4px; font-size: 12px; line-height: 1.35; opacity: 0.9; }
+        #goal-attr { margin: 0; font-size: 10px; line-height: 1.35; opacity: 0.72; }
         #goal-attr a { color: #9be7ff; }
+        #speed-pill {
+            position: fixed; z-index: 3;
+            left: calc(8px + env(safe-area-inset-left));
+            bottom: calc(8px + env(safe-area-inset-bottom));
+            min-width: 72px; height: 44px; border-radius: 14px;
+            display: flex; align-items: baseline; justify-content: center; gap: 4px;
+            padding: 0 10px;
+        }
+        #speed { font-size: 20px; font-weight: 750; line-height: 1; }
+        #speed-pill span { font-size: 11px; opacity: 0.75; }
+        #tools {
+            position: fixed; z-index: 3;
+            right: calc(8px + env(safe-area-inset-right));
+            bottom: calc(8px + env(safe-area-inset-bottom));
+            display: flex; gap: 6px;
+        }
+        #time, #gfx, #garage-open, #search-reopen {
+            height: 44px; border-radius: 14px; padding: 0;
+            display: grid; place-items: center;
+        }
+        #time { width: 44px; font-size: 16px; }
+        #gfx { min-width: 52px; padding: 0 8px; font-size: 11px; font-weight: 750; }
+        #garage-open { min-width: 58px; padding: 0 6px; font-size: 11px; font-weight: 750; line-height: 1.1; }
+        #search-reopen { min-width: 64px; padding: 0 8px; font-size: 12px; font-weight: 750; }
+        #search-reopen[hidden] { display: none; }
+        body.driving #sheet { display: none; }
+        body.night #time .sun, body:not(.night) #time .moon { opacity: 0.35; }
+        #garage {
+            position: fixed; z-index: 6;
+            left: 50%; bottom: calc(58px + env(safe-area-inset-bottom));
+            transform: translateX(-50%);
+            width: min(420px, calc(100vw - 16px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+            max-height: min(42vh, 280px);
+            overflow: auto; -webkit-overflow-scrolling: touch;
+            padding: 8px; border-radius: 14px;
+        }
+        #garage-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+        #garage-head b { font-size: 14px; }
+        #garage-close {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 999px; min-height: 36px; padding: 4px 12px; font-size: 13px;
+        }
+        #garage-list { display: grid; grid-template-columns: 1fr; gap: 6px; }
+        #garage-list button {
+            text-align: left; border-radius: 12px; padding: 8px 10px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            min-height: 48px;
+        }
+        #garage-list button b { display: block; font-size: 13px; }
+        #garage-list button small { display: block; margin-top: 2px; opacity: 0.72; font-size: 11px; line-height: 1.3; }
+        #garage-list button[aria-pressed="true"] { border-color: #3ec6ff; background: rgba(62,198,255,0.16); }
+        #car-credit { margin: 6px 2px 0; font-size: 11px; line-height: 1.35; opacity: 0.86; }
+        #car-credit:empty { display: none; }
+        #car-credit a { color: #b9e6ff; }
         #fail {
-            display: none; position: fixed; z-index: 4;
+            display: none; position: fixed; z-index: 7;
             left: 16px; right: 16px; top: 40%;
             padding: 18px; border-radius: 16px;
             background: rgba(18, 24, 32, 0.94); color: white; text-align: center;
             font: 700 20px "Segoe UI", Roboto, sans-serif;
         }
-        @media (max-aspect-ratio: 4/5) {
-            #eta { display: none; }
-            #dock { height: 50px; }
-            #speedo { width: 92px; height: 92px; bottom: calc(64px + env(safe-area-inset-bottom)); }
-            #speed-hole { width: 68px; height: 68px; }
-            #speed { font-size: 26px; }
-            #dist { font-size: 18px; }
-            #side { top: auto; bottom: calc(120px + env(safe-area-inset-bottom)); }
-            #goal { width: min(336px, calc(100vw - 24px)); max-height: min(280px, calc(100vh - 280px)); }
+        @media (min-width: 720px) {
+            #garage-list { grid-template-columns: repeat(3, 1fr); }
+            #garage { max-height: min(46vh, 320px); }
         }
 </style>
 </head>
 <body>
 
     <canvas id="view"></canvas>
-    <div id="maneuver">
-        <div id="arrow" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path d="M6 16 L12 6 L18 16" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 8 L16 8" stroke="#3ec6ff" stroke-width="2.4" stroke-linecap="round"/>
-            </svg>
+    <div id="cluster">
+        <div id="maneuver">
+            <div id="arrow" aria-hidden="true"></div>
+            <div id="maneuver-text">
+                <b id="dist">—</b>
+                <span id="street">Nincs útvonal</span>
+                <span id="hint">A kocsi áll</span>
+            </div>
+            <span id="clock">--:--</span>
         </div>
-        <div>
-            <b id="dist">2,4 km</b>
-            <span id="street">Mintaút</span>
-            <span id="hint">minta, nem GPS</span>
-        </div>
+        <section id="sheet" aria-label="Keresés és útvonal">
+            <button id="sheet-toggle" type="button" aria-expanded="false" aria-controls="sheet-body">
+                <span id="sheet-label">Keresés</span>
+                <span id="sheet-chev" aria-hidden="true">▾</span>
+            </button>
+            <div id="sheet-body" hidden>
+                <form id="goal-form">
+                    <div class="field">
+                        <label for="from-q">Indulás</label>
+                        <input id="from-q" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="120" placeholder="Cím vagy hely">
+                        <button id="gps" type="button">GPS</button>
+                    </div>
+                    <div class="field">
+                        <label for="to-q">Cél</label>
+                        <input id="to-q" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="120" placeholder="Cím vagy hely">
+                        <button id="search-btn" type="submit">Keres</button>
+                    </div>
+                </form>
+                <p id="nav-note"></p>
+                <ul id="goal-list"></ul>
+                <details id="route-box" hidden>
+                    <summary>Útvonal részletei</summary>
+                    <div id="route-facts"></div>
+                </details>
+                <p id="goal-attr">Keresés: <a href="https://photon.komoot.io/" target="_blank" rel="noopener">Photon</a> · Útvonal: <a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noopener">OSRM / FOSSGIS</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></p>
+            </div>
+        </section>
     </div>
-    <div id="status">
-        <span aria-hidden="true">☀</span>
-        <span title="Minta, nem élő időjárás">18°C</span>
-        <span id="clock">--:--</span>
+    <div id="speed-pill" title="Sebesség a GPS-ből">
+        <b id="speed">—</b>
+        <span>km/h</span>
     </div>
-    <div id="side">
+    <div id="tools">
         <button id="time" type="button" aria-label="Nappal vagy éjszaka">
             <span class="sun">☀</span>
             <span class="moon">☾</span>
         </button>
-        <button id="garage-open" type="button">Garázs</button>
+        <button id="gfx" type="button" aria-label="Grafikai részletesség">Mobil</button>
+        <button id="search-reopen" type="button" hidden>Keresés</button>
+        <button id="garage-open" type="button" aria-label="Garázs. Látható modell: Sportkompakt">Kompakt</button>
     </div>
     <section id="garage" hidden aria-label="Autóválasztó">
         <div id="garage-head">
@@ -246,44 +239,7 @@
             <button type="button" data-car="openwheel"><b>Nyitott kerekű</b><small>3D Assets · CC0</small></button>
             <button type="button" data-car="compact"><b>Sportkompakt</b><small>saját modell</small></button>
         </div>
-    </section>
-    <p id="car-credit"></p>
-    <div id="speedo">
-        <div id="speed-hole">
-            <b id="speed" title="Minta sebesség, nem a jármű mérése">58</b>
-            <span id="unit">km/h</span>
-            <span id="speed-kind"></span>
-        </div>
-        <div id="limit" title="Minta tábla, nem élő sebességkorlátozás">90</div>
-    </div>
-    <div id="eta">
-        <div><b id="left">2,4 km</b><small id="left-kind">Minta szakasz</small></div>
-        <div><b id="mins">2 perc</b><small id="mins-kind">Ebből a körből</small></div>
-    </div>
-    <div id="dock">
-        <span aria-hidden="true">⌂</span>
-        <span aria-hidden="true">♪</span>
-        <span aria-hidden="true">☎</span>
-        <span aria-hidden="true">✶</span>
-        <span id="climate" title="Minta, nem élő klíma">22°C</span>
-        <button id="run" type="button" aria-label="Megáll">🚗</button>
-    </div>
-    <section id="goal" aria-label="Cél keresése">
-        <div id="goal-head">
-            <b>Cél</b>
-            <small id="goal-mode">a 3D a mintaúton marad</small>
-        </div>
-        <form id="goal-form">
-            <input id="goal-q" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="120" placeholder="Cím vagy város" aria-label="Cím vagy város">
-            <button id="goal-go" type="submit">Keresés</button>
-        </form>
-        <div id="goal-row">
-            <button id="gps" type="button">GPS</button>
-            <p id="gps-note">GPS: még nincs lekérdezve</p>
-        </div>
-        <p id="goal-note">A találat nem indít útvonalat.</p>
-        <ul id="goal-list"></ul>
-        <p id="goal-attr">Keresés: <a href="https://photon.komoot.io/" target="_blank" rel="noopener">Photon</a> · Útvonal: <a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noopener">OSRM / FOSSGIS</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noopener">térkép javítása</a></p>
+        <p id="car-credit"></p>
     </section>
     <div id="fail"></div>
 
@@ -3932,21 +3888,15 @@
     var canvas = document.getElementById("view");
     var fail = document.getElementById("fail");
     var timeButton = document.getElementById("time");
-    var runButton = document.getElementById("run");
     var distEl = document.getElementById("dist");
-    var leftEl = document.getElementById("left");
-    var minsEl = document.getElementById("mins");
     var speedEl = document.getElementById("speed");
-    var speedo = document.getElementById("speedo");
     var clockEl = document.getElementById("clock");
     var streetEl = document.getElementById("street");
     var hintEl = document.getElementById("hint");
-    var leftKindEl = document.getElementById("left-kind");
-    var minsKindEl = document.getElementById("mins-kind");
-    var speedKindEl = document.getElementById("speed-kind");
+    var arrowEl = document.getElementById("arrow");
     var night = false;
-    var driving = true;
-    var travel = 0.01;
+    var travel = 0.18;
+    var scenicU = 0.18;
     var coast = null;
     var routeRoot = null;
     var routeGround = null;
@@ -3959,8 +3909,31 @@
     var lastRouteAt = 0;
     var routeCache = {};
     var routeSnap = null;
+    var routeProj = null;
     var snapMaxM = 2000;
+    var offRouteM = 80;
     var sampleCurve = null;
+    var origin = null;
+    var dest = null;
+    var gpsFix = null;
+    var gpsFixSamples = 0;
+    var liveKmh = null;
+    var gpsStatus = "idle";
+    var gpsOnRoute = false;
+    var gpsOffDist = null;
+    var gpsPoor = false;
+    var gpsTargetU = null;
+    var shownAlong = null;
+    var gpsMeasure = null;
+    var coastMps = 0;
+    var shownMps = 0;
+    var lastAlongT = 0;
+    var wheelRate = 0;
+    var carYaw = 0;
+    var anchorYaw = 0;
+    var scenicReady = false;
+    var watchId = null;
+    var gpsOriginArmed = false;
     var propRoot = null;
     var directAdd = null;
     var placingCoast = false;
@@ -4002,6 +3975,18 @@
     var boat = null;
     var camPos = null;
     var lookPos = null;
+    var camDesired = null;
+    var lookDesired = null;
+    var routePos = null;
+    var routeTan = null;
+    var chevPos = null;
+    var chevTan = null;
+    var lookProbe = null;
+    var steerLook = null;
+    var evalScratch = null;
+    var scenicHold = null;
+    var scenicHoldTan = null;
+    var anchorHold = null;
     var up = null;
     var ahead = null;
     var prevTangent = null;
@@ -4042,7 +4027,30 @@
         return;
     }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.35));
+    var gfxUltra = false;
+    var gravelMat = null;
+    var rangeMat = null;
+    var grassMat = null;
+    (function () {
+        var pick = "";
+        var query = /[?&]gfx=(ultra|mobile)/.exec(window.location.search || "");
+        if (query) pick = query[1];
+        else {
+            try { pick = localStorage.getItem("toonnav-gfx") || ""; } catch (err) { pick = ""; }
+        }
+        if (pick !== "ultra" && pick !== "mobile") {
+            var small = Math.min(window.innerWidth, window.innerHeight) < 560;
+            var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+            var cores = navigator.hardwareConcurrency || 4;
+            pick = (!small && !coarse && cores >= 4) ? "ultra" : "mobile";
+        }
+        gfxUltra = pick === "ultra";
+    })();
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, gfxUltra ? 1.75 : 1.25));
+    if (gfxUltra) {
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    }
     renderer.setSize(window.innerWidth, window.innerHeight, false);
     renderer.outputEncoding = THREE.sRGBEncoding;
     scene = new THREE.Scene();
@@ -4065,6 +4073,18 @@
     clock = new THREE.Clock();
     camPos = new THREE.Vector3();
     lookPos = new THREE.Vector3();
+    camDesired = new THREE.Vector3();
+    lookDesired = new THREE.Vector3();
+    routePos = new THREE.Vector3();
+    routeTan = new THREE.Vector3();
+    chevPos = new THREE.Vector3();
+    chevTan = new THREE.Vector3();
+    lookProbe = new THREE.Vector3();
+    steerLook = new THREE.Vector3();
+    evalScratch = new THREE.Vector3();
+    scenicHold = new THREE.Vector3();
+    scenicHoldTan = new THREE.Vector3();
+    anchorHold = new THREE.Vector3();
     up = new THREE.Vector3(0, 1, 0);
     ahead = new THREE.Vector3();
     prevTangent = new THREE.Vector3(0, 0, 1);
@@ -4107,19 +4127,19 @@
         var aspect = w / h;
         camera.aspect = aspect;
         if (aspect < 0.9) {
-            camera.fov = 52;
-            camBack = 9.2;
-            camUp = 3.35;
-            camSide = 1.15;
-            lookAhead = 12;
-            lookUp = 1.15;
-        } else {
             camera.fov = 46;
-            camBack = 9.1;
-            camUp = 2.85;
-            camSide = 1.85;
-            lookAhead = 12.5;
-            lookUp = 0.95;
+            camBack = 14.6;
+            camUp = 4.15;
+            camSide = 0.95;
+            lookAhead = 22;
+            lookUp = 1.25;
+        } else {
+            camera.fov = 42;
+            camBack = 14.2;
+            camUp = 3.55;
+            camSide = 1.45;
+            lookAhead = 26;
+            lookUp = 1.05;
         }
         camera.updateProjectionMatrix();
         renderer.setSize(w, h, false);
@@ -4243,12 +4263,12 @@
     }
 
     var grassTex = paintCanvas(128, function (g, size) {
-        g.fillStyle = "#5eae48";
+        g.fillStyle = "#6a7846";
         g.fillRect(0, 0, size, size);
         var n;
         for (n = 0; n < 18; n++) {
             var tone = n % 3;
-            g.fillStyle = tone === 0 ? "rgba(126,196,72,0.45)" : (tone === 1 ? "rgba(36,112,46,0.32)" : "rgba(168,214,86,0.28)");
+            g.fillStyle = tone === 0 ? "rgba(122,138,74,0.4)" : (tone === 1 ? "rgba(62,74,42,0.32)" : "rgba(164,154,96,0.24)");
             g.beginPath();
             g.arc(rnd(n + 2) * size, rnd(n + 8) * size, 10 + rnd(n + 4) * 16, 0, Math.PI * 2);
             g.fill();
@@ -4295,22 +4315,26 @@
         var u = (d - 8.2) / 16;
         if (u > 1) u = 1;
         u = u * u * (3 - 2 * u);
-        var wave = Math.sin(x * 0.042 + 0.7) * Math.cos(z * 0.036) * 3.1;
-        wave += Math.sin(x * 0.019 - z * 0.024 + 1.3) * 2.05;
-        wave += Math.cos(z * 0.013 + x * 0.011) * 1.25;
+        var wave = Math.sin(x * 0.045 + 0.7) * Math.cos(z * 0.038) * 2.2;
+        wave += Math.sin(x * 0.02 - z * 0.017 + 1.3) * 1.8;
+        wave += Math.cos(z * 0.011 + x * 0.009) * 1.15;
+        wave += Math.sin(x * 0.09 + z * 0.07) * 0.85;
         var shore = 0;
-        if (r < 102) shore = ((r - 78) / 24) * 0.45;
+        if (r < 102) shore = ((r - 78) / 24) * 0.35;
         var far = 0;
-        if (r > 128) far = (r - 128) / 80 * 3.4;
+        if (r > 150) far = Math.min(5.2, (r - 150) / 120 * 4.2);
         return (wave * 0.82 + shore + far) * u;
     }
-    var groundGeo = new THREE.PlaneGeometry(520, 520, 88, 88);
+    var groundSpan = gfxUltra ? 980 : 760;
+    var groundSeg = gfxUltra ? 112 : 80;
+    var groundGeo = new THREE.PlaneGeometry(groundSpan, groundSpan, groundSeg, groundSeg);
     groundGeo.rotateX(-Math.PI / 2);
     var gpos = groundGeo.attributes.position;
     var gcols = new Float32Array(gpos.count * 3);
-    var grassA = new THREE.Color(0x3f8a3e);
-    var grassB = new THREE.Color(0x8fbf5c);
-    var grassC = new THREE.Color(0xd2c27a);
+    var grassA = new THREE.Color(0x4c6340);
+    var grassB = new THREE.Color(0x7b8d56);
+    var grassC = new THREE.Color(0xc2b48a);
+    var hazeC = new THREE.Color(0xc5e0f0);
     var sandC = new THREE.Color(0xcbb892);
     var mixC = new THREE.Color();
     var gi;
@@ -4328,6 +4352,7 @@
             var band = 1 - Math.abs(gr - 79) / 7;
             if (band > 0) mixC.lerp(sandC, band * 0.42);
         }
+        if (gr > 170) mixC.lerp(hazeC, Math.min(0.86, (gr - 170) / 240));
         gcols[gi * 3] = mixC.r;
         gcols[gi * 3 + 1] = mixC.g;
         gcols[gi * 3 + 2] = mixC.b;
@@ -4376,9 +4401,9 @@
 
     var waterTex = paintCanvas(128, function (g, size) {
         var wash = g.createLinearGradient(0, 0, size, size);
-        wash.addColorStop(0, "#1aa4c8");
-        wash.addColorStop(0.55, "#148cb8");
-        wash.addColorStop(1, "#0e749e");
+        wash.addColorStop(0, "#3d8ea8");
+        wash.addColorStop(0.55, "#2f7594");
+        wash.addColorStop(1, "#245e78");
         g.fillStyle = wash;
         g.fillRect(0, 0, size, size);
         var n;
@@ -4411,7 +4436,7 @@
         }
     });
     shineTex.repeat.set(3, 3);
-    waterShineMat = new THREE.MeshBasicMaterial({ map: shineTex, color: 0xd9fff4, transparent: true, opacity: 0.34, depthWrite: false });
+    waterShineMat = new THREE.MeshBasicMaterial({ map: shineTex, color: 0xd5eee8, transparent: true, opacity: 0.16, depthWrite: false });
     var shineGeo = new THREE.CircleGeometry(76.5, 80);
     rippleGeo(shineGeo, 2.6, 4);
     var waterShine = new THREE.Mesh(shineGeo, waterShineMat);
@@ -4436,36 +4461,107 @@
     deep.position.y = 0.045;
     scene.add(deep);
 
-    var asphaltTex = paintCanvas(128, function (g, size) {
-        g.fillStyle = "#5c636e";
+    var asphaltSize = 256;
+    var asphaltH = new Float32Array(asphaltSize * asphaltSize);
+    var ah;
+    for (ah = 0; ah < asphaltH.length; ah++) asphaltH[ah] = 0.5;
+    function asphaltSplat(cx, cy, rx, ry, amp) {
+        var x0 = Math.max(0, Math.floor(cx - rx));
+        var x1 = Math.min(asphaltSize - 1, Math.ceil(cx + rx));
+        var y0 = Math.max(0, Math.floor(cy - ry));
+        var y1 = Math.min(asphaltSize - 1, Math.ceil(cy + ry));
+        var yy;
+        var xx;
+        for (yy = y0; yy <= y1; yy++) {
+            for (xx = x0; xx <= x1; xx++) {
+                var nx = (xx - cx) / rx;
+                var ny = (yy - cy) / ry;
+                var dd = nx * nx + ny * ny;
+                if (dd > 1) continue;
+                asphaltH[yy * asphaltSize + xx] += amp * (1 - dd);
+            }
+        }
+    }
+    var grain;
+    for (grain = 0; grain < 1100; grain++) {
+        asphaltSplat(rnd(grain + 3) * asphaltSize, rnd(grain + 9) * asphaltSize, 0.55 + rnd(grain) * 1.7, 0.55 + rnd(grain + 6) * 1.5, (rnd(grain + 2) - 0.48) * 0.28);
+    }
+    for (grain = 0; grain < 28; grain++) {
+        asphaltSplat(rnd(grain + 30) * asphaltSize, rnd(grain + 44) * asphaltSize, 12 + rnd(grain) * 26, 3 + rnd(grain + 8) * 7, rnd(grain + 20) > 0.5 ? -0.07 : 0.045);
+    }
+    var asphaltColor = document.createElement("canvas");
+    asphaltColor.width = asphaltSize;
+    asphaltColor.height = asphaltSize;
+    var asphaltPixels = asphaltColor.getContext("2d").createImageData(asphaltSize, asphaltSize);
+    var asphaltNormal = document.createElement("canvas");
+    asphaltNormal.width = asphaltSize;
+    asphaltNormal.height = asphaltSize;
+    var normalPixels = asphaltNormal.getContext("2d").createImageData(asphaltSize, asphaltSize);
+    for (ah = 0; ah < asphaltSize * asphaltSize; ah++) {
+        var hv = asphaltH[ah];
+        if (hv < 0.22) hv = 0.22;
+        if (hv > 0.82) hv = 0.82;
+        var tone = Math.floor(72 + (hv - 0.5) * 150);
+        if (tone < 46) tone = 46;
+        if (tone > 118) tone = 118;
+        asphaltPixels.data[ah * 4] = tone;
+        asphaltPixels.data[ah * 4 + 1] = tone + 1;
+        asphaltPixels.data[ah * 4 + 2] = tone + 5;
+        asphaltPixels.data[ah * 4 + 3] = 255;
+    }
+    asphaltColor.getContext("2d").putImageData(asphaltPixels, 0, 0);
+    var py;
+    var px;
+    for (py = 0; py < asphaltSize; py++) {
+        for (px = 0; px < asphaltSize; px++) {
+            var xm = asphaltH[py * asphaltSize + ((px + asphaltSize - 1) % asphaltSize)];
+            var xp = asphaltH[py * asphaltSize + ((px + 1) % asphaltSize)];
+            var ym = asphaltH[((py + asphaltSize - 1) % asphaltSize) * asphaltSize + px];
+            var yp = asphaltH[((py + 1) % asphaltSize) * asphaltSize + px];
+            var nxv = (xm - xp) * 2.2;
+            var nyv = (ym - yp) * 2.2;
+            var nzv = 1;
+            var nl = Math.sqrt(nxv * nxv + nyv * nyv + nzv * nzv);
+            var pi = (py * asphaltSize + px) * 4;
+            normalPixels.data[pi] = (nxv / nl * 0.5 + 0.5) * 255;
+            normalPixels.data[pi + 1] = (nyv / nl * 0.5 + 0.5) * 255;
+            normalPixels.data[pi + 2] = (nzv / nl * 0.5 + 0.5) * 255;
+            normalPixels.data[pi + 3] = 255;
+        }
+    }
+    asphaltNormal.getContext("2d").putImageData(normalPixels, 0, 0);
+    var asphaltTex = new THREE.CanvasTexture(asphaltColor);
+    asphaltTex.wrapS = THREE.RepeatWrapping;
+    asphaltTex.wrapT = THREE.RepeatWrapping;
+    asphaltTex.anisotropy = gfxUltra ? 4 : 1;
+    asphaltTex.repeat.set(18, 3);
+    var asphaltNormalMap = new THREE.CanvasTexture(asphaltNormal);
+    asphaltNormalMap.wrapS = THREE.RepeatWrapping;
+    asphaltNormalMap.wrapT = THREE.RepeatWrapping;
+    asphaltNormalMap.repeat.set(18, 3);
+    roadMat = new THREE.MeshPhongMaterial({ map: asphaltTex, normalMap: asphaltNormalMap, normalScale: new THREE.Vector2(0.38, 0.38), color: 0xffffff, shininess: 6, specular: 0x222428 });
+    var gravelTex = paintCanvas(128, function (g, size) {
+        g.fillStyle = "#8b8172";
         g.fillRect(0, 0, size, size);
         var n;
         var shade;
-        for (n = 0; n < 80; n++) {
-            shade = 72 + Math.floor(rnd(n + 15) * 30);
-            g.fillStyle = "rgba(" + shade + "," + (shade + 2) + "," + (shade + 7) + ",0.38)";
+        for (n = 0; n < 220; n++) {
+            shade = 96 + Math.floor(rnd(n + 4) * 70);
+            g.fillStyle = "rgba(" + shade + "," + Math.max(0, shade - 8) + "," + Math.max(0, shade - 16) + ",0.62)";
             g.beginPath();
-            g.arc(rnd(n + 3) * size, rnd(n + 9) * size, 0.8 + rnd(n) * 2.1, 0, Math.PI * 2);
+            g.arc(rnd(n + 1) * size, rnd(n + 7) * size, 0.7 + rnd(n + 3) * 2.6, 0, Math.PI * 2);
             g.fill();
         }
-        g.strokeStyle = "rgba(36,40,48,0.16)";
-        g.lineWidth = 1;
-        for (n = 0; n < 4; n++) {
-            g.beginPath();
-            g.moveTo(rnd(n + 40) * size, 0);
-            g.lineTo(rnd(n + 48) * size, size);
-            g.stroke();
-        }
     });
-    asphaltTex.wrapS = THREE.RepeatWrapping;
-    asphaltTex.wrapT = THREE.RepeatWrapping;
-    asphaltTex.repeat.set(12, 1.2);
-    roadMat = new THREE.MeshLambertMaterial({ map: asphaltTex, color: 0xffffff });
+    gravelTex.wrapS = THREE.RepeatWrapping;
+    gravelTex.wrapT = THREE.RepeatWrapping;
+    gravelTex.repeat.set(14, 3);
+    gravelMat = new THREE.MeshLambertMaterial({ map: gravelTex, color: 0xffffff });
     var lineMat = basic(0xf7f8fa);
     var guideMat = basic(0x3ec9d2);
-    addStrip(0, 4.15, 0.08, 360, roadMat, 0, 0);
-    addStrip(5.7, 1.05, 0.045, 220, lambert(0x4e8c44), 0, 0);
-    addStrip(-5.7, 1.05, 0.045, 220, lambert(0x3f7d3a), 0, 0);
+    addStrip(0, 4.15, 0.08, gfxUltra ? 480 : 360, roadMat, 0, 0);
+    addStrip(5.5, 1.35, 0.055, gfxUltra ? 320 : 240, gravelMat, 0, 0);
+    addStrip(-5.5, 1.35, 0.055, gfxUltra ? 320 : 240, gravelMat, 0, 0);
     addStrip(3.72, 0.08, 0.11, 360, lineMat, 0, 0);
     addStrip(-3.72, 0.08, 0.11, 360, lineMat, 0, 0);
     addStrip(0, 0.07, 0.115, 360, lineMat, 2, 5);
@@ -4535,70 +4631,87 @@
     sunDisc.position.set(-26, 24, -78);
     camera.add(sunDisc);
 
-    hillMat = lambert(0x6fbe58);
-    mountainMat = lambert(0x7ea6c8);
-    snowMat = lambert(0xf7fbff);
-    function ridgeShape() {
-        var s = new THREE.Shape();
-        s.moveTo(-10, 0);
-        s.lineTo(-7.2, 1.6);
-        s.quadraticCurveTo(-4.2, 6.4, -1.2, 8.6);
-        s.quadraticCurveTo(1.4, 5.2, 3.6, 6.8);
-        s.quadraticCurveTo(6.2, 3.4, 8.4, 1.8);
-        s.lineTo(11, 0);
-        s.lineTo(-10, 0);
-        return s;
-    }
-    var peakGeo = new THREE.ExtrudeGeometry(ridgeShape(), { depth: 7, bevelEnabled: true, bevelThickness: 0.45, bevelSize: 0.5, bevelSegments: 2, curveSegments: 8 });
-    peakGeo.translate(0, 0, -3.5);
-    var peakSmall = peakGeo;
-    var snowShape = new THREE.Shape();
-    snowShape.moveTo(-2.2, 6.4);
-    snowShape.quadraticCurveTo(-1.2, 8.7, 0.2, 8.5);
-    snowShape.quadraticCurveTo(1.2, 7.2, 2.4, 6.5);
-    snowShape.lineTo(-2.2, 6.4);
-    var snowGeo = new THREE.ExtrudeGeometry(snowShape, { depth: 7.2, bevelEnabled: true, bevelThickness: 0.2, bevelSize: 0.25, bevelSegments: 1 });
-    snowGeo.translate(0, 0, -3.6);
-    var riseGeo = new THREE.SphereGeometry(7, 14, 10);
-    var mi;
-
-    for (mi = 0; mi < 8; mi++) {
-        var fang = mi / 8 * Math.PI * 2 + 0.35;
-        var fr = 196 + rnd(mi + 3) * 16;
-        var peak = new THREE.Mesh(peakGeo, mountainMat);
-        var ps = 0.85 + rnd(mi) * 0.4;
-        peak.scale.set(ps * 1.45, 1.25 + rnd(mi + 2) * 0.85, ps * 1.2);
-        peak.position.set(Math.cos(fang) * fr, terrainHeight(Math.cos(fang) * fr, Math.sin(fang) * fr), Math.sin(fang) * fr);
-        peak.rotation.y = -fang;
-        scene.add(peak);
-        var side = new THREE.Mesh(peakSmall, mountainMat);
-        var sang = fang + 0.18;
-        side.scale.set(ps * 1.15, 0.95 + rnd(mi + 4) * 0.55, ps);
-        var sx = Math.cos(sang) * (fr - 16);
-        var sz = Math.sin(sang) * (fr - 16);
-        side.position.set(sx, terrainHeight(sx, sz), sz);
-        side.rotation.y = -sang + 0.4;
-        scene.add(side);
-        if (mi % 2 === 0) {
-            var snow = new THREE.Mesh(snowGeo, snowMat);
-            snow.position.set(peak.position.x, peak.position.y, peak.position.z);
-            snow.rotation.y = peak.rotation.y;
-            snow.scale.copy(peak.scale);
-            scene.add(snow);
+    hillMat = lambert(0x6a8450);
+    mountainMat = lambert(0x8ea4b8);
+    snowMat = lambert(0xf4f7f8);
+    rangeMat = new THREE.MeshLambertMaterial({ color: 0xffffff, vertexColors: THREE.VertexColors });
+    var riseGeo = new THREE.SphereGeometry(7, gfxUltra ? 18 : 12, gfxUltra ? 12 : 8);
+    riseGeo.userData.shared = true;
+    function buildRange(inner, outer, cols, rows, seed, height, haze) {
+        var positions = [];
+        var colors = [];
+        var indices = [];
+        var cLow = new THREE.Color(0x5d7348);
+        var cHigh = new THREE.Color(0x8b9aab);
+        var cSnow = new THREE.Color(0xe7eef2);
+        var cHaze = new THREE.Color(haze);
+        var mix = new THREE.Color();
+        var r;
+        var c;
+        for (r = 0; r <= rows; r++) {
+            var rt = r / rows;
+            var edge = Math.sin(rt * Math.PI);
+            edge = edge * edge;
+            for (c = 0; c <= cols; c++) {
+                var ang = c / cols * Math.PI * 2;
+                var n1 = Math.sin(ang * 3 + seed) * 0.5 + Math.sin(ang * 7 + seed * 1.7) * 0.32 + Math.cos(ang * 2 - seed) * 0.2;
+                var n2 = Math.sin(ang * 5 + rt * 4 + seed) * 0.2 + Math.sin(ang * 11 + seed * 2.2) * 0.08;
+                var ridge = Math.pow(Math.max(0, n1 * 0.5 + 0.5), 1.85);
+                var wobble = Math.sin(ang * 2 + seed * 1.3) * 0.055 + Math.sin(ang * 5 - seed) * 0.028;
+                var radius = (inner + (outer - inner) * rt) * (1 + wobble);
+                var x = Math.cos(ang) * radius;
+                var z = Math.sin(ang) * radius;
+                var y = (ridge * height + n2 * height * 0.12) * edge;
+                var groundY = terrainHeight(x, z);
+                if (y < groundY) y = groundY;
+                positions.push(x, y, z);
+                var h = height > 0 ? (y - groundY) / height : 0;
+                if (h < 0) h = 0;
+                if (h > 1) h = 1;
+                mix.copy(cLow).lerp(cHigh, h);
+                if (h > 0.72) mix.lerp(cSnow, (h - 0.72) / 0.28);
+                mix.lerp(cHaze, rt * 0.78);
+                colors.push(mix.r, mix.g, mix.b);
+            }
         }
+        var stride = cols + 1;
+        for (r = 0; r < rows; r++) {
+            for (c = 0; c < cols; c++) {
+                var a = r * stride + c;
+                indices.push(a, a + stride, a + 1, a + 1, a + stride, a + stride + 1);
+            }
+        }
+        var geo = new THREE.BufferGeometry();
+        geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+        geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+        geo.setIndex(indices);
+        geo.computeVertexNormals();
+        var mesh = new THREE.Mesh(geo, rangeMat);
+        mesh.userData.noCast = true;
+        if (gfxUltra) mesh.receiveShadow = true;
+        scene.add(mesh);
+        return mesh;
     }
-    for (mi = 0; mi < 6; mi++) {
-        var mang = mi / 6 * Math.PI * 2 + 0.85;
-        var mr = 132 + rnd(mi + 11) * 18;
-        var mx = Math.cos(mang) * mr;
-        var mz = Math.sin(mang) * mr;
-        if (roadDist(mx, mz) < 22) continue;
-        var mound = new THREE.Mesh(peakGeo, hillMat);
-        var ms = 0.48 + rnd(mi + 2) * 0.28;
-        mound.scale.set(ms * 1.15, 0.22 + rnd(mi) * 0.14, ms * 0.8);
-        mound.position.set(mx, terrainHeight(mx, mz) - 0.55, mz);
-        mound.rotation.y = rnd(mi + 6) * 6.2;
-        scene.add(mound);
+    var farCols = gfxUltra ? 120 : 72;
+    buildRange(112, 176, gfxUltra ? 96 : 64, gfxUltra ? 7 : 5, 0.4, gfxUltra ? 22 : 15, 0xb7d5c2);
+    buildRange(176, 292, farCols, gfxUltra ? 8 : 5, 1.3, gfxUltra ? 42 : 28, 0xc5dff0);
+    buildRange(292, 470, farCols, gfxUltra ? 7 : 4, 2.6, gfxUltra ? 64 : 44, 0xd7eaf6);
+    var footN = gfxUltra ? 16 : 9;
+    var footI;
+    for (footI = 0; footI < footN; footI++) {
+        var fang = rnd(footI * 2.2 + 0.3) * Math.PI * 2;
+        var frad = 124 + rnd(footI + 1.7) * (gfxUltra ? 96 : 64);
+        var fx = Math.cos(fang) * frad;
+        var fz = Math.sin(fang) * frad;
+        if (roadDist(fx, fz) < 24) continue;
+        var foot = new THREE.Mesh(riseGeo, footI % 3 === 0 ? hillMat : mountainMat);
+        var fs = 2.2 + rnd(footI + 4) * 2.6;
+        var sy = 0.9 + rnd(footI + 6) * 0.75;
+        var peak = 7 + rnd(footI + 5) * (gfxUltra ? 11 : 7);
+        foot.scale.set(fs, sy, fs * (0.72 + rnd(footI + 2) * 0.4));
+        foot.position.set(fx, terrainHeight(fx, fz) + peak - 7 * sy, fz);
+        foot.rotation.y = rnd(footI + 8) * 4;
+        scene.add(foot);
     }
 
     function treeForm(profile, seed, sculpt) {
@@ -4676,7 +4789,9 @@
         treeForm(birch, 4.2, 0.1),
         treeForm(shrub, 5.5, 0.2)
     ];
-    var treeMat = new THREE.MeshToonMaterial({ color: 0xffffff, vertexColors: THREE.VertexColors, gradientMap: gradient });
+    var treeShare;
+    for (treeShare = 0; treeShare < treeGeos.length; treeShare++) treeGeos[treeShare].userData.shared = true;
+    var treeMat = new THREE.MeshLambertMaterial({ color: 0xffffff, vertexColors: THREE.VertexColors });
     var bushGeo = treeGeos[4];
     var tuftGeo = new THREE.ConeGeometry(0.16, 0.42, 6);
     var flowerGeo = new THREE.SphereGeometry(0.09, 8, 6);
@@ -4699,6 +4814,7 @@
     var blobGeo = new THREE.CircleGeometry(1, 14);
 
     function addBlob(x, z, sx, sz) {
+        if (gfxUltra) return;
         var blob = new THREE.Mesh(blobGeo, shadowMat);
         blob.rotation.x = -Math.PI / 2;
         blob.position.set(x, terrainHeight(x, z) + 0.03, z);
@@ -4751,6 +4867,10 @@
                 mesh.setMatrixAt(ii, dummy.matrix);
             }
             mesh.instanceMatrix.needsUpdate = true;
+            if (gfxUltra) {
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+            }
             placeProp(mesh);
             treePending[bi] = [];
         }
@@ -4769,47 +4889,66 @@
     }
 
     var ti;
-    for (ti = 0; ti < 26; ti++) {
-        var tu = (ti + 0.08) / 26 + (rnd(ti + 15) - 0.5) * 0.018;
-        if (tu < 0.004) tu = 0.004;
-        if (tu > 0.996) tu = 0.996;
-        var tpos = sideAt(tu, -7.4 - rnd(ti + 2) * 4.6);
-        var leaf = leafMats[ti % 5];
-        var kind = ti % 5;
-        if (kind === 0) addCypress(tpos.x, tpos.z, 1.55 + rnd(ti) * 0.6);
-        else if (kind === 1) addPine(tpos.x, tpos.z, 1.2 + rnd(ti + 1) * 0.5, leaf);
-        else if (kind === 2) addRound(tpos.x, tpos.z, 1.15 + rnd(ti + 4) * 0.45, leaf, "wide");
-        else if (kind === 3) addRound(tpos.x, tpos.z, 1.05 + rnd(ti + 3) * 0.4, leafMats[4], "birch");
-        else addRound(tpos.x, tpos.z, 1.15 + rnd(ti + 4) * 0.4, leafMats[5]);
+    function canPlant(x, z, minClear) {
+        if (roadDist(x, z) < minClear) return false;
+        if (Math.sqrt(x * x + z * z) < 86) return false;
+        return true;
     }
-
-    for (ti = 0; ti < 16; ti++) {
-        var bu = (ti + 0.2) / 16;
-        var bpos = sideAt(bu, -6.35 - rnd(ti) * 0.7);
-        var bush = new THREE.Mesh(bushGeo, treeMat);
-        var bsc = 0.85 + rnd(ti + 8) * 0.55;
-        bush.position.set(bpos.x, terrainHeight(bpos.x, bpos.z), bpos.z);
-        if (ti % 3 === 0) bush.scale.set(bsc * 2.4, bsc * 0.62, bsc * 1.15);
-        else bush.scale.set(bsc * 1.4, bsc * 0.75, bsc * 1.1);
-        scene.add(bush);
+    function plantKind(x, z, sc, kind) {
+        var slot = kind % 5;
+        var use = sc;
+        if (slot === 4) use *= 0.7;
+        if (slot === 2) use *= 0.92;
+        plantTree(x, z, use, treeGeos[slot]);
     }
-
-    for (ti = 0; ti < 10; ti++) {
-        var su = (ti + 0.4) / 10;
-        var spos = sideAt(su, 6.5);
-        var shoreBush = new THREE.Mesh(bushGeo, treeMat);
-        var ssc = 0.7 + rnd(ti + 4) * 0.35;
-        shoreBush.position.set(spos.x, terrainHeight(spos.x, spos.z), spos.z);
-        shoreBush.scale.set(ssc * 1.3, ssc * 0.65, ssc);
-        scene.add(shoreBush);
+    var clusterU = 0.008;
+    var nearCap = gfxUltra ? 170 : 88;
+    var plantedNear = 0;
+    var guardN = 0;
+    while (clusterU < 0.992 && plantedNear < nearCap && guardN < 420) {
+        guardN++;
+        clusterU += 0.007 + rnd(guardN * 1.7) * 0.018;
+        var bunch = 2 + Math.floor(rnd(guardN + 3) * (gfxUltra ? 5 : 3));
+        var bunchI;
+        for (bunchI = 0; bunchI < bunch && plantedNear < nearCap; bunchI++) {
+            var uu = clusterU + (rnd(bunchI + guardN) - 0.5) * 0.012;
+            if (uu < 0.01) uu = 0.01;
+            if (uu > 0.99) uu = 0.99;
+            var reach = 9.8 + rnd(bunchI + guardN * 0.3) * (4 + rnd(guardN + bunchI) * 18);
+            var spot = sideAt(uu, -reach);
+            if (!canPlant(spot.x, spot.z, 9.4)) continue;
+            var sc = 0.7 + rnd(guardN + bunchI) * 1.2;
+            if (reach > 22) sc *= 1.08 + rnd(bunchI) * 0.28;
+            plantKind(spot.x, spot.z, sc, Math.floor(rnd(guardN * 4 + bunchI) * 5));
+            plantedNear++;
+        }
     }
-
-    for (ti = 0; ti < 14; ti++) {
-        var gu = (ti + 0.11) / 14 + (rnd(ti + 21) - 0.5) * 0.03;
-        if (gu < 0.01) gu = 0.01;
-        if (gu > 0.99) gu = 0.99;
-        var gspot = sideAt(gu, -6.15 - rnd(ti) * 1.4);
-        plantTree(gspot.x, gspot.z, 0.42 + rnd(ti + 3) * 0.32, treeGeos[4]);
+    var forestCap = gfxUltra ? 210 : 80;
+    var planted = 0;
+    var guard = 0;
+    while (planted < forestCap && guard < forestCap * 12) {
+        guard++;
+        var ang = rnd(guard * 1.7) * Math.PI * 2;
+        var rad = 120 + rnd(guard * 3.1) * (gfxUltra ? 250 : 150);
+        var x = Math.cos(ang) * rad + (rnd(guard + 9) - 0.5) * 18;
+        var z = Math.sin(ang) * rad + (rnd(guard + 13) - 0.5) * 18;
+        if (!canPlant(x, z, 12)) continue;
+        var density = 0.2 + 0.8 * (0.5 + 0.5 * Math.sin(x * 0.021 + z * 0.017));
+        density *= 0.5 + 0.5 * (0.5 + 0.5 * Math.sin(ang * 3 + 0.6));
+        if (rnd(guard + 21) > density) continue;
+        var fkind = Math.floor(rnd(guard + 30) * 5);
+        var fsc = 0.78 + rnd(guard + 2) * 1.35;
+        if (rad > 210) fsc *= 1.1 + rnd(guard) * 0.4;
+        plantKind(x, z, fkind === 4 ? fsc * 0.55 : fsc, fkind);
+        planted++;
+        if (rnd(guard + 8) > 0.4 && planted < forestCap) {
+            var jx = x + (rnd(guard + 40) - 0.5) * 7.5;
+            var jz = z + (rnd(guard + 41) - 0.5) * 7.5;
+            if (canPlant(jx, jz, 12)) {
+                plantKind(jx, jz, fsc * (0.55 + rnd(guard + 6) * 0.42), Math.floor(rnd(guard + 7) * 5));
+                planted++;
+            }
+        }
     }
 
     var bedCanvas = document.createElement("canvas");
@@ -4834,7 +4973,7 @@
     var bedGeo = new THREE.CircleGeometry(1, 12);
     for (ti = 0; ti < 12; ti++) {
         var fu = (ti + 0.16) / 12;
-        var fpos = sideAt(fu, -6.15 - rnd(ti + 6) * 0.4);
+        var fpos = sideAt(fu, -7.6 - rnd(ti + 6) * 2.4);
         var bed = new THREE.Mesh(bedGeo, bedMat);
         bed.rotation.x = -Math.PI / 2;
         bed.position.set(fpos.x, terrainHeight(fpos.x, fpos.z) + 0.04, fpos.z);
@@ -4843,28 +4982,11 @@
         scene.add(bed);
     }
 
-    for (ti = 0; ti < 10; ti++) {
-        var hedgeU = (ti + 0.28) / 10;
-        var hedgePos = sideAt(hedgeU, -5.85);
-        var hedge = new THREE.Group();
-        var hs;
-        for (hs = -1; hs <= 1; hs++) {
-            var puff = new THREE.Mesh(bushGeo, treeMat);
-            puff.position.set(hs * 0.72, 0, hs === 0 ? 0.08 : 0);
-            puff.scale.set(1.55, 0.85, 1.15);
-            hedge.add(puff);
-        }
-        hedge.position.set(hedgePos.x, terrainHeight(hedgePos.x, hedgePos.z), hedgePos.z);
-        var hedgeFace = curve.getPointAt(hedgeU);
-        yawToward(hedge, hedgeFace.x, hedgeFace.z);
-        scene.add(hedge);
-    }
-
     var rockPts = [new THREE.Vector2(0.08, 0), new THREE.Vector2(0.62, 0.08), new THREE.Vector2(0.78, 0.32), new THREE.Vector2(0.4, 0.52), new THREE.Vector2(0.08, 0.6)];
     var rockGeo = new THREE.LatheGeometry(rockPts, 7);
     var rockMat = toon(0xc2bbb0);
     for (ti = 0; ti < 8; ti++) {
-        var rockPos = sideAt((ti + 0.33) / 8, 6.15 + rnd(ti + 3) * 1.1);
+        var rockPos = sideAt(rnd(ti * 1.8 + 0.4), -(9.2 + rnd(ti + 3) * 7));
         var rock = new THREE.Mesh(rockGeo, rockMat);
         var rs = 0.55 + rnd(ti + 5) * 0.7;
         rock.scale.set(rs * 1.35, rs * 0.7, rs);
@@ -4889,7 +5011,7 @@
     var ri;
     for (ri = 0; ri < 16; ri++) {
         var rang = ri / 16 * Math.PI * 2 + 0.4;
-        var rr = 77.2 + rnd(ri + 6) * 3.2;
+        var rr = 98 + rnd(ri + 6) * 10;
         var rx = Math.cos(rang) * rr;
         var rz = Math.sin(rang) * rr;
         if (roadDist(rx, rz) < 11) continue;
@@ -5355,6 +5477,64 @@
         var cu = (ci + 0.18) / 8;
         var cpos = sideAt(cu, ci % 2 === 0 ? -24 : 22);
         addCloud(cpos.x, 22 + rnd(ci + 5) * 8, cpos.z, 5.4 + rnd(ci + 1) * 1.6);
+    }
+
+    grassMat = new THREE.MeshLambertMaterial({ color: 0x6d844c });
+    (function () {
+        var blades = gfxUltra ? 900 : 420;
+        var bladeGeo = new THREE.ConeGeometry(0.18, 0.62, 5);
+        bladeGeo.translate(0, 0.28, 0);
+        bladeGeo.userData.shared = true;
+        var mesh = new THREE.InstancedMesh(bladeGeo, grassMat, blades);
+        mesh.userData.noCast = true;
+        var dummy = new THREE.Object3D();
+        var used = 0;
+        var tries = 0;
+        while (used < blades && tries < blades * 8) {
+            tries++;
+            var along = rnd(tries * 0.77);
+            var reach = 7.5 + rnd(tries + 2) * 16;
+            var spot = sideAt(along, -reach);
+            var x = spot.x + (rnd(tries + 4) - 0.5) * 3.4;
+            var z = spot.z + (rnd(tries + 8) - 0.5) * 3.4;
+            var clear = roadDist(x, z);
+            if (clear < 7.4 || clear > 22) continue;
+            if (!canPlant(x, z, 7.4)) continue;
+            var sc = 0.75 + rnd(tries + 3) * 1.25;
+            dummy.position.set(x, terrainHeight(x, z), z);
+            dummy.scale.set(sc * 0.8, 0.65 + rnd(tries + 5) * 1.2, sc);
+            dummy.rotation.y = rnd(tries + 9) * 6.2;
+            dummy.updateMatrix();
+            mesh.setMatrixAt(used, dummy.matrix);
+            used++;
+        }
+        mesh.count = used;
+        mesh.instanceMatrix.needsUpdate = true;
+        mesh.castShadow = false;
+        if (gfxUltra) mesh.receiveShadow = true;
+        scene.add(mesh);
+    })();
+
+    if (gfxUltra) {
+        coast.traverse(function (obj) {
+            if (!obj.isMesh || !obj.material) return;
+            if (obj.material.transparent || obj.material.side === THREE.BackSide) return;
+            if (obj.userData && (obj.userData.sampleRoad || obj.userData.noCast)) {
+                obj.castShadow = false;
+                obj.receiveShadow = true;
+                return;
+            }
+            obj.receiveShadow = true;
+            var castR = 1;
+            if (obj.geometry) {
+                if (!obj.geometry.boundingSphere) obj.geometry.computeBoundingSphere();
+                if (obj.geometry.boundingSphere) castR = obj.geometry.boundingSphere.radius;
+                castR *= Math.max(obj.scale.x, obj.scale.y, obj.scale.z);
+            }
+            obj.castShadow = castR > 0.35;
+        });
+        ground.castShadow = false;
+        ground.receiveShadow = true;
     }
 
     placingCoast = false;
@@ -5839,6 +6019,16 @@
         spots[spotI].distance = 16;
         spots[spotI].layers.set(1);
     }
+    if (gfxUltra) {
+        model.traverse(function (obj) {
+            if (!obj.isMesh || (obj.material && obj.material.transparent)) return;
+            obj.receiveShadow = true;
+            if (obj.geometry && !obj.geometry.boundingSphere) obj.geometry.computeBoundingSphere();
+            var castR = obj.geometry && obj.geometry.boundingSphere ? obj.geometry.boundingSphere.radius : 1;
+            obj.castShadow = castR > 0.12;
+        });
+        carBlob.visible = false;
+    }
     car.add(glow);
     car.add(carBlob);
     for (spotI = 0; spotI < spots.length; spotI++) {
@@ -5854,6 +6044,7 @@
 
     var carCatalog = {};
     var wantedCar = "compact";
+    var visibleCar = "compact";
     try { wantedCar = localStorage.getItem("toonnav-car") || "compact"; } catch (err) {}
     carCatalog.compact = { group: model, wheels: wheels.slice() };
     var ferrariPaint = new THREE.MeshPhongMaterial({ color: 0xc1121f, specular: 0x5a3030, shininess: 42, side: THREE.DoubleSide });
@@ -5926,6 +6117,10 @@
             }
             if (obj.geometry && !obj.geometry.getAttribute("normal")) obj.geometry.computeVertexNormals();
             obj.material = paintFor(obj.material, id);
+            if (gfxUltra) {
+                obj.castShadow = true;
+                obj.receiveShadow = true;
+            }
         });
         holder.updateMatrixWorld(true);
         var box = new THREE.Box3().setFromObject(holder);
@@ -5953,11 +6148,30 @@
                 var note = button.querySelector("small");
                 if (note) note.textContent = "A modellfájl nem tölthető";
             }
+            if (wantedCar === id) {
+                wantedCar = "compact";
+                if (carCatalog.compact) selectCar("compact");
+            }
         });
+    }
+    function carLabel(id) {
+        if (id === "sf90") return "Ferrari SF90";
+        if (id === "openwheel") return "Nyitott kerekű";
+        return "Sportkompakt";
+    }
+    function carShort(id) {
+        if (id === "sf90") return "SF90";
+        if (id === "openwheel") return "Nyitott";
+        return "Kompakt";
     }
     function selectCar(id) {
         wantedCar = id;
         if (!carCatalog[id]) {
+            var pendingBtn = document.querySelector('#garage-list button[data-car="' + id + '"]');
+            if (pendingBtn) {
+                var pendingNote = pendingBtn.querySelector("small");
+                if (pendingNote && pendingNote.textContent.indexOf("nem tölthető") < 0) pendingNote.textContent = "Betöltés…";
+            }
             paintGarage();
             return;
         }
@@ -5981,6 +6195,7 @@
                 spots[spotI2].target.position.set(beamC * 0.1, 0.08, 16);
             }
         }
+        visibleCar = id;
         try { localStorage.setItem("toonnav-car", id); } catch (err) {}
         paintGarage();
     }
@@ -5988,52 +6203,70 @@
         var buttons = document.querySelectorAll("#garage-list button");
         var i;
         for (i = 0; i < buttons.length; i++) {
-            buttons[i].setAttribute("aria-pressed", buttons[i].getAttribute("data-car") === wantedCar ? "true" : "false");
+            buttons[i].setAttribute("aria-pressed", buttons[i].getAttribute("data-car") === visibleCar ? "true" : "false");
+        }
+        var garageOpen = document.getElementById("garage-open");
+        if (garageOpen) {
+            garageOpen.textContent = carShort(visibleCar);
+            garageOpen.setAttribute("aria-label", "Garázs. Látható modell: " + carLabel(visibleCar));
         }
         var credit = document.getElementById("car-credit");
         if (!credit) return;
-        if (wantedCar === "sf90") {
+        if (visibleCar === "sf90") {
             credit.innerHTML = 'Ferrari F1 2019 (SF90) — <a href="https://sketchfab.com/valvetin" target="_blank" rel="noopener">valvetin</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Geometria egyszerűsítve: 654 656 → 508 616 háromszög.';
-        } else if (wantedCar === "openwheel") {
+        } else if (visibleCar === "openwheel") {
             credit.innerHTML = 'Nyitott kerekű — <a href="https://3dassets.dev/u/3dassets" target="_blank" rel="noopener">3D Assets</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0</a>.';
         } else {
             credit.textContent = "";
         }
     }
     function syncBody() {
-        document.body.className = (night ? "night " : "") + (driving ? "driving" : "");
+        document.body.classList.toggle("night", night);
     }
     loadCarFile("sf90", "models/ferrari-sf90.glb", 1, 0);
     loadCarFile("openwheel", "models/openwheel.glb", 1, 0);
     if (carCatalog[wantedCar]) selectCar(wantedCar);
-    else {
+    else if (wantedCar !== "compact") {
         var pendingCar = wantedCar;
         selectCar("compact");
-        if (pendingCar && pendingCar !== "compact") {
-            wantedCar = pendingCar;
-            try { localStorage.setItem("toonnav-car", pendingCar); } catch (err) {}
-            paintGarage();
-        }
+        wantedCar = pendingCar;
+        try { localStorage.setItem("toonnav-car", pendingCar); } catch (err) {}
+        paintGarage();
+    } else {
+        selectCar("compact");
     }
 
-    hemi = new THREE.HemisphereLight(0xfff4e2, 0x67b84e, 0.52);
-    sun = new THREE.DirectionalLight(0xfff0cc, 0.62);
+    hemi = new THREE.HemisphereLight(0xfff1dc, 0x5d7348, 0.36);
+    sun = new THREE.DirectionalLight(0xfff0cc, 0.78);
     sun.position.set(30, 40, 16);
-    fill = new THREE.DirectionalLight(0xd7eaff, 0.16);
+    if (gfxUltra) {
+        sun.castShadow = true;
+        sun.shadow.mapSize.width = 1024;
+        sun.shadow.mapSize.height = 1024;
+        sun.shadow.camera.near = 6;
+        sun.shadow.camera.far = 96;
+        sun.shadow.camera.left = -32;
+        sun.shadow.camera.right = 32;
+        sun.shadow.camera.top = 32;
+        sun.shadow.camera.bottom = -32;
+        sun.shadow.bias = -0.0002;
+        sun.shadow.normalBias = 0.012;
+    }
+    fill = new THREE.DirectionalLight(0xd7e4f4, 0.14);
     fill.position.set(-20, 12, -8);
     scene.add(hemi);
     scene.add(sun);
     scene.add(sun.target);
     scene.add(fill);
     scene.add(fill.target);
-    scene.fog = new THREE.Fog(0xd7f0fc, 82, 250);
+    scene.fog = new THREE.Fog(0xd4e7f4, gfxUltra ? 90 : 70, gfxUltra ? 460 : 300);
 
     var dayFog = new THREE.Color(0xd4eefc);
     var nightFog = new THREE.Color(0x1a3358);
     var fogCol = new THREE.Color();
     var dayHemi = new THREE.Color(0xfff4e2);
     var nightHemi = new THREE.Color(0x66789a);
-    var dayGroundL = new THREE.Color(0x67b84e);
+    var dayGroundL = new THREE.Color(0x5d7348);
     var nightGroundL = new THREE.Color(0x1c3a2c);
     var daySun = new THREE.Color(0xfff0cc);
     var nightSun = new THREE.Color(0xb7c8e6);
@@ -6059,7 +6292,7 @@
     var deepNight = new THREE.Color(0x0d3058);
     var shoreDay = new THREE.Color(0xffffff);
     var shoreNight = new THREE.Color(0xb7a078);
-    var hillDay = new THREE.Color(0x5aaa46);
+    var hillDay = new THREE.Color(0x6a8450);
     var hillNight = new THREE.Color(0x184828);
     var mountDay = new THREE.Color(0x7ea6c8);
     var mountNight = new THREE.Color(0x35506e);
@@ -6073,23 +6306,28 @@
     function updateMood(t) {
         fogCol.copy(dayFog).lerp(nightFog, t);
         scene.fog.color.copy(fogCol);
-        scene.fog.near = 82 + (34 - 82) * t;
-        scene.fog.far = 250 + (170 - 250) * t;
+        var fogNear0 = gfxUltra ? 90 : 70;
+        var fogFar0 = gfxUltra ? 460 : 300;
+        scene.fog.near = fogNear0 + ((gfxUltra ? 46 : 34) - fogNear0) * t;
+        scene.fog.far = fogFar0 + ((gfxUltra ? 280 : 210) - fogFar0) * t;
         hemi.color.copy(dayHemi).lerp(nightHemi, t);
         hemi.groundColor.copy(dayGroundL).lerp(nightGroundL, t);
-        hemi.intensity = 0.52 + (0.08 - 0.52) * t;
+        hemi.intensity = 0.36 + (0.08 - 0.36) * t;
         sun.color.copy(daySun).lerp(nightSun, t);
-        sun.intensity = 0.62 + (0.02 - 0.62) * t;
+        sun.intensity = 0.78 + (0.04 - 0.78) * t;
         fill.intensity = 0.16 + (0.04 - 0.16) * t;
         groundMat.color.copy(groundDay).lerp(groundNight, t);
         roadMat.color.copy(roadDay).lerp(roadNight, t);
         waterMat.color.copy(waterDay).lerp(waterNight, t);
-        if (waterShineMat) waterShineMat.opacity = 0.16 + (0.08 - 0.16) * t;
+        if (waterShineMat) waterShineMat.opacity = 0.12 + (0.05 - 0.12) * t;
         deepMat.color.copy(deepDay).lerp(deepNight, t);
         shoreMat.color.copy(shoreDay).lerp(shoreNight, t);
         hillMat.color.copy(hillDay).lerp(hillNight, t);
         mountainMat.color.copy(mountDay).lerp(mountNight, t);
         snowMat.color.copy(snowDay).lerp(snowNight, t);
+        if (rangeMat) rangeMat.color.setRGB(1 - t * 0.25, 1 - t * 0.18, 1 - t * 0.08);
+        if (grassMat) grassMat.color.setRGB(0.43 - t * 0.24, 0.52 - t * 0.28, 0.30 - t * 0.16);
+        if (gravelMat) gravelMat.color.setRGB(1 - t * 0.42, 1 - t * 0.4, 1 - t * 0.36);
         cloudMat.color.copy(cloudDay).lerp(cloudNight, t);
         townGlass.color.copy(glassDay).lerp(glassNight, t);
         townGlass.emissive.copy(black).lerp(glassGlow, t);
@@ -6133,56 +6371,224 @@
         return v.toFixed(digits).replace(".", ",");
     }
 
-    function roadNameAt(u) {
+    var clusterEl = document.getElementById("cluster");
+    var sheetToggle = document.getElementById("sheet-toggle");
+    var sheetLabel = document.getElementById("sheet-label");
+    var sheetChev = document.getElementById("sheet-chev");
+    var sheetBody = document.getElementById("sheet-body");
+    var goalForm = document.getElementById("goal-form");
+    var fromInput = document.getElementById("from-q");
+    var toInput = document.getElementById("to-q");
+    var searchBtn = document.getElementById("search-btn");
+    var goalList = document.getElementById("goal-list");
+    var navNote = document.getElementById("nav-note");
+    var routeBox = document.getElementById("route-box");
+    var routeFacts = document.getElementById("route-facts");
+    var gpsButton = document.getElementById("gps");
+    var searchReopen = document.getElementById("search-reopen");
+    var sheetOpen = false;
+    var searchField = "to";
+    var navError = "";
+
+    function formatDist(m) {
+        if (typeof m !== "number" || !isFinite(m) || m < 0) return "—";
+        if (m >= 950) return comma(m / 1000, 1) + " km";
+        return String(Math.round(m)) + " m";
+    }
+
+    function formatDuration(sec) {
+        if (typeof sec !== "number" || !isFinite(sec) || sec < 0) return "—";
+        var whole = Math.round(sec);
+        if (whole < 60) return whole + " mp";
+        var mins = Math.round(whole / 60);
+        if (mins < 60) return mins + " perc";
+        var h = Math.floor(mins / 60);
+        var r = mins % 60;
+        return h + " óra " + r + " perc";
+    }
+
+    function maneuverPhrase(step) {
+        var mod = step.modifier || "";
+        var type = step.type || "";
+        var dir = {
+            "uturn": "fordulj vissza",
+            "sharp right": "élesen jobbra",
+            "right": "jobbra",
+            "slight right": "enyhén jobbra",
+            "straight": "egyenesen",
+            "slight left": "enyhén balra",
+            "left": "balra",
+            "sharp left": "élesen balra"
+        }[mod] || "";
+        if (type === "arrive") return "Cél";
+        if (type === "roundabout" || type === "rotary" || type === "exit roundabout" || type === "exit rotary") {
+            return dir ? "Körforgalom, " + dir : "Körforgalom";
+        }
+        if (type === "on ramp") return dir ? "Felhajtó, " + dir : "Felhajtó";
+        if (type === "off ramp") return dir ? "Lehajtó, " + dir : "Lehajtó";
+        if (type === "fork") return dir ? "Elágazás, " + dir : "Elágazás";
+        if (type === "end of road") return dir ? "Az út vége, " + dir : "Az út vége";
+        if (type === "merge") return dir ? "Sorolj be, " + dir : "Sorolj be";
+        if (dir) return dir.charAt(0).toUpperCase() + dir.slice(1);
+        if (step.name) return step.name;
+        return "Tovább";
+    }
+
+    function setArrow(mod) {
+        var rot = {
+            "uturn": 180,
+            "sharp right": 125,
+            "right": 90,
+            "slight right": 40,
+            "straight": 0,
+            "slight left": -40,
+            "left": -90,
+            "sharp left": -125
+        }[mod];
+        if (rot === undefined) rot = 0;
+        arrowEl.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="transform:rotate(' + rot + 'deg)"><path d="M12 19 V6" stroke="white" stroke-width="2.4" stroke-linecap="round"/><path d="M6.5 11.5 L12 6 L17.5 11.5" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        arrowEl.style.opacity = routeActive ? "1" : "0.4";
+    }
+
+    function nextManeuver(u) {
+        var i;
+        for (i = 0; i < routeSteps.length; i++) {
+            var step = routeSteps[i];
+            if (step.u0 + 0.00001 < u) continue;
+            var type = step.type || "";
+            var mod = step.modifier || "";
+            if (type === "depart" || type === "notification") continue;
+            if ((type === "continue" || type === "new name") && (mod === "" || mod === "straight")) continue;
+            var meters = (step.u0 - u) * routeMeters;
+            if (meters < 0) meters = 0;
+            return { meters: meters, name: step.name || "", modifier: mod, type: type };
+        }
+        var remain = (1 - Math.min(u, 1)) * routeMeters;
+        if (remain < 0) remain = 0;
+        return { meters: remain, name: dest && dest.name ? dest.name : "Cél", modifier: "", type: "arrive" };
+    }
+
+    function currentStepName(u) {
         var i;
         for (i = 0; i < routeSteps.length; i++) {
             if (u <= routeSteps[i].u1 + 0.00001) {
-                return routeSteps[i].name ? routeSteps[i].name : "közút";
+                if (routeSteps[i].name) return routeSteps[i].name;
+                break;
             }
         }
-        if (chosenGoal && chosenGoal.name) return chosenGoal.name;
-        return "közút";
+        return dest && dest.name ? dest.name : "közút";
+    }
+
+    function setNote(text, kind) {
+        navNote.textContent = text || "";
+        navNote.className = kind ? kind : "";
+        if (kind === "warn") navError = text || "";
+        else navError = "";
+    }
+
+    function paintSheetLabel() {
+        if (sheetOpen) {
+            sheetLabel.textContent = "Bezár";
+            sheetChev.textContent = "▴";
+            return;
+        }
+        sheetChev.textContent = "▾";
+        if (routeActive && routeMeters > 0) {
+            var frac = gpsOnRoute ? (1 - Math.min(travel, 1)) : 1;
+            if (frac < 0) frac = 0;
+            sheetLabel.textContent = formatDist(routeMeters * frac) + " · " + formatDuration(routeSeconds * frac);
+            return;
+        }
+        sheetLabel.textContent = "Keresés";
+    }
+
+    function gpsPhrase() {
+        if (gpsStatus === "denied") return "Nincs engedély";
+        if (gpsStatus === "pending" || gpsStatus === "timeout") return "Helymeghatározás…";
+        if (gpsStatus === "lost") return "GPS-jel elveszett";
+        if (gpsStatus === "ok" && gpsPoor) return "A GPS pontatlan";
+        if (gpsStatus === "ok" && routeActive && !gpsOnRoute) return "GPS elérhető, az út messze van";
+        if (gpsStatus === "ok") return "GPS elérhető";
+        return "Nincs GPS";
+    }
+
+    function syncChrome() {
+        var driving = !!(routeActive && !sheetOpen);
+        document.body.classList.toggle("driving", driving);
+        if (searchReopen) searchReopen.hidden = !driving;
+    }
+
+    function fillFacts() {
+        while (routeFacts.firstChild) routeFacts.removeChild(routeFacts.firstChild);
+        function line(text) {
+            var p = document.createElement("p");
+            p.textContent = text;
+            routeFacts.appendChild(p);
+        }
+        if (!routeActive) {
+            routeBox.hidden = true;
+            routeBox.open = false;
+            return;
+        }
+        routeBox.hidden = false;
+        line("Táv az útvonaltervezőtől: " + formatDist(routeMeters));
+        line("Tervezett idő: " + formatDuration(routeSeconds));
+        if (origin) line("Indulás: " + origin.name);
+        if (dest) line("Cél: " + dest.name);
+        if (routeSnap && typeof routeSnap.distance === "number" && routeSnap.distance >= 12) {
+            var road = routeSnap.name ? routeSnap.name : "a legközelebbi közút";
+            line("Az indulás a közútra illesztve: " + road + ", " + formatAway(routeSnap.distance) + ".");
+        }
+        if (gpsOnRoute) {
+            var frac = 1 - Math.min(travel, 1);
+            if (frac < 0) frac = 0;
+            line("Hátralévő út: " + formatDist(routeMeters * frac));
+            line("Hátralévő tervezett idő, a szakasz arányában: " + formatDuration(routeSeconds * frac));
+        } else if (gpsPoor) {
+            line("A GPS pontatlan, ezért a kocsi nem ugrik az útra.");
+        } else if (gpsStatus === "ok" && gpsOffDist !== null) {
+            line("A GPS " + Math.round(gpsOffDist) + " m-re van az útvonaltól, a kocsi nem ugrik rá.");
+        } else if (gpsStatus === "lost") {
+            line("A GPS-jel elveszett. A kocsi megáll, amíg új helyzet nem érkezik.");
+        } else {
+            line("Nincs élő GPS. A kocsi az indulásnál áll, a számok a tervezett útvonalból vannak.");
+        }
     }
 
     function paintHud() {
-        var arrived = routeActive && travel >= 0.999;
-        var remainKm;
-        var mins;
-        var km;
-        if (routeActive) {
-            remainKm = routeMeters * (1 - Math.min(travel, 1)) / 1000;
-            if (remainKm < 0) remainKm = 0;
-            km = comma(remainKm, 1) + " km";
-            mins = Math.round(routeSeconds * (1 - Math.min(travel, 1)) / 60);
-            if (mins < 1 && remainKm > 0.05) mins = 1;
-            if (arrived) mins = 0;
-            streetEl.textContent = arrived ? "Cél" : roadNameAt(travel);
-            hintEl.textContent = "valódi közút, szimulált haladás";
-            leftKindEl.textContent = "Hátralévő út";
-            minsKindEl.textContent = "Tervezett idő";
-            speedKindEl.textContent = "szimulált";
-            speedKindEl.className = "on";
+        var man;
+        if (routeActive && routeMeters > 0 && gpsOnRoute) {
+            man = nextManeuver(travel);
+            distEl.textContent = formatDist(man.meters);
+            if (man.type === "arrive" && man.meters < 30) {
+                streetEl.textContent = "Cél";
+                hintEl.textContent = "GPS elérhető · " + (dest && dest.name ? dest.name : "Megérkeztél");
+            } else {
+                streetEl.textContent = maneuverPhrase(man);
+                hintEl.textContent = "GPS elérhető · " + currentStepName(travel);
+            }
+            setArrow(man.type === "arrive" ? "straight" : man.modifier);
+        } else if (routeActive && routeMeters > 0) {
+            distEl.textContent = "—";
+            streetEl.textContent = "A kocsi áll";
+            hintEl.textContent = gpsPhrase();
+            setArrow("straight");
         } else {
-            remainKm = 2.4 * (1 - travel);
-            if (remainKm < 0.1) remainKm = 0.1;
-            km = comma(remainKm, 1) + " km";
-            mins = Math.round(remainKm / 58 * 60);
-            if (mins < 1) mins = 1;
-            streetEl.textContent = "Mintaút";
-            hintEl.textContent = "minta, nem GPS";
-            leftKindEl.textContent = "Minta szakasz";
-            minsKindEl.textContent = "Ebből a körből";
-            speedKindEl.textContent = "";
-            speedKindEl.className = "";
-            document.getElementById("goal-mode").textContent = "a 3D a mintaúton marad";
+            distEl.textContent = "—";
+            streetEl.textContent = "Nincs útvonal";
+            hintEl.textContent = gpsPhrase();
+            setArrow("straight");
         }
-        distEl.textContent = km;
-        leftEl.textContent = km;
-        minsEl.textContent = mins + " perc";
-        var speed = driving && !arrived ? 58 : 0;
-        speedEl.textContent = String(speed);
-        var deg = Math.round(28 + (speed / 90) * 230);
-        speedo.style.background = "conic-gradient(#3ec6ff 0 " + deg + "deg, rgba(255,255,255,0.16) " + deg + "deg 360deg)";
+        var speedPill = document.getElementById("speed-pill");
+        if (liveKmh === null) {
+            speedEl.textContent = "—";
+            if (speedPill) speedPill.title = "Nincs GPS-sebesség";
+        } else {
+            speedEl.textContent = String(Math.round(liveKmh));
+            if (speedPill) speedPill.title = "Sebesség a GPS-ből";
+        }
+        paintSheetLabel();
+        syncChrome();
     }
 
     function paintClock() {
@@ -6200,13 +6606,23 @@
         moodDirty = true;
         syncBody();
     });
+    var gfxButton = document.getElementById("gfx");
+    function paintGfx() {
+        if (!gfxButton) return;
+        gfxButton.textContent = gfxUltra ? "Ultra" : "Mobil";
+        gfxButton.setAttribute("aria-pressed", gfxUltra ? "true" : "false");
+    }
+    paintGfx();
+    if (gfxButton) gfxButton.addEventListener("click", function () {
+        var next = gfxUltra ? "mobile" : "ultra";
+        try { localStorage.setItem("toonnav-gfx", next); } catch (err) {}
+        var url = new URL(window.location.href);
+        url.searchParams.set("gfx", next);
+        window.location.assign(url.toString());
+    });
     var garagePanel = document.getElementById("garage");
     document.getElementById("garage-open").addEventListener("click", function () {
-        driving = false;
-        runButton.setAttribute("aria-label", "Megy");
         garagePanel.hidden = false;
-        syncBody();
-        paintHud();
     });
     document.getElementById("garage-close").addEventListener("click", function () {
         garagePanel.hidden = true;
@@ -6216,37 +6632,15 @@
         if (!button) return;
         selectCar(button.getAttribute("data-car"));
     });
-    runButton.addEventListener("click", function () {
-        driving = !driving;
-        if (driving) garagePanel.hidden = true;
-        runButton.setAttribute("aria-label", driving ? "Megáll" : "Megy");
-        syncBody();
-        paintHud();
-    });
     syncBody();
     updateMood(0);
-    paintHud();
     paintClock();
     window.setInterval(paintClock, 1000);
 
-    var goalForm = document.getElementById("goal-form");
-    var goalInput = document.getElementById("goal-q");
-    var goalGo = document.getElementById("goal-go");
-    var goalList = document.getElementById("goal-list");
-    var goalNote = document.getElementById("goal-note");
-    var gpsButton = document.getElementById("gps");
-    var gpsNote = document.getElementById("gps-note");
     var photonUrl = "https://photon.komoot.io/api/";
-    var gpsFix = null;
     var searchCache = {};
     var searchSeq = 0;
     var lastSearchAt = 0;
-    var chosenGoal = null;
-
-    function setGpsNote(text, kind) {
-        gpsNote.textContent = text;
-        gpsNote.className = kind ? kind : "";
-    }
 
     function formatCoord(lat, lon) {
         var ns = lat >= 0 ? "É" : "D";
@@ -6274,52 +6668,50 @@
         return parts.join(", ");
     }
 
-    function askGps() {
-        if (!navigator.geolocation) {
-            setGpsNote("GPS: ez a böngésző nem ad helyet.", "bad");
-            return;
-        }
-        if (window.isSecureContext === false) {
-            setGpsNote("GPS: a lap nem biztonságos címen fut, a lekérés nem indul.", "bad");
-            return;
-        }
-        setGpsNote("GPS: engedély kérése…", "wait");
-        gpsButton.disabled = true;
-        navigator.geolocation.getCurrentPosition(function (pos) {
-            gpsButton.disabled = false;
-            var c = pos.coords;
-            gpsFix = { lat: c.latitude, lon: c.longitude, acc: c.accuracy };
-            var acc = typeof c.accuracy === "number" ? " (±" + Math.round(c.accuracy) + " m)" : "";
-            setGpsNote("GPS helyzet: " + formatCoord(c.latitude, c.longitude) + acc + ". Ez a helyzet, nem az út közepe és nem a sebesség.", "ok");
-            if (chosenGoal) planRoute();
-        }, function (err) {
-            gpsButton.disabled = false;
-            var code = err && err.code;
-            if (code === 1) {
-                gpsFix = null;
-                setGpsNote("GPS: az engedélyt megtagadták. Androidon a böngésző helyengedélye is kell.", "bad");
-            } else if (code === 2) setGpsNote("GPS: a hely most nem érhető el.", "bad");
-            else if (code === 3) setGpsNote("GPS: a lekérés túl sokáig tartott. Próbáld újra.", "bad");
-            else setGpsNote("GPS: a helyet nem sikerült lekérni.", "bad");
-            if (code === 1 || !gpsFix) {
-                showSample();
-                if (chosenGoal) {
-                    goalNote.textContent = "A cél rögzítve, de érvényes GPS-helyzet nélkül nincs indulópont. Engedély vagy GPS-adat szükséges.";
-                    goalNote.className = "warn";
-                }
-            }
-        }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 30000 });
+    function clearList() {
+        while (goalList.firstChild) goalList.removeChild(goalList.firstChild);
     }
 
-    function showPlaces(features) {
-        while (goalList.firstChild) goalList.removeChild(goalList.firstChild);
+    function placeMatches(place, input) {
+        if (!place || !input) return false;
+        return input.value.replace(/^\s+|\s+$/g, "") === place.name;
+    }
+
+    function fitSheet() {
+        var vv = window.visualViewport;
+        if (!vv) return;
+        var off = vv.offsetTop || 0;
+        if (off > 1) clusterEl.style.top = (off + 6) + "px";
+        else clusterEl.style.top = "";
+        clusterEl.style.maxHeight = Math.max(88, vv.height - off - 12) + "px";
+    }
+
+    function setSheet(open) {
+        sheetOpen = open;
+        if (!open) clearList();
+        sheetBody.hidden = !open;
+        sheetToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        document.body.classList.toggle("sheet-open", open);
+        paintSheetLabel();
+        syncChrome();
+        fitSheet();
+    }
+
+    function markField(which) {
+        searchField = which === "from" ? "from" : "to";
+        fromInput.classList.toggle("active", searchField === "from");
+        toInput.classList.toggle("active", searchField === "to");
+    }
+
+    function showPlaces(features, field) {
+        var target = field === "from" ? "from" : "to";
+        clearList();
+        var label = target === "from" ? "induláshoz" : "célhoz";
         if (!features.length) {
-            goalNote.textContent = "Nincs találat. A Mintaút ettől még megy.";
-            goalNote.className = "warn";
+            setNote("Nincs találat a megadott címre.", "warn");
             return;
         }
-        goalNote.textContent = "Válassz egy találatot. Ez még nem indít valódi navigációt.";
-        goalNote.className = "";
+        var added = 0;
         var i;
         for (i = 0; i < features.length; i++) {
             (function (feature) {
@@ -6340,81 +6732,410 @@
                 btn.appendChild(strong);
                 btn.appendChild(small);
                 btn.addEventListener("click", function () {
-                    chosenGoal = { name: placeTitle(props), lat: lat, lon: lon };
-                    var buttons = goalList.getElementsByTagName("button");
-                    var b;
-                    for (b = 0; b < buttons.length; b++) buttons[b].className = "";
-                    btn.className = "picked";
-                    if (!gpsFix) {
-                        goalNote.textContent = "A cél rögzítve. Valódi közúti útvonalhoz engedély vagy GPS-adat szükséges.";
-                        goalNote.className = "warn";
-                        askGps();
+                    var place = { name: placeTitle(props), lat: lat, lon: lon, fromGps: false };
+                    if (target === "from") {
+                        origin = place;
+                        fromInput.value = place.name;
                     } else {
-                        planRoute();
+                        dest = place;
+                        toInput.value = place.name;
                     }
+                    clearList();
+                    if (origin && dest && placeMatches(origin, fromInput) && placeMatches(dest, toInput)) {
+                        setNote("Útvonal kérése…", "");
+                        planRoute();
+                    } else if (!origin || !placeMatches(origin, fromInput)) {
+                        setNote("A cél megvan. Add meg az indulást, vagy használd a GPS gombot.", "");
+                    } else {
+                        setNote("Az indulás megvan. Add meg a célt.", "");
+                    }
+                    paintHud();
                 });
                 li.appendChild(btn);
                 goalList.appendChild(li);
+                added += 1;
             })(features[i]);
         }
+        if (!added) {
+            setNote("A keresés válaszolt, de nem volt használható koordináta.", "warn");
+            return;
+        }
+        setNote("Találatok a " + label + ". Válassz a listából.", "");
+        fitSheet();
     }
 
     function runSearch(query) {
         var q = String(query || "").replace(/^\s+|\s+$/g, "");
         if (!q) {
-            goalNote.textContent = "Írj be egy címet vagy várost.";
-            goalNote.className = "warn";
+            setNote("Írj be egy címet vagy helyet.", "warn");
             return;
         }
         if (q.length > 120) q = q.substring(0, 120);
         if (!window.fetch) {
-            goalNote.textContent = "Ez a böngésző nem tud címkeresést indítani.";
-            goalNote.className = "warn";
+            setNote("Ez a böngésző nem tud címkeresést indítani.", "warn");
             return;
         }
-        var bias = gpsFix ? gpsFix.lat.toFixed(1) + "," + gpsFix.lon.toFixed(1) : "";
+        var bias = "";
+        if (gpsFix) bias = gpsFix.lat.toFixed(1) + "," + gpsFix.lon.toFixed(1);
+        else if (origin) bias = origin.lat.toFixed(1) + "," + origin.lon.toFixed(1);
         var key = q.toLowerCase() + "|" + bias;
+        var fieldNow = searchField;
         if (searchCache[key]) {
-            showPlaces(searchCache[key]);
+            showPlaces(searchCache[key], fieldNow);
             return;
         }
         var now = Date.now();
         if (now - lastSearchAt < 1200) {
-            goalNote.textContent = "A kereső másodpercenként egy kérést fogad. Várj egy pillanatot.";
-            goalNote.className = "warn";
+            setNote("A kereső másodpercenként egy kérést fogad. Várj egy pillanatot.", "warn");
             return;
         }
         lastSearchAt = now;
         var seq = ++searchSeq;
-        goalGo.disabled = true;
-        goalNote.textContent = "Keresés…";
-        goalNote.className = "";
+        searchBtn.disabled = true;
+        clearList();
+        setNote("Keresés…", "");
         var url = photonUrl + "?q=" + encodeURIComponent(q) + "&limit=5&lang=default";
         if (gpsFix) url += "&lat=" + encodeURIComponent(String(gpsFix.lat)) + "&lon=" + encodeURIComponent(String(gpsFix.lon));
+        else if (origin) url += "&lat=" + encodeURIComponent(String(origin.lat)) + "&lon=" + encodeURIComponent(String(origin.lon));
         fetch(url, { headers: { "Accept": "application/json" }, cache: "no-store" }).then(function (res) {
             if (!res.ok) throw new Error(String(res.status));
             return res.json();
         }).then(function (data) {
             if (seq !== searchSeq) return;
-            goalGo.disabled = false;
+            searchBtn.disabled = false;
             var features = data && data.features ? data.features : [];
+            if (!data || !data.features) {
+                setNote("A keresés válasza nem értelmezhető.", "warn");
+                return;
+            }
             searchCache[key] = features;
-            showPlaces(features);
+            showPlaces(features, fieldNow);
         }).catch(function () {
             if (seq !== searchSeq) return;
-            goalGo.disabled = false;
-            goalNote.textContent = "A címkeresés most nem válaszol. A Mintaút ettől függetlenül megy.";
-            goalNote.className = "warn";
+            searchBtn.disabled = false;
+            clearList();
+            setNote("A címkeresés nem elérhető. Ellenőrizd a hálózatot.", "warn");
         });
     }
 
-    var shoulderA = lambert(0x8fce6a);
-    var shoulderB = lambert(0x7fbf62);
+    function updateLiveSpeed() {
+        if (!gpsFix || gpsStatus !== "ok") {
+            liveKmh = null;
+            return;
+        }
+        var reported = gpsFix.speed;
+        if (typeof reported === "number" && isFinite(reported) && reported >= 0) {
+            liveKmh = reported * 3.6;
+            return;
+        }
+        liveKmh = null;
+    }
+
+    function closestOnRoute(x, z) {
+        var pts = curve.points;
+        var lengths = curve.lengths;
+        var bestD = Infinity;
+        var bestU = 0;
+        var i;
+        for (i = 1; i < pts.length; i++) {
+            var ax = pts[i - 1].x;
+            var az = pts[i - 1].z;
+            var bx = pts[i].x;
+            var bz = pts[i].z;
+            var dx = bx - ax;
+            var dz = bz - az;
+            var len2 = dx * dx + dz * dz;
+            var t = 0;
+            if (len2 > 0.01) t = ((x - ax) * dx + (z - az) * dz) / len2;
+            if (t < 0) t = 0;
+            if (t > 1) t = 1;
+            var px = ax + dx * t;
+            var pz = az + dz * t;
+            var ox = x - px;
+            var oz = z - pz;
+            var dist = Math.sqrt(ox * ox + oz * oz);
+            if (dist < bestD) {
+                bestD = dist;
+                if (curve.sampleU && curve.sampleU.length === pts.length) {
+                    var u0 = curve.sampleU[i - 1];
+                    var u1 = curve.sampleU[i];
+                    bestU = u0 + (u1 - u0) * t;
+                } else {
+                    var along = lengths[i - 1] + Math.sqrt((px - ax) * (px - ax) + (pz - az) * (pz - az));
+                    bestU = along / (curve.total || 1);
+                }
+            }
+        }
+        return { u: bestU, dist: bestD };
+    }
+
+    function aimTravel() {
+        if (!routeActive || !routeProj || !gpsFix || !curve || !curve.points) {
+            gpsOnRoute = false;
+            gpsTargetU = null;
+            return;
+        }
+        if (typeof gpsFix.acc === "number" && gpsFix.acc > 120) {
+            gpsOnRoute = false;
+            gpsTargetU = null;
+            gpsOffDist = null;
+            gpsPoor = true;
+            return;
+        }
+        gpsPoor = false;
+        var x = (gpsFix.lon - routeProj.lon0) * routeProj.mLon;
+        var z = -((gpsFix.lat - routeProj.lat0) * routeProj.mLat);
+        var hit = closestOnRoute(x, z);
+        gpsOffDist = hit.dist;
+        if (hit.dist > offRouteM) {
+            gpsOnRoute = false;
+            gpsTargetU = null;
+            return;
+        }
+        gpsOnRoute = true;
+        gpsTargetU = hit.u;
+        noteGpsAlong(hit.u);
+    }
+
+    function clampTravel(u) {
+        if (u < 0.0004) return 0.0004;
+        if (u > 0.999) return 0.999;
+        return u;
+    }
+
+    function noteGpsAlong(u) {
+        var total = curve.total || 1;
+        var s = u * total;
+        var now = gpsFix && typeof gpsFix.t === "number" ? gpsFix.t : Date.now();
+        if (shownAlong === null || gpsMeasure === null) {
+            if (Math.abs(s - travel * total) > 18) aligned = false;
+            shownAlong = s;
+            gpsMeasure = s;
+            coastMps = liveKmh === null ? 0 : Math.min(45, Math.max(0, liveKmh / 3.6));
+            lastAlongT = now;
+            travel = clampTravel(s / total);
+            return;
+        }
+        var dtFix = (now - lastAlongT) / 1000;
+        if (!(dtFix > 0)) dtFix = 0.05;
+        if (dtFix > 8 && Math.abs(s - shownAlong) > 120) {
+            shownAlong = s;
+            gpsMeasure = s;
+            coastMps = liveKmh === null ? 0 : Math.min(45, Math.max(0, liveKmh / 3.6));
+            lastAlongT = now;
+            travel = clampTravel(s / total);
+            aligned = false;
+            return;
+        }
+        var ds = s - gpsMeasure;
+        if (ds < 0 && ds >= -12 && coastMps < 2) {
+            lastAlongT = now;
+            return;
+        }
+        if (ds < 0) {
+            gpsMeasure = s;
+            coastMps *= Math.exp(-Math.min(dtFix, 2) / 0.6);
+            lastAlongT = now;
+            return;
+        }
+        if (ds < 1.6 && coastMps < 1.2) {
+            lastAlongT = now;
+            return;
+        }
+        var inst = dtFix > 0.05 ? ds / dtFix : coastMps;
+        if (inst < 0) inst = 0;
+        if (inst > 45) inst = 45;
+        if (liveKmh !== null && inst > liveKmh / 3.6 + 6) inst = Math.max(0, liveKmh / 3.6);
+        var blend = 1 - Math.exp(-Math.min(Math.max(dtFix, 0.05), 2) / 0.45);
+        coastMps += (inst - coastMps) * blend;
+        if (coastMps < 0) coastMps = 0;
+        if (coastMps > 45) coastMps = 45;
+        gpsMeasure = s;
+        lastAlongT = now;
+    }
+
+    function advanceAlong(dt) {
+        if (!routeActive || !gpsOnRoute || shownAlong === null || gpsMeasure === null) return;
+        var total = curve.total || 1;
+        var used = dt > 0.1 ? 0.1 : dt;
+        if (!(used > 0)) return;
+        var lead = Math.min(16, Math.max(4, coastMps * 0.9));
+        var cap = gpsMeasure + lead;
+        if (cap > total - 0.3) cap = total - 0.3;
+        var gap = gpsMeasure - shownAlong;
+        var moveMps = coastMps;
+        if (gap > 6) moveMps = Math.min(32, coastMps + Math.min(12, (gap - 6) * 0.45));
+        shownMps = moveMps;
+        var step = moveMps * used;
+        if (step > 3.2) step = 3.2;
+        if (shownAlong + step > cap) step = cap - shownAlong;
+        if (step < 0) step = 0;
+        shownAlong += step;
+        if (shownAlong > cap) {
+            var pull = Math.max(10, coastMps) * used;
+            var over = shownAlong - cap;
+            shownAlong -= over < pull ? over : pull;
+        }
+        if (shownAlong < 0.3) shownAlong = 0.3;
+        if (shownAlong > total - 0.3) shownAlong = total - 0.3;
+        travel = shownAlong / total;
+    }
+
+    function onFix(pos) {
+        var c = pos && pos.coords;
+        if (!c || !isFinite(c.latitude) || !isFinite(c.longitude)) return;
+        var prev = gpsFix;
+        gpsFix = {
+            lat: c.latitude,
+            lon: c.longitude,
+            acc: c.accuracy,
+            speed: c.speed,
+            t: pos.timestamp || Date.now()
+        };
+        gpsStatus = "ok";
+        gpsFixSamples += 1;
+        gpsButton.disabled = false;
+        updateLiveSpeed();
+        if (gpsOriginArmed) {
+            gpsOriginArmed = false;
+            origin = { name: "Saját helyzet", lat: c.latitude, lon: c.longitude, fromGps: true };
+            fromInput.value = "Saját helyzet";
+            setNote("Indulás: saját helyzet.", "ok");
+            if (dest && placeMatches(dest, toInput)) planRoute();
+        }
+        if (routeActive) aimTravel();
+        paintHud();
+    }
+
+    function onGpsError(err) {
+        var code = err && err.code;
+        gpsButton.disabled = false;
+        gpsOriginArmed = false;
+        if (code === 1) {
+            gpsStatus = "denied";
+            gpsOnRoute = false;
+            gpsTargetU = null;
+            liveKmh = null;
+            if (watchId !== null && navigator.geolocation && navigator.geolocation.clearWatch) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+            setNote("A helyengedélyt megtagadták. Engedélyezd a helyet a böngészőben vagy az Android alkalmazásban. GPS nélkül a kocsi nem követi az utat.", "warn");
+        } else if (code === 2) {
+            if (gpsFix) {
+                gpsStatus = "lost";
+                gpsOnRoute = false;
+                gpsTargetU = null;
+                liveKmh = null;
+                setNote("A GPS-jel elveszett. A kocsi megáll, amíg új helyzet nem érkezik.", "warn");
+            } else {
+                gpsStatus = "unavailable";
+                setNote("A hely most nem érhető el. Az útvonal ettől még megtervezhető, a kocsi viszont nem indul el.", "warn");
+            }
+        } else if (code === 3) {
+            if (gpsFix) {
+                gpsStatus = "lost";
+                gpsOnRoute = false;
+                gpsTargetU = null;
+                liveKmh = null;
+                setNote("A GPS-jel elveszett. A kocsi megáll, amíg új helyzet nem érkezik.", "warn");
+            } else {
+                gpsStatus = "timeout";
+                setNote("A helylekérés túl sokáig tartott. Próbáld újra a GPS gombbal.", "warn");
+            }
+        } else if (!gpsFix) {
+            gpsStatus = "error";
+            setNote("A helyet nem sikerült lekérni.", "warn");
+        }
+        paintHud();
+    }
+
+    function startWatch() {
+        if (watchId !== null) return true;
+        if (!navigator.geolocation) {
+            gpsStatus = "unsupported";
+            setNote("Ez a környezet nem ad helyadatot. Android WebView-ban kell a helyengedély és a WebView geolocation engedélyezése.", "warn");
+            return false;
+        }
+        if (window.isSecureContext === false) {
+            gpsStatus = "insecure";
+            setNote("A lap nem biztonságos címen fut, ezért nincs GPS. Https vagy localhost kell, Android WebView-ban is.", "warn");
+            return false;
+        }
+        gpsStatus = "pending";
+        paintHud();
+        watchId = navigator.geolocation.watchPosition(onFix, onGpsError, {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 2000
+        });
+        return true;
+    }
+
+    function useGpsOrigin() {
+        setSheet(true);
+        markField("from");
+        if (gpsFix && gpsStatus === "ok") {
+            origin = { name: "Saját helyzet", lat: gpsFix.lat, lon: gpsFix.lon, fromGps: true };
+            fromInput.value = "Saját helyzet";
+            setNote("Indulás: saját helyzet.", "ok");
+            if (dest && placeMatches(dest, toInput)) planRoute();
+            else setNote("Az indulás a saját helyzet. Add meg a célt.", "");
+            paintHud();
+            return;
+        }
+        gpsOriginArmed = true;
+        gpsButton.disabled = true;
+        setNote("Helymeghatározás…", "");
+        if (!startWatch()) gpsButton.disabled = false;
+    }
+
+    sheetToggle.addEventListener("click", function () {
+        setSheet(!sheetOpen);
+    });
+    if (searchReopen) searchReopen.addEventListener("click", function () {
+        setSheet(true);
+        markField("to");
+    });
+    fromInput.addEventListener("focus", function () {
+        markField("from");
+        setSheet(true);
+    });
+    toInput.addEventListener("focus", function () {
+        markField("to");
+        setSheet(true);
+    });
+    goalForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        setSheet(true);
+        runSearch(searchField === "from" ? fromInput.value : toInput.value);
+    });
+    gpsButton.addEventListener("click", useGpsOrigin);
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", fitSheet);
+        window.visualViewport.addEventListener("scroll", fitSheet);
+    }
+    window.addEventListener("resize", fitSheet);
+    if (navigator.permissions && navigator.permissions.query) {
+        navigator.permissions.query({ name: "geolocation" }).then(function (perm) {
+            if (perm.state === "granted") startWatch();
+            else if (perm.state === "denied") {
+                gpsStatus = "denied";
+                paintHud();
+            }
+        }).catch(function () {});
+    }
+    markField("to");
+    paintHud();
+    fitSheet();
+
+    var shoulderA = gravelMat;
+    var shoulderB = gravelMat;
     var curbMatA = lambert(0xf3efe4);
     var curbMatB = lambert(0xe7e2d4);
 
     function disposeObj(obj) {
-        if (obj.geometry) obj.geometry.dispose();
+        if (obj.geometry && !(obj.geometry.userData && obj.geometry.userData.shared)) obj.geometry.dispose();
         var c;
         if (obj.children) {
             for (c = 0; c < obj.children.length; c++) disposeObj(obj.children[c]);
@@ -6434,6 +7155,7 @@
         var lon0 = coords[0][0];
         var mLat = 111320;
         var mLon = 111320 * Math.cos(lat0 * Math.PI / 180);
+        routeProj = { lat0: lat0, lon0: lon0, mLat: mLat, mLon: mLon };
         var raw = [];
         var i;
         for (i = 0; i < coords.length; i++) {
@@ -6443,136 +7165,213 @@
                 var prev = raw[raw.length - 1];
                 var dx = x - prev.x;
                 var dz = z - prev.z;
-                if (dx * dx + dz * dz < 9) continue;
+                if (dx * dx + dz * dz < 0.04) continue;
             }
-            raw.push(new THREE.Vector3(x, 0, z));
+            raw.push({ x: x, z: z });
         }
-        if (raw.length < 2) return raw;
-        return densify(filletPath(simplifyLine(raw, 12, 700), 16), 8);
+        return raw;
     }
 
-    function filletPath(points, radius) {
-        if (points.length < 3) return points;
-        var out = [points[0]];
+    function hypot2(x, z) {
+        return Math.sqrt(x * x + z * z);
+    }
+
+    function cleanPolyline(raw) {
+        var out = [];
         var i;
-        for (i = 1; i < points.length - 1; i++) {
-            var a = points[i - 1];
-            var b = points[i];
-            var c = points[i + 1];
-            var abx = b.x - a.x;
-            var abz = b.z - a.z;
-            var bcx = c.x - b.x;
-            var bcz = c.z - b.z;
-            var ab = Math.sqrt(abx * abx + abz * abz) || 1;
-            var bc = Math.sqrt(bcx * bcx + bcz * bcz) || 1;
-            abx /= ab;
-            abz /= ab;
-            bcx /= bc;
-            bcz /= bc;
-            var dot = abx * bcx + abz * bcz;
-            if (dot > 0.992) {
-                out.push(b);
+        for (i = 0; i < raw.length; i++) {
+            var p = raw[i];
+            if (!out.length) {
+                out.push({ x: p.x, z: p.z });
                 continue;
             }
-            var cut = Math.min(radius, ab * 0.45, bc * 0.45);
-            var p1x = b.x - abx * cut;
-            var p1z = b.z - abz * cut;
-            var p2x = b.x + bcx * cut;
-            var p2z = b.z + bcz * cut;
-            out.push(new THREE.Vector3(p1x, 0, p1z));
-            var steps = 4;
-            var s;
-            for (s = 1; s < steps; s++) {
-                var t = s / steps;
-                var u = 1 - t;
-                out.push(new THREE.Vector3(
-                    u * u * p1x + 2 * u * t * b.x + t * t * p2x,
-                    0,
-                    u * u * p1z + 2 * u * t * b.z + t * t * p2z
-                ));
-            }
-            out.push(new THREE.Vector3(p2x, 0, p2z));
+            var prev = out[out.length - 1];
+            var dx = p.x - prev.x;
+            var dz = p.z - prev.z;
+            if (dx * dx + dz * dz >= 1.44) out.push({ x: p.x, z: p.z });
         }
-        out.push(points[points.length - 1]);
-        return out;
-    }
-
-    function densify(points, maxLen) {
-        var out = [points[0]];
-        var i;
-        for (i = 1; i < points.length; i++) {
-            var a = points[i - 1];
-            var b = points[i];
-            var dx = b.x - a.x;
-            var dz = b.z - a.z;
-            var len = Math.sqrt(dx * dx + dz * dz);
-            var steps = Math.ceil(len / maxLen);
-            if (steps < 1) steps = 1;
-            var k;
-            for (k = 1; k <= steps; k++) {
-                var f = k / steps;
-                out.push(new THREE.Vector3(a.x + dx * f, 0, a.z + dz * f));
+        if (raw.length) {
+            var end = raw[raw.length - 1];
+            var last = out[out.length - 1];
+            var ex = end.x - last.x;
+            var ez = end.z - last.z;
+            var end2 = ex * ex + ez * ez;
+            if (end2 > 0.01) {
+                if (end2 < 1.44) out[out.length - 1] = { x: end.x, z: end.z };
+                else out.push({ x: end.x, z: end.z });
             }
         }
         return out;
     }
 
-    function simplifyLine(points, epsilon, cap) {
-        var keep = [];
+    function cornerInfo(a, b, c) {
+        var inx = b.x - a.x;
+        var inz = b.z - a.z;
+        var inLen = hypot2(inx, inz);
+        if (inLen < 0.35) return null;
+        inx /= inLen;
+        inz /= inLen;
+        var outx = c.x - b.x;
+        var outz = c.z - b.z;
+        var outLen = hypot2(outx, outz);
+        if (outLen < 0.35) return null;
+        outx /= outLen;
+        outz /= outLen;
+        var dot = inx * outx + inz * outz;
+        if (dot > 1) dot = 1;
+        if (dot < -1) dot = -1;
+        if (dot > 0.9998) return null;
+        var alpha = Math.acos(dot);
+        if (!(alpha > 0.02) || alpha > 2.85) return null;
+        return { inx: inx, inz: inz, outx: outx, outz: outz, inLen: inLen, outLen: outLen, alpha: alpha };
+    }
+
+    function planCorners(pts) {
+        var n = pts.length;
+        var info = new Array(n);
+        var reach = new Array(n);
+        var radius = new Array(n);
+        var tanH = new Array(n);
+        var desired = new Array(n);
         var i;
-        for (i = 0; i < points.length; i++) keep.push(false);
-        keep[0] = true;
-        keep[points.length - 1] = true;
-        var stack = [[0, points.length - 1]];
-        while (stack.length) {
-            var range = stack.pop();
-            var a = range[0];
-            var b = range[1];
-            if (b <= a + 1) continue;
-            var ax = points[a].x;
-            var az = points[a].z;
-            var bx = points[b].x;
-            var bz = points[b].z;
-            var dx = bx - ax;
-            var dz = bz - az;
-            var len2 = dx * dx + dz * dz;
-            var best = -1;
-            var bestDist = 0;
-            var k;
-            for (k = a + 1; k < b; k++) {
-                var dist;
-                if (len2 < 0.01) {
-                    var ex = points[k].x - ax;
-                    var ez = points[k].z - az;
-                    dist = Math.sqrt(ex * ex + ez * ez);
-                } else {
-                    var t = ((points[k].x - ax) * dx + (points[k].z - az) * dz) / len2;
-                    if (t < 0) t = 0;
-                    if (t > 1) t = 1;
-                    var px = ax + t * dx;
-                    var pz = az + t * dz;
-                    var ox = points[k].x - px;
-                    var oz = points[k].z - pz;
-                    dist = Math.sqrt(ox * ox + oz * oz);
+        for (i = 0; i < n; i++) {
+            info[i] = null;
+            reach[i] = 0;
+            radius[i] = 0;
+            tanH[i] = 0;
+            desired[i] = 0;
+        }
+        for (i = 1; i < n - 1; i++) {
+            var t = cornerInfo(pts[i - 1], pts[i], pts[i + 1]);
+            info[i] = t;
+            if (!t) continue;
+            var half = t.alpha * 0.5;
+            var th = Math.tan(half);
+            var dev = 1 - Math.cos(half);
+            if (!(th > 0.008) || !(dev > 1e-6) || !isFinite(th)) continue;
+            var rRoad = Math.min(90, 2.35 / dev);
+            var rLeg = Math.min(t.inLen, t.outLen) * 0.98 / th;
+            var r = Math.min(rRoad, rLeg);
+            if (!(r >= 0.85)) continue;
+            var rh = r * th;
+            if (!(rh >= 0.3)) continue;
+            tanH[i] = th;
+            desired[i] = rh;
+            reach[i] = rh;
+            radius[i] = r;
+        }
+        var pass;
+        var k;
+        for (pass = 0; pass < 14; pass++) {
+            var changed = false;
+            for (k = 1; k < n - 1; k++) {
+                var seg = hypot2(pts[k + 1].x - pts[k].x, pts[k + 1].z - pts[k].z);
+                var limit = seg * 0.98;
+                if (reach[k] + reach[k + 1] <= limit + 1e-4) continue;
+                var t1 = tanH[k];
+                var t2 = tanH[k + 1];
+                var a = 0;
+                var b = 0;
+                if (t1 + t2 > 1e-8) {
+                    a = limit * t1 / (t1 + t2);
+                    b = limit - a;
                 }
-                if (dist > bestDist) {
-                    bestDist = dist;
-                    best = k;
+                if (a > desired[k]) {
+                    b += a - desired[k];
+                    a = desired[k];
+                }
+                if (b > desired[k + 1]) {
+                    a += b - desired[k + 1];
+                    b = desired[k + 1];
+                    if (a > desired[k]) a = desired[k];
+                }
+                if (reach[k] > a + 1e-4) {
+                    reach[k] = a;
+                    changed = true;
+                }
+                if (reach[k + 1] > b + 1e-4) {
+                    reach[k + 1] = b;
+                    changed = true;
                 }
             }
-            if (best >= 0 && bestDist > epsilon) {
-                keep[best] = true;
-                stack.push([a, best]);
-                stack.push([best, b]);
+            if (!changed) break;
+        }
+        for (i = 1; i < n - 1; i++) {
+            if (!info[i] || reach[i] < 0.3) {
+                radius[i] = 0;
+                reach[i] = 0;
+                continue;
+            }
+            var tanH2 = Math.tan(info[i].alpha * 0.5);
+            radius[i] = reach[i] / tanH2;
+            if (!(radius[i] >= 0.85) || !isFinite(radius[i])) {
+                radius[i] = 0;
+                reach[i] = 0;
             }
         }
-        var out = [];
-        for (i = 0; i < points.length; i++) if (keep[i]) out.push(points[i]);
-        if (out.length > cap) {
-            if (epsilon > 5000) return [points[0], points[points.length - 1]];
-            return simplifyLine(points, epsilon * 1.7, cap);
+        return { info: info, reach: reach, radius: radius };
+    }
+
+    function filletGeom(b, info, radius, reach) {
+        var side = info.inx * info.outz - info.inz * info.outx;
+        var sign = side >= 0 ? 1 : -1;
+        var nx = -info.inz * sign;
+        var nz = info.inx * sign;
+        var t1x = b.x - info.inx * reach;
+        var t1z = b.z - info.inz * reach;
+        var t2x = b.x + info.outx * reach;
+        var t2z = b.z + info.outz * reach;
+        var cx = t1x + nx * radius;
+        var cz = t1z + nz * radius;
+        var a0 = Math.atan2(t1z - cz, t1x - cx);
+        var a1 = Math.atan2(t2z - cz, t2x - cx);
+        var sweep = a1 - a0;
+        while (sweep > Math.PI) sweep -= Math.PI * 2;
+        while (sweep < -Math.PI) sweep += Math.PI * 2;
+        if (sign > 0 && sweep < 0) sweep += Math.PI * 2;
+        if (sign < 0 && sweep > 0) sweep -= Math.PI * 2;
+        if (!(Math.abs(sweep) >= 0.02) || Math.abs(sweep) > 3.05) return null;
+        if (Math.abs(Math.abs(sweep) - info.alpha) > 0.4) return null;
+        return { t1x: t1x, t1z: t1z, t2x: t2x, t2z: t2z, cx: cx, cz: cz, r: radius, a0: a0, sweep: sweep };
+    }
+
+    function pushLine(pieces, ax, az, bx, bz) {
+        var dx = bx - ax;
+        var dz = bz - az;
+        var len = hypot2(dx, dz);
+        if (len <= 0.02) return;
+        pieces.push({ line: true, ax: ax, az: az, bx: bx, bz: bz, len: len, tx: dx / len, tz: dz / len });
+    }
+
+    function buildPieces(pts) {
+        var plan = planCorners(pts);
+        var pieces = [];
+        var cursor = { x: pts[0].x, z: pts[0].z };
+        var i;
+        for (i = 1; i < pts.length - 1; i++) {
+            var fit = null;
+            if (plan.radius[i] > 0) fit = filletGeom(pts[i], plan.info[i], plan.radius[i], plan.reach[i]);
+            if (!fit) {
+                pushLine(pieces, cursor.x, cursor.z, pts[i].x, pts[i].z);
+                cursor = { x: pts[i].x, z: pts[i].z };
+                continue;
+            }
+            pushLine(pieces, cursor.x, cursor.z, fit.t1x, fit.t1z);
+            pieces.push({
+                line: false,
+                cx: fit.cx,
+                cz: fit.cz,
+                r: fit.r,
+                a0: fit.a0,
+                sweep: fit.sweep,
+                len: Math.abs(fit.r * fit.sweep)
+            });
+            cursor = { x: fit.t2x, z: fit.t2z };
         }
-        return out;
+        var end = pts[pts.length - 1];
+        pushLine(pieces, cursor.x, cursor.z, end.x, end.z);
+        if (!pieces.length) pushLine(pieces, pts[0].x, pts[0].z, end.x, end.z);
+        return pieces;
     }
 
     function readSteps(route) {
@@ -6587,10 +7386,13 @@
             for (si = 0; si < list.length; si++) {
                 var step = list[si];
                 var dist = step.distance || 0;
+                var maneuver = step.maneuver || {};
                 steps.push({
                     u0: cursor / total,
                     u1: (cursor + dist) / total,
-                    name: step.name || ""
+                    name: step.name || "",
+                    type: maneuver.type || "",
+                    modifier: maneuver.modifier || ""
                 });
                 cursor += dist;
             }
@@ -6598,50 +7400,149 @@
         return steps;
     }
 
-    function RouteCurve(points) {
-        this.points = points;
+    function RouteCurve(samples, pieces) {
+        this.points = [];
+        this.txs = [];
+        this.tzs = [];
+        this.sampleU = [];
         this.lengths = [0];
+        this.pieces = pieces || [];
+        this.pieceAt = [0];
         var i;
-        for (i = 1; i < points.length; i++) {
-            this.lengths.push(this.lengths[i - 1] + points[i].distanceTo(points[i - 1]));
+        var acc = 0;
+        for (i = 0; i < this.pieces.length; i++) {
+            acc += this.pieces[i].len;
+            this.pieceAt.push(acc);
         }
-        this.total = this.lengths[this.lengths.length - 1] || 1;
+        this.total = acc || 1;
+        for (i = 0; i < samples.length; i++) {
+            this.points.push(new THREE.Vector3(samples[i].x, 0, samples[i].z));
+            this.txs.push(samples[i].tx);
+            this.tzs.push(typeof samples[i].tz === "number" ? samples[i].tz : 0);
+            this.sampleU.push(typeof samples[i].u === "number" ? samples[i].u : (i / Math.max(1, samples.length - 1)));
+            if (i) this.lengths.push(this.lengths[i - 1] + this.points[i].distanceTo(this.points[i - 1]));
+        }
+        if (this.points.length < 2) this.total = this.lengths[this.lengths.length - 1] || this.total;
     }
 
-    RouteCurve.prototype.frameAt = function (u) {
+    RouteCurve.prototype.evalAt = function (u, outPos, outTan) {
+        if (!this.pieces.length) {
+            outPos.set(0, 0, 0);
+            if (outTan) outTan.set(0, 0, 1);
+            return;
+        }
         var dist = u * this.total;
         if (dist < 0) dist = 0;
         if (dist > this.total) dist = this.total;
         var lo = 0;
-        var hi = this.lengths.length - 1;
+        var hi = this.pieces.length - 1;
         while (lo < hi) {
             var mid = (lo + hi) >> 1;
-            if (this.lengths[mid] < dist) lo = mid + 1;
+            if (this.pieceAt[mid + 1] < dist) lo = mid + 1;
             else hi = mid;
         }
-        var i = lo < 1 ? 1 : lo;
-        var span = this.lengths[i] - this.lengths[i - 1];
-        var f = span > 0.001 ? (dist - this.lengths[i - 1]) / span : 0;
-        var a = this.points[i - 1];
-        var b = this.points[i];
-        return { ax: a.x, az: a.z, bx: b.x, bz: b.z, f: f };
+        var piece = this.pieces[lo];
+        var span = piece.len || 1;
+        var f = (dist - this.pieceAt[lo]) / span;
+        if (f < 0) f = 0;
+        if (f > 1) f = 1;
+        if (piece.line) {
+            outPos.x = piece.ax + (piece.bx - piece.ax) * f;
+            outPos.y = 0;
+            outPos.z = piece.az + (piece.bz - piece.az) * f;
+            if (outTan) {
+                outTan.x = piece.tx;
+                outTan.y = 0;
+                outTan.z = piece.tz;
+            }
+        } else {
+            var ang = piece.a0 + piece.sweep * f;
+            var c = Math.cos(ang);
+            var s = Math.sin(ang);
+            outPos.x = piece.cx + piece.r * c;
+            outPos.y = 0;
+            outPos.z = piece.cz + piece.r * s;
+            if (outTan) {
+                var dir = piece.sweep >= 0 ? 1 : -1;
+                outTan.x = -s * dir;
+                outTan.y = 0;
+                outTan.z = c * dir;
+            }
+        }
     };
 
-    RouteCurve.prototype.getPointAt = function (u) {
-        var fr = this.frameAt(u);
-        return new THREE.Vector3(fr.ax + (fr.bx - fr.ax) * fr.f, 0, fr.az + (fr.bz - fr.az) * fr.f);
+    RouteCurve.prototype.getPointAt = function (u, target) {
+        var out = target || new THREE.Vector3();
+        this.evalAt(u, out, null);
+        return out;
     };
 
-    RouteCurve.prototype.getTangentAt = function (u) {
-        var fr = this.frameAt(u);
-        var x = fr.bx - fr.ax;
-        var z = fr.bz - fr.az;
-        var len = Math.sqrt(x * x + z * z);
-        if (len < 0.001) return new THREE.Vector3(0, 0, 1);
-        return new THREE.Vector3(x / len, 0, z / len);
+    RouteCurve.prototype.getTangentAt = function (u, target) {
+        var out = target || new THREE.Vector3();
+        this.evalAt(u, evalScratch, out);
+        if (out.lengthSq() < 1e-8) out.set(0, 0, 1);
+        return out;
     };
 
-    function buildStripAlong(points, center, half, y) {
+    function samplePieces(pieces) {
+        var samples = [];
+        var probe = new RouteCurve([], pieces);
+        var pos = { x: 0, y: 0, z: 0 };
+        var tan = { x: 0, y: 0, z: 0 };
+        var budget = 4500;
+        var i;
+        var s;
+        var n;
+        function pushAt(distAlong) {
+            var u = probe.total > 0 ? distAlong / probe.total : 0;
+            if (u < 0) u = 0;
+            if (u > 1) u = 1;
+            probe.evalAt(u, pos, tan);
+            if (samples.length) {
+                var prev = samples[samples.length - 1];
+                var dx = pos.x - prev.x;
+                var dz = pos.z - prev.z;
+                if (dx * dx + dz * dz < 0.04 && u < 0.999) return;
+            }
+            samples.push({
+                x: pos.x,
+                z: pos.z,
+                tx: tan.x,
+                tz: typeof tan.z === "number" ? tan.z : 0,
+                u: u
+            });
+        }
+        for (i = 0; i < pieces.length; i++) {
+            var piece = pieces[i];
+            var start = probe.pieceAt[i];
+            if (piece.line) n = Math.max(1, Math.ceil(piece.len / 3));
+            else {
+                var byAng = Math.ceil(Math.abs(piece.sweep) / (7 * Math.PI / 180));
+                var byLen = Math.ceil(piece.len / 1.4);
+                n = Math.max(2, byAng, byLen);
+            }
+            if (samples.length + n > budget) n = Math.max(1, budget - samples.length);
+            for (s = 0; s <= n; s++) {
+                if (s === 0 && samples.length) continue;
+                pushAt(start + piece.len * (s / n));
+            }
+            if (samples.length >= budget) break;
+        }
+        pushAt(probe.total);
+        if (samples.length < 2) samples.push({ x: pos.x + 1, z: pos.z, tx: 1, tz: 0, u: 1 });
+        return { samples: samples, pieces: pieces };
+    }
+
+    function buildDriveCurve(raw) {
+        var clean = cleanPolyline(raw);
+        if (clean.length < 2) return null;
+        var pieces = buildPieces(clean);
+        if (!pieces.length) return null;
+        var packed = samplePieces(pieces);
+        return new RouteCurve(packed.samples, packed.pieces);
+    }
+
+    function buildStripAlong(points, center, half, y, txs, tzs) {
         var positions = [];
         var uvs = [];
         var indices = [];
@@ -6651,7 +7552,10 @@
         for (i = 0; i < points.length; i++) {
             var tx;
             var tz;
-            if (i < points.length - 1) {
+            if (txs && tzs && typeof txs[i] === "number" && typeof tzs[i] === "number") {
+                tx = txs[i];
+                tz = tzs[i];
+            } else if (i < points.length - 1) {
                 tx = points[i + 1].x - points[i].x;
                 tz = points[i + 1].z - points[i].z;
             } else {
@@ -6703,42 +7607,80 @@
         var mesh = new THREE.Mesh(geo, material);
         mesh.frustumCulled = false;
         mesh.layers.enable(1);
+        if (gfxUltra) {
+            mesh.receiveShadow = true;
+            mesh.castShadow = false;
+        }
         routeRoot.add(mesh);
     }
 
     function buildRouteRoad() {
         var pts = curve.points;
-        addRouteMesh(buildStripAlong(pts, 0, 4.15, 0.08), roadMat);
-        addRouteMesh(buildStripAlong(pts, 4.55, 0.42, 0.06), shoulderA);
-        addRouteMesh(buildStripAlong(pts, -4.55, 0.42, 0.06), shoulderB);
-        addRouteMesh(buildStripAlong(pts, 3.72, 0.08, 0.11), lineMat);
-        addRouteMesh(buildStripAlong(pts, -3.72, 0.08, 0.11), lineMat);
-        addRouteMesh(buildStripAlong(pts, 1.35, 0.13, 0.11), guideMat);
-        addRouteMesh(buildStripAlong(pts, 3.98, 0.13, 0.1), curbMatA);
-        addRouteMesh(buildStripAlong(pts, -3.98, 0.13, 0.1), curbMatB);
+        var txs = curve.txs;
+        var tzs = curve.tzs;
+        addRouteMesh(buildStripAlong(pts, 0, 4.15, 0.08, txs, tzs), roadMat);
+        addRouteMesh(buildStripAlong(pts, 5.5, 1.35, 0.055, txs, tzs), shoulderA);
+        addRouteMesh(buildStripAlong(pts, -5.5, 1.35, 0.055, txs, tzs), shoulderB);
+        addRouteMesh(buildStripAlong(pts, 3.72, 0.08, 0.11, txs, tzs), lineMat);
+        addRouteMesh(buildStripAlong(pts, -3.72, 0.08, 0.11, txs, tzs), lineMat);
+        addRouteMesh(buildStripAlong(pts, 1.35, 0.13, 0.11, txs, tzs), guideMat);
+        addRouteMesh(buildStripAlong(pts, 3.98, 0.13, 0.1, txs, tzs), curbMatA);
+        addRouteMesh(buildStripAlong(pts, -3.98, 0.13, 0.1, txs, tzs), curbMatB);
     }
 
     function dressRoute() {
-        propRoot = routeRoot;
+        var groups = [[], [], [], [], []];
+        var dummy = new THREE.Object3D();
+        var count = gfxUltra ? 80 : 40;
         var n;
-        for (n = 0; n < 28; n++) {
-            var u = (n + 0.35) / 28;
-            if (u > 0.985) u = 0.985;
-            var side = n % 2 === 0 ? -(12 + rnd(n + 1) * 8) : (14 + rnd(n + 4) * 10);
+        for (n = 0; n < count; n++) {
+            var u = rnd(n * 2.7 + 1);
+            if (u < 0.02) u = 0.02;
+            if (u > 0.98) u = 0.98;
+            var side = (rnd(n + 4) > 0.5 ? 1 : -1) * (12 + rnd(n + 8) * (gfxUltra ? 30 : 16));
             var spot = sideAt(u, side);
-            if (n % 3 === 0) addPine(spot.x, spot.z, 1.25 + rnd(n) * 0.4, leafMats[n % 5]);
-            else addRound(spot.x, spot.z, 1.05 + rnd(n + 2) * 0.45, leafMats[n % 6]);
+            var kind = Math.floor(rnd(n + 3) * 5);
+            var sc = 0.75 + rnd(n + 6) * 1.15;
+            groups[kind].push([spot.x, 0, spot.z, sc, sc * (0.86 + rnd(n + 9) * 0.28), rnd(n) * 6.2]);
         }
-        for (n = 0; n < 8; n++) {
-            var hu = (n + 0.2) / 8;
-            if (hu > 0.97) hu = 0.97;
-            var hp = sideAt(hu, n % 2 ? 90 : -100);
-            var hill = new THREE.Mesh(peakGeo, n % 2 ? mountainMat : hillMat);
-            hill.scale.set(0.7 + rnd(n) * 0.35, 0.45, 0.6);
-            hill.position.set(hp.x, 0, hp.z);
+        var bi;
+        for (bi = 0; bi < groups.length; bi++) {
+            var list = groups[bi];
+            if (!list.length) continue;
+            var mesh = new THREE.InstancedMesh(treeGeos[bi], treeMat, list.length);
+            mesh.frustumCulled = false;
+            mesh.layers.enable(1);
+            if (gfxUltra) {
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+            }
+            var ii;
+            for (ii = 0; ii < list.length; ii++) {
+                dummy.position.set(list[ii][0], list[ii][1], list[ii][2]);
+                dummy.scale.set(list[ii][3], list[ii][4], list[ii][3]);
+                dummy.rotation.set(0, list[ii][5], 0);
+                dummy.updateMatrix();
+                mesh.setMatrixAt(ii, dummy.matrix);
+            }
+            mesh.instanceMatrix.needsUpdate = true;
+            routeRoot.add(mesh);
+        }
+        var hillN = gfxUltra ? 8 : 5;
+        for (n = 0; n < hillN; n++) {
+            var hu = rnd(n * 1.9 + 0.2);
+            if (hu < 0.04) hu = 0.04;
+            if (hu > 0.96) hu = 0.96;
+            var hp = sideAt(hu, (n % 2 ? 1 : -1) * (64 + rnd(n + 3) * 28));
+            var hill = new THREE.Mesh(riseGeo, n % 2 ? mountainMat : hillMat);
+            hill.scale.set(1.8 + rnd(n) * 1.6, 0.42 + rnd(n + 2) * 0.38, 1.4 + rnd(n + 4) * 1.1);
+            hill.position.set(hp.x, -1.1, hp.z);
+            hill.layers.enable(1);
+            if (gfxUltra) {
+                hill.castShadow = true;
+                hill.receiveShadow = true;
+            }
             routeRoot.add(hill);
         }
-        propRoot = null;
     }
 
     function formatAway(m) {
@@ -6760,7 +7702,7 @@
         }
     }
 
-    function showSample() {
+    function clearRoute() {
         var wasRoute = routeActive;
         routeActive = false;
         followOrigin = false;
@@ -6768,6 +7710,17 @@
         routeSeconds = 0;
         routeSteps = [];
         routeSnap = null;
+        routeProj = null;
+        gpsOnRoute = false;
+        gpsTargetU = null;
+        gpsOffDist = null;
+        gpsPoor = false;
+        shownAlong = null;
+        gpsMeasure = null;
+        coastMps = 0;
+        shownMps = 0;
+        lastAlongT = 0;
+        wheelRate = 0;
         if (routeRoot) {
             clearRouteRoot();
             routeRoot.visible = false;
@@ -6781,19 +7734,23 @@
         }
         setSampleRoadVisible(true);
         if (sampleCurve) curve = sampleCurve;
+        travel = scenicU;
         if (wasRoute) {
-            travel = 0.02;
             aligned = false;
             prevTangent.set(0, 0, 1);
         }
-        document.getElementById("goal-mode").textContent = "a 3D a mintaúton marad";
+        if (routeBox) {
+            routeBox.hidden = true;
+            routeBox.open = false;
+        }
         paintHud();
     }
 
     function routeFail(text) {
-        showSample();
-        goalNote.textContent = text;
-        goalNote.className = "warn";
+        clearRoute();
+        setNote(text, "warn");
+        setSheet(true);
+        paintHud();
     }
 
     function readSnap(data, index) {
@@ -6841,7 +7798,7 @@
         var wait = 1100 - (Date.now() - lastRouteAt);
         if (wait < 0) wait = 0;
         window.setTimeout(function () {
-            if (seq !== routeSeq || !gpsFix || !chosenGoal) return;
+            if (seq !== routeSeq || !origin || !dest) return;
             lastRouteAt = Date.now();
             run();
         }, wait);
@@ -6849,29 +7806,44 @@
 
     function applyRoute(route, snap) {
         var coords = route.geometry && route.geometry.coordinates;
-        if (!coords || coords.length < 2 || !route.distance) {
-            routeFail("Az útvonalnak nincs járható vonala. A navigáció nem indult. A Mintaút marad.");
+        if (!coords || coords.length < 2 || typeof route.distance !== "number" || !(route.distance > 0)) {
+            routeFail("Az útvonalnak nincs járható vonala.");
             return;
         }
         if (route.distance < 40) {
-            routeFail("A cél a közeli közúton lényegében a jelenlegi helyzet. Válassz távolabbi címet. A Mintaút marad.");
+            routeFail("A cél a közeli közúton lényegében az indulás. Válassz távolabbi címet.");
             return;
         }
-        var points = projectCoords(coords);
-        if (points.length < 2) {
-            routeFail("Az útvonal túl rövid. A navigáció nem indult. A Mintaút marad.");
+        var raw = projectCoords(coords);
+        if (raw.length < 2) {
+            routeFail("Az útvonal túl rövid a megjelenítéshez.");
+            return;
+        }
+        var drive = buildDriveCurve(raw);
+        if (!drive || drive.points.length < 2) {
+            routeFail("Az útvonal túl rövid a megjelenítéshez.");
             return;
         }
         clearRouteRoot();
-        curve = new RouteCurve(points);
+        curve = drive;
         routeMeters = route.distance;
-        routeSeconds = route.duration || 0;
+        routeSeconds = typeof route.duration === "number" ? route.duration : null;
         routeSteps = readSteps(route);
         routeSnap = snap || null;
         routeActive = true;
         followOrigin = true;
         travel = 0.0008;
-        prevTangent.copy(curve.getTangentAt(0.001)).normalize();
+        shownAlong = null;
+        gpsMeasure = null;
+        coastMps = 0;
+        shownMps = 0;
+        lastAlongT = 0;
+        wheelRate = 0;
+        gpsOnRoute = false;
+        gpsTargetU = null;
+        gpsOffDist = null;
+        curve.getTangentAt(0.001, prevTangent).normalize();
+        carYaw = Math.atan2(prevTangent.x, prevTangent.z);
         aligned = false;
         coast.visible = true;
         routeGround.visible = false;
@@ -6879,30 +7851,34 @@
         routeRoot.visible = true;
         buildRouteRoad();
         dressRoute();
-        var mins = Math.max(1, Math.round(routeSeconds / 60));
-        var snapText = "";
+        if (garagePanel) garagePanel.hidden = true;
+        if (routeBox) routeBox.open = false;
+        if (gpsFix && gpsStatus === "ok") aimTravel();
+        var text = "Tervezett útvonal: " + formatDist(routeMeters) + ", " + formatDuration(routeSeconds) + ".";
         if (snap && typeof snap.distance === "number" && snap.distance >= 12) {
             var road = snap.name ? snap.name : "a legközelebbi közút";
-            snapText = " Indulás: " + road + ", a GPS-től " + formatAway(snap.distance) + ".";
-            setGpsNote("A GPS nincs az út közepén. Indulás: " + road + ", " + formatAway(snap.distance) + ". A sebesség nem GPS.", "ok");
+            text += " Indulás: " + road + ", " + formatAway(snap.distance) + " az indulási ponttól.";
         }
-        goalNote.textContent = "Valódi közút: " + comma(routeMeters / 1000, 1) + " km, " + mins + " perc." + snapText + " A 3D haladás szimulált, a sebesség nem GPS.";
-        document.getElementById("goal-mode").textContent = "valós közút, szimulált haladás";
-        goalNote.className = "";
+        if (gpsStatus !== "ok" || !gpsFix) text += " Nincs élő GPS, a kocsi az indulásnál áll.";
+        else if (!gpsOnRoute) text += " A GPS nincs az útvonalon, a kocsi az indulásnál áll.";
+        else text += " A kocsi a GPS alapján követi az utat.";
+        setNote(text, "ok");
+        fillFacts();
+        setSheet(false);
         paintHud();
     }
 
-    function acceptRoute(key, data, gpsDistance, fallbackName) {
+    function acceptRoute(key, data, snappedDistance, fallbackName) {
         var snap = readSnap(data, 0);
         if (!snap || snap.distance === null) {
-            routeFail("Az útvonaltervező nem adott közúti indulópontot. A navigáció nem indult. A Mintaút marad.");
+            routeFail("Az útvonaltervező nem adott közúti indulópontot.");
             return;
         }
-        if (typeof gpsDistance === "number") snap.distance = gpsDistance;
+        if (typeof snappedDistance === "number") snap.distance = snappedDistance;
         if (!snap.name && fallbackName) snap.name = fallbackName;
         if (snap.distance > snapMaxM + 1) {
             var farName = snap.name ? " (" + snap.name + ")" : "";
-            routeFail("A GPS nincs úton. A legközelebbi autóút " + formatAway(snap.distance) + farName + ". Ez túl messze van indulópontnak. A navigáció nem indult. A Mintaút marad.");
+            routeFail("Az indulás nincs közúton. A legközelebbi autóút " + formatAway(snap.distance) + farName + ". Ez túl messze van indulópontnak.");
             return;
         }
         routeCache[key] = { route: data.routes[0], snap: snap };
@@ -6910,112 +7886,147 @@
     }
 
     function handleNoSegment(seq, key, data) {
+        if (!origin || !dest) return;
         if (segmentIndex(data) === 1) {
-            routeFail("A kiválasztott cél 2 km-en belül nincs autóúton. A navigáció nem indult. A Mintaút marad.");
+            routeFail("A cél 2 km-en belül nincs autóúton.");
             return;
         }
-        goalNote.textContent = "A GPS nincs a közúton. Keresem a legközelebbi autóutat…";
-        goalNote.className = "";
+        setNote("Az indulás nincs a közúton. Keresem a legközelebbi autóutat…", "");
         waitOsrm(seq, function () {
             var url = "https://routing.openstreetmap.de/routed-car/nearest/v1/driving/"
-                + osrmPair(gpsFix.lon, gpsFix.lat) + "?number=1";
+                + osrmPair(origin.lon, origin.lat) + "?number=1";
             fetchOsrm(url).then(function (near) {
-                if (seq !== routeSeq) return;
+                if (seq !== routeSeq || !origin || !dest) return;
                 var snap = near && near.code === "Ok" ? readSnap(near, 0) : null;
                 if (!snap || snap.distance === null) {
-                    routeFail("A GPS közelében nincs autóút, ezért nincs indulópont. A navigáció nem indult. A Mintaút marad.");
+                    routeFail("Az indulás közelében nincs autóút, ezért nincs útvonal.");
                     return;
                 }
                 var road = snap.name ? " (" + snap.name + ")" : "";
                 if (snap.distance > snapMaxM + 1) {
-                    routeFail("A GPS nincs úton. A legközelebbi autóút " + formatAway(snap.distance) + road + ". Ez túl messze van indulópontnak. A navigáció nem indult. A Mintaút marad.");
+                    routeFail("Az indulás nincs úton. A legközelebbi autóút " + formatAway(snap.distance) + road + ". Ez túl messze van indulópontnak.");
                     return;
                 }
-                goalNote.textContent = "Indulás a legközelebbi közútról" + (snap.name ? ": " + snap.name : "") + ", " + formatAway(snap.distance) + " a GPS-től…";
-                goalNote.className = "";
+                setNote("Indulás a legközelebbi közútról" + (snap.name ? ": " + snap.name : "") + ", " + formatAway(snap.distance) + ".", "");
                 waitOsrm(seq, function () {
-                    fetchOsrm(routeUrl(snap.lon, snap.lat, chosenGoal.lon, chosenGoal.lat, 80)).then(function (again) {
+                    fetchOsrm(routeUrl(snap.lon, snap.lat, dest.lon, dest.lat, 80)).then(function (again) {
                         if (seq !== routeSeq) return;
                         if (!again || again.code !== "Ok" || !again.routes || !again.routes.length) {
                             if (again && again.code === "NoSegment" && segmentIndex(again) === 1) {
-                                routeFail("A kiválasztott cél 2 km-en belül nincs autóúton. A navigáció nem indult. A Mintaút marad.");
+                                routeFail("A cél 2 km-en belül nincs autóúton.");
                             } else {
-                                routeFail("A legközelebbi közútról sincs járható útvonal a célhoz. A navigáció nem indult. A Mintaút marad.");
+                                routeFail("A legközelebbi közútról sincs járható útvonal a célhoz.");
                             }
                             return;
                         }
                         acceptRoute(key, again, snap.distance, snap.name);
                     }).catch(function (err) {
                         if (seq !== routeSeq) return;
-                        if (err && err.message === "limit") routeFail("Az útvonaltervező korlátja megtelt. A Mintaút marad, később újra próbálhatod.");
-                        else routeFail("A közúti útvonal most nem érhető el. A navigáció nem indult. A Mintaút marad.");
+                        if (err && err.message === "limit") routeFail("Az útvonaltervező korlátja megtelt. Próbáld újra egy kicsit később.");
+                        else routeFail("A közúti útvonal most nem érhető el.");
                     });
                 });
             }).catch(function (err) {
                 if (seq !== routeSeq) return;
-                if (err && err.message === "limit") routeFail("Az útvonaltervező korlátja megtelt. A Mintaút marad, később újra próbálhatod.");
-                else routeFail("A GPS nincs úton, és a legközelebbi közutat sem sikerült lekérni. A navigáció nem indult. A Mintaút marad.");
+                if (err && err.message === "limit") routeFail("Az útvonaltervező korlátja megtelt. Próbáld újra egy kicsit később.");
+                else routeFail("Az indulás nincs úton, és a legközelebbi közutat sem sikerült lekérni.");
             });
         });
     }
 
+    function gpsUsable() {
+        if (gpsStatus !== "ok" || !gpsFix) return false;
+        if (!isFinite(gpsFix.lat) || !isFinite(gpsFix.lon)) return false;
+        if (typeof gpsFix.acc === "number" && gpsFix.acc > 120) return false;
+        return true;
+    }
+
     function planRoute() {
-        if (!gpsFix || !chosenGoal) {
-            routeFail("Valódi közúti útvonalhoz engedély vagy GPS-adat szükséges. A navigáció nem indult.");
+        if (gpsUsable()) {
+            origin = { name: "Saját helyzet", lat: gpsFix.lat, lon: gpsFix.lon, fromGps: true };
+            fromInput.value = "Saját helyzet";
+        }
+        if (!origin || !dest) {
+            setNote(origin && !dest ? "Add meg a célt." : "Add meg az indulást és a célt.", "warn");
             return;
         }
-        if (Math.abs(gpsFix.lat - chosenGoal.lat) < 0.00008 && Math.abs(gpsFix.lon - chosenGoal.lon) < 0.00008) {
-            routeFail("A cél a jelenlegi GPS-helyzet. Válassz egy távolabbi címet. A Mintaút marad.");
+        if (!placeMatches(origin, fromInput) || !placeMatches(dest, toInput)) {
+            setNote("A mező szövege nem egy kiválasztott találat. Keress, és válassz a listából.", "warn");
+            return;
+        }
+        if (Math.abs(origin.lat - dest.lat) < 0.00008 && Math.abs(origin.lon - dest.lon) < 0.00008) {
+            routeFail("Az indulás és a cél ugyanaz a pont. Válassz távolabbi célt.");
             return;
         }
         if (!window.fetch) {
-            routeFail("Ez a böngésző nem tud útvonalat kérni. A Mintaút marad.");
+            routeFail("Ez a böngésző nem tud útvonalat kérni.");
             return;
         }
-        var key = gpsFix.lat.toFixed(4) + "," + gpsFix.lon.toFixed(4) + ">" + chosenGoal.lat.toFixed(4) + "," + chosenGoal.lon.toFixed(4);
+        var key = origin.lat.toFixed(4) + "," + origin.lon.toFixed(4) + ">" + dest.lat.toFixed(4) + "," + dest.lon.toFixed(4);
         if (routeCache[key]) {
             applyRoute(routeCache[key].route, routeCache[key].snap);
             return;
         }
         var now = Date.now();
         if (now - lastRouteAt < 1100) {
-            goalNote.textContent = "Az útvonaltervező másodpercenként egy kérést fogad. Várj egy pillanatot.";
-            goalNote.className = "warn";
+            setNote("Az útvonaltervező másodpercenként egy kérést fogad. Várj egy pillanatot.", "warn");
             return;
         }
         lastRouteAt = now;
         var seq = ++routeSeq;
-        goalNote.textContent = "Közúti útvonal kérése. Ha a GPS nem az úton van, a közeli közút lesz az indulás…";
-        goalNote.className = "";
-        fetchOsrm(routeUrl(gpsFix.lon, gpsFix.lat, chosenGoal.lon, chosenGoal.lat, snapMaxM)).then(function (data) {
+        setNote("Közúti útvonal kérése…", "");
+        fetchOsrm(routeUrl(origin.lon, origin.lat, dest.lon, dest.lat, snapMaxM)).then(function (data) {
             if (seq !== routeSeq) return;
             if (data.code === "NoSegment") {
                 handleNoSegment(seq, key, data);
                 return;
             }
             if (!data || data.code !== "Ok" || !data.routes || !data.routes.length) {
-                routeFail("Erre a célra nincs autóval járható közút. A navigáció nem indult. A Mintaút marad.");
+                routeFail("Erre a két pontra nincs autóval járható közút.");
                 return;
             }
             acceptRoute(key, data);
         }).catch(function (err) {
             if (seq !== routeSeq) return;
-            if (err && err.message === "limit") routeFail("Az útvonaltervező korlátja megtelt. A Mintaút marad, később újra próbálhatod.");
-            else routeFail("A közúti útvonal most nem érhető el. A navigáció nem indult. A Mintaút marad.");
+            if (err && err.message === "limit") routeFail("Az útvonaltervező korlátja megtelt. Próbáld újra egy kicsit később.");
+            else routeFail("A közúti útvonal most nem érhető el.");
         });
     }
 
-    goalForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-        runSearch(goalInput.value);
-    });
-    gpsButton.addEventListener("click", askGps);
 
     var aligned = false;
 
+    function cacheScenicPose() {
+        if (scenicReady || !sampleCurve) return;
+        sampleCurve.getPointAt(scenicU, scenicHold);
+        sampleCurve.getTangentAt(scenicU, scenicHoldTan);
+        if (scenicHoldTan.lengthSq() < 1e-8) scenicHoldTan.set(0, 0, 1);
+        else scenicHoldTan.normalize();
+        if (prevTangent.dot(scenicHoldTan) < 0) scenicHoldTan.negate();
+        tmpA.crossVectors(scenicHoldTan, up);
+        if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
+        tmpA.normalize();
+        scenicHold.addScaledVector(tmpA, 1.25);
+        scenicHold.y = 0.02;
+        sampleCurve.getPointAt(0.02, anchorHold);
+        sampleCurve.getTangentAt(0.02, evalScratch);
+        if (evalScratch.lengthSq() < 1e-8) evalScratch.set(0, 0, 1);
+        else evalScratch.normalize();
+        anchorYaw = Math.atan2(evalScratch.x, evalScratch.z);
+        scenicReady = true;
+    }
+
     function frame() {
         var dt = clock.getDelta();
-        if (dt > 0.05) dt = 0.05;
+        if (dt > 0.1) dt = 0.1;
+        if (dt < 0) dt = 0;
+        cacheScenicPose();
+        if (gpsStatus === "ok" && gpsFixSamples >= 2 && gpsFix && typeof gpsFix.t === "number" && Date.now() - gpsFix.t > 12000) {
+            gpsStatus = "lost";
+            gpsOnRoute = false;
+            gpsTargetU = null;
+            liveKmh = null;
+        }
         if (Math.abs(moodTarget - mood) > 0.001) {
             mood = mood + (moodTarget - mood) * (1 - Math.exp(-dt * 1.7));
             moodDirty = true;
@@ -7026,46 +8037,56 @@
             updateMood(mood);
             moodDirty = Math.abs(moodTarget - mood) > 0.001;
         }
-        if (driving) {
-            if (routeActive) {
-                if (travel < 1 && routeMeters > 1) travel += dt * ((58 / 3.6) / routeMeters);
-                if (travel > 1) travel = 1;
-            } else {
-                travel = (travel + dt * 0.0067) % 1;
-            }
-        }
+        advanceAlong(dt);
         var u = travel;
         if (u < 0.0001) u = 0.0001;
         if (u > 0.999) u = 0.999;
-        var pos = curve.getPointAt(u);
-        var tangent = curve.getTangentAt(u).normalize();
-        if (!routeActive && prevTangent.dot(tangent) < 0) tangent.negate();
-        prevTangent.copy(tangent);
-        tmpA.crossVectors(tangent, up);
-        if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
-        tmpA.normalize();
-        pos.addScaledVector(tmpA, 1.25);
-        pos.y = 0.02;
+        if (routeActive && curve.evalAt) {
+            curve.evalAt(u, routePos, routeTan);
+            if (routeTan.lengthSq() < 1e-8) routeTan.set(0, 0, 1);
+            tmpA.crossVectors(routeTan, up);
+            if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
+            tmpA.normalize();
+            routePos.addScaledVector(tmpA, 1.25);
+            routePos.y = 0.02;
+        } else {
+            routePos.copy(scenicHold);
+            routeTan.copy(scenicHoldTan);
+        }
+        if (!routeActive && prevTangent.dot(routeTan) < 0) routeTan.negate();
+        prevTangent.copy(routeTan);
+        var desiredYaw = Math.atan2(routeTan.x, routeTan.z);
+        if (!aligned) carYaw = desiredYaw;
+        else {
+            var dyaw = desiredYaw - carYaw;
+            while (dyaw > Math.PI) dyaw -= Math.PI * 2;
+            while (dyaw < -Math.PI) dyaw += Math.PI * 2;
+            carYaw += dyaw * (1 - Math.exp(-dt / 0.07));
+        }
+        var hx = Math.sin(carYaw);
+        var hz = Math.cos(carYaw);
         if (followOrigin) {
-            routeRoot.position.set(-pos.x, 0, -pos.z);
-            var sp = sampleCurve.getPointAt(0.02);
-            var st = sampleCurve.getTangentAt(0.02).normalize();
-            var yaw = Math.atan2(tangent.x, tangent.z) - Math.atan2(st.x, st.z);
+            routeRoot.position.set(-routePos.x, 0, -routePos.z);
+            var yaw = carYaw - anchorYaw;
             var cyaw = Math.cos(yaw);
             var syaw = Math.sin(yaw);
             coast.rotation.y = yaw;
-            coast.position.set(-(sp.x * cyaw + sp.z * syaw), 0, -(-sp.x * syaw + sp.z * cyaw));
+            coast.position.set(-(anchorHold.x * cyaw + anchorHold.z * syaw), 0, -(-anchorHold.x * syaw + anchorHold.z * cyaw));
             car.position.set(0, 0.02, 0);
-            ahead.set(tangent.x * 6, pos.y, tangent.z * 6);
+            steerLook.set(hx * 6, 0.02, hz * 6);
         } else {
-            car.position.copy(pos);
-            ahead.copy(pos).addScaledVector(tangent, 6);
+            car.position.copy(routePos);
+            steerLook.set(routePos.x + hx * 6, routePos.y, routePos.z + hz * 6);
         }
-        car.lookAt(ahead.x, pos.y, ahead.z);
-        var rolling = driving && !(routeActive && travel >= 0.999);
+        car.lookAt(steerLook.x, steerLook.y, steerLook.z);
+        var rollMps = gpsOnRoute ? Math.max(coastMps, shownMps) : 0;
+        var targetRate = rollMps > 0.35 ? Math.min(34, rollMps / 0.32) : 0;
+        wheelRate += (targetRate - wheelRate) * (1 - Math.exp(-dt / 0.22));
+        if (wheelRate < 0) wheelRate = 0;
         var w;
-        for (w = 0; w < wheels.length; w++) {
-            if (rolling) wheels[w].rotation.x -= dt * 7;
+        if (wheelRate > 0.015) {
+            var spin = wheelRate * dt;
+            for (w = 0; w < wheels.length; w++) wheels[w].rotation.x -= spin;
         }
         for (w = 0; w < chevrons.length; w++) {
             var cu;
@@ -7073,18 +8094,25 @@
             else cu = (travel + 0.012 + w * 0.014) % 1;
             if (cu < 0.0001) cu = 0.0001;
             if (cu > 0.999) cu = 0.999;
-            var cp = curve.getPointAt(cu);
-            var ct = curve.getTangentAt(cu).normalize();
-            if (!routeActive && tangent.dot(ct) < 0) ct.negate();
-            tmpA.crossVectors(ct, up).normalize();
-            cp.addScaledVector(tmpA, 1.25);
-            cp.y = 0.16;
+            if (routeActive && curve.evalAt) curve.evalAt(cu, chevPos, chevTan);
+            else {
+                curve.getPointAt(cu, chevPos);
+                curve.getTangentAt(cu, chevTan);
+            }
+            if (chevTan.lengthSq() < 1e-8) chevTan.set(0, 0, 1);
+            else if (!routeActive) chevTan.normalize();
+            if (!routeActive && routeTan.dot(chevTan) < 0) chevTan.negate();
+            tmpA.crossVectors(chevTan, up);
+            if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
+            tmpA.normalize();
+            chevPos.addScaledVector(tmpA, 1.25);
+            chevPos.y = 0.16;
             if (followOrigin) {
-                chevrons[w].position.set(cp.x - pos.x, cp.y, cp.z - pos.z);
-                chevrons[w].lookAt(cp.x - pos.x + ct.x, cp.y, cp.z - pos.z + ct.z);
+                chevrons[w].position.set(chevPos.x - routePos.x, chevPos.y, chevPos.z - routePos.z);
+                chevrons[w].lookAt(chevPos.x - routePos.x + chevTan.x, chevPos.y, chevPos.z - routePos.z + chevTan.z);
             } else {
-                chevrons[w].position.copy(cp);
-                chevrons[w].lookAt(cp.x + ct.x, cp.y, cp.z + ct.z);
+                chevrons[w].position.copy(chevPos);
+                chevrons[w].lookAt(chevPos.x + chevTan.x, chevPos.y, chevPos.z + chevTan.z);
             }
         }
         for (w = 0; w < clouds.length; w++) {
@@ -7094,24 +8122,46 @@
         if (waterMat.map) waterMat.map.offset.x += dt * 0.012;
         if (waterShineMat && waterShineMat.map) waterShineMat.map.offset.x -= dt * 0.02;
         if (millBlades) millBlades.rotation.z += dt * 0.7;
-        tmpA.crossVectors(tangent, up);
-        if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
-        tmpA.normalize();
-        var desired = followOrigin
-            ? new THREE.Vector3(-tangent.x * camBack, camUp, -tangent.z * camBack)
-            : pos.clone().addScaledVector(tangent, -camBack);
-        desired.addScaledVector(tmpA, camSide);
-        if (!followOrigin) desired.y += camUp;
-        var camK = aligned ? (1 - Math.exp(-dt * 2.2)) : 1;
-        camPos.lerp(desired, camK);
+        var lookHx = hx;
+        var lookHz = hz;
+        if (curve) {
+            var span = (curve.total && curve.total > 1) ? curve.total : 80;
+            var au = u + (lookAhead + (gfxUltra ? 10 : 6)) / span;
+            if (routeActive) {
+                if (au > 0.999) au = 0.999;
+            } else au = au - Math.floor(au);
+            if (curve.evalAt) curve.evalAt(au, lookProbe, null);
+            else if (curve.getPointAt) curve.getPointAt(au, lookProbe);
+            var lx = lookProbe.x - routePos.x;
+            var lz = lookProbe.z - routePos.z;
+            var llen = Math.hypot(lx, lz);
+            if (llen > 0.5) {
+                lx /= llen;
+                lz /= llen;
+                var bend = Math.atan2(hx * lz - hz * lx, hx * lx + hz * lz);
+                var portraitCam = window.innerWidth / Math.max(1, window.innerHeight) < 0.9;
+                var maxBend = portraitCam ? (gfxUltra ? 0.14 : 0.08) : (gfxUltra ? 0.24 : 0.2);
+                if (bend > maxBend) bend = maxBend;
+                if (bend < -maxBend) bend = -maxBend;
+                var bendC = Math.cos(bend);
+                var bendS = Math.sin(bend);
+                lookHx = hx * bendC - hz * bendS;
+                lookHz = hx * bendS + hz * bendC;
+            }
+        }
+        tmpA.set(-hz, 0, hx);
+        if (followOrigin) {
+            camDesired.set(-hx * camBack + tmpA.x * camSide, camUp, -hz * camBack + tmpA.z * camSide);
+            lookDesired.set(lookHx * lookAhead + tmpA.x * camSide * 0.22, lookUp, lookHz * lookAhead + tmpA.z * camSide * 0.22);
+        } else {
+            camDesired.set(routePos.x - hx * camBack + tmpA.x * camSide, routePos.y + camUp, routePos.z - hz * camBack + tmpA.z * camSide);
+            lookDesired.set(routePos.x + lookHx * lookAhead + tmpA.x * camSide * 0.22, lookUp, routePos.z + lookHz * lookAhead + tmpA.z * camSide * 0.22);
+        }
+        var camK = aligned ? (1 - Math.exp(-dt * 7)) : 1;
+        camPos.lerp(camDesired, camK);
         camera.position.copy(camPos);
-        var lookTarget = followOrigin
-            ? new THREE.Vector3(tangent.x * lookAhead, lookUp, tangent.z * lookAhead)
-            : pos.clone().addScaledVector(tangent, lookAhead);
-        lookTarget.addScaledVector(tmpA, camSide * 0.22);
-        if (!followOrigin) lookTarget.y = lookUp;
-        var lookK = aligned ? (1 - Math.exp(-dt * 2.8)) : 1;
-        lookPos.lerp(lookTarget, lookK);
+        var lookK = aligned ? (1 - Math.exp(-dt * 8)) : 1;
+        lookPos.lerp(lookDesired, lookK);
         camera.lookAt(lookPos);
         aligned = true;
         sun.position.set(car.position.x + 24, 42, car.position.z + 12);
