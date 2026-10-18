@@ -3915,6 +3915,15 @@
     var gpsOffDist = null;
     var gpsPoor = false;
     var gpsTargetU = null;
+    var shownAlong = null;
+    var gpsMeasure = null;
+    var coastMps = 0;
+    var shownMps = 0;
+    var lastAlongT = 0;
+    var wheelRate = 0;
+    var carYaw = 0;
+    var anchorYaw = 0;
+    var scenicReady = false;
     var watchId = null;
     var gpsOriginArmed = false;
     var propRoot = null;
@@ -3958,6 +3967,18 @@
     var boat = null;
     var camPos = null;
     var lookPos = null;
+    var camDesired = null;
+    var lookDesired = null;
+    var routePos = null;
+    var routeTan = null;
+    var chevPos = null;
+    var chevTan = null;
+    var lookProbe = null;
+    var steerLook = null;
+    var evalScratch = null;
+    var scenicHold = null;
+    var scenicHoldTan = null;
+    var anchorHold = null;
     var up = null;
     var ahead = null;
     var prevTangent = null;
@@ -4021,6 +4042,18 @@
     clock = new THREE.Clock();
     camPos = new THREE.Vector3();
     lookPos = new THREE.Vector3();
+    camDesired = new THREE.Vector3();
+    lookDesired = new THREE.Vector3();
+    routePos = new THREE.Vector3();
+    routeTan = new THREE.Vector3();
+    chevPos = new THREE.Vector3();
+    chevTan = new THREE.Vector3();
+    lookProbe = new THREE.Vector3();
+    steerLook = new THREE.Vector3();
+    evalScratch = new THREE.Vector3();
+    scenicHold = new THREE.Vector3();
+    scenicHoldTan = new THREE.Vector3();
+    anchorHold = new THREE.Vector3();
     up = new THREE.Vector3(0, 1, 0);
     ahead = new THREE.Vector3();
     prevTangent = new THREE.Vector3(0, 0, 1);
@@ -6556,8 +6589,14 @@
             var dist = Math.sqrt(ox * ox + oz * oz);
             if (dist < bestD) {
                 bestD = dist;
-                var along = lengths[i - 1] + Math.sqrt((px - ax) * (px - ax) + (pz - az) * (pz - az));
-                bestU = along / (curve.total || 1);
+                if (curve.sampleU && curve.sampleU.length === pts.length) {
+                    var u0 = curve.sampleU[i - 1];
+                    var u1 = curve.sampleU[i];
+                    bestU = u0 + (u1 - u0) * t;
+                } else {
+                    var along = lengths[i - 1] + Math.sqrt((px - ax) * (px - ax) + (pz - az) * (pz - az));
+                    bestU = along / (curve.total || 1);
+                }
             }
         }
         return { u: bestU, dist: bestD };
@@ -6588,6 +6627,91 @@
         }
         gpsOnRoute = true;
         gpsTargetU = hit.u;
+        noteGpsAlong(hit.u);
+    }
+
+    function clampTravel(u) {
+        if (u < 0.0004) return 0.0004;
+        if (u > 0.999) return 0.999;
+        return u;
+    }
+
+    function noteGpsAlong(u) {
+        var total = curve.total || 1;
+        var s = u * total;
+        var now = gpsFix && typeof gpsFix.t === "number" ? gpsFix.t : Date.now();
+        if (shownAlong === null || gpsMeasure === null) {
+            if (Math.abs(s - travel * total) > 18) aligned = false;
+            shownAlong = s;
+            gpsMeasure = s;
+            coastMps = liveKmh === null ? 0 : Math.min(45, Math.max(0, liveKmh / 3.6));
+            lastAlongT = now;
+            travel = clampTravel(s / total);
+            return;
+        }
+        var dtFix = (now - lastAlongT) / 1000;
+        if (!(dtFix > 0)) dtFix = 0.05;
+        if (dtFix > 8 && Math.abs(s - shownAlong) > 120) {
+            shownAlong = s;
+            gpsMeasure = s;
+            coastMps = liveKmh === null ? 0 : Math.min(45, Math.max(0, liveKmh / 3.6));
+            lastAlongT = now;
+            travel = clampTravel(s / total);
+            aligned = false;
+            return;
+        }
+        var ds = s - gpsMeasure;
+        if (ds < 0 && ds >= -12 && coastMps < 2) {
+            lastAlongT = now;
+            return;
+        }
+        if (ds < 0) {
+            gpsMeasure = s;
+            coastMps *= Math.exp(-Math.min(dtFix, 2) / 0.6);
+            lastAlongT = now;
+            return;
+        }
+        if (ds < 1.6 && coastMps < 1.2) {
+            lastAlongT = now;
+            return;
+        }
+        var inst = dtFix > 0.05 ? ds / dtFix : coastMps;
+        if (inst < 0) inst = 0;
+        if (inst > 45) inst = 45;
+        if (liveKmh !== null && inst > liveKmh / 3.6 + 6) inst = Math.max(0, liveKmh / 3.6);
+        var blend = 1 - Math.exp(-Math.min(Math.max(dtFix, 0.05), 2) / 0.45);
+        coastMps += (inst - coastMps) * blend;
+        if (coastMps < 0) coastMps = 0;
+        if (coastMps > 45) coastMps = 45;
+        gpsMeasure = s;
+        lastAlongT = now;
+    }
+
+    function advanceAlong(dt) {
+        if (!routeActive || !gpsOnRoute || shownAlong === null || gpsMeasure === null) return;
+        var total = curve.total || 1;
+        var used = dt > 0.1 ? 0.1 : dt;
+        if (!(used > 0)) return;
+        var lead = Math.min(16, Math.max(4, coastMps * 0.9));
+        var cap = gpsMeasure + lead;
+        if (cap > total - 0.3) cap = total - 0.3;
+        var gap = gpsMeasure - shownAlong;
+        var moveMps = coastMps;
+        if (gap > 6) moveMps = Math.min(32, coastMps + Math.min(12, (gap - 6) * 0.45));
+        shownMps = moveMps;
+        var step = moveMps * used;
+        if (step > 3.2) step = 3.2;
+        if (shownAlong + step > cap) step = cap - shownAlong;
+        if (step < 0) step = 0;
+        shownAlong += step;
+        if (shownAlong > cap) {
+            var pull = Math.max(10, coastMps) * used;
+            var over = shownAlong - cap;
+            shownAlong -= over < pull ? over : pull;
+        }
+        if (shownAlong < 0.3) shownAlong = 0.3;
+        if (shownAlong > total - 0.3) shownAlong = total - 0.3;
+        travel = shownAlong / total;
     }
 
     function onFix(pos) {
@@ -6756,136 +6880,213 @@
                 var prev = raw[raw.length - 1];
                 var dx = x - prev.x;
                 var dz = z - prev.z;
-                if (dx * dx + dz * dz < 9) continue;
+                if (dx * dx + dz * dz < 0.04) continue;
             }
-            raw.push(new THREE.Vector3(x, 0, z));
+            raw.push({ x: x, z: z });
         }
-        if (raw.length < 2) return raw;
-        return densify(filletPath(simplifyLine(raw, 12, 700), 16), 8);
+        return raw;
     }
 
-    function filletPath(points, radius) {
-        if (points.length < 3) return points;
-        var out = [points[0]];
+    function hypot2(x, z) {
+        return Math.sqrt(x * x + z * z);
+    }
+
+    function cleanPolyline(raw) {
+        var out = [];
         var i;
-        for (i = 1; i < points.length - 1; i++) {
-            var a = points[i - 1];
-            var b = points[i];
-            var c = points[i + 1];
-            var abx = b.x - a.x;
-            var abz = b.z - a.z;
-            var bcx = c.x - b.x;
-            var bcz = c.z - b.z;
-            var ab = Math.sqrt(abx * abx + abz * abz) || 1;
-            var bc = Math.sqrt(bcx * bcx + bcz * bcz) || 1;
-            abx /= ab;
-            abz /= ab;
-            bcx /= bc;
-            bcz /= bc;
-            var dot = abx * bcx + abz * bcz;
-            if (dot > 0.992) {
-                out.push(b);
+        for (i = 0; i < raw.length; i++) {
+            var p = raw[i];
+            if (!out.length) {
+                out.push({ x: p.x, z: p.z });
                 continue;
             }
-            var cut = Math.min(radius, ab * 0.45, bc * 0.45);
-            var p1x = b.x - abx * cut;
-            var p1z = b.z - abz * cut;
-            var p2x = b.x + bcx * cut;
-            var p2z = b.z + bcz * cut;
-            out.push(new THREE.Vector3(p1x, 0, p1z));
-            var steps = 4;
-            var s;
-            for (s = 1; s < steps; s++) {
-                var t = s / steps;
-                var u = 1 - t;
-                out.push(new THREE.Vector3(
-                    u * u * p1x + 2 * u * t * b.x + t * t * p2x,
-                    0,
-                    u * u * p1z + 2 * u * t * b.z + t * t * p2z
-                ));
-            }
-            out.push(new THREE.Vector3(p2x, 0, p2z));
+            var prev = out[out.length - 1];
+            var dx = p.x - prev.x;
+            var dz = p.z - prev.z;
+            if (dx * dx + dz * dz >= 1.44) out.push({ x: p.x, z: p.z });
         }
-        out.push(points[points.length - 1]);
-        return out;
-    }
-
-    function densify(points, maxLen) {
-        var out = [points[0]];
-        var i;
-        for (i = 1; i < points.length; i++) {
-            var a = points[i - 1];
-            var b = points[i];
-            var dx = b.x - a.x;
-            var dz = b.z - a.z;
-            var len = Math.sqrt(dx * dx + dz * dz);
-            var steps = Math.ceil(len / maxLen);
-            if (steps < 1) steps = 1;
-            var k;
-            for (k = 1; k <= steps; k++) {
-                var f = k / steps;
-                out.push(new THREE.Vector3(a.x + dx * f, 0, a.z + dz * f));
+        if (raw.length) {
+            var end = raw[raw.length - 1];
+            var last = out[out.length - 1];
+            var ex = end.x - last.x;
+            var ez = end.z - last.z;
+            var end2 = ex * ex + ez * ez;
+            if (end2 > 0.01) {
+                if (end2 < 1.44) out[out.length - 1] = { x: end.x, z: end.z };
+                else out.push({ x: end.x, z: end.z });
             }
         }
         return out;
     }
 
-    function simplifyLine(points, epsilon, cap) {
-        var keep = [];
+    function cornerInfo(a, b, c) {
+        var inx = b.x - a.x;
+        var inz = b.z - a.z;
+        var inLen = hypot2(inx, inz);
+        if (inLen < 0.35) return null;
+        inx /= inLen;
+        inz /= inLen;
+        var outx = c.x - b.x;
+        var outz = c.z - b.z;
+        var outLen = hypot2(outx, outz);
+        if (outLen < 0.35) return null;
+        outx /= outLen;
+        outz /= outLen;
+        var dot = inx * outx + inz * outz;
+        if (dot > 1) dot = 1;
+        if (dot < -1) dot = -1;
+        if (dot > 0.9998) return null;
+        var alpha = Math.acos(dot);
+        if (!(alpha > 0.02) || alpha > 2.85) return null;
+        return { inx: inx, inz: inz, outx: outx, outz: outz, inLen: inLen, outLen: outLen, alpha: alpha };
+    }
+
+    function planCorners(pts) {
+        var n = pts.length;
+        var info = new Array(n);
+        var reach = new Array(n);
+        var radius = new Array(n);
+        var tanH = new Array(n);
+        var desired = new Array(n);
         var i;
-        for (i = 0; i < points.length; i++) keep.push(false);
-        keep[0] = true;
-        keep[points.length - 1] = true;
-        var stack = [[0, points.length - 1]];
-        while (stack.length) {
-            var range = stack.pop();
-            var a = range[0];
-            var b = range[1];
-            if (b <= a + 1) continue;
-            var ax = points[a].x;
-            var az = points[a].z;
-            var bx = points[b].x;
-            var bz = points[b].z;
-            var dx = bx - ax;
-            var dz = bz - az;
-            var len2 = dx * dx + dz * dz;
-            var best = -1;
-            var bestDist = 0;
-            var k;
-            for (k = a + 1; k < b; k++) {
-                var dist;
-                if (len2 < 0.01) {
-                    var ex = points[k].x - ax;
-                    var ez = points[k].z - az;
-                    dist = Math.sqrt(ex * ex + ez * ez);
-                } else {
-                    var t = ((points[k].x - ax) * dx + (points[k].z - az) * dz) / len2;
-                    if (t < 0) t = 0;
-                    if (t > 1) t = 1;
-                    var px = ax + t * dx;
-                    var pz = az + t * dz;
-                    var ox = points[k].x - px;
-                    var oz = points[k].z - pz;
-                    dist = Math.sqrt(ox * ox + oz * oz);
+        for (i = 0; i < n; i++) {
+            info[i] = null;
+            reach[i] = 0;
+            radius[i] = 0;
+            tanH[i] = 0;
+            desired[i] = 0;
+        }
+        for (i = 1; i < n - 1; i++) {
+            var t = cornerInfo(pts[i - 1], pts[i], pts[i + 1]);
+            info[i] = t;
+            if (!t) continue;
+            var half = t.alpha * 0.5;
+            var th = Math.tan(half);
+            var dev = 1 - Math.cos(half);
+            if (!(th > 0.008) || !(dev > 1e-6) || !isFinite(th)) continue;
+            var rRoad = Math.min(90, 2.35 / dev);
+            var rLeg = Math.min(t.inLen, t.outLen) * 0.98 / th;
+            var r = Math.min(rRoad, rLeg);
+            if (!(r >= 0.85)) continue;
+            var rh = r * th;
+            if (!(rh >= 0.3)) continue;
+            tanH[i] = th;
+            desired[i] = rh;
+            reach[i] = rh;
+            radius[i] = r;
+        }
+        var pass;
+        var k;
+        for (pass = 0; pass < 14; pass++) {
+            var changed = false;
+            for (k = 1; k < n - 1; k++) {
+                var seg = hypot2(pts[k + 1].x - pts[k].x, pts[k + 1].z - pts[k].z);
+                var limit = seg * 0.98;
+                if (reach[k] + reach[k + 1] <= limit + 1e-4) continue;
+                var t1 = tanH[k];
+                var t2 = tanH[k + 1];
+                var a = 0;
+                var b = 0;
+                if (t1 + t2 > 1e-8) {
+                    a = limit * t1 / (t1 + t2);
+                    b = limit - a;
                 }
-                if (dist > bestDist) {
-                    bestDist = dist;
-                    best = k;
+                if (a > desired[k]) {
+                    b += a - desired[k];
+                    a = desired[k];
+                }
+                if (b > desired[k + 1]) {
+                    a += b - desired[k + 1];
+                    b = desired[k + 1];
+                    if (a > desired[k]) a = desired[k];
+                }
+                if (reach[k] > a + 1e-4) {
+                    reach[k] = a;
+                    changed = true;
+                }
+                if (reach[k + 1] > b + 1e-4) {
+                    reach[k + 1] = b;
+                    changed = true;
                 }
             }
-            if (best >= 0 && bestDist > epsilon) {
-                keep[best] = true;
-                stack.push([a, best]);
-                stack.push([best, b]);
+            if (!changed) break;
+        }
+        for (i = 1; i < n - 1; i++) {
+            if (!info[i] || reach[i] < 0.3) {
+                radius[i] = 0;
+                reach[i] = 0;
+                continue;
+            }
+            var tanH2 = Math.tan(info[i].alpha * 0.5);
+            radius[i] = reach[i] / tanH2;
+            if (!(radius[i] >= 0.85) || !isFinite(radius[i])) {
+                radius[i] = 0;
+                reach[i] = 0;
             }
         }
-        var out = [];
-        for (i = 0; i < points.length; i++) if (keep[i]) out.push(points[i]);
-        if (out.length > cap) {
-            if (epsilon > 5000) return [points[0], points[points.length - 1]];
-            return simplifyLine(points, epsilon * 1.7, cap);
+        return { info: info, reach: reach, radius: radius };
+    }
+
+    function filletGeom(b, info, radius, reach) {
+        var side = info.inx * info.outz - info.inz * info.outx;
+        var sign = side >= 0 ? 1 : -1;
+        var nx = -info.inz * sign;
+        var nz = info.inx * sign;
+        var t1x = b.x - info.inx * reach;
+        var t1z = b.z - info.inz * reach;
+        var t2x = b.x + info.outx * reach;
+        var t2z = b.z + info.outz * reach;
+        var cx = t1x + nx * radius;
+        var cz = t1z + nz * radius;
+        var a0 = Math.atan2(t1z - cz, t1x - cx);
+        var a1 = Math.atan2(t2z - cz, t2x - cx);
+        var sweep = a1 - a0;
+        while (sweep > Math.PI) sweep -= Math.PI * 2;
+        while (sweep < -Math.PI) sweep += Math.PI * 2;
+        if (sign > 0 && sweep < 0) sweep += Math.PI * 2;
+        if (sign < 0 && sweep > 0) sweep -= Math.PI * 2;
+        if (!(Math.abs(sweep) >= 0.02) || Math.abs(sweep) > 3.05) return null;
+        if (Math.abs(Math.abs(sweep) - info.alpha) > 0.4) return null;
+        return { t1x: t1x, t1z: t1z, t2x: t2x, t2z: t2z, cx: cx, cz: cz, r: radius, a0: a0, sweep: sweep };
+    }
+
+    function pushLine(pieces, ax, az, bx, bz) {
+        var dx = bx - ax;
+        var dz = bz - az;
+        var len = hypot2(dx, dz);
+        if (len <= 0.02) return;
+        pieces.push({ line: true, ax: ax, az: az, bx: bx, bz: bz, len: len, tx: dx / len, tz: dz / len });
+    }
+
+    function buildPieces(pts) {
+        var plan = planCorners(pts);
+        var pieces = [];
+        var cursor = { x: pts[0].x, z: pts[0].z };
+        var i;
+        for (i = 1; i < pts.length - 1; i++) {
+            var fit = null;
+            if (plan.radius[i] > 0) fit = filletGeom(pts[i], plan.info[i], plan.radius[i], plan.reach[i]);
+            if (!fit) {
+                pushLine(pieces, cursor.x, cursor.z, pts[i].x, pts[i].z);
+                cursor = { x: pts[i].x, z: pts[i].z };
+                continue;
+            }
+            pushLine(pieces, cursor.x, cursor.z, fit.t1x, fit.t1z);
+            pieces.push({
+                line: false,
+                cx: fit.cx,
+                cz: fit.cz,
+                r: fit.r,
+                a0: fit.a0,
+                sweep: fit.sweep,
+                len: Math.abs(fit.r * fit.sweep)
+            });
+            cursor = { x: fit.t2x, z: fit.t2z };
         }
-        return out;
+        var end = pts[pts.length - 1];
+        pushLine(pieces, cursor.x, cursor.z, end.x, end.z);
+        if (!pieces.length) pushLine(pieces, pts[0].x, pts[0].z, end.x, end.z);
+        return pieces;
     }
 
     function readSteps(route) {
@@ -6914,50 +7115,149 @@
         return steps;
     }
 
-    function RouteCurve(points) {
-        this.points = points;
+    function RouteCurve(samples, pieces) {
+        this.points = [];
+        this.txs = [];
+        this.tzs = [];
+        this.sampleU = [];
         this.lengths = [0];
+        this.pieces = pieces || [];
+        this.pieceAt = [0];
         var i;
-        for (i = 1; i < points.length; i++) {
-            this.lengths.push(this.lengths[i - 1] + points[i].distanceTo(points[i - 1]));
+        var acc = 0;
+        for (i = 0; i < this.pieces.length; i++) {
+            acc += this.pieces[i].len;
+            this.pieceAt.push(acc);
         }
-        this.total = this.lengths[this.lengths.length - 1] || 1;
+        this.total = acc || 1;
+        for (i = 0; i < samples.length; i++) {
+            this.points.push(new THREE.Vector3(samples[i].x, 0, samples[i].z));
+            this.txs.push(samples[i].tx);
+            this.tzs.push(typeof samples[i].tz === "number" ? samples[i].tz : 0);
+            this.sampleU.push(typeof samples[i].u === "number" ? samples[i].u : (i / Math.max(1, samples.length - 1)));
+            if (i) this.lengths.push(this.lengths[i - 1] + this.points[i].distanceTo(this.points[i - 1]));
+        }
+        if (this.points.length < 2) this.total = this.lengths[this.lengths.length - 1] || this.total;
     }
 
-    RouteCurve.prototype.frameAt = function (u) {
+    RouteCurve.prototype.evalAt = function (u, outPos, outTan) {
+        if (!this.pieces.length) {
+            outPos.set(0, 0, 0);
+            if (outTan) outTan.set(0, 0, 1);
+            return;
+        }
         var dist = u * this.total;
         if (dist < 0) dist = 0;
         if (dist > this.total) dist = this.total;
         var lo = 0;
-        var hi = this.lengths.length - 1;
+        var hi = this.pieces.length - 1;
         while (lo < hi) {
             var mid = (lo + hi) >> 1;
-            if (this.lengths[mid] < dist) lo = mid + 1;
+            if (this.pieceAt[mid + 1] < dist) lo = mid + 1;
             else hi = mid;
         }
-        var i = lo < 1 ? 1 : lo;
-        var span = this.lengths[i] - this.lengths[i - 1];
-        var f = span > 0.001 ? (dist - this.lengths[i - 1]) / span : 0;
-        var a = this.points[i - 1];
-        var b = this.points[i];
-        return { ax: a.x, az: a.z, bx: b.x, bz: b.z, f: f };
+        var piece = this.pieces[lo];
+        var span = piece.len || 1;
+        var f = (dist - this.pieceAt[lo]) / span;
+        if (f < 0) f = 0;
+        if (f > 1) f = 1;
+        if (piece.line) {
+            outPos.x = piece.ax + (piece.bx - piece.ax) * f;
+            outPos.y = 0;
+            outPos.z = piece.az + (piece.bz - piece.az) * f;
+            if (outTan) {
+                outTan.x = piece.tx;
+                outTan.y = 0;
+                outTan.z = piece.tz;
+            }
+        } else {
+            var ang = piece.a0 + piece.sweep * f;
+            var c = Math.cos(ang);
+            var s = Math.sin(ang);
+            outPos.x = piece.cx + piece.r * c;
+            outPos.y = 0;
+            outPos.z = piece.cz + piece.r * s;
+            if (outTan) {
+                var dir = piece.sweep >= 0 ? 1 : -1;
+                outTan.x = -s * dir;
+                outTan.y = 0;
+                outTan.z = c * dir;
+            }
+        }
     };
 
-    RouteCurve.prototype.getPointAt = function (u) {
-        var fr = this.frameAt(u);
-        return new THREE.Vector3(fr.ax + (fr.bx - fr.ax) * fr.f, 0, fr.az + (fr.bz - fr.az) * fr.f);
+    RouteCurve.prototype.getPointAt = function (u, target) {
+        var out = target || new THREE.Vector3();
+        this.evalAt(u, out, null);
+        return out;
     };
 
-    RouteCurve.prototype.getTangentAt = function (u) {
-        var fr = this.frameAt(u);
-        var x = fr.bx - fr.ax;
-        var z = fr.bz - fr.az;
-        var len = Math.sqrt(x * x + z * z);
-        if (len < 0.001) return new THREE.Vector3(0, 0, 1);
-        return new THREE.Vector3(x / len, 0, z / len);
+    RouteCurve.prototype.getTangentAt = function (u, target) {
+        var out = target || new THREE.Vector3();
+        this.evalAt(u, evalScratch, out);
+        if (out.lengthSq() < 1e-8) out.set(0, 0, 1);
+        return out;
     };
 
-    function buildStripAlong(points, center, half, y) {
+    function samplePieces(pieces) {
+        var samples = [];
+        var probe = new RouteCurve([], pieces);
+        var pos = { x: 0, y: 0, z: 0 };
+        var tan = { x: 0, y: 0, z: 0 };
+        var budget = 4500;
+        var i;
+        var s;
+        var n;
+        function pushAt(distAlong) {
+            var u = probe.total > 0 ? distAlong / probe.total : 0;
+            if (u < 0) u = 0;
+            if (u > 1) u = 1;
+            probe.evalAt(u, pos, tan);
+            if (samples.length) {
+                var prev = samples[samples.length - 1];
+                var dx = pos.x - prev.x;
+                var dz = pos.z - prev.z;
+                if (dx * dx + dz * dz < 0.04 && u < 0.999) return;
+            }
+            samples.push({
+                x: pos.x,
+                z: pos.z,
+                tx: tan.x,
+                tz: typeof tan.z === "number" ? tan.z : 0,
+                u: u
+            });
+        }
+        for (i = 0; i < pieces.length; i++) {
+            var piece = pieces[i];
+            var start = probe.pieceAt[i];
+            if (piece.line) n = Math.max(1, Math.ceil(piece.len / 3));
+            else {
+                var byAng = Math.ceil(Math.abs(piece.sweep) / (7 * Math.PI / 180));
+                var byLen = Math.ceil(piece.len / 1.4);
+                n = Math.max(2, byAng, byLen);
+            }
+            if (samples.length + n > budget) n = Math.max(1, budget - samples.length);
+            for (s = 0; s <= n; s++) {
+                if (s === 0 && samples.length) continue;
+                pushAt(start + piece.len * (s / n));
+            }
+            if (samples.length >= budget) break;
+        }
+        pushAt(probe.total);
+        if (samples.length < 2) samples.push({ x: pos.x + 1, z: pos.z, tx: 1, tz: 0, u: 1 });
+        return { samples: samples, pieces: pieces };
+    }
+
+    function buildDriveCurve(raw) {
+        var clean = cleanPolyline(raw);
+        if (clean.length < 2) return null;
+        var pieces = buildPieces(clean);
+        if (!pieces.length) return null;
+        var packed = samplePieces(pieces);
+        return new RouteCurve(packed.samples, packed.pieces);
+    }
+
+    function buildStripAlong(points, center, half, y, txs, tzs) {
         var positions = [];
         var uvs = [];
         var indices = [];
@@ -6967,7 +7267,10 @@
         for (i = 0; i < points.length; i++) {
             var tx;
             var tz;
-            if (i < points.length - 1) {
+            if (txs && tzs && typeof txs[i] === "number" && typeof tzs[i] === "number") {
+                tx = txs[i];
+                tz = tzs[i];
+            } else if (i < points.length - 1) {
                 tx = points[i + 1].x - points[i].x;
                 tz = points[i + 1].z - points[i].z;
             } else {
@@ -7024,14 +7327,16 @@
 
     function buildRouteRoad() {
         var pts = curve.points;
-        addRouteMesh(buildStripAlong(pts, 0, 4.15, 0.08), roadMat);
-        addRouteMesh(buildStripAlong(pts, 4.55, 0.42, 0.06), shoulderA);
-        addRouteMesh(buildStripAlong(pts, -4.55, 0.42, 0.06), shoulderB);
-        addRouteMesh(buildStripAlong(pts, 3.72, 0.08, 0.11), lineMat);
-        addRouteMesh(buildStripAlong(pts, -3.72, 0.08, 0.11), lineMat);
-        addRouteMesh(buildStripAlong(pts, 1.35, 0.13, 0.11), guideMat);
-        addRouteMesh(buildStripAlong(pts, 3.98, 0.13, 0.1), curbMatA);
-        addRouteMesh(buildStripAlong(pts, -3.98, 0.13, 0.1), curbMatB);
+        var txs = curve.txs;
+        var tzs = curve.tzs;
+        addRouteMesh(buildStripAlong(pts, 0, 4.15, 0.08, txs, tzs), roadMat);
+        addRouteMesh(buildStripAlong(pts, 4.55, 0.42, 0.06, txs, tzs), shoulderA);
+        addRouteMesh(buildStripAlong(pts, -4.55, 0.42, 0.06, txs, tzs), shoulderB);
+        addRouteMesh(buildStripAlong(pts, 3.72, 0.08, 0.11, txs, tzs), lineMat);
+        addRouteMesh(buildStripAlong(pts, -3.72, 0.08, 0.11, txs, tzs), lineMat);
+        addRouteMesh(buildStripAlong(pts, 1.35, 0.13, 0.11, txs, tzs), guideMat);
+        addRouteMesh(buildStripAlong(pts, 3.98, 0.13, 0.1, txs, tzs), curbMatA);
+        addRouteMesh(buildStripAlong(pts, -3.98, 0.13, 0.1, txs, tzs), curbMatB);
     }
 
     function dressRoute() {
@@ -7089,6 +7394,12 @@
         gpsTargetU = null;
         gpsOffDist = null;
         gpsPoor = false;
+        shownAlong = null;
+        gpsMeasure = null;
+        coastMps = 0;
+        shownMps = 0;
+        lastAlongT = 0;
+        wheelRate = 0;
         if (routeRoot) {
             clearRouteRoot();
             routeRoot.visible = false;
@@ -7182,13 +7493,18 @@
             routeFail("A cél a közeli közúton lényegében az indulás. Válassz távolabbi címet.");
             return;
         }
-        var points = projectCoords(coords);
-        if (points.length < 2) {
+        var raw = projectCoords(coords);
+        if (raw.length < 2) {
+            routeFail("Az útvonal túl rövid a megjelenítéshez.");
+            return;
+        }
+        var drive = buildDriveCurve(raw);
+        if (!drive || drive.points.length < 2) {
             routeFail("Az útvonal túl rövid a megjelenítéshez.");
             return;
         }
         clearRouteRoot();
-        curve = new RouteCurve(points);
+        curve = drive;
         routeMeters = route.distance;
         routeSeconds = typeof route.duration === "number" ? route.duration : null;
         routeSteps = readSteps(route);
@@ -7196,10 +7512,17 @@
         routeActive = true;
         followOrigin = true;
         travel = 0.0008;
+        shownAlong = null;
+        gpsMeasure = null;
+        coastMps = 0;
+        shownMps = 0;
+        lastAlongT = 0;
+        wheelRate = 0;
         gpsOnRoute = false;
         gpsTargetU = null;
         gpsOffDist = null;
-        prevTangent.copy(curve.getTangentAt(0.001)).normalize();
+        curve.getTangentAt(0.001, prevTangent).normalize();
+        carYaw = Math.atan2(prevTangent.x, prevTangent.z);
         aligned = false;
         coast.visible = true;
         routeGround.visible = false;
@@ -7341,9 +7664,31 @@
 
     var aligned = false;
 
+    function cacheScenicPose() {
+        if (scenicReady || !sampleCurve) return;
+        sampleCurve.getPointAt(scenicU, scenicHold);
+        sampleCurve.getTangentAt(scenicU, scenicHoldTan);
+        if (scenicHoldTan.lengthSq() < 1e-8) scenicHoldTan.set(0, 0, 1);
+        else scenicHoldTan.normalize();
+        if (prevTangent.dot(scenicHoldTan) < 0) scenicHoldTan.negate();
+        tmpA.crossVectors(scenicHoldTan, up);
+        if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
+        tmpA.normalize();
+        scenicHold.addScaledVector(tmpA, 1.25);
+        scenicHold.y = 0.02;
+        sampleCurve.getPointAt(0.02, anchorHold);
+        sampleCurve.getTangentAt(0.02, evalScratch);
+        if (evalScratch.lengthSq() < 1e-8) evalScratch.set(0, 0, 1);
+        else evalScratch.normalize();
+        anchorYaw = Math.atan2(evalScratch.x, evalScratch.z);
+        scenicReady = true;
+    }
+
     function frame() {
         var dt = clock.getDelta();
-        if (dt > 0.05) dt = 0.05;
+        if (dt > 0.1) dt = 0.1;
+        if (dt < 0) dt = 0;
+        cacheScenicPose();
         if (Math.abs(moodTarget - mood) > 0.001) {
             mood = mood + (moodTarget - mood) * (1 - Math.exp(-dt * 1.7));
             moodDirty = true;
@@ -7354,52 +7699,56 @@
             updateMood(mood);
             moodDirty = Math.abs(moodTarget - mood) > 0.001;
         }
-        if (routeActive && gpsOnRoute && gpsTargetU !== null && routeMeters > 1) {
-            var targetDist = gpsTargetU * routeMeters;
-            var currentDist = travel * routeMeters;
-            var delta = targetDist - currentDist;
-            if (delta <= -25 || delta >= 0.8) {
-                var maxStep = 45 * dt;
-                if (delta > maxStep) delta = maxStep;
-                if (delta < -maxStep) delta = -maxStep;
-                travel = (currentDist + delta) / routeMeters;
-            }
-            if (travel < 0.0004) travel = 0.0004;
-            if (travel > 0.999) travel = 0.999;
-        }
+        advanceAlong(dt);
         var u = travel;
         if (u < 0.0001) u = 0.0001;
         if (u > 0.999) u = 0.999;
-        var pos = curve.getPointAt(u);
-        var tangent = curve.getTangentAt(u).normalize();
-        if (!routeActive && prevTangent.dot(tangent) < 0) tangent.negate();
-        prevTangent.copy(tangent);
-        tmpA.crossVectors(tangent, up);
-        if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
-        tmpA.normalize();
-        pos.addScaledVector(tmpA, 1.25);
-        pos.y = 0.02;
+        if (routeActive && curve.evalAt) {
+            curve.evalAt(u, routePos, routeTan);
+            if (routeTan.lengthSq() < 1e-8) routeTan.set(0, 0, 1);
+            tmpA.crossVectors(routeTan, up);
+            if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
+            tmpA.normalize();
+            routePos.addScaledVector(tmpA, 1.25);
+            routePos.y = 0.02;
+        } else {
+            routePos.copy(scenicHold);
+            routeTan.copy(scenicHoldTan);
+        }
+        if (!routeActive && prevTangent.dot(routeTan) < 0) routeTan.negate();
+        prevTangent.copy(routeTan);
+        var desiredYaw = Math.atan2(routeTan.x, routeTan.z);
+        if (!aligned) carYaw = desiredYaw;
+        else {
+            var dyaw = desiredYaw - carYaw;
+            while (dyaw > Math.PI) dyaw -= Math.PI * 2;
+            while (dyaw < -Math.PI) dyaw += Math.PI * 2;
+            carYaw += dyaw * (1 - Math.exp(-dt / 0.07));
+        }
+        var hx = Math.sin(carYaw);
+        var hz = Math.cos(carYaw);
         if (followOrigin) {
-            routeRoot.position.set(-pos.x, 0, -pos.z);
-            var sp = sampleCurve.getPointAt(0.02);
-            var st = sampleCurve.getTangentAt(0.02).normalize();
-            var yaw = Math.atan2(tangent.x, tangent.z) - Math.atan2(st.x, st.z);
+            routeRoot.position.set(-routePos.x, 0, -routePos.z);
+            var yaw = carYaw - anchorYaw;
             var cyaw = Math.cos(yaw);
             var syaw = Math.sin(yaw);
             coast.rotation.y = yaw;
-            coast.position.set(-(sp.x * cyaw + sp.z * syaw), 0, -(-sp.x * syaw + sp.z * cyaw));
+            coast.position.set(-(anchorHold.x * cyaw + anchorHold.z * syaw), 0, -(-anchorHold.x * syaw + anchorHold.z * cyaw));
             car.position.set(0, 0.02, 0);
-            ahead.set(tangent.x * 6, pos.y, tangent.z * 6);
+            steerLook.set(hx * 6, 0.02, hz * 6);
         } else {
-            car.position.copy(pos);
-            ahead.copy(pos).addScaledVector(tangent, 6);
+            car.position.copy(routePos);
+            steerLook.set(routePos.x + hx * 6, routePos.y, routePos.z + hz * 6);
         }
-        car.lookAt(ahead.x, pos.y, ahead.z);
-        var rolling = gpsOnRoute && liveKmh !== null && liveKmh > 2;
-        var spin = rolling ? dt * Math.min(36, (liveKmh / 3.6) / 0.32) : 0;
+        car.lookAt(steerLook.x, steerLook.y, steerLook.z);
+        var rollMps = gpsOnRoute ? Math.max(coastMps, shownMps) : 0;
+        var targetRate = rollMps > 0.35 ? Math.min(34, rollMps / 0.32) : 0;
+        wheelRate += (targetRate - wheelRate) * (1 - Math.exp(-dt / 0.22));
+        if (wheelRate < 0) wheelRate = 0;
         var w;
-        for (w = 0; w < wheels.length; w++) {
-            if (spin) wheels[w].rotation.x -= spin;
+        if (wheelRate > 0.015) {
+            var spin = wheelRate * dt;
+            for (w = 0; w < wheels.length; w++) wheels[w].rotation.x -= spin;
         }
         for (w = 0; w < chevrons.length; w++) {
             var cu;
@@ -7407,18 +7756,25 @@
             else cu = (travel + 0.012 + w * 0.014) % 1;
             if (cu < 0.0001) cu = 0.0001;
             if (cu > 0.999) cu = 0.999;
-            var cp = curve.getPointAt(cu);
-            var ct = curve.getTangentAt(cu).normalize();
-            if (!routeActive && tangent.dot(ct) < 0) ct.negate();
-            tmpA.crossVectors(ct, up).normalize();
-            cp.addScaledVector(tmpA, 1.25);
-            cp.y = 0.16;
+            if (routeActive && curve.evalAt) curve.evalAt(cu, chevPos, chevTan);
+            else {
+                curve.getPointAt(cu, chevPos);
+                curve.getTangentAt(cu, chevTan);
+            }
+            if (chevTan.lengthSq() < 1e-8) chevTan.set(0, 0, 1);
+            else if (!routeActive) chevTan.normalize();
+            if (!routeActive && routeTan.dot(chevTan) < 0) chevTan.negate();
+            tmpA.crossVectors(chevTan, up);
+            if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
+            tmpA.normalize();
+            chevPos.addScaledVector(tmpA, 1.25);
+            chevPos.y = 0.16;
             if (followOrigin) {
-                chevrons[w].position.set(cp.x - pos.x, cp.y, cp.z - pos.z);
-                chevrons[w].lookAt(cp.x - pos.x + ct.x, cp.y, cp.z - pos.z + ct.z);
+                chevrons[w].position.set(chevPos.x - routePos.x, chevPos.y, chevPos.z - routePos.z);
+                chevrons[w].lookAt(chevPos.x - routePos.x + chevTan.x, chevPos.y, chevPos.z - routePos.z + chevTan.z);
             } else {
-                chevrons[w].position.copy(cp);
-                chevrons[w].lookAt(cp.x + ct.x, cp.y, cp.z + ct.z);
+                chevrons[w].position.copy(chevPos);
+                chevrons[w].lookAt(chevPos.x + chevTan.x, chevPos.y, chevPos.z + chevTan.z);
             }
         }
         for (w = 0; w < clouds.length; w++) {
@@ -7428,24 +7784,19 @@
         if (waterMat.map) waterMat.map.offset.x += dt * 0.012;
         if (waterShineMat && waterShineMat.map) waterShineMat.map.offset.x -= dt * 0.02;
         if (millBlades) millBlades.rotation.z += dt * 0.7;
-        tmpA.crossVectors(tangent, up);
-        if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
-        tmpA.normalize();
-        var desired = followOrigin
-            ? new THREE.Vector3(-tangent.x * camBack, camUp, -tangent.z * camBack)
-            : pos.clone().addScaledVector(tangent, -camBack);
-        desired.addScaledVector(tmpA, camSide);
-        if (!followOrigin) desired.y += camUp;
-        var camK = aligned ? (1 - Math.exp(-dt * 2.2)) : 1;
-        camPos.lerp(desired, camK);
+        tmpA.set(-hz, 0, hx);
+        if (followOrigin) {
+            camDesired.set(-hx * camBack + tmpA.x * camSide, camUp, -hz * camBack + tmpA.z * camSide);
+            lookDesired.set(hx * lookAhead + tmpA.x * camSide * 0.22, lookUp, hz * lookAhead + tmpA.z * camSide * 0.22);
+        } else {
+            camDesired.set(routePos.x - hx * camBack + tmpA.x * camSide, routePos.y + camUp, routePos.z - hz * camBack + tmpA.z * camSide);
+            lookDesired.set(routePos.x + hx * lookAhead + tmpA.x * camSide * 0.22, lookUp, routePos.z + hz * lookAhead + tmpA.z * camSide * 0.22);
+        }
+        var camK = aligned ? (1 - Math.exp(-dt * 7)) : 1;
+        camPos.lerp(camDesired, camK);
         camera.position.copy(camPos);
-        var lookTarget = followOrigin
-            ? new THREE.Vector3(tangent.x * lookAhead, lookUp, tangent.z * lookAhead)
-            : pos.clone().addScaledVector(tangent, lookAhead);
-        lookTarget.addScaledVector(tmpA, camSide * 0.22);
-        if (!followOrigin) lookTarget.y = lookUp;
-        var lookK = aligned ? (1 - Math.exp(-dt * 2.8)) : 1;
-        lookPos.lerp(lookTarget, lookK);
+        var lookK = aligned ? (1 - Math.exp(-dt * 8)) : 1;
+        lookPos.lerp(lookDesired, lookK);
         camera.lookAt(lookPos);
         aligned = true;
         sun.position.set(car.position.x + 24, 42, car.position.z + 12);
