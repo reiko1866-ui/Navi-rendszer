@@ -61,4 +61,17 @@ const ranked = nav.rankAddresses([
 ], "Kossuth Lajos sugárút, Szeged");
 assert.strictEqual(nav.addressLabel(ranked[0].properties), "Kossuth Lajos sugárút, Szeged");
 
+const settlements = nav.rankAddresses([
+  { properties: { name: "Indóház tér", city: "Szeged", osm_key: "railway", osm_value: "station" } },
+  { properties: { name: "Szeged", osm_key: "place", osm_value: "city", county: "Csongrád-Csanád megye" } },
+], "Szeged");
+assert.strictEqual(nav.addressLabel(settlements[0].properties), "Szeged");
+assert.strictEqual(nav.addressLabel({ name: "Tiszasziget", osm_key: "place", osm_value: "village", county: "Csongrád-Csanád megye" }), "Tiszasziget, Csongrád-Csanád megye");
+
+const houses = nav.rankAddresses([
+  { properties: { name: "Váci utca", city: "Budapest", osm_key: "historic", osm_value: "memorial" } },
+  { properties: { street: "Váci utca", housenumber: "12", city: "Budapest", osm_key: "building", osm_value: "yes" } },
+], "Váci utca 12, Budapest");
+assert.strictEqual(nav.addressLabel(houses[0].properties), "Váci utca 12, Budapest");
+
 console.log("útvonalteszt rendben");

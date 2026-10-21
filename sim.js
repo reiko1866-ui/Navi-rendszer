@@ -540,7 +540,7 @@
   }
 
   function photonUrl(query) {
-    return "https://photon.komoot.io/api/?limit=12&bbox=16.10,45.74,22.90,48.58&q=" + encodeURIComponent(query.trim());
+    return "https://photon.komoot.io/api/?limit=40&bbox=16.10,45.74,22.90,48.58&q=" + encodeURIComponent(query.trim());
   }
 
   function osrmUrl(origin, destination) {
@@ -560,6 +560,7 @@
   function rankAddresses(features, query) {
     const folded = foldHu(query);
     const tokens = folded.split(/[^a-z0-9]+/).filter(function (token) { return token.length > 2; });
+    const wantedNumber = folded.match(/\d+/g) || [];
     const wantsStreet = /(utca|sugarut|setany|korut|\but\b|\bter\b)/.test(folded);
     const ranked = features.map(function (feature, index) {
       const props = feature.properties || {};
@@ -568,10 +569,14 @@
       const city = foldHu(props.city);
       let score = 0;
       tokens.forEach(function (token) {
-        if (name.indexOf(token) !== -1) score += 6;
+        if (name === token) score += 18;
+        else if (name.indexOf(token) !== -1) score += 6;
         if (street.indexOf(token) !== -1) score += 4;
         if (city.indexOf(token) !== -1) score += 3;
       });
+      const settlement = props.osm_key === "place" && (props.osm_value === "city" || props.osm_value === "town" || props.osm_value === "village" || props.osm_value === "hamlet");
+      if (settlement && tokens.some(function (token) { return name === token; })) score += 16;
+      if (wantedNumber.length && props.housenumber && wantedNumber.indexOf(String(props.housenumber).trim()) !== -1) score += 22;
       if (wantsStreet && props.osm_key === "highway") score += 8;
       if (wantsStreet && (props.osm_key === "amenity" || props.osm_key === "shop" || props.osm_key === "tourism" || props.osm_key === "historic")) score -= 3;
       return { feature: feature, score: score, index: index };
@@ -593,6 +598,13 @@
   }
 
   function addressLabel(properties) {
+    const kind = properties.osm_value;
+    if (properties.osm_key === "place" && properties.name && (kind === "city" || kind === "town" || kind === "village" || kind === "hamlet" || kind === "suburb")) {
+      if (kind === "city" || kind === "town") return properties.name;
+      const where = properties.city || properties.county || properties.state || "";
+      if (where && foldHu(where) !== foldHu(properties.name)) return properties.name + ", " + where;
+      return properties.name;
+    }
     const street = properties.street || "";
     const number = properties.housenumber ? " " + properties.housenumber : "";
     const place = properties.name && properties.name !== street ? properties.name : "";
@@ -722,6 +734,7 @@
       useGraph: false,
       route: null,
       origin: null,
+      destDraft: false,
       traveledKm: 0,
       speedKmh: 0,
       driving: false,
@@ -778,6 +791,7 @@
 
     function destinationPoint() {
       if (state.address) return state.address;
+      if (state.destDraft) return null;
       if (state.toId && PLACES[state.toId]) {
         const place = PLACES[state.toId];
         return { lon: place.lon, lat: place.lat, label: place.name };
@@ -829,7 +843,7 @@
       };
     }
 
-    function bindSearch(input, list, onPick, onClear) {
+    function bindSearch(input, list, selected, onPick, onClear) {
       let timer = null;
       let abort = null;
       let token = 0;
@@ -841,11 +855,13 @@
       });
       input.addEventListener("input", function () {
         const query = input.value.trim();
+        const current = selected();
         if (timer) clearTimeout(timer);
+        if (current && query !== current.label) onClear();
         if (query.length < 2) {
           hideList(list);
-          note.textContent = "";
-          if (!query) onClear();
+          if (!query) note.textContent = "";
+          else if (!selected()) note.textContent = "Válassz a találatok közül.";
           return;
         }
         timer = setTimeout(function () { run(query); }, 350);
@@ -872,7 +888,7 @@
               note.textContent = "Nincs ilyen cím az országban.";
               return;
             }
-            note.textContent = "";
+            note.textContent = selected() ? "" : "Válassz a találatok közül.";
             list.innerHTML = "";
             features.forEach(function (feature) {
               const item = document.createElement("li");
@@ -1013,7 +1029,7 @@
       routeBetween(state.origin, destination);
     }
 
-    bindSearch(fromInput, fromHits, function (feature) {
+    bindSearch(fromInput, fromHits, function () { return state.origin; }, function (feature) {
       const place = placeFromFeature(feature);
       if (!place) return;
       state.origin = place;
@@ -1021,30 +1037,43 @@
       state.useGraph = false;
       fromInput.value = place.label;
       hideList(fromHits);
+      note.textContent = "";
       planNow();
     }, function () {
+      if (!state.origin && !state.fromId) return;
       state.origin = null;
       state.fromId = null;
       state.useGraph = false;
       planNow();
     });
 
-    bindSearch(queryInput, hits, function (feature) {
+    bindSearch(queryInput, hits, function () { return state.address; }, function (feature) {
       const place = placeFromFeature(feature);
       if (!place) return;
       state.address = place;
+      state.destDraft = false;
       state.toId = "";
       toSelect.value = "";
       queryInput.value = place.label;
       hideList(hits);
+      note.textContent = "";
       planNow();
     }, function () {
+      if (!state.address) return;
       state.address = null;
       planNow();
+    });
+    queryInput.addEventListener("input", function () {
+      const typed = queryInput.value.trim();
+      const drafting = typed.length > 0 && !(state.address && state.address.label === typed);
+      if (drafting === state.destDraft) return;
+      state.destDraft = drafting;
+      if (!state.address) planNow();
     });
 
     toSelect.addEventListener("change", function () {
       state.address = null;
+      state.destDraft = false;
       queryInput.value = "";
       hideList(hits);
       state.toId = toSelect.value;
@@ -1125,6 +1154,7 @@
       const hit = nearestCity(world.x, world.y, 26 / state.zoom);
       if (!hit) return;
       state.address = null;
+      state.destDraft = false;
       queryInput.value = "";
       hideList(hits);
       state.toId = hit;
