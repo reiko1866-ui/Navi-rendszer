@@ -700,7 +700,7 @@
     const windCanvas = document.getElementById("wind");
     const atlas = document.getElementById("atlas");
     const cab = document.getElementById("cab");
-    const fromSelect = document.getElementById("from");
+    const fromInput = document.getElementById("from-q");
     const toSelect = document.getElementById("to");
     const headline = document.getElementById("headline");
     const subline = document.getElementById("subline");
@@ -710,20 +710,18 @@
       .sort(function (a, b) { return PLACES[a].name.localeCompare(PLACES[b].name, "hu"); });
 
     cityIds.forEach(function (id) {
-      const optionA = document.createElement("option");
-      optionA.value = id;
-      optionA.textContent = PLACES[id].name;
-      const optionB = optionA.cloneNode(true);
-      fromSelect.appendChild(optionA);
-      toSelect.appendChild(optionB);
+      const option = document.createElement("option");
+      option.value = id;
+      option.textContent = PLACES[id].name;
+      toSelect.appendChild(option);
     });
-    fromSelect.value = "budapest";
-    toSelect.value = "gyor";
 
     const state = {
-      fromId: "budapest",
-      toId: "gyor",
-      route: planRoute("budapest", "gyor"),
+      fromId: null,
+      toId: "",
+      useGraph: false,
+      route: null,
+      origin: null,
       traveledKm: 0,
       speedKmh: 0,
       driving: false,
@@ -756,7 +754,6 @@
     }
 
     function syncSelects() {
-      if (fromSelect.value !== state.fromId) fromSelect.value = state.fromId;
       if (toSelect.value !== state.toId) toSelect.value = state.toId;
     }
 
@@ -773,51 +770,128 @@
       renderSummary();
     }
 
+    function originLabel() {
+      if (state.origin) return state.origin.label;
+      if (state.fromId && PLACES[state.fromId]) return PLACES[state.fromId].name;
+      return "";
+    }
+
+    function destinationPoint() {
+      if (state.address) return state.address;
+      if (state.toId && PLACES[state.toId]) {
+        const place = PLACES[state.toId];
+        return { lon: place.lon, lat: place.lat, label: place.name };
+      }
+      return null;
+    }
+
     function renderSummary() {
       const route = state.route;
-      const originName = PLACES[state.fromId] ? PLACES[state.fromId].name : "Indulás";
+      const startName = originLabel();
+      const destination = destinationPoint();
       if (!route) {
-        if (state.address) {
-          headline.textContent = originName + " → " + state.address.label;
-          subline.textContent = state.status || "Ehhez a címhez nincs útvonal.";
+        if (startName || destination) {
+          headline.textContent = (startName || "Indulás") + " → " + (destination ? destination.label : "Cél");
+          subline.textContent = state.status || (startName ? "Keress célt is." : "Keress induló helyet.");
         } else {
-          headline.textContent = "Válassz másik várost";
-          subline.textContent = "Az indulás és a cél nem lehet ugyanaz.";
+          headline.textContent = "Keress induló helyet és célt";
+          subline.textContent = "Mindkét mezőbe címet írhatsz.";
         }
         startButton.disabled = true;
         return;
       }
       startButton.disabled = !!state.routing;
-      const destName = route.addressLabel || (PLACES[route.toId] ? PLACES[route.toId].name : "Cím");
-      headline.textContent = originName + " → " + destName;
+      const destName = route.addressLabel || (destination ? destination.label : "Cél");
+      headline.textContent = (startName || "Indulás") + " → " + destName;
       const via = route.addressLabel ? "címkeresés" : route.roads.join(" · ");
       subline.textContent = route.totalKm.toFixed(0) + " km · " + via + " · " + formatDuration(remainingHours(route, 0));
     }
 
     const queryInput = document.getElementById("q");
     const hits = document.getElementById("hits");
+    const fromHits = document.getElementById("from-hits");
     const note = document.getElementById("search-note");
-    let searchTimer = null;
-    let searchAbort = null;
     let routeAbort = null;
-    let searchToken = 0;
     let routeToken = 0;
 
-    function hideHits() {
-      hits.hidden = true;
-      hits.innerHTML = "";
+    function hideList(list) {
+      list.hidden = true;
+      list.innerHTML = "";
     }
 
-    function clearAddress() {
-      if (routeAbort) routeAbort.abort();
-      routeToken += 1;
-      state.address = null;
-      state.routing = false;
-      state.inkKm = null;
-      state.status = "";
-      note.textContent = "";
-      queryInput.value = "";
-      hideHits();
+    function placeFromFeature(feature) {
+      const coordinates = feature.geometry && feature.geometry.coordinates;
+      if (!coordinates || coordinates.length < 2) return null;
+      return {
+        lon: coordinates[0],
+        lat: coordinates[1],
+        label: addressLabel(feature.properties || {}),
+      };
+    }
+
+    function bindSearch(input, list, onPick, onClear) {
+      let timer = null;
+      let abort = null;
+      let token = 0;
+      input.addEventListener("keydown", function (event) {
+        if (event.key !== "Enter") return;
+        event.preventDefault();
+        const first = list.querySelector("button");
+        if (first && !list.hidden) first.click();
+      });
+      input.addEventListener("input", function () {
+        const query = input.value.trim();
+        if (timer) clearTimeout(timer);
+        if (query.length < 2) {
+          hideList(list);
+          note.textContent = "";
+          if (!query) onClear();
+          return;
+        }
+        timer = setTimeout(function () { run(query); }, 350);
+      });
+      function run(query) {
+        if (abort) abort.abort();
+        abort = new AbortController();
+        const my = ++token;
+        hideList(list === hits ? fromHits : hits);
+        note.textContent = "Keresés…";
+        fetch(photonUrl(query), { signal: abort.signal })
+          .then(function (response) {
+            if (!response.ok) throw new Error("search");
+            return response.json();
+          })
+          .then(function (data) {
+            if (my !== token) return;
+            const features = rankAddresses((data.features || []).filter(function (feature) {
+              const code = feature.properties && feature.properties.countrycode;
+              return code === "HU";
+            }), query);
+            if (!features.length) {
+              hideList(list);
+              note.textContent = "Nincs ilyen cím az országban.";
+              return;
+            }
+            note.textContent = "";
+            list.innerHTML = "";
+            features.forEach(function (feature) {
+              const item = document.createElement("li");
+              const button = document.createElement("button");
+              button.type = "button";
+              button.textContent = addressLabel(feature.properties || {});
+              button.addEventListener("click", function () { onPick(feature); });
+              item.appendChild(button);
+              list.appendChild(item);
+            });
+            list.hidden = false;
+          })
+          .catch(function (error) {
+            if (error && error.name === "AbortError") return;
+            if (my !== token) return;
+            hideList(list);
+            note.textContent = "A keresés nem sikerült.";
+          });
+      }
     }
 
     function frameRoute(route) {
@@ -849,10 +923,13 @@
       };
     }
 
-    function routeToAddress() {
-      const destination = state.address;
-      const origin = PLACES[state.fromId];
-      if (!destination || !origin) return;
+    function routeBetween(origin, destination) {
+      if (!origin || !destination) {
+        state.routing = false;
+        state.route = null;
+        renderSummary();
+        return;
+      }
       if (routeAbort) routeAbort.abort();
       if (haversine(origin, destination) < 0.4) {
         state.routing = false;
@@ -892,7 +969,7 @@
             renderSummary();
             return;
           }
-          state.route = routeFromGeometry(state.fromId, destination, coordinates, steps, found.distance, found.duration);
+          state.route = routeFromGeometry(origin.label, destination, coordinates, steps, found.distance, found.duration);
           state.traveledKm = 0;
           state.speedKmh = 0;
           state.arrived = false;
@@ -916,115 +993,73 @@
         });
     }
 
-    function pickAddress(feature) {
-      const coordinates = feature.geometry && feature.geometry.coordinates;
-      if (!coordinates || coordinates.length < 2) return;
-      state.address = {
-        lon: coordinates[0],
-        lat: coordinates[1],
-        label: addressLabel(feature.properties || {}),
-      };
-      queryInput.value = state.address.label;
-      hideHits();
-      routeToAddress();
-    }
-
-    function runSearch(query) {
-      if (searchAbort) searchAbort.abort();
-      searchAbort = new AbortController();
-      const token = ++searchToken;
-      note.textContent = "Keresés…";
-      fetch(photonUrl(query), { signal: searchAbort.signal })
-        .then(function (response) {
-          if (!response.ok) throw new Error("search");
-          return response.json();
-        })
-        .then(function (data) {
-          if (token !== searchToken) return;
-          const features = rankAddresses((data.features || []).filter(function (feature) {
-            const code = feature.properties && feature.properties.countrycode;
-            return code === "HU";
-          }), query);
-          if (!features.length) {
-            hideHits();
-            note.textContent = "Nincs ilyen cím az országban.";
-            return;
-          }
-          note.textContent = "";
-          hits.innerHTML = "";
-          features.forEach(function (feature) {
-            const item = document.createElement("li");
-            const button = document.createElement("button");
-            button.type = "button";
-            button.textContent = addressLabel(feature.properties || {});
-            button.addEventListener("click", function () { pickAddress(feature); });
-            item.appendChild(button);
-            hits.appendChild(item);
-          });
-          hits.hidden = false;
-        })
-        .catch(function (error) {
-          if (error && error.name === "AbortError") return;
-          if (token !== searchToken) return;
-          hideHits();
-          note.textContent = "A keresés nem sikerült.";
-        });
-    }
-
-    queryInput.addEventListener("keydown", function (event) {
-      if (event.key !== "Enter") return;
-      event.preventDefault();
-      const first = hits.querySelector("button");
-      if (first && !hits.hidden) first.click();
-    });
-    queryInput.addEventListener("input", function () {
-      const query = queryInput.value.trim();
-      if (searchTimer) clearTimeout(searchTimer);
-      if (query.length < 2) {
-        hideHits();
-        note.textContent = "";
-        if (!query && state.address) {
-          clearAddress();
-          replanParked();
-        }
+    function planNow() {
+      if (state.useGraph && state.fromId && state.toId && !state.address) {
+        replanParked();
         return;
       }
-      searchTimer = setTimeout(function () { runSearch(query); }, 350);
-    });
-
-    fromSelect.addEventListener("change", function () {
-      state.fromId = fromSelect.value;
-      if (state.address) {
-        routeToAddress();
-        return;
-      }
-      if (state.fromId === state.toId) {
-        state.route = null;
-        renderSummary();
-        return;
-      }
-      replanParked();
-    });
-    toSelect.addEventListener("change", function () {
-      if (state.address) clearAddress();
-      state.toId = toSelect.value;
-      if (state.fromId === state.toId) {
+      const destination = destinationPoint();
+      if (!state.origin || !destination) {
+        if (routeAbort) routeAbort.abort();
+        routeToken += 1;
+        state.routing = false;
         state.route = null;
         state.inkKm = null;
+        state.status = "";
+        note.textContent = "";
         renderSummary();
         return;
       }
-      if (state.driving && !state.arrived) {
+      routeBetween(state.origin, destination);
+    }
+
+    bindSearch(fromInput, fromHits, function (feature) {
+      const place = placeFromFeature(feature);
+      if (!place) return;
+      state.origin = place;
+      state.fromId = null;
+      state.useGraph = false;
+      fromInput.value = place.label;
+      hideList(fromHits);
+      planNow();
+    }, function () {
+      state.origin = null;
+      state.fromId = null;
+      state.useGraph = false;
+      planNow();
+    });
+
+    bindSearch(queryInput, hits, function (feature) {
+      const place = placeFromFeature(feature);
+      if (!place) return;
+      state.address = place;
+      state.toId = "";
+      toSelect.value = "";
+      queryInput.value = place.label;
+      hideList(hits);
+      planNow();
+    }, function () {
+      state.address = null;
+      planNow();
+    });
+
+    toSelect.addEventListener("change", function () {
+      state.address = null;
+      queryInput.value = "";
+      hideList(hits);
+      state.toId = toSelect.value;
+      if (state.useGraph && state.driving && !state.arrived && state.route) {
         const ahead = upcomingNode(state.route, state.traveledKm);
-        const rest = ahead ? planRoute(ahead.nodeId, state.toId) : null;
-        if (ahead && rest) state.route = joinPartial(state.route, state.traveledKm, ahead, rest);
-        else state.route = planRoute(state.fromId, state.toId);
-        state.traveledKm = 0;
-        state.arrived = false;
-      } else {
-        replanParked();
+        const rest = ahead && ahead.nodeId && PLACES[ahead.nodeId] ? planRoute(ahead.nodeId, state.toId) : null;
+        if (ahead && rest) {
+          state.route = joinPartial(state.route, state.traveledKm, ahead, rest);
+          state.traveledKm = 0;
+          state.arrived = false;
+          renderSummary();
+          return;
+        }
       }
-      renderSummary();
+      planNow();
     });
 
     document.getElementById("panel").addEventListener("submit", function (event) {
@@ -1088,11 +1123,13 @@
       const camera = atlasCamera(canvasBox(mapCanvas).w, canvasBox(mapCanvas).h);
       const world = screenToWorld(event.clientX - rect.left, event.clientY - rect.top, camera);
       const hit = nearestCity(world.x, world.y, 26 / state.zoom);
-      if (!hit || hit === state.fromId) return;
-      if (state.address) clearAddress();
+      if (!hit) return;
+      state.address = null;
+      queryInput.value = "";
+      hideList(hits);
       state.toId = hit;
       toSelect.value = hit;
-      replanParked();
+      planNow();
     });
     mapCanvas.addEventListener("pointercancel", function () { drag = null; });
     mapCanvas.addEventListener("wheel", function (event) {
@@ -1157,6 +1194,7 @@
       live.minutes = state.simMinutes;
       live.inkKm = state.inkKm;
       live.address = state.address;
+      live.origin = state.origin;
       activeRoute = state.route;
       activeKm = state.traveledKm;
       if (state.view === "atlas") {
@@ -1231,16 +1269,18 @@
     window.addEventListener("resize", function () { state.fitted = false; });
 
     const params = new URLSearchParams(location.search);
+    if (params.get("from") && PLACES[params.get("from")]) {
+      const place = PLACES[params.get("from")];
+      state.fromId = params.get("from");
+      state.useGraph = true;
+      state.origin = { lon: place.lon, lat: place.lat, label: place.name };
+      fromInput.value = place.name;
+    }
     if (params.get("to") && PLACES[params.get("to")]) {
       state.toId = params.get("to");
       toSelect.value = state.toId;
-      replanParked();
     }
-    if (params.get("from") && PLACES[params.get("from")]) {
-      state.fromId = params.get("from");
-      fromSelect.value = state.fromId;
-      replanParked();
-    }
+    if (state.useGraph && state.fromId && state.toId) replanParked();
     if (params.get("km")) state.traveledKm = Math.min(state.route ? state.route.totalKm : 0, Number(params.get("km")) || 0);
     if (params.get("drive") === "1" && state.route) {
       state.driving = true;
@@ -1416,6 +1456,9 @@
       const pin = project(camera.address.lon, camera.address.lat);
       drawFlag(ctx, pin, camera.zoom);
     }
+    if (camera.origin) {
+      drawStart(ctx, project(camera.origin.lon, camera.origin.lat), camera.zoom);
+    }
 
     Object.keys(PLACES).forEach(function (id) {
       if (!PLACES[id].city) return;
@@ -1536,6 +1579,20 @@
     [[-12, -7.5], [-12, 5], [3, -7.5], [3, 5], [10, -7.5], [10, 5]].forEach(function (wheel) {
       ctx.fillRect(wheel[0], wheel[1], 4.5, 2.6);
     });
+    ctx.restore();
+  }
+
+  function drawStart(ctx, point, zoom) {
+    ctx.save();
+    ctx.translate(point.x, point.y);
+    ctx.scale(1 / zoom, 1 / zoom);
+    ctx.fillStyle = "#f4efe4";
+    ctx.strokeStyle = "#2a241c";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
     ctx.restore();
   }
 
@@ -1906,6 +1963,7 @@
     camera.traveledKm = live.km;
     camera.inkKm = live.inkKm;
     camera.address = live.address;
+    camera.origin = live.origin;
     camera.truck = sampleRoute(live.route, live.km);
     activeRoute = live.route;
     activeKm = live.km;

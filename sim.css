@@ -203,9 +203,12 @@ select {
 
 #summary span { color: var(--muted); font-size: 14px; }
 
+#origin-label,
+#from-hits,
 #search-label,
 #hits,
-#search-note { grid-column: 1 / -1; }
+#search-note,
+#to-label { grid-column: 1 / -1; }
 
 input[type="search"] {
   min-height: 44px;
@@ -229,9 +232,22 @@ input[type="search"] {
   gap: 6px;
 }
 
-#hits[hidden] { display: none !important; }
+#hits[hidden],
+#from-hits[hidden] { display: none !important; }
 
-#hits button {
+#from-hits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 180px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#hits button,
+#from-hits button {
   width: 100%;
   text-align: left;
   border-radius: 12px;
@@ -245,7 +261,7 @@ input[type="search"] {
 
 #search-note:empty { display: none; }
 
-#panel .go { min-width: 132px; font-size: 18px; }
+#panel .go { grid-column: 1 / -1; min-width: 132px; font-size: 18px; }
 
 #stage {
   flex: 1;
@@ -352,7 +368,8 @@ input[type="search"] {
   #panel {
     grid-template-columns: 1fr 1fr;
   }
-  #panel .go { grid-column: 1 / -1; }
+  #panel .go,
+  #to-label { grid-column: 1 / -1; }
   #stage { grid-template-columns: 1fr; grid-template-rows: 38dvh minmax(160px, 1fr); }
   #gps { margin: 8px 8px 0; }
   #dash {

@@ -16,7 +16,7 @@
         <div class="eyebrow">Kamionszimulátor</div>
         <h1>Rajzolt kamiontérkép</h1>
       </div>
-      <p class="hint">Az egész ország látszik. Írj egy magyar címet, vagy válassz két várost. A címhez az út berajzolódik.</p>
+      <p class="hint">Az egész ország látszik. Az indulást és a célt is címmel keresheted. Az út berajzolódik.</p>
     </header>
     <div id="map-wrap">
       <canvas id="map"></canvas>
@@ -36,16 +36,19 @@
         <strong id="headline">Útvonal</strong>
         <span id="subline"></span>
       </div>
-      <label id="search-label">Cím Magyarországon
+      <label id="origin-label">Indulás
+        <input id="from-q" type="search" placeholder="utca és város, például Váci utca, Budapest" autocomplete="off" enterkeyhint="search">
+      </label>
+      <ul id="from-hits" hidden></ul>
+      <label id="search-label">Cél
         <input id="q" type="search" placeholder="utca és város, például Kossuth Lajos sugárút, Szeged" autocomplete="off" enterkeyhint="search">
       </label>
       <ul id="hits" hidden></ul>
       <p id="search-note" aria-live="polite"></p>
-      <label>Indulás
-        <select id="from" name="from"></select>
-      </label>
-      <label>Cél
-        <select id="to" name="to"></select>
+      <label id="to-label">Város a térképen
+        <select id="to" name="to">
+          <option value="">nem kötelező</option>
+        </select>
       </label>
       <button type="submit" class="primary go" id="start">Indulás</button>
     </form>
