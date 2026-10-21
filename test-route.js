@@ -28,4 +28,37 @@ assert.ok(debrecen.roads.indexOf("M3") !== -1, "Debrecen az autópályát haszn�
 const same = nav.planRoute("budapest", "budapest");
 assert.strictEqual(same, null);
 
+assert.strictEqual(nav.addressLabel({ street: "Kossuth utca", housenumber: "1", city: "Szeged" }), "Kossuth utca 1, Szeged");
+assert.strictEqual(nav.addressLabel({ name: "Dóm tér", city: "Szeged" }), "Dóm tér, Szeged");
+const photon = nav.photonUrl("Kossuth utca, Szeged");
+assert.ok(photon.indexOf("lang=") === -1, "a Photon cím ne kérjen hu nyelvet");
+assert.ok(photon.indexOf("bbox=16.10,45.74,22.90,48.58") !== -1);
+const osrm = nav.osrmUrl({ lon: 19.04032, lat: 47.49791 }, { lon: 20.14826, lat: 46.25301 });
+assert.ok(osrm.indexOf("19.04032,47.49791;20.14826,46.25301") !== -1);
+assert.ok(osrm.indexOf("overview=full") !== -1);
+
+const drawn = nav.routeFromGeometry("budapest", { label: "Kossuth utca, Szeged" }, [
+  [19.04, 47.50],
+  [19.05, 47.50],
+  [19.05, 47.49],
+], [
+  { maneuver: { type: "depart", modifier: "straight" }, name: "Induló utca", distance: 800 },
+  { maneuver: { type: "turn", modifier: "right" }, name: "Kossuth utca", distance: 900 },
+  { maneuver: { type: "arrive" }, name: "", distance: 0 },
+], 1700, 5400);
+assert.ok(Math.abs(drawn.totalKm - 1.7) < 0.001, "a táv az OSRM válaszból jön");
+assert.strictEqual(drawn.durationHours, 1.5);
+assert.strictEqual(drawn.addressLabel, "Kossuth utca, Szeged");
+assert.strictEqual(drawn.points[0].road, "Induló utca");
+assert.ok(drawn.points[drawn.points.length - 1].road === "Kossuth utca");
+assert.ok(drawn.maneuvers.some(function (item) { return item.action === "right" && item.text.indexOf("Jobbra") === 0; }));
+assert.strictEqual(drawn.maneuvers[drawn.maneuvers.length - 1].action, "arrive");
+assert.strictEqual(nav.routeFromGeometry("budapest", { label: "X" }, [[19, 47]], [], 0, 0).points.length, 1);
+
+const ranked = nav.rankAddresses([
+  { properties: { name: "Kossuth Lajos Általános Iskola", street: "Szerb utca", city: "Szeged", osm_key: "amenity", countrycode: "HU" } },
+  { properties: { name: "Kossuth Lajos sugárút", city: "Szeged", osm_key: "highway", osm_value: "primary", countrycode: "HU" } },
+], "Kossuth Lajos sugárút, Szeged");
+assert.strictEqual(nav.addressLabel(ranked[0].properties), "Kossuth Lajos sugárút, Szeged");
+
 console.log("útvonalteszt rendben");

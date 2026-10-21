@@ -203,6 +203,48 @@ select {
 
 #summary span { color: var(--muted); font-size: 14px; }
 
+#search-label,
+#hits,
+#search-note { grid-column: 1 / -1; }
+
+input[type="search"] {
+  min-height: 44px;
+  width: 100%;
+  border-radius: 12px;
+  border: 2px solid var(--line);
+  background: var(--cabin-2);
+  color: var(--cream);
+  padding: 0 10px;
+  font: inherit;
+}
+
+#hits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 180px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#hits[hidden] { display: none !important; }
+
+#hits button {
+  width: 100%;
+  text-align: left;
+  border-radius: 12px;
+}
+
+#search-note {
+  margin: 0;
+  color: var(--ochre);
+  font-size: 13px;
+}
+
+#search-note:empty { display: none; }
+
 #panel .go { min-width: 132px; font-size: 18px; }
 
 #stage {
