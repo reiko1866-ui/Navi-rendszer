@@ -3938,6 +3938,17 @@
     var anchorYaw = 0;
     var routeScenery = null;
     var routeDeckMat = null;
+    var atlasRoadMat = null;
+    var atlasShoulderMat = null;
+    var atlasVergeMat = null;
+    var atlasCurbMat = null;
+    var atlasEdgeMat = null;
+    var atlasGuideMat = null;
+    var routeLeafMat = null;
+    var routePineMat = null;
+    var routeWallMat = null;
+    var routeRoofMat = null;
+    var routeDoorMat = null;
     var signPostMat = null;
     var settlementSeq = 0;
     var settlementTimer = 0;
@@ -4587,6 +4598,36 @@
     var dayTop = new THREE.Color(0x3a96f5);
     var dayMid = new THREE.Color(0x8ad4fb);
     var dayHor = new THREE.Color(0xe7f7ff);
+    var atlasSkyHor = new THREE.Color(0xf4f1df);
+    var atlasSkyMid = new THREE.Color(0xb7ddf6);
+    var atlasFogDay = new THREE.Color(0xe4ecd4);
+    var atlasClear = new THREE.Color(0xb9ddf4);
+    var atlasLandDay = new THREE.Color(0xffffff);
+    var atlasLandNight = new THREE.Color(0x6e7c62);
+    var atlasRoadDay = new THREE.Color(0x3a4450).convertSRGBToLinear();
+    var atlasRoadNight = new THREE.Color(0x1b222a).convertSRGBToLinear();
+    var atlasShoulderDay = new THREE.Color(0xf6e6c4).convertSRGBToLinear();
+    var atlasShoulderNight = new THREE.Color(0x8a7560).convertSRGBToLinear();
+    var atlasVergeDay = new THREE.Color(0x7ea84e).convertSRGBToLinear();
+    var atlasVergeNight = new THREE.Color(0x3e5a32).convertSRGBToLinear();
+    var atlasCurbDay = new THREE.Color(0xe7d3a4).convertSRGBToLinear();
+    var atlasCurbNight = new THREE.Color(0x7d6a52).convertSRGBToLinear();
+    var atlasLeafDay = new THREE.Color(0x2f8f3f).convertSRGBToLinear();
+    var atlasLeafNight = new THREE.Color(0x1a4d28).convertSRGBToLinear();
+    var atlasPineDay = new THREE.Color(0x1f6b3a).convertSRGBToLinear();
+    var atlasPineNight = new THREE.Color(0x123d24).convertSRGBToLinear();
+    var atlasWallDay = new THREE.Color(0xfff6e8).convertSRGBToLinear();
+    var atlasWallNight = new THREE.Color(0x9a8874).convertSRGBToLinear();
+    var atlasRoofDay = new THREE.Color(0xd4532c).convertSRGBToLinear();
+    var atlasRoofNight = new THREE.Color(0x6a2e1c).convertSRGBToLinear();
+    var atlasFieldDay = [
+        new THREE.Color(0xe2b43a).convertSRGBToLinear(),
+        new THREE.Color(0x67b84a).convertSRGBToLinear(),
+        new THREE.Color(0xf2e7b8).convertSRGBToLinear(),
+        new THREE.Color(0x8fbf5c).convertSRGBToLinear()
+    ];
+    var atlasFieldNight = new THREE.Color(0x3d4a32).convertSRGBToLinear();
+    var atlasFieldMats = [];
     var nightTop = new THREE.Color(0x07101f);
     var nightMid = new THREE.Color(0x12243f);
     var nightHor = new THREE.Color(0x243e62);
@@ -4602,6 +4643,11 @@
         skyTop.copy(dayTop).lerp(nightTop, t);
         skyMid.copy(dayMid).lerp(nightMid, t);
         skyHor.copy(dayHor).lerp(nightHor, t);
+        if (routeActive) {
+            var land = 1 - t;
+            skyHor.lerp(atlasSkyHor, 0.75 * land);
+            skyMid.lerp(atlasSkyMid, 0.4 * land);
+        }
         var i;
         for (i = 0; i < pos.count; i++) {
             var ny = pos.getY(i) / 520;
@@ -6316,10 +6362,10 @@
         var cabinGlow = new THREE.Color(0x9a5a32);
 
     function updateMood(t) {
-        fogCol.copy(dayFog).lerp(nightFog, t);
+        fogCol.copy(routeActive ? atlasFogDay : dayFog).lerp(nightFog, t);
         scene.fog.color.copy(fogCol);
-        var fogNear0 = gfxUltra ? 90 : 70;
-        var fogFar0 = gfxUltra ? 460 : 300;
+        var fogNear0 = routeActive ? (gfxUltra ? 72 : 50) : (gfxUltra ? 90 : 70);
+        var fogFar0 = routeActive ? (gfxUltra ? 390 : 250) : (gfxUltra ? 460 : 300);
         scene.fog.near = fogNear0 + ((gfxUltra ? 46 : 34) - fogNear0) * t;
         scene.fog.far = fogFar0 + ((gfxUltra ? 280 : 210) - fogFar0) * t;
         hemi.color.copy(dayHemi).lerp(nightHemi, t);
@@ -6330,6 +6376,19 @@
         fill.intensity = 0.16 + (0.04 - 0.16) * t;
         groundMat.color.copy(groundDay).lerp(groundNight, t);
         roadMat.color.copy(roadDay).lerp(roadNight, t);
+        if (routeDeckMat) routeDeckMat.color.copy(atlasLandDay).lerp(atlasLandNight, t);
+        if (atlasRoadMat) atlasRoadMat.color.copy(atlasRoadDay).lerp(atlasRoadNight, t);
+        if (atlasShoulderMat) atlasShoulderMat.color.copy(atlasShoulderDay).lerp(atlasShoulderNight, t);
+        if (atlasVergeMat) atlasVergeMat.color.copy(atlasVergeDay).lerp(atlasVergeNight, t);
+        if (atlasCurbMat) atlasCurbMat.color.copy(atlasCurbDay).lerp(atlasCurbNight, t);
+        if (routeLeafMat) routeLeafMat.color.copy(atlasLeafDay).lerp(atlasLeafNight, t);
+        if (routePineMat) routePineMat.color.copy(atlasPineDay).lerp(atlasPineNight, t);
+        if (routeWallMat) routeWallMat.color.copy(atlasWallDay).lerp(atlasWallNight, t);
+        if (routeRoofMat) routeRoofMat.color.copy(atlasRoofDay).lerp(atlasRoofNight, t);
+        var fieldI;
+        for (fieldI = 0; fieldI < atlasFieldMats.length; fieldI++) {
+            atlasFieldMats[fieldI].color.copy(atlasFieldDay[fieldI % atlasFieldDay.length]).lerp(atlasFieldNight, t);
+        }
         waterMat.color.copy(waterDay).lerp(waterNight, t);
         if (waterShineMat) waterShineMat.opacity = 0.12 + (0.05 - 0.12) * t;
         deepMat.color.copy(deepDay).lerp(deepNight, t);
@@ -6375,7 +6434,7 @@
             spots[k].visible = lightsOn;
         }
         paintSky(t);
-        mixB.copy(dayClear).lerp(nightClear, t);
+        mixB.copy(routeActive ? atlasClear : dayClear).lerp(nightClear, t);
         renderer.setClearColor(mixB, 1);
     }
 
@@ -7762,18 +7821,81 @@
         routeRoot.add(mesh);
     }
 
+    function blotAtlas(pen, x, y, rx, ry, rot, color) {
+        var ox;
+        var oy;
+        pen.fillStyle = color;
+        for (ox = -1; ox <= 1; ox++) {
+            for (oy = -1; oy <= 1; oy++) {
+                pen.beginPath();
+                pen.ellipse(x + ox * 512, y + oy * 512, rx, ry, rot, 0, Math.PI * 2);
+                pen.fill();
+            }
+        }
+    }
+
+    function ensureRouteAtlas() {
+        if (routeDeckMat) return;
+        var canvas = document.createElement("canvas");
+        canvas.width = 512;
+        canvas.height = 512;
+        var pen = canvas.getContext("2d");
+        pen.fillStyle = "#b7d48a";
+        pen.fillRect(0, 0, 512, 512);
+        blotAtlas(pen, 90, 70, 150, 88, 0.4, "#7fbf55");
+        blotAtlas(pen, 340, 120, 130, 78, -0.3, "#e2b43a");
+        blotAtlas(pen, 180, 280, 170, 100, 0.2, "#5ea844");
+        blotAtlas(pen, 420, 360, 140, 86, 0.6, "#f2e7b8");
+        blotAtlas(pen, 60, 400, 120, 70, -0.5, "#8fbf5c");
+        blotAtlas(pen, 260, 180, 90, 54, 0.1, "#d7efc0");
+        blotAtlas(pen, 300, 430, 110, 60, 0.8, "#c4a04a");
+        var speck;
+        for (speck = 0; speck < 220; speck++) {
+            var sx = rnd(speck + 4) * 512;
+            var sy = rnd(speck + 11) * 512;
+            pen.fillStyle = rnd(speck + 2) > 0.55 ? "rgba(255,252,240,0.28)" : "rgba(78,98,58,0.1)";
+            pen.fillRect(sx, sy, 2, 2);
+        }
+        var tex = new THREE.CanvasTexture(canvas);
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        tex.encoding = THREE.sRGBEncoding;
+        tex.anisotropy = gfxUltra ? 4 : 2;
+        routeDeckMat = new THREE.MeshBasicMaterial({ map: tex, color: 0xffffff });
+        atlasRoadMat = new THREE.MeshBasicMaterial({ color: atlasRoadDay });
+        atlasShoulderMat = new THREE.MeshBasicMaterial({ color: atlasShoulderDay });
+        atlasVergeMat = new THREE.MeshBasicMaterial({ color: atlasVergeDay });
+        atlasCurbMat = new THREE.MeshBasicMaterial({ color: atlasCurbDay });
+        atlasEdgeMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xfffaf3).convertSRGBToLinear() });
+        atlasGuideMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0x14b8c4).convertSRGBToLinear() });
+        routeLeafMat = new THREE.MeshBasicMaterial({ color: atlasLeafDay });
+        routePineMat = new THREE.MeshBasicMaterial({ color: atlasPineDay });
+        routeWallMat = new THREE.MeshBasicMaterial({ color: atlasWallDay });
+        routeRoofMat = new THREE.MeshBasicMaterial({ color: atlasRoofDay });
+        routeDoorMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0x6b4a36).convertSRGBToLinear() });
+        var fieldHex = 0;
+        for (fieldHex = 0; fieldHex < atlasFieldDay.length; fieldHex++) {
+            atlasFieldMats.push(new THREE.MeshBasicMaterial({ color: atlasFieldDay[fieldHex] }));
+        }
+    }
+
     function buildRouteRoad() {
+        ensureRouteAtlas();
         var pts = curve.points;
         var txs = curve.txs;
         var tzs = curve.tzs;
-        addRouteMesh(buildStripAlong(pts, 0, 4.15, 0.08, txs, tzs), roadMat);
-        addRouteMesh(buildStripAlong(pts, 5.5, 1.35, 0.055, txs, tzs), shoulderA);
-        addRouteMesh(buildStripAlong(pts, -5.5, 1.35, 0.055, txs, tzs), shoulderB);
-        addRouteMesh(buildStripAlong(pts, 3.72, 0.08, 0.11, txs, tzs), lineMat);
-        addRouteMesh(buildStripAlong(pts, -3.72, 0.08, 0.11, txs, tzs), lineMat);
-        addRouteMesh(buildStripAlong(pts, 1.35, 0.13, 0.11, txs, tzs), guideMat);
-        addRouteMesh(buildStripAlong(pts, 3.98, 0.13, 0.1, txs, tzs), curbMatA);
-        addRouteMesh(buildStripAlong(pts, -3.98, 0.13, 0.1, txs, tzs), curbMatB);
+        addRouteMesh(buildStripAlong(pts, 7.6, 1.7, 0.02, txs, tzs), atlasVergeMat);
+        addRouteMesh(buildStripAlong(pts, -7.6, 1.7, 0.02, txs, tzs), atlasVergeMat);
+        addRouteMesh(buildStripAlong(pts, 5.6, 1.55, 0.05, txs, tzs), atlasShoulderMat);
+        addRouteMesh(buildStripAlong(pts, -5.6, 1.55, 0.05, txs, tzs), atlasShoulderMat);
+        addRouteMesh(buildStripAlong(pts, 0, 4.15, 0.08, txs, tzs), atlasRoadMat);
+        addRouteMesh(buildStripAlong(pts, 3.72, 0.09, 0.12, txs, tzs), atlasEdgeMat);
+        addRouteMesh(buildStripAlong(pts, -3.72, 0.09, 0.12, txs, tzs), atlasEdgeMat);
+        addRouteMesh(buildStripAlong(pts, 1.35, 0.16, 0.125, txs, tzs), atlasGuideMat);
+        addRouteMesh(buildStripAlong(pts, 4.05, 0.11, 0.1, txs, tzs), atlasCurbMat);
+        addRouteMesh(buildStripAlong(pts, -4.05, 0.11, 0.1, txs, tzs), atlasCurbMat);
+        var arrow;
+        for (arrow = 0; arrow < chevrons.length; arrow++) chevrons[arrow].material = atlasGuideMat;
     }
 
     function poseOnRoute(along, side) {
@@ -7789,8 +7911,8 @@
     }
 
     function dressRoute() {
+        ensureRouteAtlas();
         var deckGeo = new THREE.CircleGeometry(480, 28);
-        if (!routeDeckMat) routeDeckMat = new THREE.MeshLambertMaterial({ color: 0x6d844c });
         var deck = new THREE.Mesh(deckGeo, routeDeckMat);
         deck.rotation.x = -Math.PI / 2;
         deck.position.y = -0.06;
@@ -7803,7 +7925,7 @@
         var ki;
         var ti;
         for (ki = 0; ki < 2; ki++) {
-            var mesh = new THREE.InstancedMesh(treeGeos[ki], treeMat, treeCount);
+            var mesh = new THREE.InstancedMesh(treeGeos[ki], ki === 0 ? routeLeafMat : routePineMat, treeCount);
             mesh.frustumCulled = false;
             mesh.layers.enable(1);
             if (gfxUltra) {
@@ -7823,21 +7945,36 @@
             group.name = "ideiglenes-haz";
             group.userData.placeholderBuilding = true;
             group.userData.notRealBuilding = true;
-            var body = new THREE.Mesh(new THREE.BoxGeometry(2.5, 2.15, 2.15), wallMats[hi % wallMats.length]);
-            body.position.y = 1.08;
-            var roof = new THREE.Mesh(new THREE.BoxGeometry(2.85, 0.72, 2.45), roofMats[hi % roofMats.length]);
-            roof.position.y = 2.4;
+            var body = new THREE.Mesh(new THREE.BoxGeometry(2.6, 2.05, 2.2), routeWallMat);
+            body.position.y = 1.05;
+            var roof = new THREE.Mesh(new THREE.BoxGeometry(3.05, 0.78, 2.6), routeRoofMat);
+            roof.position.y = 2.32;
+            var door = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.86, 0.08), routeDoorMat);
+            door.position.set(0.15, 0.48, 1.14);
             group.add(body);
             group.add(roof);
+            group.add(door);
             group.visible = false;
             routeRoot.add(group);
             houses.push(group);
+        }
+        var fields = [];
+        var fi;
+        for (fi = 0; fi < 10; fi++) {
+            var holder = new THREE.Group();
+            var slab = new THREE.Mesh(new THREE.PlaneGeometry(11, 30), atlasFieldMats[fi % 2]);
+            slab.rotation.x = -Math.PI / 2;
+            holder.add(slab);
+            holder.visible = false;
+            routeRoot.add(holder);
+            fields.push(holder);
         }
         routeScenery = {
             deck: deck,
             trees: treeMeshes,
             treeSlots: treeSlots,
             houses: houses,
+            fields: fields,
             dummy: new THREE.Object3D(),
             treeOrigin: null,
             houseOrigin: null,
@@ -7857,11 +7994,15 @@
         var total = curve.total;
         var along = shownAlong !== null ? shownAlong : travel * total;
         routeScenery.deck.position.set(routePos.x, -0.06, routePos.z);
+        if (routeDeckMat && routeDeckMat.map) {
+            routeDeckMat.map.offset.set(routePos.x / 960, routePos.z / 960);
+        }
         var back = 80;
         var fore = 200;
         var start = along - back;
         var treeStep = 14;
         var houseStep = 42;
+        var fieldStep = 28;
         var treeOrigin = Math.floor(start / treeStep);
         var houseOrigin = Math.floor((start + 18) / houseStep);
         var moved = force || treeOrigin !== routeScenery.treeOrigin || houseOrigin !== routeScenery.houseOrigin;
@@ -7869,6 +8010,7 @@
         var visibleProps = 0;
         var ki;
         var ti;
+        var fi;
         var hi;
         if (moved) {
             routeScenery.treeOrigin = treeOrigin;
@@ -7918,6 +8060,25 @@
                     house.userData.side = hSide;
                     house.position.set(hPose.x, 0, hPose.z);
                     house.rotation.set(0, hPose.yaw, 0);
+                    visibleProps++;
+                }
+            }
+            var fieldOrigin = Math.floor(start / fieldStep);
+            for (fi = 0; fi < routeScenery.fields.length; fi++) {
+                var field = routeScenery.fields[fi];
+                var fs = (fieldOrigin + fi) * fieldStep + 8;
+                var fSide = (fi % 2 === 0 ? 1 : -1) * 12;
+                if (fs < 12 || fs > total - 12 || fs < start || fs > along + fore) {
+                    field.visible = false;
+                } else {
+                    var fPose = poseOnRoute(fs, fSide);
+                    var fu = fs / total;
+                    if (fu < 0.0004) fu = 0.0004;
+                    if (fu > 0.998) fu = 0.998;
+                    var ftan = curve.getTangentAt(fu);
+                    field.visible = true;
+                    field.position.set(fPose.x, 0.045, fPose.z);
+                    field.rotation.y = Math.atan2(ftan.x, ftan.z);
                     visibleProps++;
                 }
             }
@@ -8014,6 +8175,9 @@
         if (wasRoute) {
             aligned = false;
             prevTangent.set(0, 0, 1);
+            var arrow;
+            for (arrow = 0; arrow < chevrons.length; arrow++) chevrons[arrow].material = guideMat;
+            updateMood(mood);
         }
         if (routeBox) {
             routeBox.hidden = true;
@@ -8371,6 +8535,7 @@
         else text += " A kocsi a GPS alapján követi az utat.";
         text += " Az út menti házak és fák ideiglenes, generált formák, nem a valós település épületei.";
         setNote(text, "ok");
+        updateMood(mood);
         loadSettlementSigns(coords);
         fillFacts();
         setSheet(false);
