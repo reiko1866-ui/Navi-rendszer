@@ -3918,19 +3918,26 @@
     var gpsFix = null;
     var gpsFixSamples = 0;
     var liveKmh = null;
+    var speedFreshMs = 4000;
     var gpsStatus = "idle";
     var gpsOnRoute = false;
     var gpsOffDist = null;
     var gpsPoor = false;
+    var gpsAmbiguous = false;
     var gpsTargetU = null;
     var shownAlong = null;
     var gpsMeasure = null;
+    var backConfirm = false;
+    var backCandidate = null;
     var coastMps = 0;
     var shownMps = 0;
     var lastAlongT = 0;
     var wheelRate = 0;
     var carYaw = 0;
+    var camYaw = 0;
     var anchorYaw = 0;
+    var routeScenery = null;
+    var routeDeckMat = null;
     var scenicReady = false;
     var watchId = null;
     var gpsOriginArmed = false;
@@ -4053,6 +4060,7 @@
     }
     renderer.setSize(window.innerWidth, window.innerHeight, false);
     renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.setClearColor(0xe7f7ff, 1);
     scene = new THREE.Scene();
     try {
         var envScene = new THREE.Scene();
@@ -6450,32 +6458,46 @@
         arrowEl.style.opacity = routeActive ? "1" : "0.4";
     }
 
+    function alongUFromLonLat(lon, lat) {
+        if (!routeProj || !curve || !curve.points || !isFinite(lon) || !isFinite(lat)) return null;
+        var x = (lon - routeProj.lon0) * routeProj.mLon;
+        var z = -((lat - routeProj.lat0) * routeProj.mLat);
+        var hit = closestOnRoute(x, z);
+        if (!hit || !(hit.dist <= 40)) return null;
+        return hit.u;
+    }
+
+    function stepU(step) {
+        return step && typeof step.alongU === "number" ? step.alongU : step.u0;
+    }
+
     function nextManeuver(u) {
         var i;
+        var span = curve && curve.total ? curve.total : routeMeters;
         for (i = 0; i < routeSteps.length; i++) {
             var step = routeSteps[i];
-            if (step.u0 + 0.00001 < u) continue;
+            var at = stepU(step);
+            if (at + 0.00001 < u) continue;
             var type = step.type || "";
             var mod = step.modifier || "";
             if (type === "depart" || type === "notification") continue;
             if ((type === "continue" || type === "new name") && (mod === "" || mod === "straight")) continue;
-            var meters = (step.u0 - u) * routeMeters;
+            var meters = typeof step.alongU === "number" ? (step.alongU - u) * span : (step.u0 - u) * routeMeters;
             if (meters < 0) meters = 0;
             return { meters: meters, name: step.name || "", modifier: mod, type: type };
         }
-        var remain = (1 - Math.min(u, 1)) * routeMeters;
+        var remain = (1 - Math.min(u, 1)) * span;
         if (remain < 0) remain = 0;
         return { meters: remain, name: dest && dest.name ? dest.name : "Cél", modifier: "", type: "arrive" };
     }
 
     function currentStepName(u) {
         var i;
+        var name = "";
         for (i = 0; i < routeSteps.length; i++) {
-            if (u <= routeSteps[i].u1 + 0.00001) {
-                if (routeSteps[i].name) return routeSteps[i].name;
-                break;
-            }
+            if (stepU(routeSteps[i]) <= u + 0.00001 && routeSteps[i].name) name = routeSteps[i].name;
         }
+        if (name) return name;
         return dest && dest.name ? dest.name : "közút";
     }
 
@@ -6539,6 +6561,7 @@
             var road = routeSnap.name ? routeSnap.name : "a legközelebbi közút";
             line("Az indulás a közútra illesztve: " + road + ", " + formatAway(routeSnap.distance) + ".");
         }
+        line("Az út menti házak és fák ideiglenes, generált formák. Nem a valós település épületei.");
         if (gpsOnRoute) {
             var frac = 1 - Math.min(travel, 1);
             if (frac < 0) frac = 0;
@@ -6560,12 +6583,13 @@
         if (routeActive && routeMeters > 0 && gpsOnRoute) {
             man = nextManeuver(travel);
             distEl.textContent = formatDist(man.meters);
+            var liveState = gpsStatus === "timeout" ? "Helymeghatározás…" : (gpsAmbiguous ? "GPS bizonytalan" : "GPS elérhető");
             if (man.type === "arrive" && man.meters < 30) {
                 streetEl.textContent = "Cél";
-                hintEl.textContent = "GPS elérhető · " + (dest && dest.name ? dest.name : "Megérkeztél");
+                hintEl.textContent = liveState + " · " + (dest && dest.name ? dest.name : "Megérkeztél");
             } else {
                 streetEl.textContent = maneuverPhrase(man);
-                hintEl.textContent = "GPS elérhető · " + currentStepName(travel);
+                hintEl.textContent = liveState + " · " + currentStepName(travel);
             }
             setArrow(man.type === "arrive" ? "straight" : man.modifier);
         } else if (routeActive && routeMeters > 0) {
@@ -6580,15 +6604,22 @@
             setArrow("straight");
         }
         var speedPill = document.getElementById("speed-pill");
-        if (liveKmh === null) {
+        var readout = shownSpeed();
+        if (readout === null) {
             speedEl.textContent = "—";
             if (speedPill) speedPill.title = "Nincs GPS-sebesség";
         } else {
-            speedEl.textContent = String(Math.round(liveKmh));
+            speedEl.textContent = String(Math.round(readout));
             if (speedPill) speedPill.title = "Sebesség a GPS-ből";
         }
         paintSheetLabel();
         syncChrome();
+    }
+
+    function shownSpeed() {
+        if (liveKmh === null || gpsStatus !== "ok" || !gpsFix || typeof gpsFix.t !== "number") return null;
+        if (Date.now() - gpsFix.t > speedFreshMs) return null;
+        return liveKmh;
     }
 
     function paintClock() {
@@ -6869,30 +6900,108 @@
         return { u: bestU, dist: bestD };
     }
 
+    function segmentHit(i, x, z) {
+        var pts = curve.points;
+        var ax = pts[i - 1].x;
+        var az = pts[i - 1].z;
+        var bx = pts[i].x;
+        var bz = pts[i].z;
+        var dx = bx - ax;
+        var dz = bz - az;
+        var len2 = dx * dx + dz * dz;
+        var t = 0;
+        if (len2 > 0.01) t = ((x - ax) * dx + (z - az) * dz) / len2;
+        if (t < 0) t = 0;
+        if (t > 1) t = 1;
+        var px = ax + dx * t;
+        var pz = az + dz * t;
+        var ox = x - px;
+        var oz = z - pz;
+        var dist = Math.sqrt(ox * ox + oz * oz);
+        var total = curve.total || 1;
+        var along;
+        var u;
+        if (curve.sampleU && curve.sampleU.length === pts.length) {
+            var u0 = curve.sampleU[i - 1];
+            var u1 = curve.sampleU[i];
+            u = u0 + (u1 - u0) * t;
+            along = u * total;
+        } else {
+            along = curve.lengths[i - 1] + Math.sqrt((px - ax) * (px - ax) + (pz - az) * (pz - az));
+            u = along / total;
+        }
+        return { u: u, dist: dist, along: along };
+    }
+
+    function matchProgress(x, z) {
+        var global = closestOnRoute(x, z);
+        var anchor = gpsMeasure !== null ? gpsMeasure : shownAlong;
+        if (anchor === null) return { u: global.u, dist: global.dist, ambiguous: false };
+        var total = curve.total || 1;
+        var reach = 90;
+        var acc = gpsFix && typeof gpsFix.acc === "number" && gpsFix.acc >= 0 ? gpsFix.acc : 30;
+        var band = acc > 40 ? Math.min(offRouteM, Math.max(40, acc)) : 40;
+        var best = null;
+        var i;
+        for (i = 1; i < curve.points.length; i++) {
+            var cand = segmentHit(i, x, z);
+            if (Math.abs(cand.along - anchor) > reach) continue;
+            if (!best || cand.dist < best.dist - 1 || (Math.abs(cand.dist - best.dist) <= 1 && cand.along > best.along)) best = cand;
+        }
+        var globalAlong = global.u * total;
+        var jump = Math.abs(globalAlong - anchor);
+        var alongGap = best ? Math.abs(globalAlong - best.along) : jump;
+        var sameRoad = best && global.dist <= 12 && Math.abs(best.dist - alongGap) <= Math.max(12, acc * 0.25);
+        var dt = 1;
+        if (lastAlongT > 0 && gpsFix && typeof gpsFix.t === "number" && gpsFix.t > lastAlongT) dt = (gpsFix.t - lastAlongT) / 1000;
+        if (!(dt > 0)) dt = 0.05;
+        var possible = 45 * dt;
+        if (possible < reach) possible = reach;
+        if (globalAlong - anchor > possible) {
+            if (best && best.dist <= band && best.dist <= offRouteM) return { u: best.u, dist: best.dist, ambiguous: true };
+            return { u: anchor / total, dist: 0, ambiguous: true };
+        }
+        if (best && jump > reach && best.dist <= band && best.dist <= offRouteM && !sameRoad) {
+            return { u: best.u, dist: best.dist, ambiguous: global.dist + 0.5 < best.dist || acc > 40 };
+        }
+        if (best && best.dist <= global.dist + 1 && best.along > globalAlong + 1 && best.dist <= offRouteM) {
+            return { u: best.u, dist: best.dist, ambiguous: false };
+        }
+        return { u: global.u, dist: global.dist, ambiguous: false };
+    }
+
     function aimTravel() {
         if (!routeActive || !routeProj || !gpsFix || !curve || !curve.points) {
             gpsOnRoute = false;
             gpsTargetU = null;
+            gpsAmbiguous = false;
             return;
         }
         if (typeof gpsFix.acc === "number" && gpsFix.acc > 120) {
+            gpsPoor = true;
+            if (gpsOnRoute && gpsMeasure !== null) {
+                gpsAmbiguous = true;
+                return;
+            }
             gpsOnRoute = false;
             gpsTargetU = null;
             gpsOffDist = null;
-            gpsPoor = true;
+            gpsAmbiguous = false;
             return;
         }
         gpsPoor = false;
         var x = (gpsFix.lon - routeProj.lon0) * routeProj.mLon;
         var z = -((gpsFix.lat - routeProj.lat0) * routeProj.mLat);
-        var hit = closestOnRoute(x, z);
+        var hit = matchProgress(x, z);
         gpsOffDist = hit.dist;
         if (hit.dist > offRouteM) {
             gpsOnRoute = false;
             gpsTargetU = null;
+            gpsAmbiguous = false;
             return;
         }
         gpsOnRoute = true;
+        gpsAmbiguous = !!hit.ambiguous;
         gpsTargetU = hit.u;
         noteGpsAlong(hit.u);
     }
@@ -6908,7 +7017,6 @@
         var s = u * total;
         var now = gpsFix && typeof gpsFix.t === "number" ? gpsFix.t : Date.now();
         if (shownAlong === null || gpsMeasure === null) {
-            if (Math.abs(s - travel * total) > 18) aligned = false;
             shownAlong = s;
             gpsMeasure = s;
             coastMps = liveKmh === null ? 0 : Math.min(45, Math.max(0, liveKmh / 3.6));
@@ -6918,26 +7026,42 @@
         }
         var dtFix = (now - lastAlongT) / 1000;
         if (!(dtFix > 0)) dtFix = 0.05;
-        if (dtFix > 8 && Math.abs(s - shownAlong) > 120) {
+        if (dtFix > 8 && s - shownAlong > 120) {
+            backConfirm = false;
+            backCandidate = null;
             shownAlong = s;
             gpsMeasure = s;
             coastMps = liveKmh === null ? 0 : Math.min(45, Math.max(0, liveKmh / 3.6));
             lastAlongT = now;
             travel = clampTravel(s / total);
-            aligned = false;
             return;
         }
         var ds = s - gpsMeasure;
-        if (ds < 0 && ds >= -12 && coastMps < 2) {
+        if (ds < 0 && ds >= -8) {
+            backConfirm = false;
+            backCandidate = null;
             lastAlongT = now;
             return;
         }
-        if (ds < 0) {
-            gpsMeasure = s;
-            coastMps *= Math.exp(-Math.min(dtFix, 2) / 0.6);
+        if (ds < -8) {
+            if (backConfirm && backCandidate !== null && Math.abs(s - backCandidate) <= 15) {
+                gpsMeasure = s;
+                shownAlong = s;
+                travel = clampTravel(s / total);
+                coastMps *= Math.exp(-Math.min(dtFix, 2) / 0.6);
+                if (coastMps < 0) coastMps = 0;
+                backConfirm = false;
+                backCandidate = null;
+                lastAlongT = now;
+                return;
+            }
+            backCandidate = s;
+            backConfirm = true;
             lastAlongT = now;
             return;
         }
+        backConfirm = false;
+        backCandidate = null;
         if (ds < 1.6 && coastMps < 1.2) {
             lastAlongT = now;
             return;
@@ -7033,16 +7157,10 @@
                 setNote("A hely most nem érhető el. Az útvonal ettől még megtervezhető, a kocsi viszont nem indul el.", "warn");
             }
         } else if (code === 3) {
-            if (gpsFix) {
-                gpsStatus = "lost";
-                gpsOnRoute = false;
-                gpsTargetU = null;
-                liveKmh = null;
-                setNote("A GPS-jel elveszett. A kocsi megáll, amíg új helyzet nem érkezik.", "warn");
-            } else {
-                gpsStatus = "timeout";
-                setNote("A helylekérés túl sokáig tartott. Próbáld újra a GPS gombbal.", "warn");
-            }
+            gpsStatus = "timeout";
+            liveKmh = null;
+            if (gpsFix) setNote("A helylekérés túl sokáig tartott. Az utolsó helyzet megmarad.", "warn");
+            else setNote("A helylekérés túl sokáig tartott. Próbáld újra a GPS gombbal.", "warn");
         } else if (!gpsFix) {
             gpsStatus = "error";
             setNote("A helyet nem sikerült lekérni.", "warn");
@@ -7143,6 +7261,7 @@
     }
 
     function clearRouteRoot() {
+        routeScenery = null;
         var i;
         for (i = routeRoot.children.length - 1; i >= 0; i--) {
             disposeObj(routeRoot.children[i]);
@@ -7378,6 +7497,7 @@
         var total = route.distance || 1;
         var steps = [];
         var cursor = 0;
+        var prevAlong = -1;
         var legs = route.legs || [];
         var li;
         var si;
@@ -7387,9 +7507,19 @@
                 var step = list[si];
                 var dist = step.distance || 0;
                 var maneuver = step.maneuver || {};
+                var alongU = null;
+                var loc = maneuver.location;
+                if (loc && loc.length >= 2) {
+                    var projected = alongUFromLonLat(Number(loc[0]), Number(loc[1]));
+                    if (projected !== null && projected + 1e-6 >= prevAlong) {
+                        alongU = projected;
+                        prevAlong = projected;
+                    }
+                }
                 steps.push({
                     u0: cursor / total,
                     u1: (cursor + dist) / total,
+                    alongU: alongU,
                     name: step.name || "",
                     type: maneuver.type || "",
                     modifier: maneuver.modifier || ""
@@ -7628,59 +7758,181 @@
         addRouteMesh(buildStripAlong(pts, -3.98, 0.13, 0.1, txs, tzs), curbMatB);
     }
 
+    function poseOnRoute(along, side) {
+        var total = curve.total || 1;
+        var u = along / total;
+        if (u < 0.0004) u = 0.0004;
+        if (u > 0.998) u = 0.998;
+        var spot = sideAt(u, side);
+        var face = curve.getPointAt(u);
+        var dx = face.x - spot.x;
+        var dz = face.z - spot.z;
+        return { x: spot.x, y: 0, z: spot.z, yaw: Math.atan2(-dx, -dz) };
+    }
+
     function dressRoute() {
-        var groups = [[], [], [], [], []];
-        var dummy = new THREE.Object3D();
-        var count = gfxUltra ? 80 : 40;
-        var n;
-        for (n = 0; n < count; n++) {
-            var u = rnd(n * 2.7 + 1);
-            if (u < 0.02) u = 0.02;
-            if (u > 0.98) u = 0.98;
-            var side = (rnd(n + 4) > 0.5 ? 1 : -1) * (12 + rnd(n + 8) * (gfxUltra ? 30 : 16));
-            var spot = sideAt(u, side);
-            var kind = Math.floor(rnd(n + 3) * 5);
-            var sc = 0.75 + rnd(n + 6) * 1.15;
-            groups[kind].push([spot.x, 0, spot.z, sc, sc * (0.86 + rnd(n + 9) * 0.28), rnd(n) * 6.2]);
-        }
-        var bi;
-        for (bi = 0; bi < groups.length; bi++) {
-            var list = groups[bi];
-            if (!list.length) continue;
-            var mesh = new THREE.InstancedMesh(treeGeos[bi], treeMat, list.length);
+        var deckGeo = new THREE.CircleGeometry(480, 28);
+        if (!routeDeckMat) routeDeckMat = new THREE.MeshLambertMaterial({ color: 0x6d844c });
+        var deck = new THREE.Mesh(deckGeo, routeDeckMat);
+        deck.rotation.x = -Math.PI / 2;
+        deck.position.y = -0.06;
+        deck.frustumCulled = false;
+        deck.receiveShadow = !!gfxUltra;
+        routeRoot.add(deck);
+        var treeCount = 12;
+        var treeMeshes = [];
+        var treeSlots = [];
+        var ki;
+        var ti;
+        for (ki = 0; ki < 2; ki++) {
+            var mesh = new THREE.InstancedMesh(treeGeos[ki], treeMat, treeCount);
             mesh.frustumCulled = false;
             mesh.layers.enable(1);
             if (gfxUltra) {
                 mesh.castShadow = true;
                 mesh.receiveShadow = true;
             }
-            var ii;
-            for (ii = 0; ii < list.length; ii++) {
-                dummy.position.set(list[ii][0], list[ii][1], list[ii][2]);
-                dummy.scale.set(list[ii][3], list[ii][4], list[ii][3]);
-                dummy.rotation.set(0, list[ii][5], 0);
-                dummy.updateMatrix();
-                mesh.setMatrixAt(ii, dummy.matrix);
-            }
-            mesh.instanceMatrix.needsUpdate = true;
             routeRoot.add(mesh);
+            treeMeshes.push(mesh);
+            var slots = [];
+            for (ti = 0; ti < treeCount; ti++) slots.push({ along: 0, x: 0, z: 0, side: 0, on: false });
+            treeSlots.push(slots);
         }
-        var hillN = gfxUltra ? 8 : 5;
-        for (n = 0; n < hillN; n++) {
-            var hu = rnd(n * 1.9 + 0.2);
-            if (hu < 0.04) hu = 0.04;
-            if (hu > 0.96) hu = 0.96;
-            var hp = sideAt(hu, (n % 2 ? 1 : -1) * (64 + rnd(n + 3) * 28));
-            var hill = new THREE.Mesh(riseGeo, n % 2 ? mountainMat : hillMat);
-            hill.scale.set(1.8 + rnd(n) * 1.6, 0.42 + rnd(n + 2) * 0.38, 1.4 + rnd(n + 4) * 1.1);
-            hill.position.set(hp.x, -1.1, hp.z);
-            hill.layers.enable(1);
-            if (gfxUltra) {
-                hill.castShadow = true;
-                hill.receiveShadow = true;
+        var houses = [];
+        var hi;
+        for (hi = 0; hi < 8; hi++) {
+            var group = new THREE.Group();
+            group.name = "ideiglenes-haz";
+            group.userData.placeholderBuilding = true;
+            group.userData.notRealBuilding = true;
+            var body = new THREE.Mesh(new THREE.BoxGeometry(2.5, 2.15, 2.15), wallMats[hi % wallMats.length]);
+            body.position.y = 1.08;
+            var roof = new THREE.Mesh(new THREE.BoxGeometry(2.85, 0.72, 2.45), roofMats[hi % roofMats.length]);
+            roof.position.y = 2.4;
+            group.add(body);
+            group.add(roof);
+            group.visible = false;
+            routeRoot.add(group);
+            houses.push(group);
+        }
+        routeScenery = {
+            deck: deck,
+            trees: treeMeshes,
+            treeSlots: treeSlots,
+            houses: houses,
+            dummy: new THREE.Object3D(),
+            treeOrigin: null,
+            houseOrigin: null,
+            along: null,
+            nearHouse: null,
+            nearTree: null,
+            visibleProps: 0
+        };
+        syncRouteScenery(true);
+    }
+
+    function syncRouteScenery(force) {
+        if (!routeScenery || !routeActive || !curve || !(curve.total > 0)) return;
+        var total = curve.total;
+        var along = shownAlong !== null ? shownAlong : travel * total;
+        routeScenery.deck.position.set(routePos.x, -0.06, routePos.z);
+        var back = 80;
+        var fore = 200;
+        var start = along - back;
+        var treeStep = 14;
+        var houseStep = 42;
+        var treeOrigin = Math.floor(start / treeStep);
+        var houseOrigin = Math.floor((start + 18) / houseStep);
+        var moved = force || treeOrigin !== routeScenery.treeOrigin || houseOrigin !== routeScenery.houseOrigin;
+        var dummy = routeScenery.dummy;
+        var visibleProps = 0;
+        var ki;
+        var ti;
+        var hi;
+        if (moved) {
+            routeScenery.treeOrigin = treeOrigin;
+            routeScenery.houseOrigin = houseOrigin;
+            for (ki = 0; ki < routeScenery.trees.length; ki++) {
+                var mesh = routeScenery.trees[ki];
+                var slots = routeScenery.treeSlots[ki];
+                for (ti = 0; ti < slots.length; ti++) {
+                    var s = (treeOrigin + ti) * treeStep + 6 + ki * 7;
+                    var side = ((treeOrigin + ti + ki) % 2 === 0 ? 1 : -1) * (11 + ((ti + ki) % 3) * 1.6);
+                    var slot = slots[ti];
+                    if (s < 8 || s > total - 8 || s < start || s > along + fore) {
+                        slot.on = false;
+                        dummy.position.set(0, -40, 0);
+                        dummy.scale.set(0.001, 0.001, 0.001);
+                        dummy.rotation.set(0, 0, 0);
+                    } else {
+                        var pose = poseOnRoute(s, side);
+                        var sc = 0.82 + rnd(s * 0.17 + ki) * 0.55;
+                        slot.on = true;
+                        slot.along = s;
+                        slot.x = pose.x;
+                        slot.z = pose.z;
+                        slot.side = side;
+                        dummy.position.set(pose.x, 0, pose.z);
+                        dummy.scale.set(sc, sc * (0.9 + rnd(s + 2) * 0.25), sc);
+                        dummy.rotation.set(0, pose.yaw, 0);
+                        visibleProps++;
+                    }
+                    dummy.updateMatrix();
+                    mesh.setMatrixAt(ti, dummy.matrix);
+                }
+                mesh.instanceMatrix.needsUpdate = true;
             }
-            routeRoot.add(hill);
+            for (hi = 0; hi < routeScenery.houses.length; hi++) {
+                var house = routeScenery.houses[hi];
+                var hs = (houseOrigin + hi) * houseStep + 24;
+                var hSide = (hi % 2 === 0 ? 1 : -1) * (16 + (hi % 3) * 1.4);
+                if (hs < 12 || hs > total - 12 || hs < start || hs > along + fore) {
+                    house.visible = false;
+                    house.userData.on = false;
+                } else {
+                    var hPose = poseOnRoute(hs, hSide);
+                    house.visible = true;
+                    house.userData.on = true;
+                    house.userData.along = hs;
+                    house.userData.side = hSide;
+                    house.position.set(hPose.x, 0, hPose.z);
+                    house.rotation.set(0, hPose.yaw, 0);
+                    visibleProps++;
+                }
+            }
+        } else if (routeScenery.visibleProps) {
+            visibleProps = routeScenery.visibleProps;
         }
+        routeScenery.along = along;
+        routeScenery.visibleProps = visibleProps;
+        var bestHouse = null;
+        var bestTree = null;
+        var rx = routeRoot.position.x;
+        var rz = routeRoot.position.z;
+        for (hi = 0; hi < routeScenery.houses.length; hi++) {
+            var item = routeScenery.houses[hi];
+            if (!item.userData.on) continue;
+            var wx = item.position.x + rx;
+            var wz = item.position.z + rz;
+            var dist = Math.hypot(wx, wz);
+            if (!bestHouse || dist < bestHouse.dist) {
+                bestHouse = { dist: dist, side: item.userData.side, along: item.userData.along - along };
+            }
+        }
+        for (ki = 0; ki < routeScenery.treeSlots.length; ki++) {
+            var row = routeScenery.treeSlots[ki];
+            for (ti = 0; ti < row.length; ti++) {
+                if (!row[ti].on) continue;
+                var twx = row[ti].x + rx;
+                var twz = row[ti].z + rz;
+                var td = Math.hypot(twx, twz);
+                if (!bestTree || td < bestTree.dist) {
+                    bestTree = { dist: td, side: row[ti].side, along: row[ti].along - along };
+                }
+            }
+        }
+        routeScenery.nearHouse = bestHouse;
+        routeScenery.nearTree = bestTree;
     }
 
     function formatAway(m) {
@@ -7715,8 +7967,11 @@
         gpsTargetU = null;
         gpsOffDist = null;
         gpsPoor = false;
+        gpsAmbiguous = false;
         shownAlong = null;
         gpsMeasure = null;
+        backConfirm = false;
+        backCandidate = null;
         coastMps = 0;
         shownMps = 0;
         lastAlongT = 0;
@@ -7835,6 +8090,8 @@
         travel = 0.0008;
         shownAlong = null;
         gpsMeasure = null;
+        backConfirm = false;
+        backCandidate = null;
         coastMps = 0;
         shownMps = 0;
         lastAlongT = 0;
@@ -7842,10 +8099,12 @@
         gpsOnRoute = false;
         gpsTargetU = null;
         gpsOffDist = null;
+        gpsPoor = false;
+        gpsAmbiguous = false;
         curve.getTangentAt(0.001, prevTangent).normalize();
         carYaw = Math.atan2(prevTangent.x, prevTangent.z);
         aligned = false;
-        coast.visible = true;
+        coast.visible = false;
         routeGround.visible = false;
         setSampleRoadVisible(false);
         routeRoot.visible = true;
@@ -7862,6 +8121,7 @@
         if (gpsStatus !== "ok" || !gpsFix) text += " Nincs élő GPS, a kocsi az indulásnál áll.";
         else if (!gpsOnRoute) text += " A GPS nincs az útvonalon, a kocsi az indulásnál áll.";
         else text += " A kocsi a GPS alapján követi az utat.";
+        text += " Az út menti házak és fák ideiglenes, generált formák, nem a valós település épületei.";
         setNote(text, "ok");
         fillFacts();
         setSheet(false);
@@ -8021,12 +8281,6 @@
         if (dt > 0.1) dt = 0.1;
         if (dt < 0) dt = 0;
         cacheScenicPose();
-        if (gpsStatus === "ok" && gpsFixSamples >= 2 && gpsFix && typeof gpsFix.t === "number" && Date.now() - gpsFix.t > 12000) {
-            gpsStatus = "lost";
-            gpsOnRoute = false;
-            gpsTargetU = null;
-            liveKmh = null;
-        }
         if (Math.abs(moodTarget - mood) > 0.001) {
             mood = mood + (moodTarget - mood) * (1 - Math.exp(-dt * 1.7));
             moodDirty = true;
@@ -8063,8 +8317,17 @@
             while (dyaw < -Math.PI) dyaw += Math.PI * 2;
             carYaw += dyaw * (1 - Math.exp(-dt / 0.07));
         }
+        if (!aligned) camYaw = carYaw;
+        else {
+            var cdy = carYaw - camYaw;
+            while (cdy > Math.PI) cdy -= Math.PI * 2;
+            while (cdy < -Math.PI) cdy += Math.PI * 2;
+            camYaw += cdy * (1 - Math.exp(-dt / 0.22));
+        }
         var hx = Math.sin(carYaw);
         var hz = Math.cos(carYaw);
+        var chx = Math.sin(camYaw);
+        var chz = Math.cos(camYaw);
         if (followOrigin) {
             routeRoot.position.set(-routePos.x, 0, -routePos.z);
             var yaw = carYaw - anchorYaw;
@@ -8074,6 +8337,7 @@
             coast.position.set(-(anchorHold.x * cyaw + anchorHold.z * syaw), 0, -(-anchorHold.x * syaw + anchorHold.z * cyaw));
             car.position.set(0, 0.02, 0);
             steerLook.set(hx * 6, 0.02, hz * 6);
+            syncRouteScenery(false);
         } else {
             car.position.copy(routePos);
             steerLook.set(routePos.x + hx * 6, routePos.y, routePos.z + hz * 6);
@@ -8122,8 +8386,8 @@
         if (waterMat.map) waterMat.map.offset.x += dt * 0.012;
         if (waterShineMat && waterShineMat.map) waterShineMat.map.offset.x -= dt * 0.02;
         if (millBlades) millBlades.rotation.z += dt * 0.7;
-        var lookHx = hx;
-        var lookHz = hz;
+        var lookHx = chx;
+        var lookHz = chz;
         if (curve) {
             var span = (curve.total && curve.total > 1) ? curve.total : 80;
             var au = u + (lookAhead + (gfxUltra ? 10 : 6)) / span;
@@ -8138,23 +8402,23 @@
             if (llen > 0.5) {
                 lx /= llen;
                 lz /= llen;
-                var bend = Math.atan2(hx * lz - hz * lx, hx * lx + hz * lz);
+                var bend = Math.atan2(chx * lz - chz * lx, chx * lx + chz * lz);
                 var portraitCam = window.innerWidth / Math.max(1, window.innerHeight) < 0.9;
                 var maxBend = portraitCam ? (gfxUltra ? 0.14 : 0.08) : (gfxUltra ? 0.24 : 0.2);
                 if (bend > maxBend) bend = maxBend;
                 if (bend < -maxBend) bend = -maxBend;
                 var bendC = Math.cos(bend);
                 var bendS = Math.sin(bend);
-                lookHx = hx * bendC - hz * bendS;
-                lookHz = hx * bendS + hz * bendC;
+                lookHx = chx * bendC - chz * bendS;
+                lookHz = chx * bendS + chz * bendC;
             }
         }
-        tmpA.set(-hz, 0, hx);
+        tmpA.set(-chz, 0, chx);
         if (followOrigin) {
-            camDesired.set(-hx * camBack + tmpA.x * camSide, camUp, -hz * camBack + tmpA.z * camSide);
+            camDesired.set(-chx * camBack + tmpA.x * camSide, camUp, -chz * camBack + tmpA.z * camSide);
             lookDesired.set(lookHx * lookAhead + tmpA.x * camSide * 0.22, lookUp, lookHz * lookAhead + tmpA.z * camSide * 0.22);
         } else {
-            camDesired.set(routePos.x - hx * camBack + tmpA.x * camSide, routePos.y + camUp, routePos.z - hz * camBack + tmpA.z * camSide);
+            camDesired.set(routePos.x - chx * camBack + tmpA.x * camSide, routePos.y + camUp, routePos.z - chz * camBack + tmpA.z * camSide);
             lookDesired.set(routePos.x + lookHx * lookAhead + tmpA.x * camSide * 0.22, lookUp, routePos.z + lookHz * lookAhead + tmpA.z * camSide * 0.22);
         }
         var camK = aligned ? (1 - Math.exp(-dt * 7)) : 1;
@@ -8163,7 +8427,20 @@
         var lookK = aligned ? (1 - Math.exp(-dt * 8)) : 1;
         lookPos.lerp(lookDesired, lookK);
         camera.lookAt(lookPos);
+        if (sky) sky.position.copy(camera.position);
         aligned = true;
+        window.__routeView = {
+            coast: !!(coast && coast.visible),
+            route: routeActive,
+            gpsOnRoute: gpsOnRoute,
+            along: shownAlong,
+            carYaw: carYaw,
+            camYaw: camYaw,
+            look: Math.hypot(lookDesired.x - (followOrigin ? 0 : routePos.x), lookDesired.z - (followOrigin ? 0 : routePos.z)),
+            props: routeScenery ? routeScenery.visibleProps : 0,
+            house: routeScenery ? routeScenery.nearHouse : null,
+            tree: routeScenery ? routeScenery.nearTree : null
+        };
         sun.position.set(car.position.x + 24, 42, car.position.z + 12);
         sun.target.position.copy(car.position);
         fill.position.set(car.position.x - 16, 14, car.position.z - 10);
