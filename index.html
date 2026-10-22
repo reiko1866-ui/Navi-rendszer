@@ -1,308 +1,94 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Budapest Arcade Navigáció</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
-
-        * { box-sizing: border-box; }
-        body, html {
-            margin: 0; padding: 0; width: 100vw; height: 100vh;
-            overflow: hidden; background: #050b14; font-family: 'Comic Neue', cursive, sans-serif;
-            user-select: none; -webkit-user-select: none;
-        }
-
-        /* 1. RÉTEG: Fix háttér panoráma (A Lánchíd / Város látképe felül) */
-        #skyline-bg {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 45vh;
-            background: url('https://images.unsplash.com/photo-1549877452-9c387954fbc2?q=80&w=1200&auto=format&fit=crop') no-repeat center bottom;
-            background-size: cover;
-            z-index: 1;
-            /* Hangulatos éjszakai sötétítés, hogy passzoljon az arcade stílushoz */
-            filter: brightness(0.6) saturate(1.3);
-        }
-        #skyline-bg::after {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
-            background: linear-gradient(to top, #070a0f, transparent);
-        }
-
-        /* 2. RÉTEG: Futó 3D út (Canvas alul) */
-        #gameCanvas {
-            position: fixed; bottom: 0; left: 0; width: 100vw; height: 55vh;
-            display: block; z-index: 2;
-        }
-
-        /* 3. RÉTEG: HUD Kezelőfelület (Kártyák legfelül) */
-        .hud-card {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
-            color: #fff;
-            padding: 12px 16px;
-            position: fixed;
-            z-index: 10;
-        }
-
-        /* Bal fent: Manőver */
-        #maneuver-box {
-            top: 15px; left: 15px; display: flex; align-items: center; gap: 14px;
-            min-width: 220px;
-        }
-        .maneuver-icon {
-            font-size: 28px; background: rgba(255,255,255,0.1); width: 45px; height: 45px;
-            display: flex; align-items: center; justify-content: center; border-radius: 12px;
-        }
-
-        /* Jobb fent: Időjárás & Óra */
-        #weather-box {
-            top: 15px; right: 15px; display: flex; align-items: center; gap: 12px;
-        }
-
-        /* Alul balra: Úticél adatok */
-        #destination-box {
-            bottom: 15px; left: 15px; min-width: 200px;
-        }
-
-        /* Jobb oldali vezérlőoszlop */
-        #right-panel {
-            position: fixed; right: 15px; bottom: 95px; z-index: 10;
-            display: flex; flex-direction: column; gap: 10px; align-items: center;
-        }
-
-        /* Sebességtábla */
-        #speed-limit-sign {
-            width: 60px; height: 60px; background: #ff334b; border-radius: 50%;
-            border: 4px solid #fff; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        }
-        .limit-num { font-size: 22px; font-weight: bold; color: #fff; line-height: 1; }
-        .limit-sub { font-size: 9px; font-weight: bold; color: #ffccd2; }
-
-        /* Gyorsgombok */
-        .control-btn {
-            width: 48px; height: 48px; background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px); border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        }
-
-        /* Kis kerek radar térkép jobb alul */
-        #mini-radar {
-            position: fixed; bottom: 15px; right: 15px; width: 75px; height: 75px;
-            background: rgba(15, 23, 42, 0.9); border: 3px solid #fff; border-radius: 50%;
-            z-index: 10; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            display: flex; align-items: center; justify-content: center;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Rajzolt kamiontérkép</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Sora:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="sim.css">
 </head>
 <body>
-
-    <!-- 1. RÉTEG: Fix Városi Panoráma Háttér -->
-    <div id="skyline-bg"></div>
-
-    <!-- 2. RÉTEG: 3D Futó Út Vászon -->
-    <canvas id="gameCanvas"></canvas>
-
-    <!-- 3. RÉTEG: HUD Elemek -->
-    <!-- Bal fent: Manőver -->
-    <div id="maneuver-box" class="hud-card">
-        <div class="maneuver-icon">⬅️</div>
-        <div>
-            <div style="font-size: 18px; font-weight: bold;" id="dist-text">2,3 km</div>
-            <div style="font-size: 12px; color: #cbd5e1;">Következő utca</div>
-        </div>
+  <div id="atlas">
+    <header id="topbar">
+      <div>
+        <div class="eyebrow">Kamionszimulátor</div>
+        <h1>Rajzolt kamiontérkép</h1>
+      </div>
+      <p class="hint">Az egész ország látszik. Az indulást és a célt is címmel keresheted. Az út berajzolódik.</p>
+    </header>
+    <div id="map-wrap">
+      <canvas id="map"></canvas>
+      <div id="legend">
+        <div><i class="swatch motor"></i>autópálya</div>
+        <div><i class="swatch main"></i>főút</div>
+        <div><i class="swatch route"></i>útvonal</div>
+      </div>
+      <div id="zoomers">
+        <button type="button" id="zin" aria-label="Nagyítás">+</button>
+        <button type="button" id="zout" aria-label="Kicsinyítés">−</button>
+        <button type="button" id="zfit" aria-label="Egész ország">ország</button>
+      </div>
     </div>
+    <form id="panel">
+      <div id="summary">
+        <strong id="headline">Útvonal</strong>
+        <span id="subline"></span>
+      </div>
+      <label id="origin-label">Indulás
+        <input id="from-q" type="search" placeholder="utca, házszám vagy település" autocomplete="off" enterkeyhint="search">
+      </label>
+      <ul id="from-hits" hidden></ul>
+      <label id="search-label">Cél
+        <input id="q" type="search" placeholder="utca, házszám vagy település" autocomplete="off" enterkeyhint="search">
+      </label>
+      <ul id="hits" hidden></ul>
+      <p id="search-note" aria-live="polite"></p>
+      <label id="to-label">Város a térképen
+        <select id="to" name="to">
+          <option value="">nem kötelező</option>
+        </select>
+      </label>
+      <button type="submit" class="primary go" id="start">Indulás</button>
+    </form>
+  </div>
 
-    <!-- Jobb fent: Időjárás -->
-    <div id="weather-box" class="hud-card">
-        <span style="font-size: 24px;" id="weather-icon">🌙</span>
-        <div>
-            <div style="font-size: 16px; font-weight: bold;" id="temp-text">12°C</div>
-            <div style="font-size: 11px; color: #cbd5e1;" id="weather-desc">Tiszta égbolt</div>
+  <div id="cab" hidden>
+    <div id="stage">
+      <div id="glass">
+        <canvas id="wind"></canvas>
+        <div id="maneuver">
+          <svg id="arrow" viewBox="0 0 46 46" aria-hidden="true"></svg>
+          <div>
+            <div class="km" id="man-km">—</div>
+            <div class="where" id="man-where">Útvonal</div>
+            <div class="road" id="man-road"></div>
+          </div>
         </div>
+      </div>
+      <div id="gps">
+        <div id="gps-tag">NAV</div>
+        <canvas id="minimap"></canvas>
+      </div>
     </div>
-
-    <!-- Alul balra: Úticél adatok -->
-    <div id="destination-box" class="hud-card">
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: bold;">
-            <span>🏁</span> <span id="rem-dist">10,9 km</span>
-        </div>
-        <div style="font-size: 13px; color: #cbd5e1; margin-top: 4px; display: flex; gap: 12px;">
-            <span id="rem-time">18 perc</span>
-            <span id="arr-time">22:17</span>
-        </div>
-    </div>
-
-    <!-- Jobb oldali panel: Sebesség & Gombok -->
-    <div id="right-panel">
-        <div id="speed-limit-sign">
-            <span class="limit-num">50</span>
-            <span class="limit-sub" id="current-speed">0 km/h</span>
-        </div>
-        <div class="control-btn">🔊</div>
-        <div class="control-btn">🧭</div>
-        <div class="control-btn">⚙️</div>
-    </div>
-
-    <!-- Jobb alul: Mini radar -->
-    <div id="mini-radar">
-        <div style="width: 12px; height: 12px; background: #3b82f6; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 8px #3b82f6;"></div>
-    </div>
-
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight * 0.55; // Pontosan az alsó sávra méretezve
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        let currentSpeed = 35;
-        let roadOffset = 0;
-
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition((position) => {
-                if (position.coords.speed !== null) {
-                    currentSpeed = Math.round(position.coords.speed * 3.6);
-                }
-                document.getElementById('current-speed').innerText = currentSpeed + ' km/h';
-            }, () => {}, { enableHighAccuracy: true });
-        }
-
-        function render() {
-            const width = canvas.width;
-            const height = canvas.height;
-
-            // Sötét föld/alap az út alatt
-            ctx.fillStyle = '#070a0f';
-            ctx.fillRect(0, 0, width, height);
-
-            const roadWidthBottom = width * 0.8;
-            const roadWidthTop = width * 0.12;
-            const horizonY = 0;
-
-            roadOffset += (currentSpeed + 5) * 0.02;
-            const curve = Math.sin(roadOffset * 0.02) * (width * 0.15);
-
-            // Aszfaltút rajzolása
-            ctx.beginPath();
-            ctx.moveTo((width - roadWidthBottom) / 2, height);
-            ctx.bezierCurveTo(
-                width / 2 + curve * 0.4, horizonY + height * 0.5,
-                width / 2 + curve, horizonY + height * 0.15,
-                (width - roadWidthTop) / 2 + curve * 0.05, horizonY
-            );
-            ctx.lineTo((width + roadWidthTop) / 2 + curve * 0.05, horizonY);
-            ctx.bezierCurveTo(
-                width / 2 + curve, horizonY + height * 0.15,
-                width / 2 + curve * 0.4, horizonY + height * 0.5,
-                (width + roadWidthBottom) / 2, height
-            );
-            ctx.closePath();
-
-            ctx.fillStyle = '#1e2229';
-            ctx.fill();
-
-            // Középső ragyogó neonkék sáv
-            ctx.beginPath();
-            const centerTopX = width / 2 + curve * 0.05;
-            const centerBottomX = width / 2;
-            ctx.moveTo(centerBottomX - 8, height);
-            ctx.lineTo(centerTopX - 2, horizonY);
-            ctx.lineTo(centerTopX + 2, horizonY);
-            ctx.lineTo(centerBottomX + 8, height);
-            ctx.closePath();
-            ctx.fillStyle = '#00e5ff';
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = '#00e5ff';
-            ctx.fill();
-            ctx.shadowBlur = 0;
-
-            // Útszéli sárga világító lámpák
-            const itemCount = 10;
-            for (let i = 0; i < itemCount; i++) {
-                let progress = (i / itemCount + (roadOffset * 0.004) % 1) % 1;
-                let y = horizonY + progress * height;
-                let xFactor = (width * 0.42) * (1 - progress);
-
-                drawLamp(width / 2 - roadWidthBottom * 0.5 - xFactor - 15, y, progress);
-                drawLamp(width / 2 + roadWidthBottom * 0.5 + xFactor + 15, y, progress);
-            }
-
-            // Saját kék autó fixen alul
-            drawPlayerCar(width / 2, height - 60);
-
-            requestAnimationFrame(render);
-        }
-
-        function drawLamp(x, y, scale) {
-            let size = Math.max(3, scale * 20);
-            ctx.fillStyle = '#111';
-            ctx.fillRect(x - 2, y - size * 2, 3, size * 2);
-
-            ctx.beginPath();
-            ctx.arc(x, y - size * 2, Math.max(2.5, size * 0.3), 0, Math.PI * 2);
-            ctx.fillStyle = '#ffeb3b';
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#ffeb3b';
-            ctx.fill();
-            ctx.shadowBlur = 0;
-        }
-
-        function drawPlayerCar(cx, cy) {
-            ctx.save();
-            ctx.translate(cx, cy);
-
-            ctx.fillStyle = '#111';
-            ctx.fillRect(-75, 0, 20, 35);
-            ctx.fillRect(55, 0, 20, 35);
-
-            ctx.fillStyle = '#3b82f6';
-            ctx.strokeStyle = '#111';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.roundRect(-65, -18, 130, 60, 14);
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.fillStyle = '#111';
-            ctx.beginPath();
-            ctx.roundRect(-45, -35, 90, 30, 8);
-            ctx.fill();
-
-            ctx.fillStyle = '#ff334b';
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#ff334b';
-            ctx.fillRect(-55, 4, 14, 7);
-            ctx.fillRect(41, 4, 14, 7);
-            ctx.shadowBlur = 0;
-
-            ctx.restore();
-        }
-
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-                if (w < 2 * r) r = w / 2;
-                if (h < 2 * r) r = h / 2;
-                this.beginPath();
-                this.moveTo(x + r, y);
-                this.arcTo(x + w, y, x + w, y + h, r);
-                this.arcTo(x + w, y + h, x, y + h, r);
-                this.arcTo(x, y + h, x, y, r);
-                this.arcTo(x, y, x + w, y, r);
-                this.closePath();
-                return this;
-            };
-        }
-
-        requestAnimationFrame(render);
-    </script>
+    <footer id="dash">
+      <div id="speed"><b id="speed-num">0</b><small id="speed-unit">km/h</small></div>
+      <div id="trip">
+        <b id="remain">—</b>
+        <small id="eta">érkezés</small>
+      </div>
+      <div id="scale-actions" role="group" aria-label="Idő gyorsítása">
+        <button type="button" data-scale="8">8×</button>
+        <button type="button" data-scale="40" aria-pressed="true">40×</button>
+        <button type="button" data-scale="140">140×</button>
+      </div>
+      <div id="dash-actions">
+        <button type="button" id="pause">Szünet</button>
+        <button type="button" class="primary" id="to-map">Térkép</button>
+      </div>
+    </footer>
+  </div>
+  <script src="sim.js"></script>
 </body>
 </html>

@@ -1,91 +1,10 @@
-# ToonNav3D — do this next
+# Rajzolt kamiontérkép
 
-The picture we are aiming for is `Reference/celkep.png` (explained in Hungarian in `Reference/CEL.md`): one cartoon drive in Budapest, in sun, rain, night, and snow. The scripts in this repo are only the first slice of that picture.
+1. Nyisd meg az `index.html` fájlt a böngészőben. A térkép Magyarország körvonalát mutatja.
+2. Az Indulás és a Cél mezőbe is írhatsz címet, akár `Gyömrő, Határ utca 27`, akár `Határ utca 27, Gyömrő` formában. Válassz a találatok közül. Ha a házszám nincs a térképen, az ugyanabban a településen lévő utca jelenik meg, nem egy másik város hasonló utcája.
+3. A cél lehet egy város is: a listából vagy a térképre koppintva. Ehhez előbb kell induló cím.
+4. A térkép húzható, a + és a − gomb közelít. Az „ország” gomb visszaállítja az egész országot.
+5. Az Indulás gomb a szimulátorba visz: elöl az út, jobbra a rajzolt navigáció, alul a sebesség és a hátralévő kilométer.
+6. A 8×, 40× és 140× gomb a szimulált időt gyorsítja. A Szünet megállítja. A Térkép visszavisz a nagy térképre.
 
-This repo is **not** a playable Unity project yet. It only contains the first three scripts. Unity has not compiled or run them.
-
-The old `index.html` file is a browser drawing. Leave it. It is not part of the Unity scene.
-
-You are on an Android phone. The Unity Editor does not run on Android. The steps below that create the road and the car need a **Windows or Mac computer**.
-
-## On your phone, stop after this
-
-1. Open the pull request for this repo and read these files:
-   - `Assets/Scripts/World/CarMovement.cs`
-   - `Assets/Scripts/World/CameraFollow.cs`
-   - `Assets/Scripts/Core/DayNightController.cs`
-2. Do not install a Unity app from the Play Store. It will not open this project.
-
-## On a computer
-
-1. Install **Unity Hub** from https://unity.com/download and sign in.
-2. In Hub, open **Installs → Install Editor**. Pick the newest **LTS** version (Unity 6 LTS or 2022.3 LTS). You can add **Windows Build Support**. Skip Android for now.
-3. Install **GitHub Desktop** from https://desktop.github.com and sign in.
-4. **File → Clone repository**. This GitHub repo is named `Navi-rendszer`. Clone it to a folder you can find, for example `C:\Projects\Navi-rendszer`.
-5. In GitHub Desktop, click **Current Branch** and select `cursor/toonnav3d-milestone-1-b5ab`. If you stay on `main`, the scripts will be missing.
-6. In Unity Hub, click **New project → Universal 3D** (or **3D (URP)**). Name it `ToonNav3D`. Choose an **empty** folder, for example `C:\Projects\ToonNav3D`. Hub usually refuses a folder that already has files, so do not point it at the clone.
-7. Wait until the editor is fully open. Then choose **File → Exit**.
-8. Copy the whole `Assets\Scripts` folder from the clone into the Unity project, so this file exists:
-   `C:\Projects\ToonNav3D\Assets\Scripts\World\CarMovement.cs`
-9. Open `ToonNav3D` from Unity Hub again. Wait until the spinner at the bottom right finishes.
-10. Choose **Edit → Project Settings → Player → Other Settings**. Set **Active Input Handling** to **Both**. If Unity asks to restart, let it restart.
-11. Choose **File → Save As**. Inside `Assets`, create a folder named `Scenes` if it is not there. Save the scene as `TestEnvironment.unity`.
-12. In the Project window, right-click `Assets` → **Create → Folder**. Create `Materials` and `Prefabs` if they are missing.
-
-### Build the test scene
-
-Use **GameObject → 3D Object → Cube** for each object. Set **Transform** in the Inspector exactly.
-
-| Name | Position | Scale |
-| --- | --- | --- |
-| Road | 0, 0, 0 | 8, 0.2, 100 |
-| Ground | 0, -0.2, 0 | 80, 0.2, 120 |
-| PlayerCar | 0, 0.6, -35 | 1.8, 1, 3.2 |
-
-Rename each cube in the top of the Inspector. The car's name must be exactly `PlayerCar`.
-
-Colors:
-
-1. In `Assets/Materials`, right-click → **Create → Material**.
-2. Name them `RoadMaterial`, `GrassMaterial`, and `CarMaterial`.
-3. Leave the **Shader** as it is (it should mention Universal Render Pipeline).
-4. Click the color square. Make the road gray, the ground green, and the car blue.
-5. Drag each material onto its object in the Hierarchy.
-
-Camera and light (these already exist in a new URP scene):
-
-1. Select **Main Camera**. Set Position to `0, 6, -43` and Rotation to `15, 0, 0`. Do not change its Tag. It should stay `MainCamera`.
-2. Select **Directional Light**. Set Rotation to `50, -30, 0` and Intensity to `1`.
-
-Scripts:
-
-1. Select **PlayerCar**. Click **Add Component**. Search for `CarMovement`. Add it.
-2. Select **Main Camera**. Add Component → `CameraFollow`. Drag **PlayerCar** from the Hierarchy into the **Target** slot.
-3. In the Hierarchy, right-click → **Create Empty**. Name it `EnvironmentManager`.
-4. Add Component → `DayNightController`. Drag **Directional Light** into **Sun**. Drag **Main Camera** into **Sky Camera**.
-
-Press **Ctrl+S** to save.
-
-### Press Play
-
-1. Click the **Game** tab (not only Scene).
-2. Click inside the Game view once, so the keyboard reaches the game.
-3. Press the **Play** button.
-4. Drive with **W A S D** or the arrow keys.
-5. Click **Switch to night**, or press **N**. Click again, or press **N**, to return to day.
-
-You should see a blue cube car on a gray road, a camera that stays behind the car, and the sky and light changing.
-
-Open **Window → General → Console**. If a line is red, copy that text and send it to me. Do not add GPS or weather yet.
-
-### After it works, save it to GitHub
-
-Copy these folders from `C:\Projects\ToonNav3D` into the clone `C:\Projects\Navi-rendszer`, merging with what is already there:
-
-- `Assets`
-- `Packages`
-- `ProjectSettings`
-
-Do **not** copy `Library`, `Logs`, `Temp`, or `UserSettings`.
-
-In GitHub Desktop, commit the result and push the same branch. The scene file `Assets/Scenes/TestEnvironment.unity` should be in the commit.
+A címhez a távolság és az idő a lekért útvonalból jön. Ez nem élő GPS, és nem a valódi forgalom.
