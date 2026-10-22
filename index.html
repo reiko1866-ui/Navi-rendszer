@@ -3924,7 +3924,17 @@
     var gpsOffDist = null;
     var gpsPoor = false;
     var gpsAmbiguous = false;
+    var gpsSignalHold = false;
     var gpsTargetU = null;
+    var offRouteSince = 0;
+    var offRouteCount = 0;
+    var rerouteBusy = false;
+    var rerouteBlocked = false;
+    var routeInFlight = false;
+    var lastRerouteAt = 0;
+    var rerouteAccM = 40;
+    var rerouteHoldMs = 8000;
+    var rerouteGapMs = 20000;
     var shownAlong = null;
     var gpsMeasure = null;
     var backConfirm = false;
@@ -6590,6 +6600,7 @@
     function gpsPhrase() {
         if (gpsStatus === "denied") return "Nincs engedély";
         if (gpsStatus === "pending" || gpsStatus === "timeout") return "Helymeghatározás…";
+        if (gpsStatus === "weak") return "GPS-jel akadozik";
         if (gpsStatus === "lost") return "GPS-jel elveszett";
         if (gpsStatus === "ok" && gpsPoor) return "A GPS pontatlan";
         if (gpsStatus === "ok" && routeActive && !gpsOnRoute) return "GPS elérhető, az út messze van";
@@ -6632,6 +6643,7 @@
             if (frac < 0) frac = 0;
             line("Hátralévő út: " + formatDist(routeMeters * frac));
             line("Hátralévő tervezett idő, a szakasz arányában: " + formatDuration(routeSeconds * frac));
+            if (gpsStatus === "weak") line("A GPS-jel akadozik. Az utolsó helyzet megmarad, amíg új adat érkezik.");
         } else if (gpsPoor) {
             line("A GPS pontatlan, ezért a kocsi nem ugrik az útra.");
         } else if (gpsStatus === "ok" && gpsOffDist !== null) {
@@ -6648,7 +6660,7 @@
         if (routeActive && routeMeters > 0 && gpsOnRoute) {
             man = nextManeuver(travel);
             distEl.textContent = formatDist(man.meters);
-            var liveState = gpsStatus === "timeout" ? "Helymeghatározás…" : (gpsAmbiguous ? "GPS bizonytalan" : "GPS elérhető");
+            var liveState = gpsStatus === "timeout" ? "Helymeghatározás…" : (gpsStatus === "weak" ? "GPS-jel akadozik" : (gpsAmbiguous ? "GPS bizonytalan" : "GPS elérhető"));
             if (man.type === "arrive" && man.meters < 30) {
                 streetEl.textContent = "Cél";
                 hintEl.textContent = liveState + " · " + (dest && dest.name ? dest.name : "Megérkeztél");
@@ -7035,6 +7047,99 @@
         return { u: global.u, dist: global.dist, ambiguous: false };
     }
 
+    function releaseRouteFlight() {
+        routeInFlight = false;
+        rerouteBusy = false;
+    }
+
+    function noteOffRoute() {
+        if (rerouteBusy || rerouteBlocked || routeInFlight || gpsSignalHold) return;
+        if (!routeActive || !dest || !gpsFix || gpsStatus !== "ok") {
+            offRouteSince = 0;
+            offRouteCount = 0;
+            return;
+        }
+        var acc = gpsFix.acc;
+        if (typeof acc !== "number" || !isFinite(acc) || acc < 0 || acc > rerouteAccM) {
+            offRouteSince = 0;
+            offRouteCount = 0;
+            return;
+        }
+        var now = typeof gpsFix.t === "number" ? gpsFix.t : Date.now();
+        if (!offRouteSince) {
+            offRouteSince = now;
+            offRouteCount = 1;
+            return;
+        }
+        var elapsed = now - offRouteSince;
+        if (!(elapsed >= 0)) {
+            offRouteSince = now;
+            offRouteCount = 1;
+            return;
+        }
+        offRouteCount += 1;
+        if (offRouteCount >= 2 && elapsed >= rerouteHoldMs) beginReroute();
+    }
+
+    function finishReroute(seq, data, lat, lon) {
+        if (seq !== routeSeq) return;
+        releaseRouteFlight();
+        if (!routeActive || !dest) return;
+        if (!data || data.code !== "Ok" || !data.routes || !data.routes.length) {
+            rerouteBlocked = true;
+            setNote("Erre a helyzetre nincs új autóút a célhoz. A régi útvonal megmarad. A GPS gombbal újra próbálhatod.", "warn");
+            paintHud();
+            fillFacts();
+            return;
+        }
+        var snap = readSnap(data, 0);
+        if (!snap || snap.distance === null || snap.distance > snapMaxM + 1) {
+            rerouteBlocked = true;
+            setNote("Az új indulás nincs közúton. A régi útvonal megmarad. A GPS gombbal újra próbálhatod.", "warn");
+            paintHud();
+            fillFacts();
+            return;
+        }
+        origin = { name: "Saját helyzet", lat: lat, lon: lon, fromGps: true };
+        if (fromInput) fromInput.value = "Saját helyzet";
+        offRouteSince = 0;
+        offRouteCount = 0;
+        rerouteBlocked = false;
+        var key = lat.toFixed(4) + "," + lon.toFixed(4) + ">" + dest.lat.toFixed(4) + "," + dest.lon.toFixed(4);
+        routeCache[key] = { route: data.routes[0], snap: snap };
+        applyRoute(data.routes[0], snap);
+    }
+
+    function beginReroute() {
+        if (rerouteBusy || routeInFlight || rerouteBlocked || gpsSignalHold) return;
+        if (!routeActive || !dest || !gpsFix || gpsStatus !== "ok") return;
+        var now = Date.now();
+        if (now - lastRerouteAt < rerouteGapMs) return;
+        if (now - lastRouteAt < 1100) return;
+        var lat = gpsFix.lat;
+        var lon = gpsFix.lon;
+        rerouteBusy = true;
+        routeInFlight = true;
+        lastRerouteAt = now;
+        lastRouteAt = now;
+        var seq = ++routeSeq;
+        setNote("Letérés. Új útvonal kérése a célhoz…", "");
+        paintHud();
+        fetchOsrm(routeUrl(lon, lat, dest.lon, dest.lat, snapMaxM)).then(function (data) {
+            finishReroute(seq, data, lat, lon);
+        }).catch(function (err) {
+            if (seq !== routeSeq) return;
+            releaseRouteFlight();
+            rerouteBlocked = true;
+            var text = err && err.message === "limit"
+                ? "Az útvonaltervező korlátja megtelt. A régi útvonal megmarad. A GPS gombbal később újra próbálhatod."
+                : "Az újratervezés nem sikerült. A régi útvonal megmarad. A GPS gombbal újra próbálhatod.";
+            setNote(text, "warn");
+            paintHud();
+            fillFacts();
+        });
+    }
+
     function aimTravel() {
         if (!routeActive || !routeProj || !gpsFix || !curve || !curve.points) {
             gpsOnRoute = false;
@@ -7044,6 +7149,8 @@
         }
         if (typeof gpsFix.acc === "number" && gpsFix.acc > 120) {
             gpsPoor = true;
+            offRouteSince = 0;
+            offRouteCount = 0;
             if (gpsOnRoute && gpsMeasure !== null) {
                 gpsAmbiguous = true;
                 return;
@@ -7063,8 +7170,12 @@
             gpsOnRoute = false;
             gpsTargetU = null;
             gpsAmbiguous = false;
+            noteOffRoute();
             return;
         }
+        offRouteSince = 0;
+        offRouteCount = 0;
+        rerouteBlocked = false;
         gpsOnRoute = true;
         gpsAmbiguous = !!hit.ambiguous;
         gpsTargetU = hit.u;
@@ -7144,6 +7255,7 @@
     }
 
     function advanceAlong(dt) {
+        if (gpsSignalHold) return;
         if (!routeActive || !gpsOnRoute || shownAlong === null || gpsMeasure === null) return;
         var total = curve.total || 1;
         var used = dt > 0.1 ? 0.1 : dt;
@@ -7181,6 +7293,7 @@
             speed: c.speed,
             t: pos.timestamp || Date.now()
         };
+        gpsSignalHold = false;
         gpsStatus = "ok";
         gpsFixSamples += 1;
         gpsButton.disabled = false;
@@ -7212,11 +7325,10 @@
             setNote("A helyengedélyt megtagadták. Engedélyezd a helyet a böngészőben vagy az Android alkalmazásban. GPS nélkül a kocsi nem követi az utat.", "warn");
         } else if (code === 2) {
             if (gpsFix) {
-                gpsStatus = "lost";
-                gpsOnRoute = false;
-                gpsTargetU = null;
+                gpsStatus = "weak";
+                gpsSignalHold = true;
                 liveKmh = null;
-                setNote("A GPS-jel elveszett. A kocsi megáll, amíg új helyzet nem érkezik.", "warn");
+                setNote("A GPS-jel akadozik. Az utolsó helyzet megmarad, amíg új adat érkezik.", "warn");
             } else {
                 gpsStatus = "unavailable";
                 setNote("A hely most nem érhető el. Az útvonal ettől még megtervezhető, a kocsi viszont nem indul el.", "warn");
@@ -8140,6 +8252,11 @@
         var wasRoute = routeActive;
         routeActive = false;
         followOrigin = false;
+        releaseRouteFlight();
+        rerouteBlocked = false;
+        offRouteSince = 0;
+        offRouteCount = 0;
+        gpsSignalHold = false;
         routeMeters = 0;
         routeSeconds = 0;
         routeSteps = [];
@@ -8513,6 +8630,11 @@
         gpsOffDist = null;
         gpsPoor = false;
         gpsAmbiguous = false;
+        gpsSignalHold = false;
+        offRouteSince = 0;
+        offRouteCount = 0;
+        rerouteBlocked = false;
+        releaseRouteFlight();
         curve.getTangentAt(0.001, prevTangent).normalize();
         carYaw = Math.atan2(prevTangent.x, prevTangent.z);
         aligned = false;
@@ -8560,7 +8682,11 @@
     }
 
     function handleNoSegment(seq, key, data) {
-        if (!origin || !dest) return;
+        if (seq !== routeSeq) return;
+        if (!origin || !dest) {
+            releaseRouteFlight();
+            return;
+        }
         if (segmentIndex(data) === 1) {
             routeFail("A cél 2 km-en belül nincs autóúton.");
             return;
@@ -8570,7 +8696,11 @@
             var url = "https://routing.openstreetmap.de/routed-car/nearest/v1/driving/"
                 + osrmPair(origin.lon, origin.lat) + "?number=1";
             fetchOsrm(url).then(function (near) {
-                if (seq !== routeSeq || !origin || !dest) return;
+                if (seq !== routeSeq) return;
+                if (!origin || !dest) {
+                    releaseRouteFlight();
+                    return;
+                }
                 var snap = near && near.code === "Ok" ? readSnap(near, 0) : null;
                 if (!snap || snap.distance === null) {
                     routeFail("Az indulás közelében nincs autóút, ezért nincs útvonal.");
@@ -8585,6 +8715,10 @@
                 waitOsrm(seq, function () {
                     fetchOsrm(routeUrl(snap.lon, snap.lat, dest.lon, dest.lat, 80)).then(function (again) {
                         if (seq !== routeSeq) return;
+                        if (!origin || !dest) {
+                            releaseRouteFlight();
+                            return;
+                        }
                         if (!again || again.code !== "Ok" || !again.routes || !again.routes.length) {
                             if (again && again.code === "NoSegment" && segmentIndex(again) === 1) {
                                 routeFail("A cél 2 km-en belül nincs autóúton.");
@@ -8616,6 +8750,10 @@
     }
 
     function planRoute() {
+        if (rerouteBusy || routeInFlight) {
+            setNote("Útvonaltervezés folyamatban van.", "warn");
+            return;
+        }
         if (gpsUsable()) {
             origin = { name: "Saját helyzet", lat: gpsFix.lat, lon: gpsFix.lon, fromGps: true };
             fromInput.value = "Saját helyzet";
@@ -8638,6 +8776,7 @@
         }
         var key = origin.lat.toFixed(4) + "," + origin.lon.toFixed(4) + ">" + dest.lat.toFixed(4) + "," + dest.lon.toFixed(4);
         if (routeCache[key]) {
+            rerouteBlocked = false;
             applyRoute(routeCache[key].route, routeCache[key].snap);
             return;
         }
@@ -8646,6 +8785,8 @@
             setNote("Az útvonaltervező másodpercenként egy kérést fogad. Várj egy pillanatot.", "warn");
             return;
         }
+        rerouteBlocked = false;
+        routeInFlight = true;
         lastRouteAt = now;
         var seq = ++routeSeq;
         setNote("Közúti útvonal kérése…", "");
@@ -8856,7 +8997,9 @@
             tree: routeScenery ? routeScenery.nearTree : null,
             signReady: !!(routeScenery && routeScenery.signReady),
             signNote: routeScenery ? routeScenery.signNote : "",
-            signs: routeSignProbe()
+            signs: routeSignProbe(),
+            hold: gpsSignalHold,
+            rerouteBusy: rerouteBusy
         };
         sun.position.set(car.position.x + 24, 42, car.position.z + 12);
         sun.target.position.copy(car.position);
