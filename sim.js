@@ -557,12 +557,84 @@
       .replace(/ú/g, "u").replace(/ü/g, "u").replace(/ű/g, "u");
   }
 
+  function wordsOf(text) {
+    return foldHu(text).split(/[^a-z0-9]+/).filter(Boolean);
+  }
+
+  function hasWord(text, word) {
+    return wordsOf(text).indexOf(word) !== -1;
+  }
+
+  function normNumber(value) {
+    return foldHu(value).replace(/[^a-z0-9]/g, "");
+  }
+
+  function parseAddressQuery(query) {
+    const folded = foldHu(query);
+    const postcodeMatch = folded.match(/\b\d{4}\b/);
+    const postcode = postcodeMatch ? postcodeMatch[0] : "";
+    const withoutPost = folded.replace(/\b\d{4}\b/g, " ");
+    const streetMatch = withoutPost.match(/\b([a-z0-9]+(?:\s+[a-z0-9]+)*)\s+(sugarut|setany|korut|rakpart|utca|dulo|liget|park|koz|sor|ter|krt|ut)\b/);
+    let streetTokens = [];
+    let streetKind = "";
+    let rest = withoutPost;
+    if (streetMatch) {
+      streetKind = streetMatch[2];
+      streetTokens = streetMatch[1].split(/\s+/).filter(Boolean);
+      rest = withoutPost.replace(streetMatch[0], " ");
+    }
+    const houseNumbers = (rest.match(/\b\d+[a-z]?\b/g) || []).map(normNumber).filter(function (value) { return value && value !== postcode; });
+    rest = rest.replace(/\b\d+[a-z]?\b/g, " ");
+    const placeTokens = rest.split(/[^a-z0-9]+/).filter(function (token) { return token.length > 1; });
+    return { postcode: postcode, streetTokens: streetTokens, streetKind: streetKind, houseNumbers: houseNumbers, placeTokens: placeTokens };
+  }
+
+  function fieldHasToken(field, token) {
+    if (!field) return false;
+    if (field === token) return true;
+    return wordsOf(field).indexOf(token) !== -1;
+  }
+
+  function placeMatches(props, parsed) {
+    const city = foldHu(props.city);
+    const locality = foldHu(props.locality);
+    const name = foldHu(props.name);
+    if (parsed.postcode && String(props.postcode || "") !== parsed.postcode) return false;
+    if (!parsed.placeTokens.length) return true;
+    return parsed.placeTokens.every(function (token) {
+      return fieldHasToken(city, token) || fieldHasToken(locality, token) || fieldHasToken(name, token);
+    });
+  }
+
+  function streetMatches(props, parsed) {
+    if (!parsed.streetTokens.length) return true;
+    const blob = [props.street, props.name].filter(Boolean).join(" ");
+    const words = wordsOf(blob);
+    const namesOk = parsed.streetTokens.every(function (token) { return words.indexOf(token) !== -1; });
+    if (!namesOk) return false;
+    if (!parsed.streetKind) return true;
+    return words.indexOf(parsed.streetKind) !== -1;
+  }
+
   function rankAddresses(features, query) {
+    const parsed = parseAddressQuery(query);
     const folded = foldHu(query);
     const tokens = folded.split(/[^a-z0-9]+/).filter(function (token) { return token.length > 2; });
-    const wantedNumber = folded.match(/\d+/g) || [];
-    const wantsStreet = /(utca|sugarut|setany|korut|\but\b|\bter\b)/.test(folded);
-    const ranked = features.map(function (feature, index) {
+    let missingHouseNumber = false;
+    let pool = features.filter(function (feature) {
+      const props = feature.properties || {};
+      return placeMatches(props, parsed) && streetMatches(props, parsed);
+    });
+    if (parsed.houseNumbers.length) {
+      const numbered = pool.filter(function (feature) {
+        const house = normNumber((feature.properties || {}).housenumber || "");
+        return parsed.houseNumbers.indexOf(house) !== -1;
+      });
+      if (numbered.length) pool = numbered;
+      else if (pool.length) missingHouseNumber = true;
+    }
+    const wantsStreet = !!parsed.streetKind;
+    const ranked = pool.map(function (feature, index) {
       const props = feature.properties || {};
       const name = foldHu(props.name);
       const street = foldHu(props.street);
@@ -570,13 +642,14 @@
       let score = 0;
       tokens.forEach(function (token) {
         if (name === token) score += 18;
-        else if (name.indexOf(token) !== -1) score += 6;
-        if (street.indexOf(token) !== -1) score += 4;
-        if (city.indexOf(token) !== -1) score += 3;
+        else if (hasWord(name, token)) score += 6;
+        if (hasWord(street, token)) score += 4;
+        if (hasWord(city, token)) score += 8;
       });
       const settlement = props.osm_key === "place" && (props.osm_value === "city" || props.osm_value === "town" || props.osm_value === "village" || props.osm_value === "hamlet");
-      if (settlement && tokens.some(function (token) { return name === token; })) score += 16;
-      if (wantedNumber.length && props.housenumber && wantedNumber.indexOf(String(props.housenumber).trim()) !== -1) score += 22;
+      if (settlement && parsed.placeTokens.some(function (token) { return name === token; })) score += 16;
+      if (parsed.houseNumbers.indexOf(normNumber(props.housenumber || "")) !== -1) score += 22;
+      if (parsed.postcode && String(props.postcode || "") === parsed.postcode) score += 10;
       if (wantsStreet && props.osm_key === "highway") score += 8;
       if (wantsStreet && (props.osm_key === "amenity" || props.osm_key === "shop" || props.osm_key === "tourism" || props.osm_key === "historic")) score -= 3;
       return { feature: feature, score: score, index: index };
@@ -594,6 +667,7 @@
       seen[label] = true;
       picked.push(item.feature);
     });
+    picked.missingHouseNumber = missingHouseNumber;
     return picked;
   }
 
@@ -610,8 +684,13 @@
     const place = properties.name && properties.name !== street ? properties.name : "";
     const city = properties.city || properties.county || properties.state || "";
     const line = (street ? street + number : place) || place;
-    if (line && city && line !== city) return line + ", " + city;
-    return line || city || "Cím";
+    const district = properties.district || properties.locality || "";
+    const parts = [];
+    if (line) parts.push(line);
+    if (district && foldHu(district) !== foldHu(line) && foldHu(district) !== foldHu(city)) parts.push(district);
+    if (city && foldHu(city) !== foldHu(line)) parts.push(city);
+    if (properties.postcode && parts.length) parts.push(String(properties.postcode));
+    return parts.join(", ") || "Cím";
   }
 
   function maneuverText(modifier, street) {
@@ -874,6 +953,7 @@
         note.textContent = "Keresés…";
         fetch(photonUrl(query), { signal: abort.signal })
           .then(function (response) {
+            if (response.status === 429) throw new Error("limit");
             if (!response.ok) throw new Error("search");
             return response.json();
           })
@@ -888,9 +968,12 @@
               note.textContent = "Nincs ilyen cím az országban.";
               return;
             }
-            note.textContent = selected() ? "" : "Válassz a találatok közül.";
+            note.textContent = features.missingHouseNumber
+              ? "A házszám nincs a térképen. Válassz az utca találatai közül."
+              : (selected() ? "" : "Válassz a találatok közül.");
             list.innerHTML = "";
             features.forEach(function (feature) {
+              if (!feature.geometry || !feature.geometry.coordinates) return;
               const item = document.createElement("li");
               const button = document.createElement("button");
               button.type = "button";
@@ -899,13 +982,20 @@
               item.appendChild(button);
               list.appendChild(item);
             });
+            if (!list.children.length) {
+              hideList(list);
+              note.textContent = "Nincs ilyen cím az országban.";
+              return;
+            }
             list.hidden = false;
           })
           .catch(function (error) {
             if (error && error.name === "AbortError") return;
             if (my !== token) return;
             hideList(list);
-            note.textContent = "A keresés nem sikerült.";
+            note.textContent = error && error.message === "limit"
+              ? "A keresés túl gyakori. Próbáld újra egy pillanat múlva."
+              : "A keresés nem sikerült.";
           });
       }
     }

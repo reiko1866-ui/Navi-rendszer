@@ -74,4 +74,21 @@ const houses = nav.rankAddresses([
 ], "Váci utca 12, Budapest");
 assert.strictEqual(nav.addressLabel(houses[0].properties), "Váci utca 12, Budapest");
 
+const wrongTown = [
+  { properties: { name: "Határ utca", city: "Gyömrő", district: "Dózsatanya", postcode: "2230", osm_key: "highway", osm_value: "living_street" } },
+  { properties: { street: "Határ utca", housenumber: "27", city: "Győr", postcode: "9019", osm_key: "building", osm_value: "yes" } },
+  { properties: { street: "Kossuth Ferenc utca", housenumber: "27", city: "Gyömrő", postcode: "2230", osm_key: "building", osm_value: "detached" } },
+];
+["Gyömrő, Határ utca 27", "Határ utca 27, Gyömrő", "2230 Határ utca 27"].forEach(function (query) {
+  const hits = nav.rankAddresses(wrongTown, query);
+  assert.ok(hits.length === 1, query + " találatok: " + hits.length);
+  assert.ok(hits.missingHouseNumber, query + " ne fogadja el a győri házszámot");
+  assert.strictEqual(nav.addressLabel(hits[0].properties), "Határ utca, Dózsatanya, Gyömrő, 2230");
+});
+const realHouse = nav.rankAddresses(wrongTown, "Kossuth Ferenc utca 27, Gyömrő");
+assert.strictEqual(nav.addressLabel(realHouse[0].properties), "Kossuth Ferenc utca 27, Gyömrő, 2230");
+assert.ok(!realHouse.missingHouseNumber);
+const accentless = nav.rankAddresses(wrongTown, "Gyomro, Hatar utca 27");
+assert.strictEqual(nav.addressLabel(accentless[0].properties), "Határ utca, Dózsatanya, Gyömrő, 2230");
+
 console.log("útvonalteszt rendben");

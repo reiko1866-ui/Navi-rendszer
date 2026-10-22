@@ -1,7 +1,7 @@
 # Rajzolt kamiontérkép
 
 1. Nyisd meg az `index.html` fájlt a böngészőben. A térkép Magyarország körvonalát mutatja.
-2. Az Indulás mezőbe írj egy magyar címet, például `Váci utca, Budapest`. A Cél mezőbe egy másikat, például `Kossuth Lajos sugárút, Szeged`. Válassz a találatok közül. Az út a két cím között berajzolódik.
+2. Az Indulás és a Cél mezőbe is írhatsz címet, akár `Gyömrő, Határ utca 27`, akár `Határ utca 27, Gyömrő` formában. Válassz a találatok közül. Ha a házszám nincs a térképen, az ugyanabban a településen lévő utca jelenik meg, nem egy másik város hasonló utcája.
 3. A cél lehet egy város is: a listából vagy a térképre koppintva. Ehhez előbb kell induló cím.
 4. A térkép húzható, a + és a − gomb közelít. Az „ország” gomb visszaállítja az egész országot.
 5. Az Indulás gomb a szimulátorba visz: elöl az út, jobbra a rajzolt navigáció, alul a sebesség és a hátralévő kilométer.
