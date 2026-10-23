@@ -7781,17 +7781,34 @@
         };
     }
 
+    function voiceAssignOpen() {
+        var panel = document.getElementById("assign-panel");
+        if (!panel) return;
+        panel.hidden = false;
+        var search = document.getElementById("assign-search");
+        if (search) search.focus();
+    }
+
+    function voiceAssignFromLink() {
+        var hash = "";
+        var query = "";
+        try {
+            hash = String(location.hash || "");
+            query = String(location.search || "");
+        } catch (err) {
+            return;
+        }
+        if (hash === "#hangok" || hash === "#beallitas" || query.indexOf("beallitas=hang") >= 0) voiceAssignOpen();
+    }
+
     function voiceAssignBind() {
         if (voiceAssignBound) return;
         voiceAssignBound = true;
         var open = document.getElementById("assign-open");
         var panel = document.getElementById("assign-panel");
         var close = document.getElementById("assign-close");
-        if (open && panel) open.addEventListener("click", function () {
-            panel.hidden = false;
-            var search = document.getElementById("assign-search");
-            if (search) search.focus();
-        });
+        if (open && panel) open.addEventListener("click", voiceAssignOpen);
+        voiceAssignFromLink();
         if (close && panel) close.addEventListener("click", function () {
             panel.hidden = true;
             voiceStopPreview();

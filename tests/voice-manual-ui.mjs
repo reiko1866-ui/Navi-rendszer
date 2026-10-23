@@ -17,9 +17,9 @@ try {
   const errors = [];
   page.on("pageerror", (err) => errors.push(String(err)));
   await page.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
-  await page.goto(origin + "/index.html?gfx=mobile", { waitUntil: "domcontentloaded", timeout: 40000 });
+  await page.goto(origin + "/index.html?gfx=mobile#hangok", { waitUntil: "domcontentloaded", timeout: 40000 });
   await page.waitForFunction(() => /Összes 697/.test(document.getElementById("voice-status").textContent || ""), { timeout: 10000 });
-  await page.evaluate(() => document.getElementById("assign-open").click());
+  check("link-opens-settings", await page.$eval("#assign-panel", (el) => el.hidden === false));
   const count = await page.$eval("#assign-list", (el) => el.getAttribute("data-count"));
   check("panel-lists-697", count === "697", count);
   const clip = await page.evaluate(async () => {
