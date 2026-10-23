@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
 <title>ToonNav3D</title>
 <style>
-        html, body { margin: 0; height: 100%; background: #2f8ef0; overflow: hidden; color: #fff; font-family: "Segoe UI", Roboto, sans-serif; }
-        #view { display: block; width: 100%; height: 100%; touch-action: none; }
+        html, body { margin: 0; height: 100%; height: 100dvh; background: #2f8ef0; overflow: hidden; color: #fff; font-family: "Segoe UI", Roboto, sans-serif; }
+        #view { position: fixed; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; }
         button, input { font-family: inherit; color: inherit; touch-action: manipulation; }
         #cluster {
             position: fixed; z-index: 4;
@@ -27,22 +27,22 @@
         }
         #maneuver {
             display: flex; align-items: center; gap: 8px;
-            min-height: 44px; padding: 4px 8px 4px 4px; border-radius: 14px;
+            min-height: 52px; padding: 6px 8px 6px 6px; border-radius: 16px;
         }
         #arrow {
-            width: 36px; height: 36px; border-radius: 10px;
-            background: rgba(255,255,255,0.08);
+            width: 44px; height: 44px; border-radius: 12px;
+            background: #123a86;
             display: grid; place-items: center; flex: none;
         }
         #arrow svg { display: block; }
         #maneuver-text { min-width: 0; flex: 1; }
-        #dist { display: block; font-size: 16px; font-weight: 750; letter-spacing: -0.03em; line-height: 1.1; }
+        #dist { display: block; font-size: 26px; font-weight: 780; letter-spacing: -0.04em; line-height: 1; }
         #street, #hint {
             display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        #street { font-size: 13px; opacity: 0.9; }
-        #hint { font-size: 11px; opacity: 0.68; }
-        #clock { flex: none; font-size: 12px; font-weight: 700; opacity: 0.9; padding-right: 4px; }
+        #street { margin-top: 2px; font-size: 16px; font-weight: 750; opacity: 1; }
+        #hint { margin-top: 1px; font-size: 12px; opacity: 0.78; }
+        #clock { flex: none; align-self: flex-start; margin-top: 2px; font-size: 12px; font-weight: 700; opacity: 0.9; padding-right: 2px; }
         #sheet {
             border-radius: 14px; display: flex; flex-direction: column;
             min-height: 0; overflow: hidden;
@@ -110,26 +110,36 @@
             position: fixed; z-index: 3;
             left: calc(8px + env(safe-area-inset-left));
             bottom: calc(8px + env(safe-area-inset-bottom));
-            min-width: 72px; height: 44px; border-radius: 14px;
-            display: flex; align-items: baseline; justify-content: center; gap: 4px;
+            min-width: 64px; height: 40px; border-radius: 20px;
+            display: flex; align-items: baseline; justify-content: center; gap: 3px;
             padding: 0 10px;
         }
-        #speed { font-size: 20px; font-weight: 750; line-height: 1; }
-        #speed-pill span { font-size: 11px; opacity: 0.75; }
+        #speed { font-size: 18px; font-weight: 780; line-height: 1; }
+        #speed-pill span { font-size: 10px; opacity: 0.75; }
+        #route-map {
+            position: fixed; z-index: 3;
+            right: calc(8px + env(safe-area-inset-right));
+            bottom: calc(54px + env(safe-area-inset-bottom));
+            width: 104px; height: 104px; border-radius: 16px;
+            background: rgba(8, 16, 30, 0.82);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.22);
+        }
+        #route-map[hidden] { display: none; }
         #tools {
             position: fixed; z-index: 3;
             right: calc(8px + env(safe-area-inset-right));
             bottom: calc(8px + env(safe-area-inset-bottom));
             display: flex; gap: 6px;
         }
-        #time, #gfx, #garage-open, #search-reopen {
-            height: 44px; border-radius: 14px; padding: 0;
+        #time, #gfx, #garage-open, #search-reopen, #map-toggle {
+            height: 40px; border-radius: 14px; padding: 0;
             display: grid; place-items: center;
         }
-        #time { width: 44px; font-size: 16px; }
-        #gfx { min-width: 52px; padding: 0 8px; font-size: 11px; font-weight: 750; }
-        #garage-open { min-width: 58px; padding: 0 6px; font-size: 11px; font-weight: 750; line-height: 1.1; }
-        #search-reopen { min-width: 64px; padding: 0 8px; font-size: 12px; font-weight: 750; }
+        #time { width: 40px; font-size: 15px; }
+        #gfx { min-width: 44px; padding: 0 7px; font-size: 11px; font-weight: 750; }
+        #garage-open { min-width: 44px; padding: 0 7px; font-size: 11px; font-weight: 750; line-height: 1.1; }
+        #search-reopen, #map-toggle { min-width: 44px; padding: 0 8px; font-size: 12px; font-weight: 750; }
         #search-reopen[hidden] { display: none; }
         body.driving #sheet { display: none; }
         body.night #time .sun, body:not(.night) #time .moon { opacity: 0.35; }
@@ -226,9 +236,11 @@
             <span class="moon">☾</span>
         </button>
         <button id="gfx" type="button" aria-label="Grafikai részletesség">Mobil</button>
+        <button id="map-toggle" type="button" aria-pressed="false" aria-controls="route-map">Térkép</button>
         <button id="search-reopen" type="button" hidden>Keresés</button>
-        <button id="garage-open" type="button" aria-label="Garázs. Látható modell: Sportkompakt">Kompakt</button>
+        <button id="garage-open" type="button" aria-label="Garázs. Látható modell: Személyautó">Autó</button>
     </div>
+    <canvas id="route-map" width="208" height="208" hidden aria-label="Az útvonal kis térképe"></canvas>
     <section id="garage" hidden aria-label="Autóválasztó">
         <div id="garage-head">
             <b>Garázs</b>
@@ -237,7 +249,7 @@
         <div id="garage-list">
             <button type="button" data-car="sf90"><b>Ferrari F1 SF90</b><small>valvetin · CC BY 4.0</small></button>
             <button type="button" data-car="openwheel"><b>Nyitott kerekű</b><small>3D Assets · CC0</small></button>
-            <button type="button" data-car="compact"><b>Sportkompakt</b><small>saját modell</small></button>
+            <button type="button" data-car="compact"><b>Személyautó</b><small>saját modell</small></button>
         </div>
         <p id="car-credit"></p>
     </section>
@@ -4160,18 +4172,18 @@
         var aspect = w / h;
         camera.aspect = aspect;
         if (aspect < 0.9) {
-            camera.fov = 46;
-            camBack = 14.6;
-            camUp = 4.15;
-            camSide = 0.95;
-            lookAhead = 22;
-            lookUp = 1.25;
+            camera.fov = 50;
+            camBack = 18.4;
+            camUp = 5.7;
+            camSide = 0.15;
+            lookAhead = 34;
+            lookUp = 1.15;
         } else {
-            camera.fov = 42;
-            camBack = 14.2;
-            camUp = 3.55;
-            camSide = 1.45;
-            lookAhead = 26;
+            camera.fov = 44;
+            camBack = 16.8;
+            camUp = 4.4;
+            camSide = 0.85;
+            lookAhead = 32;
             lookUp = 1.05;
         }
         camera.updateProjectionMatrix();
@@ -4610,7 +4622,7 @@
     var dayHor = new THREE.Color(0xe7f7ff);
     var atlasSkyHor = new THREE.Color(0xf4f1df);
     var atlasSkyMid = new THREE.Color(0xb7ddf6);
-    var atlasFogDay = new THREE.Color(0xe4ecd4);
+    var atlasFogDay = new THREE.Color(0xf0efe4);
     var atlasClear = new THREE.Color(0xb9ddf4);
     var atlasLandDay = new THREE.Color(0xffffff);
     var atlasLandNight = new THREE.Color(0x6e7c62);
@@ -5635,6 +5647,7 @@
     car = new THREE.Group();
     var model = new THREE.Group();
     model.rotation.y = 0;
+    model.scale.set(0.92, 0.92, 0.92);
     car.add(model);
 
     headMat = new THREE.MeshPhongMaterial({ color: 0xfff6dc, emissive: 0x000000, specular: 0xffffff, shininess: 48 });
@@ -5675,7 +5688,7 @@
     carBlob.renderOrder = 2;
     model.add(carBlob);
 
-    var paintMat = new THREE.MeshPhongMaterial({ color: 0x9d2430, specular: 0x5a3032, shininess: 34 });
+    var paintMat = new THREE.MeshPhongMaterial({ color: 0x1877d2, specular: 0x9ec4ef, shininess: 48 });
     var roofMat = new THREE.MeshPhongMaterial({ color: 0x17191c, specular: 0x222428, shininess: 18 });
     var trimMatCar = new THREE.MeshPhongMaterial({ color: 0x1c2126, specular: 0x33383e, shininess: 12 });
     var glassMat = new THREE.MeshPhongMaterial({ color: 0x1a3348, specular: 0xd5ecff, shininess: 110, transparent: true, opacity: 0.72, side: THREE.DoubleSide, depthWrite: false });
@@ -6225,12 +6238,12 @@
     function carLabel(id) {
         if (id === "sf90") return "Ferrari SF90";
         if (id === "openwheel") return "Nyitott kerekű";
-        return "Sportkompakt";
+        return "Személyautó";
     }
     function carShort(id) {
         if (id === "sf90") return "SF90";
         if (id === "openwheel") return "Nyitott";
-        return "Kompakt";
+        return "Autó";
     }
     function selectCar(id) {
         wantedCar = id;
@@ -6374,8 +6387,8 @@
     function updateMood(t) {
         fogCol.copy(routeActive ? atlasFogDay : dayFog).lerp(nightFog, t);
         scene.fog.color.copy(fogCol);
-        var fogNear0 = routeActive ? (gfxUltra ? 72 : 50) : (gfxUltra ? 90 : 70);
-        var fogFar0 = routeActive ? (gfxUltra ? 390 : 250) : (gfxUltra ? 460 : 300);
+        var fogNear0 = routeActive ? (gfxUltra ? 110 : 80) : (gfxUltra ? 90 : 70);
+        var fogFar0 = routeActive ? (gfxUltra ? 560 : 480) : (gfxUltra ? 460 : 300);
         scene.fog.near = fogNear0 + ((gfxUltra ? 46 : 34) - fogNear0) * t;
         scene.fog.far = fogFar0 + ((gfxUltra ? 280 : 210) - fogFar0) * t;
         hemi.color.copy(dayHemi).lerp(nightHemi, t);
@@ -6488,6 +6501,12 @@
         return h + " óra " + r + " perc";
     }
 
+    function roundaboutExit(step) {
+        var n = step && step.exit;
+        if (typeof n !== "number" || !isFinite(n) || Math.round(n) !== n || n < 1 || n > 12) return 0;
+        return n;
+    }
+
     function maneuverPhrase(step) {
         var mod = step.modifier || "";
         var type = step.type || "";
@@ -6503,7 +6522,9 @@
         }[mod] || "";
         if (type === "arrive") return "Cél";
         if (type === "roundabout" || type === "rotary" || type === "exit roundabout" || type === "exit rotary") {
-            return dir ? "Körforgalom, " + dir : "Körforgalom";
+            var exitN = roundaboutExit(step);
+            if (exitN) return "Körforgalom, " + exitN + ". kijárat";
+            return "Körforgalom";
         }
         if (type === "on ramp") return dir ? "Felhajtó, " + dir : "Felhajtó";
         if (type === "off ramp") return dir ? "Lehajtó, " + dir : "Lehajtó";
@@ -6527,7 +6548,7 @@
             "sharp left": -125
         }[mod];
         if (rot === undefined) rot = 0;
-        arrowEl.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="transform:rotate(' + rot + 'deg)"><path d="M12 19 V6" stroke="white" stroke-width="2.4" stroke-linecap="round"/><path d="M6.5 11.5 L12 6 L17.5 11.5" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        arrowEl.innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" style="transform:rotate(' + rot + 'deg)"><path d="M12 19 V6" stroke="white" stroke-width="2.6" stroke-linecap="round"/><path d="M6.5 11.5 L12 6 L17.5 11.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
         arrowEl.style.opacity = routeActive ? "1" : "0.4";
     }
 
@@ -6557,7 +6578,7 @@
             if ((type === "continue" || type === "new name") && (mod === "" || mod === "straight")) continue;
             var meters = typeof step.alongU === "number" ? (step.alongU - u) * span : (step.u0 - u) * routeMeters;
             if (meters < 0) meters = 0;
-            return { meters: meters, name: step.name || "", modifier: mod, type: type };
+            return { meters: meters, name: step.name || "", modifier: mod, type: type, exit: step.exit };
         }
         var remain = (1 - Math.min(u, 1)) * span;
         if (remain < 0) remain = 0;
@@ -6691,6 +6712,58 @@
         }
         paintSheetLabel();
         syncChrome();
+        paintRouteMap();
+    }
+
+    function paintRouteMap() {
+        var map = document.getElementById("route-map");
+        if (!map || map.hidden) return;
+        var ctx = map.getContext("2d");
+        var w = map.width;
+        var h = map.height;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "rgba(8, 16, 30, 0.2)";
+        ctx.fillRect(0, 0, w, h);
+        if (!routeActive || !curve || !curve.points || curve.points.length < 2) {
+            ctx.fillStyle = "rgba(255,255,255,0.8)";
+            ctx.font = "22px sans-serif";
+            ctx.fillText("Nincs út", 36, h / 2);
+            return;
+        }
+        var pts = curve.points;
+        var cx = routePos ? routePos.x : pts[0].x;
+        var cz = routePos ? routePos.z : pts[0].z;
+        var yaw = -carYaw;
+        var cos = Math.cos(yaw);
+        var sin = Math.sin(yaw);
+        var reach = 150;
+        var scale = (Math.min(w, h) * 0.42) / reach;
+        ctx.beginPath();
+        ctx.strokeStyle = "#2fe3ef";
+        ctx.lineWidth = 6;
+        ctx.lineJoin = "round";
+        ctx.lineCap = "round";
+        var started = false;
+        var i;
+        for (i = 0; i < pts.length; i += (pts.length > 700 ? 3 : 1)) {
+            var dx = pts[i].x - cx;
+            var dz = pts[i].z - cz;
+            if (dx * dx + dz * dz > reach * reach * 2.2) {
+                started = false;
+                continue;
+            }
+            var x = w / 2 + (dx * cos - dz * sin) * scale;
+            var y = h * 0.62 + (dx * sin + dz * cos) * scale;
+            if (!started) {
+                ctx.moveTo(x, y);
+                started = true;
+            } else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.fillStyle = "#1877d2";
+        ctx.beginPath();
+        ctx.arc(w / 2, h * 0.62, 7, 0, Math.PI * 2);
+        ctx.fill();
     }
 
     function shownSpeed() {
@@ -7392,6 +7465,13 @@
         setSheet(true);
         markField("to");
     });
+    var mapToggle = document.getElementById("map-toggle");
+    var routeMap = document.getElementById("route-map");
+    if (mapToggle && routeMap) mapToggle.addEventListener("click", function () {
+        routeMap.hidden = !routeMap.hidden;
+        mapToggle.setAttribute("aria-pressed", routeMap.hidden ? "false" : "true");
+        paintRouteMap();
+    });
     fromInput.addEventListener("focus", function () {
         markField("from");
         setSheet(true);
@@ -7643,28 +7723,95 @@
         return { t1x: t1x, t1z: t1z, t2x: t2x, t2z: t2z, cx: cx, cz: cz, r: radius, a0: a0, sweep: sweep };
     }
 
-    function pushLine(pieces, ax, az, bx, bz) {
+    function pushLine(pieces, ax, az, bx, bz, arc) {
         var dx = bx - ax;
         var dz = bz - az;
         var len = hypot2(dx, dz);
         if (len <= 0.02) return;
-        pieces.push({ line: true, ax: ax, az: az, bx: bx, bz: bz, len: len, tx: dx / len, tz: dz / len });
+        pieces.push({ line: true, arc: !!arc, ax: ax, az: az, bx: bx, bz: bz, len: len, tx: dx / len, tz: dz / len });
+    }
+
+    function arcTriple(a, b, c) {
+        var abx = b.x - a.x;
+        var abz = b.z - a.z;
+        var acx = c.x - a.x;
+        var acz = c.z - a.z;
+        var bcx = c.x - b.x;
+        var bcz = c.z - b.z;
+        var ab = hypot2(abx, abz);
+        var bc = hypot2(bcx, bcz);
+        var ac = hypot2(acx, acz);
+        var cross = abx * acz - abz * acx;
+        var area2 = cross < 0 ? -cross : cross;
+        if (ab < 1 || bc < 1 || ac < 1.4 || area2 < 0.8) return null;
+        var radius = (ab * bc * ac) / (2 * area2);
+        if (!(radius >= 7) || radius > 40) return null;
+        var turn = abx * bcz - abz * bcx;
+        var ang = Math.atan2(turn < 0 ? -turn : turn, abx * bcx + abz * bcz);
+        if (!(ang > 0.05) || ang > 1.15) return null;
+        return { radius: radius, sign: cross > 0 ? 1 : -1, ang: ang };
+    }
+
+    function markArcVerts(pts) {
+        var n = pts.length;
+        var mark = [];
+        var i;
+        for (i = 0; i < n; i++) mark.push(false);
+        var runS = -1;
+        var runSign = 0;
+        var runR = 0;
+        var runAng = 0;
+        var runCount = 0;
+        function closeRun(endMiddle) {
+            if (runS >= 0 && runAng >= 0.65 && (runCount >= 3 || (runCount >= 2 && runAng >= 0.9))) {
+                var v;
+                var last = endMiddle < n - 1 ? endMiddle : n - 2;
+                for (v = runS; v <= last; v++) mark[v] = true;
+            }
+            runS = -1;
+            runCount = 0;
+            runAng = 0;
+            runR = 0;
+            runSign = 0;
+        }
+        for (i = 1; i < n - 1; i++) {
+            var tri = arcTriple(pts[i - 1], pts[i], pts[i + 1]);
+            var same = tri && runS >= 0 && tri.sign === runSign && tri.radius < runR * 1.35 && tri.radius > runR * 0.65;
+            if (!tri || (runS >= 0 && !same)) {
+                closeRun(i - 1);
+                if (!tri) continue;
+            }
+            if (runS < 0) {
+                runS = i;
+                runSign = tri.sign;
+                runR = tri.radius;
+                runAng = tri.ang;
+                runCount = 1;
+            } else {
+                runAng += tri.ang;
+                runCount += 1;
+                runR = runR * 0.7 + tri.radius * 0.3;
+            }
+        }
+        closeRun(n - 2);
+        return mark;
     }
 
     function buildPieces(pts) {
         var plan = planCorners(pts);
+        var arc = markArcVerts(pts);
         var pieces = [];
         var cursor = { x: pts[0].x, z: pts[0].z };
         var i;
         for (i = 1; i < pts.length - 1; i++) {
             var fit = null;
-            if (plan.radius[i] > 0) fit = filletGeom(pts[i], plan.info[i], plan.radius[i], plan.reach[i]);
+            if (!arc[i] && plan.radius[i] > 0) fit = filletGeom(pts[i], plan.info[i], plan.radius[i], plan.reach[i]);
             if (!fit) {
-                pushLine(pieces, cursor.x, cursor.z, pts[i].x, pts[i].z);
+                pushLine(pieces, cursor.x, cursor.z, pts[i].x, pts[i].z, arc[i] || arc[i - 1]);
                 cursor = { x: pts[i].x, z: pts[i].z };
                 continue;
             }
-            pushLine(pieces, cursor.x, cursor.z, fit.t1x, fit.t1z);
+            pushLine(pieces, cursor.x, cursor.z, fit.t1x, fit.t1z, false);
             pieces.push({
                 line: false,
                 cx: fit.cx,
@@ -7677,8 +7824,8 @@
             cursor = { x: fit.t2x, z: fit.t2z };
         }
         var end = pts[pts.length - 1];
-        pushLine(pieces, cursor.x, cursor.z, end.x, end.z);
-        if (!pieces.length) pushLine(pieces, pts[0].x, pts[0].z, end.x, end.z);
+        pushLine(pieces, cursor.x, cursor.z, end.x, end.z, arc[pts.length - 2] || arc[pts.length - 1]);
+        if (!pieces.length) pushLine(pieces, pts[0].x, pts[0].z, end.x, end.z, false);
         return pieces;
     }
 
@@ -7705,13 +7852,17 @@
                         prevAlong = projected;
                     }
                 }
+                var exitNum = maneuver.exit;
+                var exit = null;
+                if (typeof exitNum === "number" && isFinite(exitNum) && Math.round(exitNum) === exitNum && exitNum >= 1 && exitNum <= 12) exit = exitNum;
                 steps.push({
                     u0: cursor / total,
                     u1: (cursor + dist) / total,
                     alongU: alongU,
                     name: step.name || "",
                     type: maneuver.type || "",
-                    modifier: maneuver.modifier || ""
+                    modifier: maneuver.modifier || "",
+                    exit: exit
                 });
                 cursor += dist;
             }
@@ -7834,7 +7985,7 @@
         for (i = 0; i < pieces.length; i++) {
             var piece = pieces[i];
             var start = probe.pieceAt[i];
-            if (piece.line) n = Math.max(1, Math.ceil(piece.len / 3));
+            if (piece.line) n = Math.max(1, Math.ceil(piece.len / (piece.arc ? 1.5 : 3)));
             else {
                 var byAng = Math.ceil(Math.abs(piece.sweep) / (7 * Math.PI / 180));
                 var byLen = Math.ceil(piece.len / 1.4);
@@ -8024,7 +8175,7 @@
 
     function dressRoute() {
         ensureRouteAtlas();
-        var deckGeo = new THREE.CircleGeometry(480, 28);
+        var deckGeo = new THREE.CircleGeometry(1400, 48);
         var deck = new THREE.Mesh(deckGeo, routeDeckMat);
         deck.rotation.x = -Math.PI / 2;
         deck.position.y = -0.06;
@@ -8107,6 +8258,7 @@
         var along = shownAlong !== null ? shownAlong : travel * total;
         routeScenery.deck.position.set(routePos.x, -0.06, routePos.z);
         if (routeDeckMat && routeDeckMat.map) {
+            routeDeckMat.map.repeat.set(1400 * 2 / 960, 1400 * 2 / 960);
             routeDeckMat.map.offset.set(routePos.x / 960, routePos.z / 960);
         }
         var back = 80;
@@ -8943,9 +9095,30 @@
         if (millBlades) millBlades.rotation.z += dt * 0.7;
         var lookHx = chx;
         var lookHz = chz;
+        var lookSpan = lookAhead + (gfxUltra ? 10 : 6);
         if (curve) {
             var span = (curve.total && curve.total > 1) ? curve.total : 80;
-            var au = u + (lookAhead + (gfxUltra ? 10 : 6)) / span;
+            if (routeActive && curve.evalAt) {
+                var aheadCap = lookSpan;
+                var picked = 8;
+                var guard = 0;
+                curve.evalAt(u, evalScratch, null);
+                while (guard < 16 && picked + 3 <= aheadCap) {
+                    var tryDist = picked + 3;
+                    var tryU = u + tryDist / span;
+                    if (tryU > 0.998) break;
+                    curve.evalAt(tryU, lookProbe, null);
+                    var rdx = lookProbe.x - evalScratch.x;
+                    var rdz = lookProbe.z - evalScratch.z;
+                    var fwd = rdx * chx + rdz * chz;
+                    var lat = -rdx * chz + rdz * chx;
+                    if (!(fwd > 2.5) || Math.abs(lat) > 4.8) break;
+                    picked = tryDist;
+                    guard += 1;
+                }
+                lookSpan = picked;
+            }
+            var au = u + lookSpan / span;
             if (routeActive) {
                 if (au > 0.999) au = 0.999;
             } else au = au - Math.floor(au);
@@ -8958,8 +9131,7 @@
                 lx /= llen;
                 lz /= llen;
                 var bend = Math.atan2(chx * lz - chz * lx, chx * lx + chz * lz);
-                var portraitCam = window.innerWidth / Math.max(1, window.innerHeight) < 0.9;
-                var maxBend = portraitCam ? (gfxUltra ? 0.14 : 0.08) : (gfxUltra ? 0.24 : 0.2);
+                var maxBend = routeActive ? 0.55 : 0.24;
                 if (bend > maxBend) bend = maxBend;
                 if (bend < -maxBend) bend = -maxBend;
                 var bendC = Math.cos(bend);
@@ -8968,18 +9140,19 @@
                 lookHz = chx * bendS + chz * bendC;
             }
         }
+        var lookDist = routeActive ? lookSpan : lookAhead;
         tmpA.set(-chz, 0, chx);
         if (followOrigin) {
             camDesired.set(-chx * camBack + tmpA.x * camSide, camUp, -chz * camBack + tmpA.z * camSide);
-            lookDesired.set(lookHx * lookAhead + tmpA.x * camSide * 0.22, lookUp, lookHz * lookAhead + tmpA.z * camSide * 0.22);
+            lookDesired.set(lookHx * lookDist + tmpA.x * camSide * 0.22, lookUp, lookHz * lookDist + tmpA.z * camSide * 0.22);
         } else {
             camDesired.set(routePos.x - chx * camBack + tmpA.x * camSide, routePos.y + camUp, routePos.z - chz * camBack + tmpA.z * camSide);
-            lookDesired.set(routePos.x + lookHx * lookAhead + tmpA.x * camSide * 0.22, lookUp, routePos.z + lookHz * lookAhead + tmpA.z * camSide * 0.22);
+            lookDesired.set(routePos.x + lookHx * lookDist + tmpA.x * camSide * 0.22, lookUp, routePos.z + lookHz * lookDist + tmpA.z * camSide * 0.22);
         }
         var camK = aligned ? (1 - Math.exp(-dt * 7)) : 1;
         camPos.lerp(camDesired, camK);
         camera.position.copy(camPos);
-        var lookK = aligned ? (1 - Math.exp(-dt * 8)) : 1;
+        var lookK = aligned ? (1 - Math.exp(-dt * 5)) : 1;
         lookPos.lerp(lookDesired, lookK);
         camera.lookAt(lookPos);
         if (sky) sky.position.copy(camera.position);
