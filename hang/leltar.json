@@ -1,0 +1,5071 @@
+{
+  "referencia": "A korábban számolt 697 ogg fájl.",
+  "helyi_ogg": 697,
+  "github_ag": "origin/cursor/toonnav-voice-upload-b5ab",
+  "github_ogg": 697,
+  "osszes_ismert_elerheto": true,
+  "hianyzo_hangfajl_db": 0,
+  "mappa": "hang/clips",
+  "egyedi_bajtsorozat": 478,
+  "konfiguracio": "Eseménykonfiguráció (.sii vagy más hang-esemény tábla) nincs a projektben és nincs ezen az ágon.",
+  "fajlok": [
+    {
+      "utvonal": "hang/clips/Aztán enyhén jobbra.ogg",
+      "bajt": 15488,
+      "md5": "80ae8650e615ba5bcaf7a75edb34ba9f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_103.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/Balra.ogg",
+      "bajt": 6114,
+      "md5": "2a66897316b5f0105f78a4a585359045",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_11.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/Dugó felé közeledsz.ogg",
+      "bajt": 15499,
+      "md5": "797f659e7f2b9f8339887e747e5cdf9d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_104.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/Enyhén jobbra zászló nélkül.ogg",
+      "bajt": 15513,
+      "md5": "42996cbc86e57c6fb805653b243bf5dc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_105.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/Ez az ez az Bubi nyomjad neki.ogg",
+      "bajt": 15537,
+      "md5": "582ab178133abe9b034622d2096c31b2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_106.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/Hhh újra tervezés.ogg",
+      "bajt": 15694,
+      "md5": "24d02affcad6fe414fc1fffc11c005c1",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_110.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/Hopi hopi forduljunk vissza.ogg",
+      "bajt": 15603,
+      "md5": "56708b54a893bc925eeb25eea13c572b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_108.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/Hát szerintem,ő egyenesen.ogg",
+      "bajt": 15607,
+      "md5": "2a06ee1666de4899482883c5423113c2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_109.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/Kövesd balra a fő utat.ogg",
+      "bajt": 15090,
+      "md5": "4ab9994dc6a9f98b36610c45966b8f8e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_100.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/Na mizu menjünk jobbra.ogg",
+      "bajt": 15176,
+      "md5": "306b9bbeae56d1a348cf15f9dbc24b5c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_101.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_107.ogg",
+      "bajt": 15579,
+      "md5": "5772d3414124e495b2c973c04c9fecd6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_107.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_112.ogg",
+      "bajt": 15918,
+      "md5": "de3471b0f10af0063c9a5a05870cf575",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_112.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_113.ogg",
+      "bajt": 15990,
+      "md5": "5e1e6bc2bd270056bc19b0574cba2608",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_113.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_114.ogg",
+      "bajt": 16263,
+      "md5": "6502609505de90ff75e694403fc54353",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_114.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_115.ogg",
+      "bajt": 16282,
+      "md5": "d51242307378baffbd7fde9283bb6ddf",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_115.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_116.ogg",
+      "bajt": 16483,
+      "md5": "c5d2d0ddefc237300b1bd4c800fa2ff1",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_116.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_117.ogg",
+      "bajt": 16506,
+      "md5": "28c4677653ce34ca7a32b5b252e083a3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_117.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_118.ogg",
+      "bajt": 16558,
+      "md5": "957f1a7262ee521bd6d67a30b7a9fd16",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_118.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_119.ogg",
+      "bajt": 16589,
+      "md5": "8fc0ed833677133b6d8aa8f2d85e6b4b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_119.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_12.ogg",
+      "bajt": 8305,
+      "md5": "53665d6b42b2a3b4bccf88255afe0dae",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_12.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_120.ogg",
+      "bajt": 16636,
+      "md5": "046d5185a53008c840cf710dc8f3900f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_120.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_121.ogg",
+      "bajt": 16651,
+      "md5": "88ab9870be464be3a7e140d166422f44",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_121.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_122.ogg",
+      "bajt": 16725,
+      "md5": "94b1f07226c37dad2de01d0a70c559c0",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_122.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_123.ogg",
+      "bajt": 16730,
+      "md5": "945e06f46f4c5bdbb94d6213b9dde2fd",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_123.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_124.ogg",
+      "bajt": 16737,
+      "md5": "08504a964114f54ab068b3dee3a9df3d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_124.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_125.ogg",
+      "bajt": 16738,
+      "md5": "17f2b80e2aab0736c3e33365e2d31f2a",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_125.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_126.ogg",
+      "bajt": 16791,
+      "md5": "cbec18d378de6e888c80b78a8b6834aa",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_126.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_127.ogg",
+      "bajt": 16800,
+      "md5": "ee94ae456c81196cbd57b3bbca785957",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_127.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_128.ogg",
+      "bajt": 16941,
+      "md5": "a8252f950ebf630ea36a65c23b237ac8",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_128.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_129.ogg",
+      "bajt": 16951,
+      "md5": "56c3fe28fa652ba3332a7f359fed8883",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_129.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_13.ogg",
+      "bajt": 8435,
+      "md5": "d069b768285e42cbf8a0b274f5cb0ffa",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_13.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_130.ogg",
+      "bajt": 17017,
+      "md5": "e65a467ebc47e755d530a2753cb69f34",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_130.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_131.ogg",
+      "bajt": 17019,
+      "md5": "72310db0c2bb37f6e92371a68cb67fb3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_131.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_132.ogg",
+      "bajt": 17030,
+      "md5": "08851a8ef4bc925e0813d8fdd885e52b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_132.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_133.ogg",
+      "bajt": 17041,
+      "md5": "25a1c11337c50377cb6a44da538c3981",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_133.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_134.ogg",
+      "bajt": 17190,
+      "md5": "13caf0322d43ec32920f73c03c2422b5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_134.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_135.ogg",
+      "bajt": 17289,
+      "md5": "66b9efe08438bde30d2212f79405e0b2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_135.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_136.ogg",
+      "bajt": 17303,
+      "md5": "7d98f49d4816ba02b58014fd4a82b7d5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_136.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_137.ogg",
+      "bajt": 17327,
+      "md5": "339b68ecdebc75c47be5720520c7ffc5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_137.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_138.ogg",
+      "bajt": 17342,
+      "md5": "d5669d2c387fea92ff23dbfa3db89624",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_138.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_139.ogg",
+      "bajt": 17457,
+      "md5": "f2356191360475860392c8d817765b56",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_139.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_14.ogg",
+      "bajt": 8791,
+      "md5": "bdc434675809f6da01b72a4a05a5aeeb",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_14.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_140.ogg",
+      "bajt": 17490,
+      "md5": "972d91a4f6d8777cbbb23cfaf600c44f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_140.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_141.ogg",
+      "bajt": 17501,
+      "md5": "2ccea41e28f114a5a28430b5908f5162",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_141.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_142.ogg",
+      "bajt": 17542,
+      "md5": "22a751c0126cefaf82cf0855f46cdf63",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_142.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_143.ogg",
+      "bajt": 17563,
+      "md5": "f212157ccc4cb54057da90b70129889c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_143.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_144.ogg",
+      "bajt": 17565,
+      "md5": "300b794bbfaef0ceb1a8b9d7d0f99799",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_144.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_145.ogg",
+      "bajt": 17599,
+      "md5": "4ef49c831c1f83a45a6f3a56f0c45f77",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_145.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_146.ogg",
+      "bajt": 17644,
+      "md5": "3989a64fc428c2cb0baaeb60a33fd315",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_146.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_147.ogg",
+      "bajt": 17678,
+      "md5": "70de4d6fecce33b18b18ed6a14a554cc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_147.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_148.ogg",
+      "bajt": 17740,
+      "md5": "d00ecd613b4a8ca90b1aeeb1885ae84f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_148.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_149.ogg",
+      "bajt": 17849,
+      "md5": "332f0c2fd8f69a0385ba5ba08c096679",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_149.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_15.ogg",
+      "bajt": 8821,
+      "md5": "a1169af78e222a080ebd29e2d0ced906",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_15.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_150.ogg",
+      "bajt": 17858,
+      "md5": "81b679bd1fca470d4ac63560f9cac395",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_150.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_151.ogg",
+      "bajt": 17890,
+      "md5": "5af0adc26f1b9e3cce1fd1be69148ada",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_151.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_152.ogg",
+      "bajt": 17951,
+      "md5": "53e3c74ffca1bef1d61ef209d5586d17",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_152.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_153.ogg",
+      "bajt": 17986,
+      "md5": "57342c6f222f45267aef502be195f5c5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_153.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_154.ogg",
+      "bajt": 17989,
+      "md5": "f7be953ef68635a7f9892de416002305",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_154.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_155.ogg",
+      "bajt": 18003,
+      "md5": "4c23fa3e1aec58decbedb4f70947d55d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_155.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_156.ogg",
+      "bajt": 18110,
+      "md5": "8ce6c77eb598ff8183940f9d068d7426",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_156.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_157.ogg",
+      "bajt": 18196,
+      "md5": "dea0ff69d3f9f920e1132d5e4bbb4d2e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_157.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_158.ogg",
+      "bajt": 18198,
+      "md5": "aea195e15ff7742cf65bacab0e4daba9",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_158.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_159.ogg",
+      "bajt": 18210,
+      "md5": "c2f9622379623b1cb13cd2783463afcc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_159.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_16.ogg",
+      "bajt": 9034,
+      "md5": "5d8093b434a05c46a272095f40ecf6cb",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_16.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_160.ogg",
+      "bajt": 18245,
+      "md5": "114d1d57c64453a2f349b6272d4ec24e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_160.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_161.ogg",
+      "bajt": 18245,
+      "md5": "761c6e03c2c771fb118a3b6a131b538d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_161.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_162.ogg",
+      "bajt": 18246,
+      "md5": "947138550a589384f99fe220053f3b57",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_162.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_163.ogg",
+      "bajt": 18257,
+      "md5": "6292d5781b213b3423d6a015d1864fb9",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_163.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_164.ogg",
+      "bajt": 18340,
+      "md5": "ea1165f875e80aee47640a0e55ff82a5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_164.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_165.ogg",
+      "bajt": 18408,
+      "md5": "68f3e25974eff2473dd88f12c98bacfb",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_165.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_166.ogg",
+      "bajt": 18440,
+      "md5": "cca0bd7400abd300212f9dbac12a08c1",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_166.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_167.ogg",
+      "bajt": 18485,
+      "md5": "278768fd91921e79fb0526a521d68097",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_167.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_168.ogg",
+      "bajt": 18522,
+      "md5": "dd9060188634109ed354e3049e3a430e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_168.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_169.ogg",
+      "bajt": 18560,
+      "md5": "db8dc4de459f870069c745fd32dd7cc3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_169.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_17.ogg",
+      "bajt": 9205,
+      "md5": "9037577ea347352de92feaa1e10e283c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_17.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_170.ogg",
+      "bajt": 18583,
+      "md5": "0973d7eddfcb6bea18bd4604305a165c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_170.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_171.ogg",
+      "bajt": 18658,
+      "md5": "d6858fa5b74df4ae23a617e719d3a071",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_171.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_172.ogg",
+      "bajt": 18781,
+      "md5": "bbed9467ac159a6f9d2dcd7ab4e4abe6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_172.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_173.ogg",
+      "bajt": 18832,
+      "md5": "943d07d9050340f04de33decf5656db5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_173.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_174.ogg",
+      "bajt": 18854,
+      "md5": "a56aa5fcc4503ea9776a2b5f4840d32b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_174.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_175.ogg",
+      "bajt": 18908,
+      "md5": "64c3ae9f394158cde96f1299f96f9679",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_175.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_176.ogg",
+      "bajt": 18931,
+      "md5": "b9fcfc3cc8922aa55da00d718a829ade",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_176.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_177.ogg",
+      "bajt": 18988,
+      "md5": "54cd9fc57ecabad3983b803ab8e8eaa0",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_177.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_178.ogg",
+      "bajt": 18995,
+      "md5": "9c7ea91eadaa2c0fb6c08ed4265d6c98",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_178.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_179.ogg",
+      "bajt": 19099,
+      "md5": "bdd5c2592877b185b94615d4aa1053b6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_179.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_18.ogg",
+      "bajt": 9370,
+      "md5": "a2633a15a2a514fcc50b55f0f76a6982",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_18.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_180.ogg",
+      "bajt": 19115,
+      "md5": "4ece6be0864be8888101f37b755120fa",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_180.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_181.ogg",
+      "bajt": 19145,
+      "md5": "b10002342b534f4f200c1aa923601637",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_181.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_182.ogg",
+      "bajt": 19169,
+      "md5": "e6270739b15bc6351dc6bc1e6623c23c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_182.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_183.ogg",
+      "bajt": 19241,
+      "md5": "743af72359a6b4af99c23e2be257f844",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_183.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_184.ogg",
+      "bajt": 19252,
+      "md5": "f201654fc44642f1b3d767b5bb7323d4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_184.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_185.ogg",
+      "bajt": 19275,
+      "md5": "b98dfbf22b1ab7d16ce6ab305d841b4a",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_185.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_186.ogg",
+      "bajt": 19275,
+      "md5": "7be5bf1cc4513c464410b3e45ad3b1bb",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_186.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_187.ogg",
+      "bajt": 19394,
+      "md5": "c311ff1e310d63c8102119808a821689",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_187.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_188.ogg",
+      "bajt": 19432,
+      "md5": "4c9596788eef24ebf6884a988d11d3e3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_188.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_189.ogg",
+      "bajt": 19440,
+      "md5": "8101f271cce903fd408251bc326df97d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_189.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_19.ogg",
+      "bajt": 9469,
+      "md5": "ed599edfa7d342202014cf390f9f56c6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_19.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_190.ogg",
+      "bajt": 19455,
+      "md5": "f84fb875ca53a8dfb397e2a2c8b444c2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_190.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_191.ogg",
+      "bajt": 19472,
+      "md5": "9eeb2d39c5fe485ad44e085ffdbec496",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_191.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_192.ogg",
+      "bajt": 19488,
+      "md5": "c97f48dda899c61724744e7150b268dd",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_192.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_193.ogg",
+      "bajt": 19555,
+      "md5": "ece1f5bc6c84e6f904cf74bf72317e94",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_193.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_194.ogg",
+      "bajt": 19565,
+      "md5": "2918757e2c09d4d47c5e8b6cb98895c4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_194.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_195.ogg",
+      "bajt": 19571,
+      "md5": "2b71b26228ed9b321c346e505cbcb86b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_195.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_196.ogg",
+      "bajt": 19602,
+      "md5": "aa0e73e00c70f3b5a7f57cb64d5dcf9f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_196.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_197.ogg",
+      "bajt": 19697,
+      "md5": "3d5ff73ec205a1a5dd93c8ba29c10e7b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_197.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_198.ogg",
+      "bajt": 19776,
+      "md5": "2b0e50891c55ec5acdb88e8388803a4e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_198.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_199.ogg",
+      "bajt": 19793,
+      "md5": "57aa5674fb9957c01725acd0303e10b8",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_199.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_20.ogg",
+      "bajt": 9623,
+      "md5": "1473d2f16f11b50920bd6592b1424a45",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_20.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_200.ogg",
+      "bajt": 19847,
+      "md5": "2b20611b60cecb49b8e271b8b16530dc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_200.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_201.ogg",
+      "bajt": 19878,
+      "md5": "061a982a8bd7b60aa7ce6fb8610cf60f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_201.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_202.ogg",
+      "bajt": 19907,
+      "md5": "0218872f8131bfe34531fed1f135b1cf",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_202.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_203.ogg",
+      "bajt": 19925,
+      "md5": "8d54a8f75f15759cf461a30b0cfc027f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_203.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_204.ogg",
+      "bajt": 20072,
+      "md5": "09e88fc53b096a9e83cba7dac909808d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_204.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_205.ogg",
+      "bajt": 20170,
+      "md5": "d94c13f4ab63218f4002394fb034af92",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_205.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_206.ogg",
+      "bajt": 20179,
+      "md5": "744d5369f0cd9966c0e224794548b030",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_206.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_207.ogg",
+      "bajt": 20208,
+      "md5": "c86da69b44ff8ea5dc27a942dede0488",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_207.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_208.ogg",
+      "bajt": 20379,
+      "md5": "8bb690e4bdc916a07e52ca38e5bb006b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_208.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_209.ogg",
+      "bajt": 20467,
+      "md5": "be5f0957b05d59db9a3ba2f1c5eb82f3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_209.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_21.ogg",
+      "bajt": 9922,
+      "md5": "2e1aaf33917d3001638bb9d62aab46ff",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_21.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_210.ogg",
+      "bajt": 20505,
+      "md5": "8803679a77b8181c0d0ef4903c4f7728",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_210.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_211.ogg",
+      "bajt": 20508,
+      "md5": "4da7e29accefe8d40371b29c497ad238",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_211.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_212.ogg",
+      "bajt": 20521,
+      "md5": "79fbf27b1f3304d804d2dd8a7cba70c3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_212.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_213.ogg",
+      "bajt": 20528,
+      "md5": "74d820c866bebabf54974d75ee1bf9d8",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_213.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_214.ogg",
+      "bajt": 20658,
+      "md5": "cd37bbe1821b827e4c7babe0c7bf5d08",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_214.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_215.ogg",
+      "bajt": 20669,
+      "md5": "80d08e626470352538470ce647b02c77",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_215.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_216.ogg",
+      "bajt": 20693,
+      "md5": "3245f2b6fdee5ee922446088a0564b85",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_216.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_217.ogg",
+      "bajt": 20720,
+      "md5": "0d1e69c48f49d0c6f8e99aa91021f0fc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_217.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_218.ogg",
+      "bajt": 20743,
+      "md5": "93b4dc728568dd25f61da02a3a271fae",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_218.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_219.ogg",
+      "bajt": 20781,
+      "md5": "e9a548c02d7d5cc2aef4de466b9b1ad2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_219.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_22.ogg",
+      "bajt": 10030,
+      "md5": "507323311ba1993d322180a16db525e4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_22.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_220.ogg",
+      "bajt": 20788,
+      "md5": "e3a713be28e430c97339e37f5366adce",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_220.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_221.ogg",
+      "bajt": 20798,
+      "md5": "2d82819bf37438107754a9af72ba6918",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_221.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_222.ogg",
+      "bajt": 20870,
+      "md5": "b18c45f2bd8ed28b4fb517428bf88249",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_222.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_223.ogg",
+      "bajt": 20945,
+      "md5": "984476f46c20de46a89e9f540bfddee1",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_223.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_224.ogg",
+      "bajt": 21017,
+      "md5": "3f67ad9b646a041f6c85fee5bb1db17c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_224.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_225.ogg",
+      "bajt": 21035,
+      "md5": "9c8398b2359443e02d6ee3ab4a7cb44e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_225.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_226.ogg",
+      "bajt": 21062,
+      "md5": "db18bb8ae8ff8dd069ec156372e27306",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_226.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_227.ogg",
+      "bajt": 21104,
+      "md5": "b617c9c71a725cd0ac6d24bee76dacd6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_227.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_228.ogg",
+      "bajt": 21105,
+      "md5": "73e97dec87639706a5f3da47b31e90e6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_228.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_229.ogg",
+      "bajt": 21106,
+      "md5": "f51fc8a5ef08f6794b0a4f47e5064ef3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_229.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_23.ogg",
+      "bajt": 10072,
+      "md5": "26496c99f4c4e8046ae945a961133aaa",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_23.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_230.ogg",
+      "bajt": 21158,
+      "md5": "ee5cea51612e34baceec4d82151d316e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_230.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_231.ogg",
+      "bajt": 21178,
+      "md5": "61407217b8abde0112e9a70900a967b4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_231.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_232.ogg",
+      "bajt": 21225,
+      "md5": "49f98079e8e50441ed3f3889b72668a9",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_232.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_233.ogg",
+      "bajt": 21228,
+      "md5": "f7788f497d31db1bdec5ec186b16d556",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_233.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_234.ogg",
+      "bajt": 21230,
+      "md5": "f380b70c085ec07abe602413967e997e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_234.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_235.ogg",
+      "bajt": 21240,
+      "md5": "dd7459f11c47109e9dae198fedf3ad52",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_235.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_236.ogg",
+      "bajt": 21281,
+      "md5": "a883429383b8774c291e061c39f342ca",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_236.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_237.ogg",
+      "bajt": 21290,
+      "md5": "287aa85e16dcec3fb4de540f839de5a7",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_237.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_238.ogg",
+      "bajt": 21295,
+      "md5": "7cd29cff8ef305c0c499bbe0cc0b8d34",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_238.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_239.ogg",
+      "bajt": 21306,
+      "md5": "bedf973bdae696a3b6374360feef33e2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_239.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_24.ogg",
+      "bajt": 10180,
+      "md5": "53bf7b726eb017d8e4f95fdab87bc8c2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_24.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_240.ogg",
+      "bajt": 21379,
+      "md5": "634b3015dfe71768bbae982eec6c58a0",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_240.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_241.ogg",
+      "bajt": 21487,
+      "md5": "f1ba4a53672a1b6141ce54360b0286af",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_241.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_242.ogg",
+      "bajt": 21563,
+      "md5": "c8f25ad45e1f6b4f1b238b0688b8b053",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_242.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_243.ogg",
+      "bajt": 21567,
+      "md5": "38170e2ee4f99c1733769805b4c7578b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_243.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_244.ogg",
+      "bajt": 21575,
+      "md5": "0e02806929fe50a9de99b611c71ddf5c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_244.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_245.ogg",
+      "bajt": 21659,
+      "md5": "ed645dff1b3c75004a35aab29df5002e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_245.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_246.ogg",
+      "bajt": 21668,
+      "md5": "2c6fccb60b662d94ac711c709ef2020a",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_246.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_247.ogg",
+      "bajt": 21763,
+      "md5": "b87d5cd975bda4bac6dd70c74b7301ee",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_247.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_248.ogg",
+      "bajt": 21767,
+      "md5": "c758e200c692a7d9d40b39c947680d9d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_248.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_249.ogg",
+      "bajt": 21773,
+      "md5": "c97d7309d8e3481bd0d603207eecea4f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_249.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_25.ogg",
+      "bajt": 10300,
+      "md5": "cc57754da5f03d71ceef65a862d3e21f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_25.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_250.ogg",
+      "bajt": 21787,
+      "md5": "962e38f9fce4892f1e206a32c705de3f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_250.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_251.ogg",
+      "bajt": 21970,
+      "md5": "4639e3346c0eeb99da863b6de4b60b74",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_251.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_252.ogg",
+      "bajt": 22036,
+      "md5": "ee0a23a50724bdca5e05dbeceef1a28c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_252.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_253.ogg",
+      "bajt": 22150,
+      "md5": "3dc6b1ffdd859c41f5ca1de6ddd827b3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_253.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_254.ogg",
+      "bajt": 22186,
+      "md5": "1782511adb603bf6c6e12baf0c7e3d82",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_254.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_255.ogg",
+      "bajt": 22201,
+      "md5": "d3e2a9e59299e5bcb57809e30471c67c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_255.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_256.ogg",
+      "bajt": 22208,
+      "md5": "37adc8fd7552dd11c35f667f2aec88e4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_256.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_257.ogg",
+      "bajt": 22239,
+      "md5": "675d04eb65486081b4f3b1a9a0f9267e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_257.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_258.ogg",
+      "bajt": 22293,
+      "md5": "10b3acd21dcda424780b1dc713478f51",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_258.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_259.ogg",
+      "bajt": 22302,
+      "md5": "20b0bca495111915eb75b51cedc0d16a",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_259.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_26.ogg",
+      "bajt": 10382,
+      "md5": "ea039470a05c48f05268281b02444ae7",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_26.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_260.ogg",
+      "bajt": 22307,
+      "md5": "6030cfd89e5abf6ea988e12d3d53c64e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_260.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_261.ogg",
+      "bajt": 22351,
+      "md5": "c45875239527ac6816a4122e2a17695a",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_261.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_262.ogg",
+      "bajt": 22385,
+      "md5": "d27908cf6283b3ee8ce2cf60b2f901ca",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_262.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_263.ogg",
+      "bajt": 22391,
+      "md5": "e1bd1ffa66a1c30a67e13e5df9983d1b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_263.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_264.ogg",
+      "bajt": 22456,
+      "md5": "bdc4e73b141e6d9cc86015e5d2a5935d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_264.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_265.ogg",
+      "bajt": 22497,
+      "md5": "f02d4cf6075c58f874cc2c5e15a5a9f7",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_265.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_266.ogg",
+      "bajt": 22498,
+      "md5": "85c8b048518d040ef116a4985d1a18e7",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_266.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_267.ogg",
+      "bajt": 22539,
+      "md5": "a3f7fac60c3f7755b989cbae2b869bce",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_267.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_268.ogg",
+      "bajt": 22562,
+      "md5": "f14b5299c482cd2e7cb4e5372a175924",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_268.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_269.ogg",
+      "bajt": 22579,
+      "md5": "ddddf737ded4fed3522a173c7437c924",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_269.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_27.ogg",
+      "bajt": 10394,
+      "md5": "067d0208c95f002ca66cf56e42f28b13",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_27.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_270.ogg",
+      "bajt": 22587,
+      "md5": "65bb79c4f8746067ddbd7e548efeb394",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_270.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_271.ogg",
+      "bajt": 22587,
+      "md5": "077e341b94d0b7c2f9cc7eca8ed561b4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_271.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_272.ogg",
+      "bajt": 22592,
+      "md5": "c695b86d9326158ffb799da0794b7a67",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_272.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_273.ogg",
+      "bajt": 22649,
+      "md5": "ad310c5b6a21b357cd394228c186b98b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_273.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_274.ogg",
+      "bajt": 22653,
+      "md5": "d346888fa4e686573b4a80bf00f58214",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_274.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_275.ogg",
+      "bajt": 22736,
+      "md5": "7d1a01ca15c859d7d5e455a86af1b9e6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_275.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_276.ogg",
+      "bajt": 22752,
+      "md5": "3449eb934829af6b4de0b67a241ce5e4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_276.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_277.ogg",
+      "bajt": 22825,
+      "md5": "9cae289c67f98159764895d124ccd9c2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_277.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_278.ogg",
+      "bajt": 22825,
+      "md5": "a84df20dbfdf4530f146f14a1bf5dd88",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_278.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_279.ogg",
+      "bajt": 22829,
+      "md5": "9655f9817a01dbff4dd407aa2654af13",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_279.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_28.ogg",
+      "bajt": 10914,
+      "md5": "30ee4df1234182fa02f5c01f32e4feca",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_28.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_280.ogg",
+      "bajt": 22834,
+      "md5": "82635f94c0971630b662daeb9394805b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_280.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_281.ogg",
+      "bajt": 22852,
+      "md5": "177d8eb12ee478e3d9914f04b913d895",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_281.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_282.ogg",
+      "bajt": 22880,
+      "md5": "81f433241b7d925e5b5b1375c9cea7e4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_282.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_283.ogg",
+      "bajt": 22966,
+      "md5": "538b16207b508049e750c70108cae3b2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_283.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_284.ogg",
+      "bajt": 22995,
+      "md5": "d1ef548c20177c00b27b4888dd643289",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_284.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_285.ogg",
+      "bajt": 23002,
+      "md5": "f3dd405571628bbc356f3c1c08da3c66",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_285.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_286.ogg",
+      "bajt": 23054,
+      "md5": "df3e879b341ba0153bc38c0b1080ba14",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_286.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_287.ogg",
+      "bajt": 23126,
+      "md5": "5eb974c9baeb2b7bfa9992a6536de67e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_287.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_288.ogg",
+      "bajt": 23140,
+      "md5": "da1bbe47500870e4008eda9b1519f0b5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_288.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_289.ogg",
+      "bajt": 23171,
+      "md5": "ad15c02904048f734cf7c7408c0f4a90",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_289.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_29.ogg",
+      "bajt": 10965,
+      "md5": "e386ed7f50798596c3b39a8b6f42117b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_29.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_290.ogg",
+      "bajt": 23183,
+      "md5": "cc035a33d0d7b2806ef85204ab039c36",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_290.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_291.ogg",
+      "bajt": 23217,
+      "md5": "cc3bb887d4e504cfc889d8ec09e0f356",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_291.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_292.ogg",
+      "bajt": 23332,
+      "md5": "be2d0571b5b407e673a5e8a36eb46e9e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_292.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_293.ogg",
+      "bajt": 23377,
+      "md5": "b3b8a4a16afe2e317d11f610d72fe5ca",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_293.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_294.ogg",
+      "bajt": 23416,
+      "md5": "2a0c264aa821a51ed6bf81a239485fdf",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_294.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_295.ogg",
+      "bajt": 23483,
+      "md5": "1f8a644592f87dcb2ea6a7b1966c9f86",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_295.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_296.ogg",
+      "bajt": 23583,
+      "md5": "52696836793c69192fbb461fcc7e794c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_296.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_297.ogg",
+      "bajt": 23592,
+      "md5": "93de3e13430ab1fbd87488e4f064c156",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_297.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_298.ogg",
+      "bajt": 23642,
+      "md5": "35954428b030245280b940f0ebfdf2a7",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_298.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_299.ogg",
+      "bajt": 23770,
+      "md5": "256c9fe39fdc2f68c50a60f3d7077e19",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_299.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_30.ogg",
+      "bajt": 11057,
+      "md5": "8847011ad6caa156234720fca1fc5f16",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_300.ogg",
+      "bajt": 23934,
+      "md5": "2f0a79c3dcd5ca709a5c6fe6d1e5e474",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_301.ogg",
+      "bajt": 23940,
+      "md5": "af7c3720e3c7f5387eeeb35362a464fe",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_302.ogg",
+      "bajt": 23970,
+      "md5": "5e7fa4439da76d8dd58be9de2d419a67",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_303.ogg",
+      "bajt": 23976,
+      "md5": "00ebcbe068b9c90830447a3591de170a",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_304.ogg",
+      "bajt": 23991,
+      "md5": "9b301851326d6a821c71821df8673f38",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_305.ogg",
+      "bajt": 24023,
+      "md5": "eece6fe700cea26748f58065552b4e46",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_306.ogg",
+      "bajt": 24031,
+      "md5": "08a74afad2ba223b29ddfda729f7a8c1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_307.ogg",
+      "bajt": 24116,
+      "md5": "424fcafd053403b7bb6c8968c58c9134",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_308.ogg",
+      "bajt": 24206,
+      "md5": "f258cbbb3eec305f1eb10babdd31ab0e",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_309.ogg",
+      "bajt": 24276,
+      "md5": "208dee27601cd3c1d8562470e0ebf825",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_31.ogg",
+      "bajt": 11073,
+      "md5": "b3956a0a722829f47b7512530c4e13af",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_310.ogg",
+      "bajt": 24316,
+      "md5": "795c29baa89fd392b9cfdf404f18a7d6",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_311.ogg",
+      "bajt": 24322,
+      "md5": "e5804ae7761cd86e38a0d1ba7811edad",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_312.ogg",
+      "bajt": 24362,
+      "md5": "4d6d6866353b18bbc526e9b8b9161197",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_313.ogg",
+      "bajt": 24404,
+      "md5": "a5f5c4389b02bc9c64e98f4541910491",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_314.ogg",
+      "bajt": 24550,
+      "md5": "1832f8f4cc64c6e8cfaced1729390f96",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_315.ogg",
+      "bajt": 24593,
+      "md5": "4cacbb31964e75b951ce07502730eda7",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_316.ogg",
+      "bajt": 24599,
+      "md5": "c038fa8267122fd8aa80f20ab944bcf1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_317.ogg",
+      "bajt": 24600,
+      "md5": "0d0d8c621b0acf2c7df831e42df4e638",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_318.ogg",
+      "bajt": 24633,
+      "md5": "4f31051ffdbcfe7992e0f8dfc80b702e",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_319.ogg",
+      "bajt": 24750,
+      "md5": "393f619e62e01de257bc990fdd68f0e6",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_32.ogg",
+      "bajt": 11283,
+      "md5": "85f75bf26b7265bb9ae6b8ff0578baeb",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_320.ogg",
+      "bajt": 24786,
+      "md5": "05a085f690da4e618c80bcc6b58215ed",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_321.ogg",
+      "bajt": 24811,
+      "md5": "a0d9946e994b5272c48d7834d0e97234",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_322.ogg",
+      "bajt": 24814,
+      "md5": "25e4ac9fa255a4cd5e2ea64eece6b76f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_323.ogg",
+      "bajt": 24985,
+      "md5": "4208609d43e329baddb0dabfcc9ceb20",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_324.ogg",
+      "bajt": 25019,
+      "md5": "4dd02be3958f71d9adc778cbcaec2307",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_325.ogg",
+      "bajt": 25053,
+      "md5": "1296f3611fb1d383b817c0628a3446d9",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_326.ogg",
+      "bajt": 25128,
+      "md5": "d1fed03211e01ca15aefa98a49b127e1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_327.ogg",
+      "bajt": 25173,
+      "md5": "144c513220cf536a2572feb69a037261",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_328.ogg",
+      "bajt": 25339,
+      "md5": "6571b0600323f205b2bfbd8660283e5d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_329.ogg",
+      "bajt": 25369,
+      "md5": "e00f944048a135775dc573fdf76cf7ae",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_33.ogg",
+      "bajt": 11356,
+      "md5": "d062ee8ff4fddb4a012d839fb2807974",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_330.ogg",
+      "bajt": 25386,
+      "md5": "7273f5769a9257c778445ed0a639fef2",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_331.ogg",
+      "bajt": 25387,
+      "md5": "4b711fa36472dd9c512b4dac2cb1728f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_332.ogg",
+      "bajt": 25637,
+      "md5": "134d89171862e07ea02041ca5db4a0e8",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_333.ogg",
+      "bajt": 25766,
+      "md5": "070b3f92c614a13b226285f4c7158432",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_334.ogg",
+      "bajt": 25792,
+      "md5": "4ed6387187791fb91a9a55ba678f1845",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_335.ogg",
+      "bajt": 25824,
+      "md5": "927c35b2805c14edb9c291e0acffe2e4",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_336.ogg",
+      "bajt": 26034,
+      "md5": "46b507607bfa6d3410fac8e055ac6c65",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_337.ogg",
+      "bajt": 26039,
+      "md5": "16983207ed21a2c0ea037e6e4d6a7b36",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_338.ogg",
+      "bajt": 26063,
+      "md5": "e747af918dbb165f95157ba344a8c5d3",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_339.ogg",
+      "bajt": 26088,
+      "md5": "9b6a9ee3d3d0e441594dabc54a583a4a",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_34.ogg",
+      "bajt": 11401,
+      "md5": "68e1d165b3e19256e314e10c982b40b1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_340.ogg",
+      "bajt": 26124,
+      "md5": "50784bedf373e378d1811573cd55c6ef",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_341.ogg",
+      "bajt": 26139,
+      "md5": "1866de3509c64effbda223c1fa822e4b",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_342.ogg",
+      "bajt": 26154,
+      "md5": "f6687f34852297fa69b612f1b19a120e",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_343.ogg",
+      "bajt": 26301,
+      "md5": "8d2a2042c36d4529767a588e51df2b59",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_344.ogg",
+      "bajt": 26351,
+      "md5": "74f806c79e392318c3b0421bb402e2b6",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_345.ogg",
+      "bajt": 26400,
+      "md5": "9769c0923726f323445fd9b3d976f24d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_346.ogg",
+      "bajt": 26461,
+      "md5": "9e3f28c166cbb4fba202f2591ed7e4ac",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_347.ogg",
+      "bajt": 26462,
+      "md5": "e56ab19482e441168e85198d9bc4b3b5",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_348.ogg",
+      "bajt": 26479,
+      "md5": "a81cf8070d9163ba9379c6073c050841",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_349.ogg",
+      "bajt": 26483,
+      "md5": "6f50cec1711aedf978e7ae4b559eaaed",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_35.ogg",
+      "bajt": 11451,
+      "md5": "6fe79b6e9f0340701fcf526a48efa4bc",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_350.ogg",
+      "bajt": 26548,
+      "md5": "7220aa44d781ba8b22fa6dc3b138bba4",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_351.ogg",
+      "bajt": 26572,
+      "md5": "a37a252da00a0c3c5ce3713f2492bfdf",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_352.ogg",
+      "bajt": 26580,
+      "md5": "eadfe7da26819f19daa38617da46a3ac",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_353.ogg",
+      "bajt": 26685,
+      "md5": "529935abd78ff39792f02f2f3fb45458",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_354.ogg",
+      "bajt": 26689,
+      "md5": "29dd471238006386a51b23bb16368586",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_355.ogg",
+      "bajt": 26762,
+      "md5": "7ef7c2304296132675735fb062e057bd",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_356.ogg",
+      "bajt": 26772,
+      "md5": "61101b5d6895c18eb138a163635f477c",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_357.ogg",
+      "bajt": 27046,
+      "md5": "da771bd77b55ca7348e9a7810f522684",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_358.ogg",
+      "bajt": 27064,
+      "md5": "79165cb2801e1332029a5f117678a792",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_359.ogg",
+      "bajt": 27066,
+      "md5": "9ea5334b9032104717a26a3b76ed7a1d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_36.ogg",
+      "bajt": 11474,
+      "md5": "94252c7e6551a0ce22acb4e5397d23ad",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_360.ogg",
+      "bajt": 27124,
+      "md5": "80cf0ffb1cab41d1b234fd01a62aeb02",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_361.ogg",
+      "bajt": 27180,
+      "md5": "c56cfed3ce4783285fa4a4f1be2b97a2",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_362.ogg",
+      "bajt": 27646,
+      "md5": "056b789bf67ba961bd40922619244486",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_363.ogg",
+      "bajt": 27677,
+      "md5": "f20b88aa7eaff11367bd0dd3a920cbc6",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_364.ogg",
+      "bajt": 27685,
+      "md5": "8e10a297c9301e1dae55c87ddbcd3212",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_365.ogg",
+      "bajt": 27706,
+      "md5": "50c7e2458f2bd7eeb9176711a946868b",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_366.ogg",
+      "bajt": 27741,
+      "md5": "9e837912900eb20c41b33cc7152d4877",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_367.ogg",
+      "bajt": 28058,
+      "md5": "804d9924ec410efb73de39eac76eae4c",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_368.ogg",
+      "bajt": 28133,
+      "md5": "761471b347cc0ff0c63f0621510c1d66",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_369.ogg",
+      "bajt": 28191,
+      "md5": "596f578c1a7f92a547c0c6b3279e33bd",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_37.ogg",
+      "bajt": 11573,
+      "md5": "d1c39fa89eabc4cc188841041e8314f2",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_370.ogg",
+      "bajt": 28240,
+      "md5": "ccf40cc9e36f5700ec51dc40b1541546",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_371.ogg",
+      "bajt": 28339,
+      "md5": "ed30d3e45bbf084803e21a32f0aa4fb6",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_372.ogg",
+      "bajt": 28344,
+      "md5": "f9681514cf94f8bf3564ea8493ea08aa",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_373.ogg",
+      "bajt": 28483,
+      "md5": "1f7b89c8ec596cdc5cf22dc596d90d2c",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_374.ogg",
+      "bajt": 28805,
+      "md5": "486f94964cc87b8fe97b0bd6d8dd9e80",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_375.ogg",
+      "bajt": 29004,
+      "md5": "e1c2129cb153fb46a6c0161e72498b79",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_376.ogg",
+      "bajt": 29031,
+      "md5": "deddc93c85f05ad53f18aa6b2261eb37",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_377.ogg",
+      "bajt": 29108,
+      "md5": "f431fc3cc1c7468c6c80012a85a819ca",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_378.ogg",
+      "bajt": 29228,
+      "md5": "11b8d2cc4916d12c7125518028bedb89",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_379.ogg",
+      "bajt": 29239,
+      "md5": "40a55f15a721eafb9a89a483f5c8934f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_38.ogg",
+      "bajt": 11596,
+      "md5": "412203151364dff0e861626bc385f7b0",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_380.ogg",
+      "bajt": 29366,
+      "md5": "6115b537c83cfcc6f3f84d82bf9816a8",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_381.ogg",
+      "bajt": 29611,
+      "md5": "d3b21b3a4d3cd7a7836c8e71a1adde15",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_382.ogg",
+      "bajt": 29709,
+      "md5": "ecaa70d61e41f207c495083219d57e9a",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_383.ogg",
+      "bajt": 29716,
+      "md5": "beb6d81d1f2e053626283a25639dae8f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_384.ogg",
+      "bajt": 30101,
+      "md5": "b734744bcdc679e00e3535552cc7c7ed",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_385.ogg",
+      "bajt": 30273,
+      "md5": "dd46f3d97381cb70b09be009ca2dee47",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_386.ogg",
+      "bajt": 30320,
+      "md5": "d805a18d3f9ba670028da3e505f3ba2f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_387.ogg",
+      "bajt": 30622,
+      "md5": "2c6ca03af1a00b6222eb39b832cf67d9",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_388.ogg",
+      "bajt": 30700,
+      "md5": "3156bd2f3b6bc54f2c56b13cb5c70cb4",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_389.ogg",
+      "bajt": 30927,
+      "md5": "14fe6b6feab2c21deac0feea65d449c5",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_39.ogg",
+      "bajt": 11616,
+      "md5": "9a705859c5d4cdec1f81015847dfaab1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_390.ogg",
+      "bajt": 30952,
+      "md5": "05553093fd61083a635c6c64bca66105",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_391.ogg",
+      "bajt": 31168,
+      "md5": "85c21fc6001a5a264c4186ae6b5c31c1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_392.ogg",
+      "bajt": 31204,
+      "md5": "25e00a33bd3ca637bb8603a9dd763010",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_393.ogg",
+      "bajt": 31465,
+      "md5": "8df2c56efe898b14aedbd9675386bd50",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_394.ogg",
+      "bajt": 31466,
+      "md5": "0a463050027a0f25fe46e224911b0162",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_395.ogg",
+      "bajt": 31520,
+      "md5": "6fc02b8017ffc1e2ddf82c29ee10c3c8",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_396.ogg",
+      "bajt": 31704,
+      "md5": "9a1e3b9e7fc50130e9a55d408dd2f8d5",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_397.ogg",
+      "bajt": 32255,
+      "md5": "9075b6a322d975ce0e472a4d08731b5d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_398.ogg",
+      "bajt": 32418,
+      "md5": "6a63a6716e74189722fbf4d1e7f1ad72",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_399.ogg",
+      "bajt": 32647,
+      "md5": "9f60de85115c48b72949dde3a3f25722",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_40.ogg",
+      "bajt": 12012,
+      "md5": "4f373ec129001134936f0945362b03af",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_400.ogg",
+      "bajt": 32735,
+      "md5": "a71e548490b5e34fdfd7af2994b7c1ae",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_401.ogg",
+      "bajt": 32850,
+      "md5": "050d0aa7345d938d00849191c96cb282",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_402.ogg",
+      "bajt": 32885,
+      "md5": "1f54720f2dace2385310aa99630b1607",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_403.ogg",
+      "bajt": 33000,
+      "md5": "34cecd5916987903f2fe067d7c013435",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_404.ogg",
+      "bajt": 33017,
+      "md5": "0b2fcdaab2872b5b28d159d2b7cc6845",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_405.ogg",
+      "bajt": 33030,
+      "md5": "779dc1da624bf688244430fb589b9e5c",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_406.ogg",
+      "bajt": 33143,
+      "md5": "1b4caa65bf10d31b0f62f1992f095921",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_407.ogg",
+      "bajt": 33231,
+      "md5": "b9b82e70eaeb2d6549ba573cb2d7c187",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_408.ogg",
+      "bajt": 33586,
+      "md5": "7d3d00edf47c64c9494d785250e1801a",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_409.ogg",
+      "bajt": 33832,
+      "md5": "1c92102a15c5ab36b673f0fc9b50a28e",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_41.ogg",
+      "bajt": 12017,
+      "md5": "e9a2b7afdd8dfcabfcf1ea3d73f1b37f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_410.ogg",
+      "bajt": 34378,
+      "md5": "8f5ca318ab60b21c2ee5883d2efadd78",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_411.ogg",
+      "bajt": 34449,
+      "md5": "e7982bcb4ab913399d73746c6b787c32",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_412.ogg",
+      "bajt": 34704,
+      "md5": "de4f2e7807032f825186596dd43435e5",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_413.ogg",
+      "bajt": 34816,
+      "md5": "22aa29d8d95897f9555e60cdb62140a4",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_414.ogg",
+      "bajt": 35076,
+      "md5": "bc6eb4bbd5394d6adcc222858a5669ee",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_415.ogg",
+      "bajt": 35123,
+      "md5": "8a15573cbc78bd658c768d66331cdc91",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_417.ogg",
+      "bajt": 35316,
+      "md5": "f98dae429a0414cc3885992fa6f73a50",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_418.ogg",
+      "bajt": 35357,
+      "md5": "86b2203f255a89bebf37dbd3f3773ae7",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_419.ogg",
+      "bajt": 35368,
+      "md5": "d02d11e8cf29fe15a67e1f0b89c436bf",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_42.ogg",
+      "bajt": 12151,
+      "md5": "8a0c4b43107ad7d31598dc767b6edef6",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_420.ogg",
+      "bajt": 35379,
+      "md5": "c9524364d6c8c8d192f4cac9f30e5751",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_421.ogg",
+      "bajt": 36127,
+      "md5": "a6338dcf0c95e602949001b4fe40b9ae",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_422.ogg",
+      "bajt": 36345,
+      "md5": "5683ef9d6e70e57da6ea2e3883588402",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_423.ogg",
+      "bajt": 36407,
+      "md5": "db55381222610cc56906c82ddb402f69",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_424.ogg",
+      "bajt": 36464,
+      "md5": "a65bcfbcf8ced8070048db750a24647c",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_425.ogg",
+      "bajt": 36474,
+      "md5": "c2c9751dd1f30a297c11067ba8ccae99",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_426.ogg",
+      "bajt": 36485,
+      "md5": "02de7db1929a362f66f13e25123b7b9f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_427.ogg",
+      "bajt": 36602,
+      "md5": "b57dc714ca9ab442fd2e2c4669be931e",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_428.ogg",
+      "bajt": 36883,
+      "md5": "995c786eac2b23c0a61eef223d88277d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_429.ogg",
+      "bajt": 37086,
+      "md5": "c0d389fd1e1e8e9e1fd9bcc7863a4e4a",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_43.ogg",
+      "bajt": 12188,
+      "md5": "eacce5f4c59210da9dca6232c5d955b7",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_430.ogg",
+      "bajt": 37228,
+      "md5": "c5a6492ce32a9e2ab4714b3f67375ae9",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_431.ogg",
+      "bajt": 37625,
+      "md5": "4344a55116ec1410c82f23b01ec108e0",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_432.ogg",
+      "bajt": 37675,
+      "md5": "ba80704ab397a77fcbb8c2a3c98b924f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_433.ogg",
+      "bajt": 37974,
+      "md5": "0a39369ba8dcb0c39a1a72b179d93b44",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_434.ogg",
+      "bajt": 38306,
+      "md5": "acc00d5d94967e1083f9960e17413cd5",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_437.ogg",
+      "bajt": 38592,
+      "md5": "5e0df5d24ac0f67209f5a8c146ed65c1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_438.ogg",
+      "bajt": 38961,
+      "md5": "ccdd759ff68279f062bffa4c649a0c1f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_44.ogg",
+      "bajt": 12237,
+      "md5": "9732183763e3d47b4b8c5f623baa4af3",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_440.ogg",
+      "bajt": 39863,
+      "md5": "385005d722abb86c2d166b8a7954be01",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_441.ogg",
+      "bajt": 39954,
+      "md5": "6bb10b586ddfb00de866c792cc8f79ff",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_442.ogg",
+      "bajt": 40630,
+      "md5": "3dc2d36ee1a056629b0bd14e3e0b2f84",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_443.ogg",
+      "bajt": 40954,
+      "md5": "7bae6cab8fb34e610b3e39ecd2e8f69d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_444.ogg",
+      "bajt": 41164,
+      "md5": "f5a122ac068c2dcd0ef2047a5ed84a86",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_445.ogg",
+      "bajt": 41197,
+      "md5": "b557f418998461a5c65697b9e06ad27a",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_446.ogg",
+      "bajt": 41622,
+      "md5": "e98d4143252739c72c3dbd3d81268542",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_447.ogg",
+      "bajt": 41734,
+      "md5": "14bc49589904b52182b745a862bdba7d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_448.ogg",
+      "bajt": 41846,
+      "md5": "4bdf8f0210eb35525110e28ed866a6ca",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_449.ogg",
+      "bajt": 42003,
+      "md5": "e9dda190462edf0d0620be19a1aa9a9b",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_45.ogg",
+      "bajt": 12368,
+      "md5": "f4d5a9820880f36b3ff209c90f63ee2a",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_450.ogg",
+      "bajt": 42901,
+      "md5": "eeca1a14d25a03a5a6fb91542252de78",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_451.ogg",
+      "bajt": 42966,
+      "md5": "72fbf374f1fcb29076181d680edf2e83",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_452.ogg",
+      "bajt": 43639,
+      "md5": "c8a2695aa33d02460a4c3f06cb4815bb",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_453.ogg",
+      "bajt": 43676,
+      "md5": "bd48acf1c599ddf094bf73eb1e7fa6b8",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_455.ogg",
+      "bajt": 44298,
+      "md5": "b1c93708b674de69c82f6098c33fdd69",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_457.ogg",
+      "bajt": 45134,
+      "md5": "bc2b00545c07e68d5795696b49d41910",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_458.ogg",
+      "bajt": 45236,
+      "md5": "d8fccf3f12f92e0eba3679e485bd2f5f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_459.ogg",
+      "bajt": 45802,
+      "md5": "da1fa8cb8ed003f4fb48d9695e74dfdf",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_46.ogg",
+      "bajt": 12409,
+      "md5": "451c7a5224bf250d739ff66559b87d48",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_460.ogg",
+      "bajt": 45850,
+      "md5": "f2c5fdbe84e1b3133b52c37598dfc45f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_461.ogg",
+      "bajt": 45969,
+      "md5": "32e45ad3d346d62c5f695698cae803af",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_462.ogg",
+      "bajt": 46262,
+      "md5": "3a695f5e123f2b711efc18536964543d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_463.ogg",
+      "bajt": 46356,
+      "md5": "5194ffd0ba80d7370bd10465f89b708f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_464.ogg",
+      "bajt": 46520,
+      "md5": "65c2cce4371cf9c9ac8c33501836c816",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_465.ogg",
+      "bajt": 46661,
+      "md5": "0bcd90ef8fdfc8e9fc604bbabe9ea294",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_466.ogg",
+      "bajt": 46782,
+      "md5": "bff40dc1d534562dc2a7a2173bfefca0",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_467.ogg",
+      "bajt": 46845,
+      "md5": "a04a3304e5368d0f70958f1ce514030c",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_468.ogg",
+      "bajt": 47266,
+      "md5": "732ddab0d3b02dab79bc2916c74f8a16",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_469.ogg",
+      "bajt": 48310,
+      "md5": "b3573b6eca4c18b2db634e820449aa50",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_47.ogg",
+      "bajt": 12442,
+      "md5": "a0c52f0c0c0b27f0180ef91c72bc08f0",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_470.ogg",
+      "bajt": 48879,
+      "md5": "e8e7ad4f110834cbaf08f2006d1b1c18",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_471.ogg",
+      "bajt": 49115,
+      "md5": "2c1759f5a259127d52491b1c680caa79",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_472.ogg",
+      "bajt": 49182,
+      "md5": "f7490206134e4ac9c5c0b6d4c461b6f9",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_473.ogg",
+      "bajt": 49277,
+      "md5": "e205d3cb821fc90f61bb82ac4d3109d4",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_474.ogg",
+      "bajt": 51942,
+      "md5": "8033465d15b0d489155ebe664f2dbbf5",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_476.ogg",
+      "bajt": 53639,
+      "md5": "1476401b2bc874abe4c306cb288eff47",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_477.ogg",
+      "bajt": 54290,
+      "md5": "d578057319d4f97d0b16cc7bc37c3d84",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_479.ogg",
+      "bajt": 57914,
+      "md5": "465a55292732ff3fe58808fe0c004444",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_48.ogg",
+      "bajt": 12451,
+      "md5": "c8e0c367ba59ad79b0b6b1151517c61f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_481.ogg",
+      "bajt": 59351,
+      "md5": "b4392cafe6bed6973475340875f6f7b1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_482.ogg",
+      "bajt": 60593,
+      "md5": "1611892e8701488fb9ae501654a7a8ac",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_484.ogg",
+      "bajt": 61349,
+      "md5": "425bc049ddfadd63400b2438166b2b39",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_485.ogg",
+      "bajt": 63695,
+      "md5": "f91785eb441e64537683249ab603ca61",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_486.ogg",
+      "bajt": 63953,
+      "md5": "c05732f2087f4a6d05f7c7d4e59aec50",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_487.ogg",
+      "bajt": 64919,
+      "md5": "fc5e1a8f1752d13dc5989222286327d1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_488.ogg",
+      "bajt": 66099,
+      "md5": "0fc84cea1c763bb46be591ef3ceeaddf",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_489.ogg",
+      "bajt": 66671,
+      "md5": "f7bbdeda3e332631a5d7296e5635697b",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_49.ogg",
+      "bajt": 12464,
+      "md5": "85132f71c5d9409aef07b903e353f74d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_492.ogg",
+      "bajt": 69075,
+      "md5": "77c5e9d83cad69dda9f4fc1b032f9dfd",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_496.ogg",
+      "bajt": 75089,
+      "md5": "90081f170c9d1820b1885c078357904a",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_497.ogg",
+      "bajt": 76872,
+      "md5": "e3348e017eee8ce3fae3c249bd9630e1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_498.ogg",
+      "bajt": 79204,
+      "md5": "9fa8a836ff26b90ec6a547e9d0e06b25",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_499.ogg",
+      "bajt": 80198,
+      "md5": "1d107f36d3a55b3a5af87b54f9c31cb3",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_50.ogg",
+      "bajt": 12508,
+      "md5": "5df6ad823b2ec3ee6b3eb81af0dc36e2",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_500.ogg",
+      "bajt": 92791,
+      "md5": "56226a713c4914f7a3832f08c20e01c0",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_501.ogg",
+      "bajt": 100748,
+      "md5": "4843b5edaa502b90dce6278d3aedeb9f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_502.ogg",
+      "bajt": 107971,
+      "md5": "3f4e5101455cd8b5d2963c1ee19a13c2",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_503.ogg",
+      "bajt": 112290,
+      "md5": "815c3fd1b084120cf3323697836f74e0",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_51.ogg",
+      "bajt": 12566,
+      "md5": "9ca912c0a0bf3373a46477da77b9e90c",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_52.ogg",
+      "bajt": 12621,
+      "md5": "0ba9c51a90c57d0fcfb88547ec3015c0",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_53.ogg",
+      "bajt": 12696,
+      "md5": "b8f40899453271fe267ac53e315faa44",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_54.ogg",
+      "bajt": 12721,
+      "md5": "0a3d301b5c6a2cf3641d82af4aebee01",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_55.ogg",
+      "bajt": 12738,
+      "md5": "c39a237ed7dd57e4c33ffed624f45c92",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_56.ogg",
+      "bajt": 12820,
+      "md5": "f24dd1609485ac3edab84e124b0b750c",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_57.ogg",
+      "bajt": 12926,
+      "md5": "c3fae34ea2eb8d3ee4799b785c1e8f85",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_58.ogg",
+      "bajt": 12942,
+      "md5": "4151776b4d6af85a4a36c4c1d4b9e8f0",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_59.ogg",
+      "bajt": 12968,
+      "md5": "d3fb60bf0233611c6513540d3becc132",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_60.ogg",
+      "bajt": 12986,
+      "md5": "556eeba0464df2a27907c5f5df6b3c18",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_61.ogg",
+      "bajt": 13148,
+      "md5": "5892626eac62314b6a8dee1b238c3067",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_62.ogg",
+      "bajt": 13252,
+      "md5": "58bb7338a809bde639188fe7b3dc5abb",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_63.ogg",
+      "bajt": 13272,
+      "md5": "6419b0f47ac7daac56e9c91d0a66cb1d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_64.ogg",
+      "bajt": 13288,
+      "md5": "0c1c284ac82aa7cddf0b2f7933ae33b6",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_65.ogg",
+      "bajt": 13310,
+      "md5": "25a35534106ca45f67c2b778aeae555f",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_66.ogg",
+      "bajt": 13355,
+      "md5": "505de560cb11739f156c3d3b2125da6c",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_67.ogg",
+      "bajt": 13376,
+      "md5": "45538a7ccfaf98703f9b23370cd6254e",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_68.ogg",
+      "bajt": 13385,
+      "md5": "fcc6bb53758cd5a6ce490278de99160e",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_69.ogg",
+      "bajt": 13403,
+      "md5": "5cddae49e1dea304a600163112732de6",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_70.ogg",
+      "bajt": 13416,
+      "md5": "2504599b59235187c0c229a6b23d0648",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_71.ogg",
+      "bajt": 13559,
+      "md5": "38fc8fef9e97945189762ea836e65802",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_72.ogg",
+      "bajt": 13560,
+      "md5": "01355a3dfbe784ba0ad6149b2daccda6",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_73.ogg",
+      "bajt": 13610,
+      "md5": "29f6ca8ae2413658e30809ae8739ceb5",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_74.ogg",
+      "bajt": 13684,
+      "md5": "a7c3268bcae057947dc037dbac4c40c2",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_75.ogg",
+      "bajt": 13707,
+      "md5": "3f8f53271ccf0af3c6383a03a1b70548",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_76.ogg",
+      "bajt": 13751,
+      "md5": "ddc3a9505a0a84494414b305f69e8720",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_77.ogg",
+      "bajt": 13800,
+      "md5": "e826c3b616e618ce06598acb668fca1b",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_78.ogg",
+      "bajt": 13846,
+      "md5": "854ef86116b10858beaaec5495c15c62",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_79.ogg",
+      "bajt": 13875,
+      "md5": "6915a6d714ce95110ff13b7877a0379a",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_80.ogg",
+      "bajt": 13908,
+      "md5": "6b1c73250a56cc7b642f84cfe65673d4",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_81.ogg",
+      "bajt": 13948,
+      "md5": "6177de820d607e04b6640155528f45a5",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_82.ogg",
+      "bajt": 14042,
+      "md5": "842b9100022da6f3663863c2e1176d7d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_83.ogg",
+      "bajt": 14084,
+      "md5": "dc060583dbb1dcf24aef7cb72947b3a1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_84.ogg",
+      "bajt": 14138,
+      "md5": "763bf03e60fae96fad7fa02eb7132e41",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_85.ogg",
+      "bajt": 14141,
+      "md5": "f9ca23a87ebbd2a6b5ee0d7f9dc87e86",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_86.ogg",
+      "bajt": 14412,
+      "md5": "cbe2e1b4092bfc5c1da4dc3dedbc8618",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_87.ogg",
+      "bajt": 14510,
+      "md5": "019e1969909af59fe4d9fb1f9db5b80d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_88.ogg",
+      "bajt": 14548,
+      "md5": "cda50694b74c722e4eabd696a4690bbf",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_89.ogg",
+      "bajt": 14616,
+      "md5": "54cbfe2e8027e0cc1a6dd9202950f23b",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_90.ogg",
+      "bajt": 14637,
+      "md5": "387cf5dcb1e61e34ee3c69e289fa8585",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_91.ogg",
+      "bajt": 14656,
+      "md5": "9f4ad2e4245dbba4d8284d90668c0ba4",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_92.ogg",
+      "bajt": 14699,
+      "md5": "5b1616dce16b9d582159bd7f5f7e993b",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_93.ogg",
+      "bajt": 14699,
+      "md5": "d122adb4e47ac2b27bfd4ac20d8e2902",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_94.ogg",
+      "bajt": 14760,
+      "md5": "957512a4a3cba43daa8a4b7407b46f23",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_95.ogg",
+      "bajt": 14828,
+      "md5": "b0dbde41918c8d079a4063ba9852b3d1",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_96.ogg",
+      "bajt": 14865,
+      "md5": "a2f7c705b4237b31552f1e84b763d854",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_97.ogg",
+      "bajt": 14889,
+      "md5": "f1f623b4796bf866e9ee98193dfd896d",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_98.ogg",
+      "bajt": 14916,
+      "md5": "df72fe78081405039cf630f147dbde0c",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_99.ogg",
+      "bajt": 14916,
+      "md5": "b5a2be57db0174b8265f229315163d55",
+      "azonos_bajtu_tovabbi_fajlok": []
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_100.ogg",
+      "bajt": 15090,
+      "md5": "4ab9994dc6a9f98b36610c45966b8f8e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/Kövesd balra a fő utat.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_101.ogg",
+      "bajt": 15176,
+      "md5": "306b9bbeae56d1a348cf15f9dbc24b5c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/Na mizu menjünk jobbra.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_102.ogg",
+      "bajt": 15331,
+      "md5": "ef5d4227915c508d9e5ed626d808a6cc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/És aztán balra megyünk élesen.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_103.ogg",
+      "bajt": 15488,
+      "md5": "80ae8650e615ba5bcaf7a75edb34ba9f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/Aztán enyhén jobbra.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_104.ogg",
+      "bajt": 15499,
+      "md5": "797f659e7f2b9f8339887e747e5cdf9d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/Dugó felé közeledsz.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_105.ogg",
+      "bajt": 15513,
+      "md5": "42996cbc86e57c6fb805653b243bf5dc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/Enyhén jobbra zászló nélkül.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_106.ogg",
+      "bajt": 15537,
+      "md5": "582ab178133abe9b034622d2096c31b2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/Ez az ez az Bubi nyomjad neki.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_107.ogg",
+      "bajt": 15579,
+      "md5": "5772d3414124e495b2c973c04c9fecd6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_107.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_108.ogg",
+      "bajt": 15603,
+      "md5": "56708b54a893bc925eeb25eea13c572b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/Hopi hopi forduljunk vissza.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_109.ogg",
+      "bajt": 15607,
+      "md5": "2a06ee1666de4899482883c5423113c2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/Hát szerintem,ő egyenesen.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_11.ogg",
+      "bajt": 6114,
+      "md5": "2a66897316b5f0105f78a4a585359045",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/Balra.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_110.ogg",
+      "bajt": 15694,
+      "md5": "24d02affcad6fe414fc1fffc11c005c1",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/Hhh újra tervezés.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_111.ogg",
+      "bajt": 15854,
+      "md5": "b35bb272bfd2ca8d5f490e8150d69e71",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/És utána jobbra élesen.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_112.ogg",
+      "bajt": 15918,
+      "md5": "de3471b0f10af0063c9a5a05870cf575",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_112.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_113.ogg",
+      "bajt": 15990,
+      "md5": "5e1e6bc2bd270056bc19b0574cba2608",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_113.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_114.ogg",
+      "bajt": 16263,
+      "md5": "6502609505de90ff75e694403fc54353",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_114.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_115.ogg",
+      "bajt": 16282,
+      "md5": "d51242307378baffbd7fde9283bb6ddf",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_115.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_116.ogg",
+      "bajt": 16483,
+      "md5": "c5d2d0ddefc237300b1bd4c800fa2ff1",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_116.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_117.ogg",
+      "bajt": 16506,
+      "md5": "28c4677653ce34ca7a32b5b252e083a3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_117.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_118.ogg",
+      "bajt": 16558,
+      "md5": "957f1a7262ee521bd6d67a30b7a9fd16",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_118.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_119.ogg",
+      "bajt": 16589,
+      "md5": "8fc0ed833677133b6d8aa8f2d85e6b4b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_119.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_12.ogg",
+      "bajt": 8305,
+      "md5": "53665d6b42b2a3b4bccf88255afe0dae",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_12.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_120.ogg",
+      "bajt": 16636,
+      "md5": "046d5185a53008c840cf710dc8f3900f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_120.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_121.ogg",
+      "bajt": 16651,
+      "md5": "88ab9870be464be3a7e140d166422f44",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_121.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_122.ogg",
+      "bajt": 16725,
+      "md5": "94b1f07226c37dad2de01d0a70c559c0",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_122.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_123.ogg",
+      "bajt": 16730,
+      "md5": "945e06f46f4c5bdbb94d6213b9dde2fd",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_123.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_124.ogg",
+      "bajt": 16737,
+      "md5": "08504a964114f54ab068b3dee3a9df3d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_124.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_125.ogg",
+      "bajt": 16738,
+      "md5": "17f2b80e2aab0736c3e33365e2d31f2a",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_125.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_126.ogg",
+      "bajt": 16791,
+      "md5": "cbec18d378de6e888c80b78a8b6834aa",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_126.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_127.ogg",
+      "bajt": 16800,
+      "md5": "ee94ae456c81196cbd57b3bbca785957",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_127.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_128.ogg",
+      "bajt": 16941,
+      "md5": "a8252f950ebf630ea36a65c23b237ac8",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_128.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_129.ogg",
+      "bajt": 16951,
+      "md5": "56c3fe28fa652ba3332a7f359fed8883",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_129.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_13.ogg",
+      "bajt": 8435,
+      "md5": "d069b768285e42cbf8a0b274f5cb0ffa",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_13.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_130.ogg",
+      "bajt": 17017,
+      "md5": "e65a467ebc47e755d530a2753cb69f34",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_130.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_131.ogg",
+      "bajt": 17019,
+      "md5": "72310db0c2bb37f6e92371a68cb67fb3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_131.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_132.ogg",
+      "bajt": 17030,
+      "md5": "08851a8ef4bc925e0813d8fdd885e52b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_132.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_133.ogg",
+      "bajt": 17041,
+      "md5": "25a1c11337c50377cb6a44da538c3981",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_133.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_134.ogg",
+      "bajt": 17190,
+      "md5": "13caf0322d43ec32920f73c03c2422b5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_134.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_135.ogg",
+      "bajt": 17289,
+      "md5": "66b9efe08438bde30d2212f79405e0b2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_135.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_136.ogg",
+      "bajt": 17303,
+      "md5": "7d98f49d4816ba02b58014fd4a82b7d5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_136.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_137.ogg",
+      "bajt": 17327,
+      "md5": "339b68ecdebc75c47be5720520c7ffc5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_137.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_138.ogg",
+      "bajt": 17342,
+      "md5": "d5669d2c387fea92ff23dbfa3db89624",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_138.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_139.ogg",
+      "bajt": 17457,
+      "md5": "f2356191360475860392c8d817765b56",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_139.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_14.ogg",
+      "bajt": 8791,
+      "md5": "bdc434675809f6da01b72a4a05a5aeeb",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_14.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_140.ogg",
+      "bajt": 17490,
+      "md5": "972d91a4f6d8777cbbb23cfaf600c44f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_140.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_141.ogg",
+      "bajt": 17501,
+      "md5": "2ccea41e28f114a5a28430b5908f5162",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_141.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_142.ogg",
+      "bajt": 17542,
+      "md5": "22a751c0126cefaf82cf0855f46cdf63",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_142.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_143.ogg",
+      "bajt": 17563,
+      "md5": "f212157ccc4cb54057da90b70129889c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_143.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_144.ogg",
+      "bajt": 17565,
+      "md5": "300b794bbfaef0ceb1a8b9d7d0f99799",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_144.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_145.ogg",
+      "bajt": 17599,
+      "md5": "4ef49c831c1f83a45a6f3a56f0c45f77",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_145.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_146.ogg",
+      "bajt": 17644,
+      "md5": "3989a64fc428c2cb0baaeb60a33fd315",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_146.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_147.ogg",
+      "bajt": 17678,
+      "md5": "70de4d6fecce33b18b18ed6a14a554cc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_147.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_148.ogg",
+      "bajt": 17740,
+      "md5": "d00ecd613b4a8ca90b1aeeb1885ae84f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_148.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_149.ogg",
+      "bajt": 17849,
+      "md5": "332f0c2fd8f69a0385ba5ba08c096679",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_149.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_15.ogg",
+      "bajt": 8821,
+      "md5": "a1169af78e222a080ebd29e2d0ced906",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_15.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_150.ogg",
+      "bajt": 17858,
+      "md5": "81b679bd1fca470d4ac63560f9cac395",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_150.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_151.ogg",
+      "bajt": 17890,
+      "md5": "5af0adc26f1b9e3cce1fd1be69148ada",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_151.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_152.ogg",
+      "bajt": 17951,
+      "md5": "53e3c74ffca1bef1d61ef209d5586d17",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_152.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_153.ogg",
+      "bajt": 17986,
+      "md5": "57342c6f222f45267aef502be195f5c5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_153.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_154.ogg",
+      "bajt": 17989,
+      "md5": "f7be953ef68635a7f9892de416002305",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_154.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_155.ogg",
+      "bajt": 18003,
+      "md5": "4c23fa3e1aec58decbedb4f70947d55d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_155.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_156.ogg",
+      "bajt": 18110,
+      "md5": "8ce6c77eb598ff8183940f9d068d7426",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_156.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_157.ogg",
+      "bajt": 18196,
+      "md5": "dea0ff69d3f9f920e1132d5e4bbb4d2e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_157.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_158.ogg",
+      "bajt": 18198,
+      "md5": "aea195e15ff7742cf65bacab0e4daba9",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_158.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_159.ogg",
+      "bajt": 18210,
+      "md5": "c2f9622379623b1cb13cd2783463afcc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_159.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_16.ogg",
+      "bajt": 9034,
+      "md5": "5d8093b434a05c46a272095f40ecf6cb",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_16.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_160.ogg",
+      "bajt": 18245,
+      "md5": "114d1d57c64453a2f349b6272d4ec24e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_160.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_161.ogg",
+      "bajt": 18245,
+      "md5": "761c6e03c2c771fb118a3b6a131b538d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_161.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_162.ogg",
+      "bajt": 18246,
+      "md5": "947138550a589384f99fe220053f3b57",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_162.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_163.ogg",
+      "bajt": 18257,
+      "md5": "6292d5781b213b3423d6a015d1864fb9",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_163.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_164.ogg",
+      "bajt": 18340,
+      "md5": "ea1165f875e80aee47640a0e55ff82a5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_164.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_165.ogg",
+      "bajt": 18408,
+      "md5": "68f3e25974eff2473dd88f12c98bacfb",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_165.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_166.ogg",
+      "bajt": 18440,
+      "md5": "cca0bd7400abd300212f9dbac12a08c1",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_166.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_167.ogg",
+      "bajt": 18485,
+      "md5": "278768fd91921e79fb0526a521d68097",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_167.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_168.ogg",
+      "bajt": 18522,
+      "md5": "dd9060188634109ed354e3049e3a430e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_168.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_169.ogg",
+      "bajt": 18560,
+      "md5": "db8dc4de459f870069c745fd32dd7cc3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_169.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_17.ogg",
+      "bajt": 9205,
+      "md5": "9037577ea347352de92feaa1e10e283c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_17.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_170.ogg",
+      "bajt": 18583,
+      "md5": "0973d7eddfcb6bea18bd4604305a165c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_170.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_171.ogg",
+      "bajt": 18658,
+      "md5": "d6858fa5b74df4ae23a617e719d3a071",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_171.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_172.ogg",
+      "bajt": 18781,
+      "md5": "bbed9467ac159a6f9d2dcd7ab4e4abe6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_172.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_173.ogg",
+      "bajt": 18832,
+      "md5": "943d07d9050340f04de33decf5656db5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_173.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_174.ogg",
+      "bajt": 18854,
+      "md5": "a56aa5fcc4503ea9776a2b5f4840d32b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_174.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_175.ogg",
+      "bajt": 18908,
+      "md5": "64c3ae9f394158cde96f1299f96f9679",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_175.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_176.ogg",
+      "bajt": 18931,
+      "md5": "b9fcfc3cc8922aa55da00d718a829ade",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_176.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_177.ogg",
+      "bajt": 18988,
+      "md5": "54cd9fc57ecabad3983b803ab8e8eaa0",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_177.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_178.ogg",
+      "bajt": 18995,
+      "md5": "9c7ea91eadaa2c0fb6c08ed4265d6c98",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_178.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_179.ogg",
+      "bajt": 19099,
+      "md5": "bdd5c2592877b185b94615d4aa1053b6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_179.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_18.ogg",
+      "bajt": 9370,
+      "md5": "a2633a15a2a514fcc50b55f0f76a6982",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_18.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_180.ogg",
+      "bajt": 19115,
+      "md5": "4ece6be0864be8888101f37b755120fa",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_180.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_181.ogg",
+      "bajt": 19145,
+      "md5": "b10002342b534f4f200c1aa923601637",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_181.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_182.ogg",
+      "bajt": 19169,
+      "md5": "e6270739b15bc6351dc6bc1e6623c23c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_182.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_183.ogg",
+      "bajt": 19241,
+      "md5": "743af72359a6b4af99c23e2be257f844",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_183.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_184.ogg",
+      "bajt": 19252,
+      "md5": "f201654fc44642f1b3d767b5bb7323d4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_184.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_185.ogg",
+      "bajt": 19275,
+      "md5": "b98dfbf22b1ab7d16ce6ab305d841b4a",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_185.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_186.ogg",
+      "bajt": 19275,
+      "md5": "7be5bf1cc4513c464410b3e45ad3b1bb",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_186.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_187.ogg",
+      "bajt": 19394,
+      "md5": "c311ff1e310d63c8102119808a821689",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_187.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_188.ogg",
+      "bajt": 19432,
+      "md5": "4c9596788eef24ebf6884a988d11d3e3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_188.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_189.ogg",
+      "bajt": 19440,
+      "md5": "8101f271cce903fd408251bc326df97d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_189.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_19.ogg",
+      "bajt": 9469,
+      "md5": "ed599edfa7d342202014cf390f9f56c6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_19.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_190.ogg",
+      "bajt": 19455,
+      "md5": "f84fb875ca53a8dfb397e2a2c8b444c2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_190.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_191.ogg",
+      "bajt": 19472,
+      "md5": "9eeb2d39c5fe485ad44e085ffdbec496",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_191.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_192.ogg",
+      "bajt": 19488,
+      "md5": "c97f48dda899c61724744e7150b268dd",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_192.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_193.ogg",
+      "bajt": 19555,
+      "md5": "ece1f5bc6c84e6f904cf74bf72317e94",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_193.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_194.ogg",
+      "bajt": 19565,
+      "md5": "2918757e2c09d4d47c5e8b6cb98895c4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_194.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_195.ogg",
+      "bajt": 19571,
+      "md5": "2b71b26228ed9b321c346e505cbcb86b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_195.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_196.ogg",
+      "bajt": 19602,
+      "md5": "aa0e73e00c70f3b5a7f57cb64d5dcf9f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_196.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_197.ogg",
+      "bajt": 19697,
+      "md5": "3d5ff73ec205a1a5dd93c8ba29c10e7b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_197.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_198.ogg",
+      "bajt": 19776,
+      "md5": "2b0e50891c55ec5acdb88e8388803a4e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_198.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_199.ogg",
+      "bajt": 19793,
+      "md5": "57aa5674fb9957c01725acd0303e10b8",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_199.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_20.ogg",
+      "bajt": 9623,
+      "md5": "1473d2f16f11b50920bd6592b1424a45",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_20.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_200.ogg",
+      "bajt": 19847,
+      "md5": "2b20611b60cecb49b8e271b8b16530dc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_200.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_201.ogg",
+      "bajt": 19878,
+      "md5": "061a982a8bd7b60aa7ce6fb8610cf60f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_201.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_202.ogg",
+      "bajt": 19907,
+      "md5": "0218872f8131bfe34531fed1f135b1cf",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_202.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_203.ogg",
+      "bajt": 19925,
+      "md5": "8d54a8f75f15759cf461a30b0cfc027f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_203.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_204.ogg",
+      "bajt": 20072,
+      "md5": "09e88fc53b096a9e83cba7dac909808d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_204.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_205.ogg",
+      "bajt": 20170,
+      "md5": "d94c13f4ab63218f4002394fb034af92",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_205.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_206.ogg",
+      "bajt": 20179,
+      "md5": "744d5369f0cd9966c0e224794548b030",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_206.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_207.ogg",
+      "bajt": 20208,
+      "md5": "c86da69b44ff8ea5dc27a942dede0488",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_207.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_208.ogg",
+      "bajt": 20379,
+      "md5": "8bb690e4bdc916a07e52ca38e5bb006b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_208.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_209.ogg",
+      "bajt": 20467,
+      "md5": "be5f0957b05d59db9a3ba2f1c5eb82f3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_209.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_21.ogg",
+      "bajt": 9922,
+      "md5": "2e1aaf33917d3001638bb9d62aab46ff",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_21.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_210.ogg",
+      "bajt": 20505,
+      "md5": "8803679a77b8181c0d0ef4903c4f7728",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_210.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_211.ogg",
+      "bajt": 20508,
+      "md5": "4da7e29accefe8d40371b29c497ad238",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_211.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_212.ogg",
+      "bajt": 20521,
+      "md5": "79fbf27b1f3304d804d2dd8a7cba70c3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_212.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_213.ogg",
+      "bajt": 20528,
+      "md5": "74d820c866bebabf54974d75ee1bf9d8",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_213.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_214.ogg",
+      "bajt": 20658,
+      "md5": "cd37bbe1821b827e4c7babe0c7bf5d08",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_214.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_215.ogg",
+      "bajt": 20669,
+      "md5": "80d08e626470352538470ce647b02c77",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_215.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_216.ogg",
+      "bajt": 20693,
+      "md5": "3245f2b6fdee5ee922446088a0564b85",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_216.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_217.ogg",
+      "bajt": 20720,
+      "md5": "0d1e69c48f49d0c6f8e99aa91021f0fc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_217.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_218.ogg",
+      "bajt": 20743,
+      "md5": "93b4dc728568dd25f61da02a3a271fae",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_218.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_219.ogg",
+      "bajt": 20781,
+      "md5": "e9a548c02d7d5cc2aef4de466b9b1ad2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_219.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_22.ogg",
+      "bajt": 10030,
+      "md5": "507323311ba1993d322180a16db525e4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_22.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_220.ogg",
+      "bajt": 20788,
+      "md5": "e3a713be28e430c97339e37f5366adce",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_220.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_221.ogg",
+      "bajt": 20798,
+      "md5": "2d82819bf37438107754a9af72ba6918",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_221.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_222.ogg",
+      "bajt": 20870,
+      "md5": "b18c45f2bd8ed28b4fb517428bf88249",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_222.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_223.ogg",
+      "bajt": 20945,
+      "md5": "984476f46c20de46a89e9f540bfddee1",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_223.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_224.ogg",
+      "bajt": 21017,
+      "md5": "3f67ad9b646a041f6c85fee5bb1db17c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_224.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_225.ogg",
+      "bajt": 21035,
+      "md5": "9c8398b2359443e02d6ee3ab4a7cb44e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_225.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_226.ogg",
+      "bajt": 21062,
+      "md5": "db18bb8ae8ff8dd069ec156372e27306",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_226.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_227.ogg",
+      "bajt": 21104,
+      "md5": "b617c9c71a725cd0ac6d24bee76dacd6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_227.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_228.ogg",
+      "bajt": 21105,
+      "md5": "73e97dec87639706a5f3da47b31e90e6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_228.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_229.ogg",
+      "bajt": 21106,
+      "md5": "f51fc8a5ef08f6794b0a4f47e5064ef3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_229.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_23.ogg",
+      "bajt": 10072,
+      "md5": "26496c99f4c4e8046ae945a961133aaa",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_23.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_230.ogg",
+      "bajt": 21158,
+      "md5": "ee5cea51612e34baceec4d82151d316e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_230.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_231.ogg",
+      "bajt": 21178,
+      "md5": "61407217b8abde0112e9a70900a967b4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_231.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_232.ogg",
+      "bajt": 21225,
+      "md5": "49f98079e8e50441ed3f3889b72668a9",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_232.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_233.ogg",
+      "bajt": 21228,
+      "md5": "f7788f497d31db1bdec5ec186b16d556",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_233.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_234.ogg",
+      "bajt": 21230,
+      "md5": "f380b70c085ec07abe602413967e997e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_234.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_235.ogg",
+      "bajt": 21240,
+      "md5": "dd7459f11c47109e9dae198fedf3ad52",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_235.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_236.ogg",
+      "bajt": 21281,
+      "md5": "a883429383b8774c291e061c39f342ca",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_236.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_237.ogg",
+      "bajt": 21290,
+      "md5": "287aa85e16dcec3fb4de540f839de5a7",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_237.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_238.ogg",
+      "bajt": 21295,
+      "md5": "7cd29cff8ef305c0c499bbe0cc0b8d34",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_238.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_239.ogg",
+      "bajt": 21306,
+      "md5": "bedf973bdae696a3b6374360feef33e2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_239.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_24.ogg",
+      "bajt": 10180,
+      "md5": "53bf7b726eb017d8e4f95fdab87bc8c2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_24.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_240.ogg",
+      "bajt": 21379,
+      "md5": "634b3015dfe71768bbae982eec6c58a0",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_240.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_241.ogg",
+      "bajt": 21487,
+      "md5": "f1ba4a53672a1b6141ce54360b0286af",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_241.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_242.ogg",
+      "bajt": 21563,
+      "md5": "c8f25ad45e1f6b4f1b238b0688b8b053",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_242.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_243.ogg",
+      "bajt": 21567,
+      "md5": "38170e2ee4f99c1733769805b4c7578b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_243.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_244.ogg",
+      "bajt": 21575,
+      "md5": "0e02806929fe50a9de99b611c71ddf5c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_244.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_245.ogg",
+      "bajt": 21659,
+      "md5": "ed645dff1b3c75004a35aab29df5002e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_245.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_246.ogg",
+      "bajt": 21668,
+      "md5": "2c6fccb60b662d94ac711c709ef2020a",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_246.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_247.ogg",
+      "bajt": 21763,
+      "md5": "b87d5cd975bda4bac6dd70c74b7301ee",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_247.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_248.ogg",
+      "bajt": 21767,
+      "md5": "c758e200c692a7d9d40b39c947680d9d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_248.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_249.ogg",
+      "bajt": 21773,
+      "md5": "c97d7309d8e3481bd0d603207eecea4f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_249.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_25.ogg",
+      "bajt": 10300,
+      "md5": "cc57754da5f03d71ceef65a862d3e21f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_25.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_250.ogg",
+      "bajt": 21787,
+      "md5": "962e38f9fce4892f1e206a32c705de3f",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_250.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_251.ogg",
+      "bajt": 21970,
+      "md5": "4639e3346c0eeb99da863b6de4b60b74",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_251.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_252.ogg",
+      "bajt": 22036,
+      "md5": "ee0a23a50724bdca5e05dbeceef1a28c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_252.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_253.ogg",
+      "bajt": 22150,
+      "md5": "3dc6b1ffdd859c41f5ca1de6ddd827b3",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_253.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_254.ogg",
+      "bajt": 22186,
+      "md5": "1782511adb603bf6c6e12baf0c7e3d82",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_254.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_255.ogg",
+      "bajt": 22201,
+      "md5": "d3e2a9e59299e5bcb57809e30471c67c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_255.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_256.ogg",
+      "bajt": 22208,
+      "md5": "37adc8fd7552dd11c35f667f2aec88e4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_256.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_257.ogg",
+      "bajt": 22239,
+      "md5": "675d04eb65486081b4f3b1a9a0f9267e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_257.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_258.ogg",
+      "bajt": 22293,
+      "md5": "10b3acd21dcda424780b1dc713478f51",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_258.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_259.ogg",
+      "bajt": 22302,
+      "md5": "20b0bca495111915eb75b51cedc0d16a",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_259.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_26.ogg",
+      "bajt": 10382,
+      "md5": "ea039470a05c48f05268281b02444ae7",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_26.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_260.ogg",
+      "bajt": 22307,
+      "md5": "6030cfd89e5abf6ea988e12d3d53c64e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_260.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_261.ogg",
+      "bajt": 22351,
+      "md5": "c45875239527ac6816a4122e2a17695a",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_261.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_262.ogg",
+      "bajt": 22385,
+      "md5": "d27908cf6283b3ee8ce2cf60b2f901ca",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_262.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_263.ogg",
+      "bajt": 22391,
+      "md5": "e1bd1ffa66a1c30a67e13e5df9983d1b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_263.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_264.ogg",
+      "bajt": 22456,
+      "md5": "bdc4e73b141e6d9cc86015e5d2a5935d",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_264.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_265.ogg",
+      "bajt": 22497,
+      "md5": "f02d4cf6075c58f874cc2c5e15a5a9f7",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_265.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_266.ogg",
+      "bajt": 22498,
+      "md5": "85c8b048518d040ef116a4985d1a18e7",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_266.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_267.ogg",
+      "bajt": 22539,
+      "md5": "a3f7fac60c3f7755b989cbae2b869bce",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_267.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_268.ogg",
+      "bajt": 22562,
+      "md5": "f14b5299c482cd2e7cb4e5372a175924",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_268.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_269.ogg",
+      "bajt": 22579,
+      "md5": "ddddf737ded4fed3522a173c7437c924",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_269.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_27.ogg",
+      "bajt": 10394,
+      "md5": "067d0208c95f002ca66cf56e42f28b13",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_27.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_270.ogg",
+      "bajt": 22587,
+      "md5": "65bb79c4f8746067ddbd7e548efeb394",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_270.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_271.ogg",
+      "bajt": 22587,
+      "md5": "077e341b94d0b7c2f9cc7eca8ed561b4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_271.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_272.ogg",
+      "bajt": 22592,
+      "md5": "c695b86d9326158ffb799da0794b7a67",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_272.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_273.ogg",
+      "bajt": 22649,
+      "md5": "ad310c5b6a21b357cd394228c186b98b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_273.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_274.ogg",
+      "bajt": 22653,
+      "md5": "d346888fa4e686573b4a80bf00f58214",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_274.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_275.ogg",
+      "bajt": 22736,
+      "md5": "7d1a01ca15c859d7d5e455a86af1b9e6",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_275.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_276.ogg",
+      "bajt": 22752,
+      "md5": "3449eb934829af6b4de0b67a241ce5e4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_276.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_277.ogg",
+      "bajt": 22825,
+      "md5": "9cae289c67f98159764895d124ccd9c2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_277.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_278.ogg",
+      "bajt": 22825,
+      "md5": "a84df20dbfdf4530f146f14a1bf5dd88",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_278.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_279.ogg",
+      "bajt": 22829,
+      "md5": "9655f9817a01dbff4dd407aa2654af13",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_279.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_28.ogg",
+      "bajt": 10914,
+      "md5": "30ee4df1234182fa02f5c01f32e4feca",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_28.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_280.ogg",
+      "bajt": 22834,
+      "md5": "82635f94c0971630b662daeb9394805b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_280.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_281.ogg",
+      "bajt": 22852,
+      "md5": "177d8eb12ee478e3d9914f04b913d895",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_281.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_282.ogg",
+      "bajt": 22880,
+      "md5": "81f433241b7d925e5b5b1375c9cea7e4",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_282.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_283.ogg",
+      "bajt": 22966,
+      "md5": "538b16207b508049e750c70108cae3b2",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_283.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_284.ogg",
+      "bajt": 22995,
+      "md5": "d1ef548c20177c00b27b4888dd643289",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_284.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_285.ogg",
+      "bajt": 23002,
+      "md5": "f3dd405571628bbc356f3c1c08da3c66",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_285.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_286.ogg",
+      "bajt": 23054,
+      "md5": "df3e879b341ba0153bc38c0b1080ba14",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_286.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_287.ogg",
+      "bajt": 23126,
+      "md5": "5eb974c9baeb2b7bfa9992a6536de67e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_287.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_288.ogg",
+      "bajt": 23140,
+      "md5": "da1bbe47500870e4008eda9b1519f0b5",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_288.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_289.ogg",
+      "bajt": 23171,
+      "md5": "ad15c02904048f734cf7c7408c0f4a90",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_289.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_29.ogg",
+      "bajt": 10965,
+      "md5": "e386ed7f50798596c3b39a8b6f42117b",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_29.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_290.ogg",
+      "bajt": 23183,
+      "md5": "cc035a33d0d7b2806ef85204ab039c36",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_290.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_291.ogg",
+      "bajt": 23217,
+      "md5": "cc3bb887d4e504cfc889d8ec09e0f356",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_291.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_292.ogg",
+      "bajt": 23332,
+      "md5": "be2d0571b5b407e673a5e8a36eb46e9e",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_292.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_293.ogg",
+      "bajt": 23377,
+      "md5": "b3b8a4a16afe2e317d11f610d72fe5ca",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_293.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_294.ogg",
+      "bajt": 23416,
+      "md5": "2a0c264aa821a51ed6bf81a239485fdf",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_294.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_295.ogg",
+      "bajt": 23483,
+      "md5": "1f8a644592f87dcb2ea6a7b1966c9f86",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_295.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_296.ogg",
+      "bajt": 23583,
+      "md5": "52696836793c69192fbb461fcc7e794c",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_296.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_297.ogg",
+      "bajt": 23592,
+      "md5": "93de3e13430ab1fbd87488e4f064c156",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_297.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_298.ogg",
+      "bajt": 23642,
+      "md5": "35954428b030245280b940f0ebfdf2a7",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_298.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_299.ogg",
+      "bajt": 23770,
+      "md5": "256c9fe39fdc2f68c50a60f3d7077e19",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_left_299.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/És aztán balra megyünk élesen.ogg",
+      "bajt": 15331,
+      "md5": "ef5d4227915c508d9e5ed626d808a6cc",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_102.ogg"
+      ]
+    },
+    {
+      "utvonal": "hang/clips/És utána jobbra élesen.ogg",
+      "bajt": 15854,
+      "md5": "b35bb272bfd2ca8d5f490e8150d69e71",
+      "azonos_bajtu_tovabbi_fajlok": [
+        "hang/clips/and_then_exit_right_111.ogg"
+      ]
+    }
+  ]
+}

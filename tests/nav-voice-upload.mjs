@@ -10,27 +10,7 @@ function check(name, ok, detail) {
   say(row);
   if (!ok) fails.push(row);
 }
-function wavBytes() {
-  const samples = 200;
-  const data = samples * 2;
-  const buf = Buffer.alloc(44 + data);
-  buf.write("RIFF", 0);
-  buf.writeUInt32LE(36 + data, 4);
-  buf.write("WAVE", 8);
-  buf.write("fmt ", 12);
-  buf.writeUInt32LE(16, 16);
-  buf.writeUInt16LE(1, 20);
-  buf.writeUInt16LE(1, 22);
-  buf.writeUInt32LE(8000, 24);
-  buf.writeUInt32LE(16000, 28);
-  buf.writeUInt16LE(2, 32);
-  buf.writeUInt16LE(16, 34);
-  buf.write("data", 36);
-  buf.writeUInt32LE(data, 40);
-  return buf;
-}
-
-say("Voice upload UI. No phone and no SCS pack.");
+say("Voice panel. No phone and no event map.");
 const browser = await puppeteer.launch({
   executablePath: "/usr/local/bin/google-chrome",
   headless: "new",
@@ -41,33 +21,12 @@ try {
   page.on("pageerror", (err) => say("PAGE " + String(err)));
   await page.setViewport({ width: 360, height: 740, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
   await page.goto(origin + "/index.html?gfx=mobile", { waitUntil: "domcontentloaded", timeout: 40000 });
-  await page.waitForFunction(() => document.querySelectorAll("#voice-slots .voice-row").length === 3, { timeout: 10000 });
-  const labels = await page.$$eval("#voice-slots .voice-row span", (els) => els.map((el) => el.textContent));
-  say("SLOTS " + labels.join(" | "));
-  check("three-verified-slots", labels.length === 3, "n=" + labels.length);
-  check("right-slot", labels.indexOf("Jobbra") >= 0);
-  check("no-invented-exit", labels.every((text) => text.indexOf("kijárat") < 0));
-  await page.waitForFunction(() => {
-    const marks = Array.from(document.querySelectorAll("#voice-slots small"));
-    return marks.length === 3 && marks.every((el) => el.textContent === "fájl");
-  }, { timeout: 8000 });
-  check("static-clips-loaded", true);
+  await page.waitForFunction(() => /Eseménykonfiguráció nincs/.test((document.getElementById("voice-status").textContent || "")), { timeout: 10000 });
+  const rows = await page.$$eval("#voice-slots .voice-row", (els) => els.length);
+  say("SLOTS " + rows);
+  check("no-event-rows", rows === 0, "n=" + rows);
+  check("config-missing-status", /Eseménykonfiguráció nincs/.test(await page.$eval("#voice-status", (el) => el.textContent || "")));
   check("mute-starts-on", await page.$eval("#voice-enabled", (el) => el.checked === true));
-  const wav = "/tmp/toonnav-voice-probe.wav";
-  fs.writeFileSync(wav, wavBytes());
-  const input = await page.$("#voice-slots input");
-  await input.uploadFile(wav);
-  await page.waitForFunction(() => {
-    const mark = document.querySelector("#voice-slots small");
-    return mark && mark.textContent === "kész";
-  }, { timeout: 5000 });
-  check("upload-kept", await page.$eval("#voice-slots small", (el) => el.textContent) === "kész");
-  const bad = "/tmp/toonnav-voice-probe.txt";
-  fs.writeFileSync(bad, "nem hang");
-  const inputs = await page.$$("#voice-slots input");
-  await inputs[1].uploadFile(bad);
-  await page.waitForFunction(() => /ogg, mp3/.test(document.getElementById("voice-status").textContent || ""), { timeout: 5000 });
-  check("text-rejected", /ogg, mp3/.test(await page.$eval("#voice-status", (el) => el.textContent || "")));
   await page.$eval("#voice-enabled", (el) => { el.checked = false; el.dispatchEvent(new Event("change")); });
   check("mute-saves", await page.evaluate(() => localStorage.getItem("toonnav-voice")) === "off");
   say(fails.length ? "VOICE-UPLOAD-FAIL " + fails.length : "VOICE-UPLOAD-OK");

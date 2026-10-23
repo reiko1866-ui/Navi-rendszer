@@ -1,25 +1,6 @@
 {
-  "note": "A hang nem választ útvonalat. Csak olyan klip van bekötve, amelynek a kimondott szövege két független leiratban ugyanaz az azonnali utasítás. A fájlnévben lévő szám nem kijárat és nem távolság. Az and_then_exit_right sorozat bájtra azonos más fájlokkal. A vicces, feltételes és az „aztán” vagy „utána” kezdetű mondatok nincsenek bekötve. A felhasználási engedély a nyilvános terjesztés előtt nincs ellenőrizve.",
+  "note": "A hang nem választ útvonalat. A csomag eseménykonfigurációja nincs a projektben, ezért egyetlen fájl sincs manőverhez rendelve. A fájlnévben lévő szám nem kijárat és nem távolság. A felhasználási engedély nincs ellenőrizve.",
   "formats": ["ogg", "mp3", "m4a", "aac", "webm", "wav"],
-  "androidBrowser": "A feltöltött fájlok Ogg Vorbis, 22050 Hz, mono hangok. Ezt a Chrome Android le tudja játszani.",
-  "slots": [
-    {
-      "id": "jobbra",
-      "file": "clips/and_then_exit_left_18.ogg",
-      "event": "Jobbra",
-      "heard": "Menj el jobbra!"
-    },
-    {
-      "id": "balra-elesen",
-      "file": "clips/and_then_exit_left_63.ogg",
-      "event": "Élesen balra",
-      "heard": "Balra élesen"
-    },
-    {
-      "id": "ujratervezes",
-      "file": "clips/Hhh újra tervezés.ogg",
-      "event": "Újratervezés",
-      "heard": "újra tervezés"
-    }
-  ]
+  "androidBrowser": "A hang/clips fájlok Ogg Vorbis, 22050 Hz, mono hangok. A Chrome Android ezt le tudja játszani.",
+  "slots": []
 }
