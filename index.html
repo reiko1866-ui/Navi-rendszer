@@ -114,6 +114,38 @@
         .voice-row span { flex: 1; min-width: 0; font-size: 12px; line-height: 1.3; }
         .voice-row input { width: 118px; font-size: 12px; }
         .voice-row small { flex: none; width: 52px; font-size: 11px; opacity: 0.75; text-align: right; }
+
+        #assign-open { min-height: 40px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.18); background: rgba(62,198,255,0.16); font-weight: 700; }
+        #assign-panel {
+            position: fixed; inset: 0; z-index: 8; display: flex; flex-direction: column;
+            background: rgba(7, 16, 28, 0.98); color: #fff;
+        }
+        #assign-panel[hidden] { display: none; }
+        #assign-head, #assign-toolsbar, #assign-bulk {
+            flex: none; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+            padding: 8px 10px; background: rgba(0,0,0,0.25);
+        }
+        #assign-head h2 { margin: 0; font-size: 16px; flex: 1; }
+        #assign-counts, #assign-bulk-note, .assign-transcript, .assign-twin, .assign-hint, .assign-state {
+            margin: 4px 0; font-size: 12px; line-height: 1.35;
+        }
+        #assign-search, #assign-filter, #assign-mode, #assign-panel select, #assign-panel input {
+            min-height: 36px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.08); color: #fff; padding: 4px 8px;
+        }
+        #assign-search { flex: 1; min-width: 140px; }
+        #assign-list { flex: 1; overflow: auto; padding: 0 10px 16px; -webkit-overflow-scrolling: touch; }
+        .assign-row { padding: 10px 0; border-top: 1px solid rgba(255,255,255,0.12); }
+        .assign-head { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; }
+        .assign-actions, .assign-tools, .assign-extra { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+        #assign-panel button {
+            min-height: 36px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.08); padding: 4px 10px;
+        }
+        .assign-save { background: rgba(62,198,255,0.2); }
+        .assign-state { font-weight: 700; }
+        #assign-bulk { position: sticky; bottom: 0; }
+
         #goal-attr { margin: 0; font-size: 10px; line-height: 1.35; opacity: 0.72; }
         #goal-attr a { color: #9be7ff; }
         #speed-pill {
@@ -235,7 +267,8 @@
                 <details id="voice-box">
                     <summary>Hangok</summary>
                     <div id="voice-body">
-                        <p id="voice-note">A hang a leirat szerinti helyzetben szól. Ami kérdéses, az csendben marad. Az útvonalat nem a hang dönti el.</p>
+                        <p id="voice-note">A mentett hang a felismert eseménynél szól. A javaslat jóváhagyás nélkül csendben marad. Az útvonalat nem a hang dönti el.</p>
+                        <button id="assign-open" type="button">Hangok kézi hozzárendelése</button>
                         <label id="voice-enabled-row"><input id="voice-enabled" type="checkbox" checked> Hang be</label>
                         <label id="voice-volume-row">Hangerő <input id="voice-volume" type="range" min="0" max="100" value="100" aria-label="Hangerő"></label>
                         <div id="voice-slots"></div>
@@ -273,6 +306,48 @@
         </div>
         <p id="car-credit"></p>
     </section>
+
+    <section id="assign-panel" hidden aria-label="Hangok kézi hozzárendelése">
+        <div id="assign-head">
+            <h2>Hangok kézi hozzárendelése</h2>
+            <button id="assign-close" type="button">Bezár</button>
+        </div>
+        <div id="assign-toolsbar">
+            <p id="assign-counts"></p>
+            <input id="assign-search" type="search" placeholder="Fájlnév vagy átirat" aria-label="Keresés a hangok között">
+            <select id="assign-filter" aria-label="Szűrés">
+                <option value="mind">Minden fájl</option>
+                <option value="varo">Hozzárendelésre vár</option>
+                <option value="ellenorzes">Ellenőrzést igényel</option>
+                <option value="mentve">Mentve</option>
+                <option value="jovahagyott">Jóváhagyott, szólhat</option>
+                <option value="hianyzo">Felismerés hiányzik</option>
+            </select>
+            <label>Több hangnál
+                <select id="assign-mode" aria-label="Lejátszási mód">
+                    <option value="felvaltva">Felváltva</option>
+                    <option value="ugyanaz">Mindig ugyanaz</option>
+                    <option value="veletlen">Véletlenszerűen</option>
+                </select>
+            </label>
+            <label><input id="assign-mode-one" type="checkbox"> Csak a lenti eseményre</label>
+            <button id="assign-export" type="button">Hozzárendelés letöltése</button>
+            <button id="assign-reset" type="button">Vissza a kiinduló fájlhoz</button>
+        </div>
+        <div id="assign-list"></div>
+        <div id="assign-bulk">
+            <span id="assign-selected">0 kijelölve</span>
+            <select id="assign-bulk-event" aria-label="Csoportos esemény"></select>
+            <label id="assign-bulk-custom-wrap" hidden>Saját eseménynév <input id="assign-bulk-custom" placeholder="Saját eseménynév"></label>
+            <label>Megjegyzés <input id="assign-bulk-note-input" placeholder="Megjegyzés"></label>
+            <label>Sorrend <input id="assign-bulk-order" type="number" value="0"></label>
+            <label id="assign-bulk-prev-wrap" hidden>Melyik fájl után <input id="assign-bulk-prev" placeholder="hang/clips/fajl.ogg"></label>
+            <button id="assign-bulk-check" type="button">Hány fájlt érint?</button>
+            <p id="assign-bulk-note"></p>
+            <button id="assign-bulk-save" type="button" hidden>Mentés</button>
+        </div>
+    </section>
+
     <div id="fail"></div>
 
 <script>
@@ -6766,19 +6841,336 @@
         if (man && gpsOnRoute) considerVoice(man);
     }
 
+    function voiceEventList(extra) {
+        var list = [
+            { id: "nincs", nev: "Még nincs hozzárendelve", felismeres: "nincs" },
+            { id: "indulas", nev: "Indulás", felismeres: "mukodik" },
+            { id: "utvonal_kesz", nev: "Útvonaltervezés kész", felismeres: "mukodik" },
+            { id: "egyenes", nev: "Egyenes haladás", felismeres: "mukodik" },
+            { id: "balra", nev: "Balra fordulás", felismeres: "mukodik" },
+            { id: "jobbra", nev: "Jobbra fordulás", felismeres: "mukodik" },
+            { id: "enyhen_balra", nev: "Enyhe balra", felismeres: "mukodik" },
+            { id: "enyhen_jobbra", nev: "Enyhe jobbra", felismeres: "mukodik" },
+            { id: "elesen_balra", nev: "Éles balra", felismeres: "mukodik" },
+            { id: "elesen_jobbra", nev: "Éles jobbra", felismeres: "mukodik" },
+            { id: "vissza", nev: "Visszafordulás", felismeres: "mukodik" },
+            { id: "korforgalom", nev: "Körforgalom megközelítése", felismeres: "mukodik" },
+            { id: "korforgalom_kijarat", nev: "Körforgalmi kijárat", felismeres: "mukodik" },
+            { id: "folytatas", nev: "Manőver utáni folytatás", felismeres: "mukodik" },
+            { id: "ujratervezes", nev: "Újratervezés", felismeres: "mukodik" },
+            { id: "rossz_irany", nev: "Rossz irány / letérés az útvonalról", felismeres: "mukodik" },
+            { id: "gps_hiany", nev: "GPS-jel elvesztése vagy gyengesége", felismeres: "mukodik" },
+            { id: "cel", nev: "Célhoz érkezés", felismeres: "mukodik" },
+            { id: "dugo", nev: "Forgalmi dugó", felismeres: "hianyzik" },
+            { id: "sebesseghatar", nev: "Sebességhatár túllépése", felismeres: "hianyzik" },
+            { id: "kommentar", nev: "Általános navigációs kommentár", felismeres: "hianyzik" },
+            { id: "masik_folytatas", nev: "Egy másik hang folytatása", felismeres: "mukodik" },
+            { id: "egyeb", nev: "Egyéb, saját esemény", felismeres: "hianyzik" }
+        ];
+        var seen = {};
+        var i;
+        for (i = 0; i < list.length; i++) seen[list[i].id] = 1;
+        var more = extra || [];
+        for (i = 0; i < more.length; i++) {
+            if (!more[i] || !more[i].id || seen[more[i].id]) continue;
+            seen[more[i].id] = 1;
+            list.push({ id: more[i].id, nev: more[i].nev || more[i].id, felismeres: "hianyzik" });
+        }
+        return list;
+    }
+
+    function voiceRecognition(eventId) {
+        if (!eventId || eventId === "nincs") return "nincs";
+        var list = voiceEventList();
+        var i;
+        for (i = 0; i < list.length; i++) if (list[i].id === eventId) return list[i].felismeres;
+        if (String(eventId).indexOf("egyeb:") === 0) return "hianyzik";
+        return "hianyzik";
+    }
+
+    function voiceNormText(text) {
+        return String(text || "").toLowerCase()
+            .replace(/á/g, "a").replace(/é/g, "e").replace(/í/g, "i")
+            .replace(/ó/g, "o").replace(/ö/g, "o").replace(/ő/g, "o")
+            .replace(/ú/g, "u").replace(/ü/g, "u").replace(/ű/g, "u");
+    }
+
+    function voiceSlug(name) {
+        var text = voiceNormText(name).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+        return text || "esemeny";
+    }
+
+    function voiceBaseName(path) {
+        var parts = String(path || "").split("/");
+        return parts.length ? parts[parts.length - 1] : "";
+    }
+
+    function voiceManualClone(doc) {
+        return JSON.parse(JSON.stringify(doc));
+    }
+
+    function voiceManualBlank(hangok) {
+        var tetelek = [];
+        var rows = hangok || [];
+        var i;
+        for (i = 0; i < rows.length; i++) {
+            tetelek.push({ utvonal: rows[i].utvonal, esemeny: "", sajat_nev: "", megjegyzes: "", allapot: "nincs", sorrend: 0, elozo: "" });
+        }
+        return { verzio: 1, alap_mod: "felvaltva", modok: {}, egyeb_esemenyek: [], tetelek: tetelek };
+    }
+
+    function voiceManualEnsure(doc, hangok) {
+        var next = voiceManualClone(doc || voiceManualBlank(hangok));
+        if (!Array.isArray(next.tetelek)) next.tetelek = [];
+        var by = {};
+        var i;
+        for (i = 0; i < next.tetelek.length; i++) by[next.tetelek[i].utvonal] = next.tetelek[i];
+        var list = [];
+        var rows = hangok || [];
+        for (i = 0; i < rows.length; i++) {
+            var path = rows[i].utvonal;
+            if (by[path]) list.push(by[path]);
+            else list.push({ utvonal: path, esemeny: "", sajat_nev: "", megjegyzes: "", allapot: "nincs", sorrend: 0, elozo: "" });
+        }
+        next.tetelek = list;
+        if (!next.modok) next.modok = {};
+        if (!Array.isArray(next.egyeb_esemenyek)) next.egyeb_esemenyek = [];
+        if (!next.alap_mod) next.alap_mod = "felvaltva";
+        return next;
+    }
+
+    function voiceManualMerge(base, overlay) {
+        var next = voiceManualClone(base);
+        if (!next.modok) next.modok = {};
+        if (!Array.isArray(next.egyeb_esemenyek)) next.egyeb_esemenyek = [];
+        if (!overlay || !Array.isArray(overlay.tetelek)) return next;
+        var by = {};
+        var i;
+        for (i = 0; i < next.tetelek.length; i++) by[next.tetelek[i].utvonal] = next.tetelek[i];
+        for (i = 0; i < overlay.tetelek.length; i++) {
+            var row = overlay.tetelek[i];
+            var dest = row && by[row.utvonal];
+            if (!dest) continue;
+            dest.esemeny = row.esemeny || "";
+            dest.sajat_nev = row.sajat_nev || "";
+            dest.megjegyzes = row.megjegyzes || "";
+            dest.allapot = row.allapot || "nincs";
+            dest.sorrend = typeof row.sorrend === "number" ? row.sorrend : 0;
+            dest.elozo = row.elozo || "";
+        }
+        if (overlay.alap_mod === "ugyanaz" || overlay.alap_mod === "felvaltva" || overlay.alap_mod === "veletlen") next.alap_mod = overlay.alap_mod;
+        if (overlay.modok) next.modok = voiceManualClone(overlay.modok);
+        if (Array.isArray(overlay.egyeb_esemenyek)) next.egyeb_esemenyek = voiceManualClone(overlay.egyeb_esemenyek);
+        return next;
+    }
+
+    function voiceManualUpsert(doc, path, fields) {
+        if (!doc || !Array.isArray(doc.tetelek)) return { doc: doc, error: "Nincs hozzárendelési fájl.", applied: 0 };
+        var exists = false;
+        var i;
+        for (i = 0; i < doc.tetelek.length; i++) if (doc.tetelek[i].utvonal === path) exists = true;
+        if (!exists) return { doc: doc, error: "Ismeretlen hangfájl.", applied: 0 };
+        var eventId = fields && fields.esemeny ? String(fields.esemeny) : "";
+        var custom = fields && fields.sajat_nev ? String(fields.sajat_nev).replace(/^\s+|\s+$/g, "") : "";
+        var note = fields && fields.megjegyzes ? String(fields.megjegyzes) : "";
+        var order = fields && typeof fields.sorrend === "number" && isFinite(fields.sorrend) ? Math.round(fields.sorrend) : 0;
+        var prev = fields && fields.elozo ? String(fields.elozo) : "";
+        if (eventId === "egyeb" && !custom) return { doc: doc, error: "Az egyéb eseményhez név kell.", applied: 0 };
+        var next = voiceManualClone(doc);
+        if (!Array.isArray(next.egyeb_esemenyek)) next.egyeb_esemenyek = [];
+        var row = null;
+        for (i = 0; i < next.tetelek.length; i++) if (next.tetelek[i].utvonal === path) row = next.tetelek[i];
+        if (eventId === "egyeb") {
+            var id = "egyeb:" + voiceSlug(custom);
+            var found = null;
+            for (i = 0; i < next.egyeb_esemenyek.length; i++) if (next.egyeb_esemenyek[i].id === id) found = next.egyeb_esemenyek[i];
+            if (found && found.nev !== custom) {
+                var n = 2;
+                var alt = id;
+                while (true) {
+                    alt = id + "-" + n;
+                    var clash = false;
+                    for (i = 0; i < next.egyeb_esemenyek.length; i++) if (next.egyeb_esemenyek[i].id === alt) clash = true;
+                    if (!clash) break;
+                    n += 1;
+                }
+                id = alt;
+                next.egyeb_esemenyek.push({ id: id, nev: custom });
+            } else if (!found) next.egyeb_esemenyek.push({ id: id, nev: custom });
+            eventId = id;
+        }
+        if (!eventId || eventId === "nincs") {
+            row.esemeny = "";
+            row.sajat_nev = "";
+            row.megjegyzes = "";
+            row.sorrend = 0;
+            row.elozo = "";
+            row.allapot = "nincs";
+            return { doc: next, error: "", applied: 1 };
+        }
+        row.esemeny = eventId;
+        row.sajat_nev = custom;
+        row.megjegyzes = note;
+        row.sorrend = order;
+        row.elozo = prev;
+        row.allapot = "mentve";
+        return { doc: next, error: "", applied: 1 };
+    }
+
+    function voiceManualClear(doc, path) {
+        return voiceManualUpsert(doc, path, { esemeny: "nincs" });
+    }
+
+    function voiceGroupTouchCount(paths) {
+        var seen = {};
+        var n = 0;
+        var i;
+        var list = paths || [];
+        for (i = 0; i < list.length; i++) {
+            if (!list[i] || seen[list[i]]) continue;
+            seen[list[i]] = 1;
+            n += 1;
+        }
+        return n;
+    }
+
+    function voiceManualGroup(doc, paths, fields) {
+        var count = voiceGroupTouchCount(paths);
+        var next = doc;
+        var seen = {};
+        var i;
+        var list = paths || [];
+        for (i = 0; i < list.length; i++) {
+            if (!list[i] || seen[list[i]]) continue;
+            seen[list[i]] = 1;
+            var step = voiceManualUpsert(next, list[i], fields);
+            if (step.error) return { doc: doc, error: step.error, applied: 0, darab: count };
+            next = step.doc;
+        }
+        return { doc: next, error: "", applied: count, darab: count };
+    }
+
+    function voiceManualSetMode(doc, eventId, mode) {
+        if (mode !== "ugyanaz" && mode !== "felvaltva" && mode !== "veletlen") return { doc: doc, error: "Ismeretlen mód." };
+        var next = voiceManualClone(doc);
+        if (!next.modok) next.modok = {};
+        if (!eventId || eventId === "nincs" || eventId === "egyeb") {
+            next.alap_mod = mode;
+            next.modok = {};
+            return { doc: next, error: "" };
+        }
+        next.modok[eventId] = mode;
+        return { doc: next, error: "" };
+    }
+
+    function voiceAssignCounts(tetelek) {
+        var out = { osszes: 0, hozzarendelt: 0, varo: 0, jovahagyott: 0, hianyzo: 0 };
+        var rows = tetelek || [];
+        var i;
+        out.osszes = rows.length;
+        for (i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var ev = row.esemeny || "";
+            var st = row.allapot || "nincs";
+            var has = !!(ev && ev !== "nincs" && st !== "nincs");
+            if (has) out.hozzarendelt += 1;
+            else out.varo += 1;
+            var rec = voiceRecognition(ev);
+            if (st === "mentve" && rec === "mukodik") out.jovahagyott += 1;
+            if (has && rec === "hianyzik") out.hianyzo += 1;
+        }
+        return out;
+    }
+
+    function voiceCountText(counts) {
+        return "Összes " + counts.osszes
+            + ". Hozzárendelt " + counts.hozzarendelt
+            + ". Hozzárendelésre vár " + counts.varo
+            + ". Jóváhagyott, szólhat " + counts.jovahagyott
+            + ". Felismerés hiányzik " + counts.hianyzo + ".";
+    }
+
+    function voiceSimilarPaths(rows, path) {
+        var src = null;
+        var i;
+        var list = rows || [];
+        for (i = 0; i < list.length; i++) if (list[i].utvonal === path) src = list[i];
+        if (!src) return [];
+        var key = voiceNormText(src.leirat);
+        if (key.replace(/[^a-z0-9]/g, "").length < 6) return [path];
+        var out = [];
+        for (i = 0; i < list.length; i++) if (voiceNormText(list[i].leirat) === key) out.push(list[i].utvonal);
+        return out;
+    }
+
+    function voiceSameAudioPaths(rows, path) {
+        var src = null;
+        var i;
+        var list = rows || [];
+        for (i = 0; i < list.length; i++) if (list[i].utvonal === path) src = list[i];
+        if (!src) return [];
+        if (!src.md5) return [path];
+        var out = [];
+        for (i = 0; i < list.length; i++) if (list[i].md5 === src.md5) out.push(list[i].utvonal);
+        return out;
+    }
+
+    function voiceLiveEvent(rec) {
+        if (!rec) return { allapot: "nincs", esemeny: "", sorrend: 0, elozo: "" };
+        if (rec.kezi_allapot || rec.kezi_esemeny || rec.kezi_elozo) {
+            return {
+                allapot: rec.kezi_allapot || "nincs",
+                esemeny: rec.kezi_esemeny || "",
+                sorrend: typeof rec.kezi_sorrend === "number" ? rec.kezi_sorrend : 0,
+                elozo: rec.kezi_elozo || ""
+            };
+        }
+        return {
+            allapot: rec.allapot || "nincs",
+            esemeny: rec.esemeny || "",
+            sorrend: typeof rec.sorrend === "number" ? rec.sorrend : 0,
+            elozo: rec.elozo || ""
+        };
+    }
+
+    function voiceRowsBuild(hangok, doc) {
+        var by = {};
+        var tetelek = doc && doc.tetelek ? doc.tetelek : [];
+        var i;
+        for (i = 0; i < tetelek.length; i++) by[tetelek[i].utvonal] = tetelek[i];
+        var rows = [];
+        var src = hangok || [];
+        for (i = 0; i < src.length; i++) {
+            var saved = by[src[i].utvonal] || { esemeny: "", allapot: "nincs", sajat_nev: "", megjegyzes: "", sorrend: 0, elozo: "" };
+            rows.push({
+                utvonal: src[i].utvonal,
+                leirat: src[i].leirat || "",
+                ismetelt_leirat_small: src[i].ismetelt_leirat_small || "",
+                ismetelt_leirat_medium: src[i].ismetelt_leirat_medium || "",
+                md5: src[i].md5 || "",
+                azonos_bajtu_tovabbi_fajlok: src[i].azonos_bajtu_tovabbi_fajlok || [],
+                kezi_esemeny: saved.esemeny || "",
+                kezi_allapot: saved.allapot || "nincs",
+                kezi_sajat_nev: saved.sajat_nev || "",
+                kezi_megjegyzes: saved.megjegyzes || "",
+                kezi_sorrend: typeof saved.sorrend === "number" ? saved.sorrend : 0,
+                kezi_elozo: saved.elozo || ""
+            });
+        }
+        return rows;
+    }
+
     function voiceEventFor(man) {
         if (!man) return "";
         if (man.kind === "reroute") return "ujratervezes";
+        if (man.kind === "rossz_irany") return "rossz_irany";
         if (man.kind === "indulas") return "indulas";
+        if (man.kind === "utvonal_kesz") return "utvonal_kesz";
         if (man.kind === "gps") return "gps_hiany";
         var type = man.type || "";
         if (type === "arrive") return "cel";
-        if (type === "exit roundabout" || type === "exit rotary") return "";
-        if (type === "roundabout" || type === "rotary") {
-            var exitN = roundaboutExit(man);
-            if (exitN && typeof voiceQueues !== "undefined" && voiceQueues["korforgalom_" + exitN] && voiceQueues["korforgalom_" + exitN].length) return "korforgalom_" + exitN;
-            return "korforgalom";
-        }
+        if (type === "exit roundabout" || type === "exit rotary") return "korforgalom_kijarat";
+        if (type === "roundabout" || type === "rotary") return "korforgalom";
         var mod = man.modifier || "";
         if (mod === "sharp left") return "elesen_balra";
         if (mod === "left") return "balra";
@@ -6805,42 +7197,28 @@
 
     function voiceQueueFrom(records) {
         var buckets = {};
+        var rows = records || [];
         var i;
-        for (i = 0; i < records.length; i++) {
-            var rec = records[i];
-            if (!rec || rec.allapot !== "bekotve" || !rec.helyzet || rec.szerep === "folytatas") continue;
-            if (!buckets[rec.helyzet]) buckets[rec.helyzet] = [];
-            buckets[rec.helyzet].push(rec);
+        for (i = 0; i < rows.length; i++) {
+            var live = voiceLiveEvent(rows[i]);
+            if (live.allapot !== "mentve") continue;
+            if (!live.esemeny || live.esemeny === "nincs" || live.esemeny === "folytatas" || live.esemeny === "masik_folytatas") continue;
+            if (voiceRecognition(live.esemeny) !== "mukodik") continue;
+            if (!buckets[live.esemeny]) buckets[live.esemeny] = [];
+            buckets[live.esemeny].push(rows[i]);
         }
         var names = Object.keys(buckets);
         for (i = 0; i < names.length; i++) {
             buckets[names[i]].sort(function (a, b) {
-                var rank = voiceRank(a) - voiceRank(b);
-                if (rank) return rank;
+                var as = voiceLiveEvent(a).sorrend;
+                var bs = voiceLiveEvent(b).sorrend;
+                if (as !== bs) return as - bs;
                 var ap = a.utvonal || "";
                 var bp = b.utvonal || "";
                 if (ap < bp) return -1;
                 if (ap > bp) return 1;
                 return 0;
             });
-        }
-        var follow = {};
-        for (i = 0; i < records.length; i++) {
-            var clip = records[i];
-            if (!clip || clip.allapot !== "bekotve" || clip.szerep !== "folytatas" || !clip.helyzet) continue;
-            if (!follow[clip.helyzet]) follow[clip.helyzet] = [];
-            follow[clip.helyzet].push(clip);
-        }
-        names = Object.keys(follow);
-        for (i = 0; i < names.length; i++) {
-            follow[names[i]].sort(function (a, b) {
-                var ap = a.utvonal || "";
-                var bp = b.utvonal || "";
-                if (ap < bp) return -1;
-                if (ap > bp) return 1;
-                return 0;
-            });
-            buckets["folytatas:" + names[i]] = follow[names[i]];
         }
         return buckets;
     }
@@ -6851,6 +7229,31 @@
         var i = cursor % n;
         if (i < 0) i += n;
         return { index: i, item: queue[i], next: (i + 1) % n };
+    }
+
+    function voicePickMode(queue, cursor, mode, lastPath, rng) {
+        if (!queue || !queue.length) return null;
+        var pool = [];
+        var i;
+        for (i = 0; i < queue.length; i++) {
+            if (lastPath && queue.length > 1 && queue[i].utvonal === lastPath) continue;
+            pool.push(queue[i]);
+        }
+        if (!pool.length) pool = queue;
+        if (mode === "ugyanaz") return { index: 0, item: queue[0], next: 0 };
+        if (mode === "veletlen") {
+            var roll = typeof rng === "function" ? rng() : 0;
+            if (!(roll >= 0) || roll >= 1) roll = 0;
+            var pick = Math.floor(roll * pool.length);
+            if (pick < 0) pick = 0;
+            if (pick >= pool.length) pick = pool.length - 1;
+            return { index: pick, item: pool[pick], next: 0 };
+        }
+        var n = queue.length;
+        var index = cursor % n;
+        if (index < 0) index += n;
+        if (lastPath && n > 1 && queue[index] && queue[index].utvonal === lastPath) index = (index + 1) % n;
+        return { index: index, item: queue[index], next: (index + 1) % n };
     }
 
     function voiceGain(muted, level) {
@@ -6871,7 +7274,8 @@
 
     function voiceCueKey(man, slot, alongNow) {
         if (!slot) return "";
-        if (man && (man.kind === "reroute" || man.kind === "indulas" || man.kind === "gps")) return slot + "@" + String(man.seq || 0);
+        var kind = man && man.kind;
+        if (kind === "reroute" || kind === "indulas" || kind === "utvonal_kesz" || kind === "gps" || kind === "rossz_irany") return slot + "@" + String(man.seq || 0);
         var meters = man && typeof man.meters === "number" ? man.meters : 0;
         var target = (typeof alongNow === "number" ? alongNow : 0) + meters;
         return slot + "@" + (Math.round(target / 40) * 40);
@@ -6882,9 +7286,57 @@
         if (opts.muted) return false;
         if (opts.busy) return false;
         if (opts.key === opts.lastKey) return false;
-        if (opts.kind === "reroute" || opts.kind === "indulas" || opts.kind === "gps") return true;
+        var kind = opts.kind || "";
+        if (kind === "reroute" || kind === "indulas" || kind === "utvonal_kesz" || kind === "gps" || kind === "rossz_irany") return true;
         if (typeof opts.meters !== "number" || opts.meters > 400 || opts.meters < 20) return false;
         return true;
+    }
+
+    function voiceTakeFollows() {
+        var list = [];
+        var rows = voiceRows || [];
+        var i;
+        for (i = 0; i < rows.length; i++) {
+            var live = voiceLiveEvent(rows[i]);
+            if (live.allapot !== "mentve" || live.esemeny !== "folytatas") continue;
+            if (voiceRecognition(live.esemeny) !== "mukodik") continue;
+            list.push(rows[i]);
+        }
+        list.sort(function (a, b) {
+            var as = voiceLiveEvent(a).sorrend;
+            var bs = voiceLiveEvent(b).sorrend;
+            if (as !== bs) return as - bs;
+            var ap = a.utvonal || "";
+            var bp = b.utvonal || "";
+            if (ap < bp) return -1;
+            if (ap > bp) return 1;
+            return 0;
+        });
+        return list;
+    }
+
+    function voiceChainNext(records, currentPath) {
+        var list = [];
+        var rows = records || [];
+        var i;
+        for (i = 0; i < rows.length; i++) {
+            var live = voiceLiveEvent(rows[i]);
+            if (live.allapot !== "mentve" || live.esemeny !== "masik_folytatas") continue;
+            if (live.elozo !== currentPath) continue;
+            if (voiceRecognition(live.esemeny) !== "mukodik") continue;
+            list.push(rows[i]);
+        }
+        list.sort(function (a, b) {
+            var as = voiceLiveEvent(a).sorrend;
+            var bs = voiceLiveEvent(b).sorrend;
+            if (as !== bs) return as - bs;
+            var ap = a.utvonal || "";
+            var bp = b.utvonal || "";
+            if (ap < bp) return -1;
+            if (ap > bp) return 1;
+            return 0;
+        });
+        return list;
     }
 
     var voiceClips = {};
@@ -6899,6 +7351,18 @@
     var voicePending = null;
     var voiceGpsDown = false;
     var voiceGpsEpisode = 0;
+    var voiceRows = [];
+    var voiceCatalog = [];
+    var voiceManualDoc = null;
+    var voiceManualBase = null;
+    var voiceChain = [];
+    var voiceChainSeen = {};
+    var voiceHeld = null;
+    var voiceLastClip = {};
+    var voiceDriveSeq = -1;
+    var voicePreviewAudio = null;
+    var voicePreviewPath = "";
+    var voiceAssignBound = false;
 
     function voiceUrl(path) {
         var parts = String(path || "").split("/");
@@ -6907,30 +7371,59 @@
         return parts.join("/");
     }
 
-    function voiceStart(item, key) {
+    function voiceStopPreview() {
+        if (voicePreviewAudio && voicePreviewAudio.pause) voicePreviewAudio.pause();
+        voicePreviewPath = "";
+        voiceAssignPaintPlay();
+    }
+
+    function voiceStart(item, key, chaining) {
         if (!item || !item.utvonal) return;
+        voiceStopPreview();
         voiceLastKey = key;
         voiceBusy = true;
         if (!voiceAudio) voiceAudio = new Audio();
+        if (!chaining) {
+            voiceChain = [];
+            voiceChainSeen = {};
+            var follows = voiceTakeFollows();
+            var n;
+            for (n = 0; n < follows.length; n++) {
+                voiceChainSeen[follows[n].utvonal] = 1;
+                voiceChain.push(follows[n]);
+            }
+        }
         voiceAudio.onended = function () {
             voiceBusy = false;
-            var pending = voicePending;
-            voicePending = null;
-            if (!pending || item.szerep === "folytatas") return;
-            var bucket = voiceQueues["folytatas:" + pending.nextEvent];
-            var picked = voicePick(bucket, voiceCursor["folytatas:" + pending.nextEvent] || 0);
-            if (!picked || !voiceFollowOk({ muted: voiceMuted, busy: false, nextEvent: pending.nextEvent, clip: picked.item, followed: false })) return;
-            voiceCursor["folytatas:" + pending.nextEvent] = picked.next;
-            voiceStart(picked.item, "folytatas@" + pending.key);
+            var more = voiceChainNext(voiceRows, item.utvonal);
+            var i;
+            for (i = 0; i < more.length; i++) {
+                if (voiceChainSeen[more[i].utvonal]) continue;
+                voiceChainSeen[more[i].utvonal] = 1;
+                voiceChain.push(more[i]);
+            }
+            if (voiceChain.length) {
+                var nxt = voiceChain.shift();
+                voiceStart(nxt, "lanc@" + String(nxt.utvonal || ""), true);
+                return;
+            }
+            var held = voiceHeld;
+            voiceHeld = null;
+            if (held) considerVoice(held);
         };
-        voiceAudio.onerror = function () { voiceBusy = false; voicePending = null; };
+        voiceAudio.onerror = function () { voiceBusy = false; voiceChain = []; voiceHeld = null; };
         voiceAudio.volume = voiceGain(voiceMuted, voiceLevel);
         voiceAudio.src = voiceUrl(item.utvonal);
         var played = voiceAudio.play();
-        if (played && played.catch) played.catch(function () { voiceBusy = false; voicePending = null; });
+        if (played && played.catch) played.catch(function () { voiceBusy = false; voiceChain = []; voiceHeld = null; });
     }
 
     function considerVoice(man) {
+        if (!man || voiceMuted) return;
+        if (voiceBusy) {
+            if (!voiceHeld) voiceHeld = man;
+            return;
+        }
         var slot = voiceEventFor(man);
         var alongNow = curve && curve.total && typeof travel === "number" ? travel * curve.total : 0;
         var key = voiceCueKey(man, slot, alongNow);
@@ -6944,17 +7437,537 @@
             meters: meters,
             kind: man && man.kind
         })) return;
-        var picked = voicePick(voiceQueues[slot], voiceCursor[slot] || 0);
+        var mode = voiceManualDoc && voiceManualDoc.alap_mod ? voiceManualDoc.alap_mod : "felvaltva";
+        if (voiceManualDoc && voiceManualDoc.modok && voiceManualDoc.modok[slot]) mode = voiceManualDoc.modok[slot];
+        var picked = voicePickMode(voiceQueues[slot], voiceCursor[slot] || 0, mode, voiceLastClip[slot] || "", Math.random);
         if (!picked) return;
         voiceCursor[slot] = picked.next;
-        var nextEvent = "";
-        if (man && man.kind !== "reroute" && man.kind !== "indulas" && man.kind !== "gps" && typeof travel === "number") {
-            nextEvent = voiceEventFor(followingManeuver(travel));
-        }
-        voicePending = picked.item.szerep === "folytatas" || !nextEvent ? null : { key: key, nextEvent: nextEvent };
-        voiceStart(picked.item, key);
+        voiceLastClip[slot] = picked.item.utvonal || "";
+        voiceStart(picked.item, key, false);
     }
 
+    function voiceStateLabel(row) {
+        var live = voiceLiveEvent(row);
+        if (live.allapot === "ellenorzes") return "Ellenőrzést igényel";
+        if (live.allapot === "mentve") {
+            if (voiceRecognition(live.esemeny) === "hianyzik") return "Mentve. Az eseményfelismerés még hiányzik.";
+            return "Mentve";
+        }
+        return "Nincs hozzárendelve";
+    }
+
+    function voiceEventHint(eventId) {
+        var rec = voiceRecognition(eventId);
+        if (rec === "hianyzik") return "Az eseményfelismerés még hiányzik. A mentés nem indít lejátszást.";
+        if (!eventId || eventId === "nincs") return "Még nincs hozzárendelve.";
+        return "Ehhez az eseményhez van felismerés. A mentés után szólhat.";
+    }
+
+    function voiceManualReadStore() {
+        try {
+            var raw = localStorage.getItem("toonnav-voice-manual");
+            if (!raw) return null;
+            var data = JSON.parse(raw);
+            if (!data || !Array.isArray(data.tetelek)) return null;
+            return data;
+        } catch (err) {
+            return null;
+        }
+    }
+
+    function voiceManualWriteStore(doc) {
+        try { localStorage.setItem("toonnav-voice-manual", JSON.stringify(doc)); } catch (err) {}
+    }
+
+    function voiceApplyManual(doc) {
+        voiceManualDoc = doc;
+        voiceManualWriteStore(doc);
+        voiceRows = voiceRowsBuild(voiceCatalog, doc);
+        voiceQueues = voiceQueueFrom(voiceRows);
+        voiceAssignPaintAll();
+    }
+
+    function voiceAssignFillSelect(select, value) {
+        var extra = voiceManualDoc && voiceManualDoc.egyeb_esemenyek ? voiceManualDoc.egyeb_esemenyek : [];
+        var list = voiceEventList(extra);
+        var current = select.value;
+        select.textContent = "";
+        var i;
+        for (i = 0; i < list.length; i++) {
+            var opt = document.createElement("option");
+            opt.value = list[i].id;
+            var label = list[i].nev;
+            if (list[i].felismeres === "hianyzik") label += " (az eseményfelismerés még hiányzik)";
+            opt.textContent = label;
+            select.appendChild(opt);
+        }
+        var wanted = value || current || "nincs";
+        select.value = wanted;
+        if (select.value !== wanted) select.value = "nincs";
+    }
+
+    function voiceAssignSyncRow(art, row) {
+        var select = art.querySelector(".assign-event");
+        var live = voiceLiveEvent(row);
+        var value = live.esemeny || "nincs";
+        if (live.allapot === "nincs") value = "nincs";
+        voiceAssignFillSelect(select, value);
+        art.querySelector(".assign-custom").value = row.kezi_sajat_nev || "";
+        art.querySelector(".assign-note").value = row.kezi_megjegyzes || "";
+        art.querySelector(".assign-order").value = String(row.kezi_sorrend || 0);
+        art.querySelector(".assign-prev").value = row.kezi_elozo || "";
+        art.querySelector(".assign-state").textContent = voiceStateLabel(row);
+        art.querySelector(".assign-hint").textContent = voiceEventHint(select.value);
+        var showCustom = select.value === "egyeb" || String(select.value).indexOf("egyeb:") === 0;
+        var showPrev = select.value === "masik_folytatas";
+        art.querySelector(".assign-custom-wrap").hidden = !showCustom;
+        art.querySelector(".assign-prev-wrap").hidden = !showPrev;
+    }
+
+    function voiceAssignPaintPlay() {
+        var buttons = document.querySelectorAll(".assign-play");
+        var i;
+        for (i = 0; i < buttons.length; i++) {
+            var art = buttons[i].closest(".assign-row");
+            var path = art ? art.getAttribute("data-path") : "";
+            var on = voicePreviewPath && path === voicePreviewPath;
+            buttons[i].textContent = on ? "Megállítás" : "Lejátszás";
+            buttons[i].setAttribute("aria-pressed", on ? "true" : "false");
+        }
+    }
+
+    function voiceAssignPaintCounts() {
+        var counts = voiceAssignCounts(voiceManualDoc ? voiceManualDoc.tetelek : []);
+        var text = voiceCountText(counts);
+        var status = document.getElementById("voice-status");
+        var box = document.getElementById("assign-counts");
+        if (status) status.textContent = text;
+        if (box) box.textContent = text;
+    }
+
+    function voiceAssignApplyFilter() {
+        var query = "";
+        var filter = "mind";
+        var search = document.getElementById("assign-search");
+        var filterEl = document.getElementById("assign-filter");
+        if (search) query = search.value || "";
+        if (filterEl) filter = filterEl.value || "mind";
+        var arts = document.querySelectorAll("#assign-list .assign-row");
+        var i;
+        for (i = 0; i < arts.length; i++) {
+            var path = arts[i].getAttribute("data-path");
+            var row = null;
+            var n;
+            for (n = 0; n < voiceRows.length; n++) if (voiceRows[n].utvonal === path) row = voiceRows[n];
+            var live = voiceLiveEvent(row || {});
+            var rec = voiceRecognition(live.esemeny);
+            var show = true;
+            if (filter === "varo") show = live.allapot === "nincs" || !live.esemeny;
+            else if (filter === "ellenorzes") show = live.allapot === "ellenorzes";
+            else if (filter === "mentve") show = live.allapot === "mentve";
+            else if (filter === "jovahagyott") show = live.allapot === "mentve" && rec === "mukodik";
+            else if (filter === "hianyzo") show = !!(live.esemeny && live.allapot !== "nincs" && rec === "hianyzik");
+            if (show && query) {
+                var hay = voiceNormText([path, row && row.leirat, row && row.ismetelt_leirat_small, row && row.ismetelt_leirat_medium].join(" "));
+                show = hay.indexOf(voiceNormText(query)) >= 0;
+            }
+            arts[i].hidden = !show;
+        }
+    }
+
+    function voiceAssignMakeRow(row) {
+        var art = document.createElement("article");
+        art.className = "assign-row";
+        art.setAttribute("data-path", row.utvonal);
+        var head = document.createElement("label");
+        head.className = "assign-head";
+        var box = document.createElement("input");
+        box.type = "checkbox";
+        box.className = "assign-check";
+        var name = document.createElement("b");
+        name.textContent = voiceBaseName(row.utvonal);
+        head.appendChild(box);
+        head.appendChild(document.createTextNode(" "));
+        head.appendChild(name);
+        art.appendChild(head);
+        var transcript = document.createElement("p");
+        transcript.className = "assign-transcript";
+        transcript.textContent = row.leirat ? row.leirat : "Nincs átirat.";
+        art.appendChild(transcript);
+        var twins = row.azonos_bajtu_tovabbi_fajlok || [];
+        if (twins.length) {
+            var twin = document.createElement("p");
+            twin.className = "assign-twin";
+            var labels = [];
+            var t;
+            for (t = 0; t < twins.length; t++) labels.push(voiceBaseName(twins[t]));
+            twin.textContent = "Ugyanaz a hangadat, külön rekord: " + labels.join(", ");
+            art.appendChild(twin);
+        }
+        var actions = document.createElement("div");
+        actions.className = "assign-actions";
+        var play = document.createElement("button");
+        play.type = "button";
+        play.className = "assign-play";
+        play.textContent = "Lejátszás";
+        var select = document.createElement("select");
+        select.className = "assign-event";
+        select.setAttribute("aria-label", "Esemény");
+        var save = document.createElement("button");
+        save.type = "button";
+        save.className = "assign-save";
+        save.textContent = "Mentés";
+        var clear = document.createElement("button");
+        clear.type = "button";
+        clear.className = "assign-clear";
+        clear.textContent = "Törlés";
+        actions.appendChild(play);
+        actions.appendChild(select);
+        actions.appendChild(save);
+        actions.appendChild(clear);
+        art.appendChild(actions);
+        var extra = document.createElement("div");
+        extra.className = "assign-extra";
+        function field(className, placeholder, kind) {
+            var wrap = document.createElement("label");
+            wrap.className = className + "-wrap";
+            wrap.appendChild(document.createTextNode(placeholder + " "));
+            var input = document.createElement("input");
+            input.className = className;
+            input.placeholder = placeholder;
+            if (kind) input.type = kind;
+            wrap.appendChild(input);
+            extra.appendChild(wrap);
+            return wrap;
+        }
+        field("assign-custom", "Saját eseménynév");
+        field("assign-note", "Megjegyzés");
+        field("assign-order", "Sorrend", "number");
+        field("assign-prev", "Melyik fájl után");
+        art.appendChild(extra);
+        var hint = document.createElement("p");
+        hint.className = "assign-hint";
+        art.appendChild(hint);
+        var state = document.createElement("p");
+        state.className = "assign-state";
+        art.appendChild(state);
+        var tools = document.createElement("div");
+        tools.className = "assign-tools";
+        var similar = document.createElement("button");
+        similar.type = "button";
+        similar.className = "assign-similar";
+        similar.textContent = "Hasonló átirat kijelölése";
+        var same = document.createElement("button");
+        same.type = "button";
+        same.className = "assign-same";
+        same.textContent = "Azonos hangadat kijelölése";
+        tools.appendChild(similar);
+        tools.appendChild(same);
+        art.appendChild(tools);
+        voiceAssignSyncRow(art, row);
+        return art;
+    }
+
+    function voiceAssignRowByPath(path) {
+        var i;
+        for (i = 0; i < voiceRows.length; i++) if (voiceRows[i].utvonal === path) return voiceRows[i];
+        return null;
+    }
+
+    function voiceAssignPaintAll() {
+        voiceAssignPaintCounts();
+        var list = document.getElementById("assign-list");
+        if (!list || !voiceManualDoc) return;
+        var scroll = list.scrollTop;
+        var selected = {};
+        var old = list.querySelectorAll(".assign-check:checked");
+        var i;
+        for (i = 0; i < old.length; i++) {
+            var art = old[i].closest(".assign-row");
+            if (art) selected[art.getAttribute("data-path")] = 1;
+        }
+        list.textContent = "";
+        var frag = document.createDocumentFragment();
+        for (i = 0; i < voiceRows.length; i++) frag.appendChild(voiceAssignMakeRow(voiceRows[i]));
+        list.appendChild(frag);
+        list.setAttribute("data-count", String(voiceRows.length));
+        var boxes = list.querySelectorAll(".assign-check");
+        for (i = 0; i < boxes.length; i++) {
+            var rowArt = boxes[i].closest(".assign-row");
+            if (rowArt && selected[rowArt.getAttribute("data-path")]) boxes[i].checked = true;
+        }
+        var bulk = document.getElementById("assign-bulk-event");
+        if (bulk) voiceAssignFillSelect(bulk, bulk.value || "nincs");
+        var mode = document.getElementById("assign-mode");
+        if (mode && voiceManualDoc.alap_mod) mode.value = voiceManualDoc.alap_mod;
+        voiceAssignApplyFilter();
+        voiceAssignPaintPlay();
+        voiceAssignPaintSelected();
+        list.scrollTop = scroll;
+    }
+
+    function voiceAssignPaintSelected() {
+        var el = document.getElementById("assign-selected");
+        if (!el) return;
+        el.textContent = voiceGroupTouchCount(voiceAssignSelected()) + " kijelölve";
+    }
+
+    function voiceAssignSelected() {
+        var nodes = document.querySelectorAll("#assign-list .assign-check:checked");
+        var paths = [];
+        var i;
+        for (i = 0; i < nodes.length; i++) {
+            var art = nodes[i].closest(".assign-row");
+            if (!art) continue;
+            paths.push(art.getAttribute("data-path"));
+        }
+        return paths;
+    }
+
+    function voiceAssignCheckPaths(paths, note) {
+        var arts = document.querySelectorAll("#assign-list .assign-row");
+        var want = {};
+        var i;
+        for (i = 0; i < paths.length; i++) want[paths[i]] = 1;
+        for (i = 0; i < arts.length; i++) {
+            var box = arts[i].querySelector(".assign-check");
+            if (box) box.checked = !!want[arts[i].getAttribute("data-path")];
+        }
+        var info = document.getElementById("assign-bulk-note");
+        if (info) info.textContent = note;
+        var save = document.getElementById("assign-bulk-save");
+        if (save) save.hidden = true;
+        voiceAssignPaintSelected();
+    }
+
+    function voiceAssignPreview(path) {
+        if (!path) return;
+        if (!voicePreviewAudio) voicePreviewAudio = new Audio();
+        if (voicePreviewPath === path && voicePreviewAudio.paused === false) {
+            voicePreviewAudio.pause();
+            voicePreviewPath = "";
+            voiceAssignPaintPlay();
+            return;
+        }
+        if (voiceAudio && voiceAudio.pause && voiceAudio.paused === false) {
+            voiceAudio.pause();
+            voiceBusy = false;
+            voiceChain = [];
+            voiceHeld = null;
+        }
+        voicePreviewPath = path;
+        voicePreviewAudio.onended = function () {
+            voicePreviewPath = "";
+            voiceAssignPaintPlay();
+        };
+        voicePreviewAudio.volume = voiceGain(false, voiceLevel);
+        voicePreviewAudio.src = voiceUrl(path);
+        voiceAssignPaintPlay();
+        var played = voicePreviewAudio.play();
+        if (played && played.catch) played.catch(function () {
+            voicePreviewPath = "";
+            voiceAssignPaintPlay();
+        });
+    }
+
+    function voiceAssignFields(art) {
+        var order = Number(art.querySelector(".assign-order").value);
+        return {
+            esemeny: art.querySelector(".assign-event").value,
+            sajat_nev: art.querySelector(".assign-custom").value,
+            megjegyzes: art.querySelector(".assign-note").value,
+            sorrend: isFinite(order) ? order : 0,
+            elozo: art.querySelector(".assign-prev").value
+        };
+    }
+
+    function voiceAssignOpen() {
+        var panel = document.getElementById("assign-panel");
+        if (!panel) return;
+        panel.hidden = false;
+        var search = document.getElementById("assign-search");
+        if (search) search.focus();
+    }
+
+    function voiceAssignFromLink() {
+        var hash = "";
+        var query = "";
+        try {
+            hash = String(location.hash || "");
+            query = String(location.search || "");
+        } catch (err) {
+            return;
+        }
+        if (hash === "#hangok" || hash === "#beallitas" || query.indexOf("beallitas=hang") >= 0) voiceAssignOpen();
+    }
+
+    function voiceAssignBind() {
+        if (voiceAssignBound) return;
+        voiceAssignBound = true;
+        var open = document.getElementById("assign-open");
+        var panel = document.getElementById("assign-panel");
+        var close = document.getElementById("assign-close");
+        if (open && panel) open.addEventListener("click", voiceAssignOpen);
+        voiceAssignFromLink();
+        if (close && panel) close.addEventListener("click", function () {
+            panel.hidden = true;
+            voiceStopPreview();
+        });
+        var search = document.getElementById("assign-search");
+        var filter = document.getElementById("assign-filter");
+        if (search) search.addEventListener("input", voiceAssignApplyFilter);
+        if (filter) filter.addEventListener("change", voiceAssignApplyFilter);
+        var list = document.getElementById("assign-list");
+        if (list) {
+            list.addEventListener("click", function (event) {
+                var btn = event.target.closest("button");
+                if (!btn) return;
+                var art = event.target.closest(".assign-row");
+                if (!art) return;
+                var path = art.getAttribute("data-path");
+                if (btn.classList.contains("assign-play")) {
+                    voiceAssignPreview(path);
+                    return;
+                }
+                if (btn.classList.contains("assign-similar")) {
+                    var similar = voiceSimilarPaths(voiceRows, path);
+                    voiceAssignCheckPaths(similar, similar.length + " fájl kijelölve az átirat alapján. Mentés nem történt.");
+                    return;
+                }
+                if (btn.classList.contains("assign-same")) {
+                    var same = voiceSameAudioPaths(voiceRows, path);
+                    voiceAssignCheckPaths(same, same.length + " külön rekord ugyanazzal a hangadattal. Mentés nem történt.");
+                    return;
+                }
+                if (btn.classList.contains("assign-save")) {
+                    var step = voiceManualUpsert(voiceManualDoc, path, voiceAssignFields(art));
+                    var hint = art.querySelector(".assign-hint");
+                    if (step.error) {
+                        if (hint) hint.textContent = step.error;
+                        return;
+                    }
+                    voiceApplyManual(step.doc);
+                    return;
+                }
+                if (btn.classList.contains("assign-clear")) {
+                    var cleared = voiceManualClear(voiceManualDoc, path);
+                    if (!cleared.error) voiceApplyManual(cleared.doc);
+                }
+            });
+            list.addEventListener("change", function (event) {
+                var art = event.target.closest(".assign-row");
+                if (!art) return;
+                if (event.target.classList && event.target.classList.contains("assign-event")) {
+                    var row = voiceAssignRowByPath(art.getAttribute("data-path"));
+                    if (row) {
+                        var copy = {
+                            utvonal: row.utvonal,
+                            leirat: row.leirat,
+                            kezi_esemeny: event.target.value,
+                            kezi_allapot: row.kezi_allapot,
+                            kezi_sajat_nev: art.querySelector(".assign-custom").value,
+                            kezi_megjegyzes: art.querySelector(".assign-note").value,
+                            kezi_sorrend: Number(art.querySelector(".assign-order").value) || 0,
+                            kezi_elozo: art.querySelector(".assign-prev").value
+                        };
+                        art.querySelector(".assign-hint").textContent = voiceEventHint(event.target.value);
+                        var showCustom = event.target.value === "egyeb" || String(event.target.value).indexOf("egyeb:") === 0;
+                        art.querySelector(".assign-custom-wrap").hidden = !showCustom;
+                        art.querySelector(".assign-prev-wrap").hidden = event.target.value !== "masik_folytatas";
+                        if (copy.kezi_allapot === "mentve" || copy.kezi_allapot === "ellenorzes") {
+                            art.querySelector(".assign-state").textContent = voiceStateLabel(row) + " A változtatás még nincs mentve.";
+                        }
+                    }
+                }
+                if (event.target.classList && event.target.classList.contains("assign-check")) {
+                    var save = document.getElementById("assign-bulk-save");
+                    var info = document.getElementById("assign-bulk-note");
+                    if (save) save.hidden = true;
+                    if (info) info.textContent = "";
+                    voiceAssignPaintSelected();
+                }
+            });
+        }
+        var check = document.getElementById("assign-bulk-check");
+        var save = document.getElementById("assign-bulk-save");
+        var bulkEvent = document.getElementById("assign-bulk-event");
+        if (bulkEvent) bulkEvent.addEventListener("change", function () {
+            var customWrap = document.getElementById("assign-bulk-custom-wrap");
+            var prevWrap = document.getElementById("assign-bulk-prev-wrap");
+            if (customWrap) customWrap.hidden = bulkEvent.value !== "egyeb";
+            if (prevWrap) prevWrap.hidden = bulkEvent.value !== "masik_folytatas";
+            if (save) save.hidden = true;
+        });
+        if (check) check.addEventListener("click", function () {
+            var paths = voiceAssignSelected();
+            var n = voiceGroupTouchCount(paths);
+            var info = document.getElementById("assign-bulk-note");
+            var eventName = bulkEvent && bulkEvent.options[bulkEvent.selectedIndex] ? bulkEvent.options[bulkEvent.selectedIndex].textContent : "";
+            if (info) info.textContent = n + " fájlt érint a mentés. Esemény: " + eventName + ". Még nincs mentve.";
+            if (save) save.hidden = n === 0;
+        });
+        if (save) save.addEventListener("click", function () {
+            var paths = voiceAssignSelected();
+            var order = Number(document.getElementById("assign-bulk-order").value);
+            var fields = {
+                esemeny: bulkEvent ? bulkEvent.value : "nincs",
+                sajat_nev: document.getElementById("assign-bulk-custom").value,
+                megjegyzes: document.getElementById("assign-bulk-note-input").value,
+                sorrend: isFinite(order) ? order : 0,
+                elozo: document.getElementById("assign-bulk-prev").value
+            };
+            var step = voiceManualGroup(voiceManualDoc, paths, fields);
+            var info = document.getElementById("assign-bulk-note");
+            if (step.error) {
+                if (info) info.textContent = step.error;
+                return;
+            }
+            voiceApplyManual(step.doc);
+            if (info) info.textContent = step.applied + " fájl mentve.";
+            save.hidden = true;
+        });
+        var mode = document.getElementById("assign-mode");
+        var modeOne = document.getElementById("assign-mode-one");
+        if (mode) mode.addEventListener("change", function () {
+            var eventId = modeOne && modeOne.checked && bulkEvent ? bulkEvent.value : "";
+            if (!voiceManualDoc) return;
+            var step = voiceManualSetMode(voiceManualDoc, eventId, mode.value);
+            if (!step.error) voiceApplyManual(step.doc);
+        });
+        var download = document.getElementById("assign-export");
+        if (download) download.addEventListener("click", function () {
+            if (!voiceManualDoc) return;
+            var blob = new Blob([JSON.stringify(voiceManualDoc, null, 2)], { type: "application/json" });
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "hozzarendeles.json";
+            link.click();
+            URL.revokeObjectURL(link.href);
+        });
+        var reset = document.getElementById("assign-reset");
+        if (reset) reset.addEventListener("click", function () {
+            if (!voiceManualBase) return;
+            try { localStorage.removeItem("toonnav-voice-manual"); } catch (err) {}
+            voiceManualDoc = voiceManualClone(voiceManualBase);
+            voiceRows = voiceRowsBuild(voiceCatalog, voiceManualDoc);
+            voiceQueues = voiceQueueFrom(voiceRows);
+            voiceAssignPaintAll();
+        });
+    }
+
+    function voiceAssignReady(catalog, manual) {
+        var hangok = catalog && catalog.hangok ? catalog.hangok : [];
+        voiceCatalog = hangok;
+        var base = manual && Array.isArray(manual.tetelek) ? manual : voiceManualBlank(hangok);
+        base = voiceManualEnsure(base, hangok);
+        voiceManualBase = voiceManualClone(base);
+        voiceManualDoc = voiceManualMerge(voiceManualBase, voiceManualReadStore());
+        voiceRows = voiceRowsBuild(voiceCatalog, voiceManualDoc);
+        voiceQueues = voiceQueueFrom(voiceRows);
+        voiceAssignPaintAll();
+    }
+
+    voiceAssignBind();
     function paintRouteMap() {
         var map = document.getElementById("route-map");
         if (!map || map.hidden) return;
@@ -7437,6 +8450,7 @@
         lastRouteAt = now;
         var seq = ++routeSeq;
         setNote("Letérés. Új útvonal kérése a célhoz…", "");
+        considerVoice({ kind: "rossz_irany", seq: seq, type: "offroute" });
         considerVoice({ kind: "reroute", seq: seq, type: "reroute" });
         paintHud();
         fetchOsrm(routeUrl(lon, lat, dest.lon, dest.lat, snapMaxM)).then(function (data) {
@@ -7594,6 +8608,11 @@
         if (shownAlong < 0.3) shownAlong = 0.3;
         if (shownAlong > total - 0.3) shownAlong = total - 0.3;
         travel = shownAlong / total;
+        if (shownAlong >= 25 && voiceDriveSeq !== routeSeq) {
+            voiceDriveSeq = routeSeq;
+            voiceDriveSeq = -1;
+        considerVoice({ kind: "utvonal_kesz", seq: routeSeq, type: "depart" });
+        }
     }
 
     function onFix(pos) {
@@ -7862,21 +8881,17 @@
         var i;
         for (i = 0; i < slots.length; i++) voiceStaticFallback(slots[i]);
     }).catch(function () {});
-    fetch("hang/katalog.json", { cache: "no-store" }).then(function (res) {
-        if (!res.ok) throw new Error("katalog");
-        return res.json();
-    }).then(function (data) {
-        var rows = data && data.hangok ? data.hangok : [];
-        voiceQueues = voiceQueueFrom(rows);
-        var wired = 0;
-        var asked = 0;
-        var i;
-        for (i = 0; i < rows.length; i++) {
-            if (rows[i].allapot === "bekotve") wired += 1;
-            else asked += 1;
-        }
-        var status = document.getElementById("voice-status");
-        if (status) status.textContent = "Bekötve " + wired + " hang. Kérdésre vár " + asked + ".";
+    Promise.all([
+        fetch("hang/katalog.json", { cache: "no-store" }).then(function (res) {
+            if (!res.ok) throw new Error("katalog");
+            return res.json();
+        }),
+        fetch("hang/hozzarendeles.json", { cache: "no-store" }).then(function (res) {
+            if (!res.ok) throw new Error("hozzarendeles");
+            return res.json();
+        })
+    ]).then(function (pair) {
+        voiceAssignReady(pair[0], pair[1]);
     }).catch(function () {
         var status = document.getElementById("voice-status");
         if (status) status.textContent = "A hangkatalógus nem tölthető.";
