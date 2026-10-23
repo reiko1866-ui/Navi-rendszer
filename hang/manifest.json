@@ -1,5 +1,5 @@
 {
-  "note": "A hang nem választ útvonalat. A csomag eseménykonfigurációja nincs a projektben, ezért egyetlen fájl sincs manőverhez rendelve. A fájlnévben lévő szám nem kijárat és nem távolság. A felhasználási engedély nincs ellenőrizve.",
+  "note": "A lejátszás a hang/katalog.json besorolását követi. Kérdéses fájl nem szól. A hang nem választ útvonalat. A fájlnévben lévő szám nem kijárat. A felhasználási engedély nincs ellenőrizve.",
   "formats": ["ogg", "mp3", "m4a", "aac", "webm", "wav"],
   "androidBrowser": "A hang/clips fájlok Ogg Vorbis, 22050 Hz, mono hangok. A Chrome Android ezt le tudja játszani.",
   "slots": []

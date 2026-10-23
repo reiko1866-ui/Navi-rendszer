@@ -33,22 +33,13 @@ check("missing-audio-empty", Array.isArray(missing.hianyzo_hangfajlok) && missin
 check("missing-config-stated", missing.hianyzo_konfiguracio.length > 0);
 check("catalog-one-record-per-file", catalog.hangok.length === 697, "n=" + catalog.hangok.length);
 check("catalog-matches-disk", catalog.hangok.every((clip) => clipPaths.indexOf(clip.utvonal.split("/").pop()) >= 0));
-check("no-event-assignment", catalog.hangok.every((clip) => clip.esemeny_hozzarendeles === null) && manifest.slots.length === 0);
+check("questions-are-unassigned", catalog.hangok.filter((clip) => clip.allapot === "kerdes").every((clip) => clip.esemeny_hozzarendeles === null));
+check("manifest-has-no-guessed-slots", manifest.slots.length === 0);
 check("classes-only", catalog.hangok.every((clip) => classes.indexOf(clip.osztaly) >= 0));
 const md5s = new Set(catalog.hangok.map((clip) => clip.md5));
 check("duplicates-stay-separate", catalog.hangok.length > md5s.size, catalog.hangok.length + "/" + md5s.size);
-const src = ["voiceSlotFor", "voiceFileOk"].map(extract).join("\n");
+const src = ["voiceFileOk"].map(extract).join("\n");
 const harness = new Function("check", src + `
-  const samples = [
-    { type: "turn", modifier: "left", meters: 80 },
-    { type: "turn", modifier: "sharp left", meters: 80 },
-    { type: "turn", modifier: "right", meters: 80 },
-    { type: "turn", modifier: "sharp right", meters: 80 },
-    { type: "roundabout", exit: 2, meters: 40 },
-    { type: "arrive", meters: 20 },
-    { kind: "reroute", seq: 3 }
-  ];
-  check("no-invented-slots", samples.every((man) => voiceSlotFor(man) === ""));
   check("ogg-ok", voiceFileOk({ type: "audio/ogg", name: "balra.ogg", size: 2000 }) === true);
   check("txt-rejected", voiceFileOk({ type: "text/plain", name: "jegyzet.txt", size: 20 }) === false);
   check("huge-rejected", voiceFileOk({ type: "audio/ogg", name: "nagy.ogg", size: 2000000 }) === false);

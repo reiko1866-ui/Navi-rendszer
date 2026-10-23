@@ -1,0 +1,3348 @@
+{
+  "kerdesek": [
+    {
+      "id": "forgalom",
+      "szoveg": "A leirat dugóról szól. Az útvonaltervező nem ad forgalmi adatot, ezért nincs megbízható indítófeltétel.",
+      "darab": 2,
+      "lehetosegek": [
+        {
+          "id": "lassu",
+          "szoveg": "Szóljon, ha az útvonalon a GPS-sebesség legalább 15 másodpercig 15 km/h alatt marad."
+        },
+        {
+          "id": "indulas",
+          "szoveg": "Szóljon egyszer induláskor."
+        },
+        {
+          "id": "csend",
+          "szoveg": "Maradjon csendben."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/Dugó felé közeledsz.ogg",
+          "leirat": "dugó felé közelhetsz.",
+          "indok": "Dugót mond. Forgalmi adat nincs az útvonalban, ezért az indítás nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_104.ogg",
+          "leirat": "dugó felé közelhetsz.",
+          "indok": "Dugót mond. Forgalmi adat nincs az útvonalban, ezért az indítás nincs bekötve."
+        }
+      ]
+    },
+    {
+      "id": "gps_es_irany",
+      "szoveg": "A leirat GPS-közlést és irányt is tartalmaz. Nem döntöm el, melyik indítsa.",
+      "darab": 1,
+      "lehetosegek": [
+        {
+          "id": "gps",
+          "szoveg": "Akkor szóljon, amikor a GPS-jel gyenge vagy elveszett."
+        },
+        {
+          "id": "irany",
+          "szoveg": "A benne lévő irány manőverénél szóljon."
+        },
+        {
+          "id": "csend",
+          "szoveg": "Maradjon csendben."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_502.ogg",
+          "leirat": "A következő keresztesződés-esben, ami igazából nap is látszhat, Itt kellene, hogy jobbra menni, majd utána ata-hídom, és beleveszni a zenészetben nincs GPS-vétel.",
+          "indok": "GPS-közlés és irány együtt szerepel."
+        }
+      ]
+    },
+    {
+      "id": "nincs_helyzet",
+      "szoveg": "A leirat olvasható szavakat tartalmaz, de nincs benne olyan irány vagy helyzet, amihez a navigáció eseményt tud indítani. Fordulót nem találok ki hozzájuk.",
+      "darab": 393,
+      "lehetosegek": [
+        {
+          "id": "csend",
+          "szoveg": "Maradjanak csendben, amíg külön meg nem mondod a helyüket."
+        },
+        {
+          "id": "egyenes_kommentar",
+          "szoveg": "Szóljanak kommentárként egyenes haladás közben."
+        },
+        {
+          "id": "indulas",
+          "szoveg": "Szóljanak egyszer, amikor az útvonal elkészül."
+        },
+        {
+          "id": "fajlonkent",
+          "szoveg": "Fájlonként írom meg a helyüket."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/Balra.ogg",
+          "leirat": "BÓRA!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/Kövesd balra a fő utat.ogg",
+          "leirat": "Kövezsd barra a feltetat.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/Na mizu menjünk jobbra.ogg",
+          "leirat": "Nézzük. Nézzük. Nézzé, nézzük.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_112.ogg",
+          "leirat": "A mojtos borra iski.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_115.ogg",
+          "leirat": "És utána, hüjjjjjjj�jjjjjjjjjjjjjjjjjjj.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_116.ogg",
+          "leirat": "Csinálni egy háromszáz az első forintos szeml Franc.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_118.ogg",
+          "leirat": "Na, jól nézem, akkor jó, bra.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_119.ogg",
+          "leirat": "Különb�ét.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_120.ogg",
+          "leirat": "majd után a barra, k",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_122.ogg",
+          "leirat": "Hajtjunk ilyen valóval dalon. Most ez ilyen.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_123.ogg",
+          "leirat": "És. Kösz. Jó.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_124.ogg",
+          "leirat": "Fordulj élesen barra!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_128.ogg",
+          "leirat": "És utána! BORRA!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_131.ogg",
+          "leirat": "Szimán",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_132.ogg",
+          "leirat": "Na, a második utc Na, a második utcán viszon bára megyünk.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_133.ogg",
+          "leirat": "Fek, de azon a színt. Feküldj el rá.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_134.ogg",
+          "leirat": "Hajtunk le az autópájáról!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_136.ogg",
+          "leirat": "Nem, nem, bár, bár, bár megyünk, igen.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_137.ogg",
+          "leirat": "Követjük a főutat.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_139.ogg",
+          "leirat": "Hirtelen megérkezük!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_14.ogg",
+          "leirat": "in the",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_142.ogg",
+          "leirat": "Hát ilyen a balaton?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_143.ogg",
+          "leirat": "Hát te?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_144.ogg",
+          "leirat": "Drámo, kör furgolom! Ah, mindegy!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_147.ogg",
+          "leirat": "Félesz mi?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_149.ogg",
+          "leirat": "Egyébk, ezzel a szintén, ezzel a szinten, a szinten, a szinten, a szinten, a szinten, a szinten",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_15.ogg",
+          "leirat": "Jöldbe.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_156.ogg",
+          "leirat": "Figyiája a sz kis számat. Jó bra!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_157.ogg",
+          "leirat": "Majd Utano, torcs, borro!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_158.ogg",
+          "leirat": "A tervezek tudod, mekkora melló.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_159.ogg",
+          "leirat": "És... ut",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_16.ogg",
+          "leirat": "Bor, mi van?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_160.ogg",
+          "leirat": "I a nyan nyan, nyan, hadd göld forgulom!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_163.ogg",
+          "leirat": "Na hát, mindjárt balaton, leskompis!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_165.ogg",
+          "leirat": "A harvadik utcam fogunk majd barra mellni, jó lesz.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_167.ogg",
+          "leirat": "Na háthorzálom felé! Csak mondom!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_168.ogg",
+          "leirat": "Te! Tudsz úsznyi!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_17.ogg",
+          "leirat": "Megnyel a borra.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_170.ogg",
+          "leirat": "Mégések a töröltetők, dezszerenek a, dezszeretők, dezszeretők, dezszeretők.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_171.ogg",
+          "leirat": "Robanjunk fel az autópájára!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_173.ogg",
+          "leirat": "nem váltunk sebességet egy ne se megyen",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_174.ogg",
+          "leirat": "Csíjííííííííí-ííííííííííííííííííí and",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_175.ogg",
+          "leirat": "Egy sultán, Fordúj borra!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_176.ogg",
+          "leirat": "Féhééééééééééééééééééééééé",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_178.ogg",
+          "leirat": "És a napot leszünk? Na, hova jött, hova jötttünk?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_179.ogg",
+          "leirat": "Sziasztok!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_181.ogg",
+          "leirat": "Én a fiyút a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_182.ogg",
+          "leirat": "Ők be ne biztos, hogy járó",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_183.ogg",
+          "leirat": "Tánai mátkozunk és kihájtunk a Baloldalon",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_184.ogg",
+          "leirat": "Próbájunk meg először. Menjenem",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_185.ogg",
+          "leirat": "A második utcán fordú így bora!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_186.ogg",
+          "leirat": "Vagy, visszatérkezett, viss a személyek. Vagy, vissz",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_187.ogg",
+          "leirat": "Csináljak másik tervet vagy kösen fel maga.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_190.ogg",
+          "leirat": "Egyszerűen csak hajtsunk-i a baloldalon. Bármi is le",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_193.ogg",
+          "leirat": "M, megér",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_194.ogg",
+          "leirat": "Köszönöm!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_195.ogg",
+          "leirat": "majd utána kihajtunk a baloldalon.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_20.ogg",
+          "leirat": "Kutatkozni!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_200.ogg",
+          "leirat": "Egyébként a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_203.ogg",
+          "leirat": "Még te is.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_205.ogg",
+          "leirat": "Nézzé kisépei obra, milyen ott oda megyünk.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_207.ogg",
+          "leirat": "Én bár a kéne, mert úgy az jó.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_21.ogg",
+          "leirat": "Jövök rá!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_213.ogg",
+          "leirat": "Na, meg",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_215.ogg",
+          "leirat": "Köszönöm!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_216.ogg",
+          "leirat": "Tprrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_218.ogg",
+          "leirat": "Tessék belenizie balle deli, tykörbe",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_219.ogg",
+          "leirat": "Egyébként a kérdések, a kérdések, a k-kérdé, a kérdése, a k Egy kérdések, a kérdések, a kérdések, a kérdések, a kérdések, a kérdések, a kér",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_220.ogg",
+          "leirat": "Nem akarok",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_221.ogg",
+          "leirat": "Ha a, ha a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_223.ogg",
+          "leirat": "és utá é...",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_227.ogg",
+          "leirat": "Követő, követők a fődat így.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_228.ogg",
+          "leirat": "Rendező, kém? Ki hajta a sajóból dalom?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_229.ogg",
+          "leirat": "Hajtj ki, a jobb oldalon. Most ez van.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_23.ogg",
+          "leirat": "Menjünk a borot!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_231.ogg",
+          "leirat": "Újjjunk el a nép, köszönjünk az autópájáról.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_232.ogg",
+          "leirat": "Vagy helyzetet, barra.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_234.ogg",
+          "leirat": "Köszönöm!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_235.ogg",
+          "leirat": "És most mi van?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_236.ogg",
+          "leirat": "És ut",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_237.ogg",
+          "leirat": "Mindenképp, az az a kutánképp, az a kutánk-képp.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_238.ogg",
+          "leirat": "Vagy kihaitunk a Baloldalon, vagy valami.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_24.ogg",
+          "leirat": "Ne bárj.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_240.ogg",
+          "leirat": "Mennyünk barra, vigyázz a falra!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_241.ogg",
+          "leirat": "Most az van, hogy ki Most a, az van, ki kellene hajtani a baloldalon?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_243.ogg",
+          "leirat": "kikérne hajtani a Baloldalon.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_245.ogg",
+          "leirat": "Majd le megyünk az autopájáró.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_248.ogg",
+          "leirat": "Ahogy így, id, elnézek a távolba, már látam a kompót.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_249.ogg",
+          "leirat": ", kövesszük a fő utat!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_250.ogg",
+          "leirat": "Egyényényényényényényényényényényényényény",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_253.ogg",
+          "leirat": "Aztán... Aztán...",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_254.ogg",
+          "leirat": "Hihetetlenül élesen ké",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_255.ogg",
+          "leirat": "A, odanélyezz egy csík fagból,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_256.ogg",
+          "leirat": "Tudom, hogy a személyek a szolgálások, a személyek! Tudom, hogy a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgárosok, a szolgálások, a szolgálások!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_258.ogg",
+          "leirat": "Józsálló külön",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_259.ogg",
+          "leirat": "Hát igen",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_26.ogg",
+          "leirat": "Vigyázz! Egyenek semmi!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_260.ogg",
+          "leirat": "Egyéb, egyébfüld,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_262.ogg",
+          "leirat": "Rám együnk a kompra, erősen ellenőrizve, hogy ott van-e.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_264.ogg",
+          "leirat": "Érdemes barra tartani, mert ut",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_267.ogg",
+          "leirat": "rosszul a jogi",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_268.ogg",
+          "leirat": "Meg fogunk Barány, Fordúj, Beth!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_269.ogg",
+          "leirat": "Fővezt a főutat,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_27.ogg",
+          "leirat": "Jóhára.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_270.ogg",
+          "leirat": "de azért ilyen jobb ha kihájt a sajó boldalon.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_271.ogg",
+          "leirat": "etet",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_273.ogg",
+          "leirat": "hajts ki a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_275.ogg",
+          "leirat": "vagy kérled a közönség segítségét.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_276.ogg",
+          "leirat": "Ha lételek, rendben!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_278.ogg",
+          "leirat": "Jajd! Követni fogjuk a főútat. Tök izgi lesz!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_279.ogg",
+          "leirat": "Lehet, a Matier, hogy pedd ezt rint embora.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_280.ogg",
+          "leirat": "A komp",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_281.ogg",
+          "leirat": "hajtsunk ki a Baloldalan",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_284.ogg",
+          "leirat": "Kucán lesz majd egy jobbos forduló.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_288.ogg",
+          "leirat": "Gázfék meg ilyenek!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_29.ogg",
+          "leirat": "Ramegyünk!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_290.ogg",
+          "leirat": "Sziasztok!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_291.ogg",
+          "leirat": "Vannak esetek, amikor barra kell men",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_293.ogg",
+          "leirat": "Gyerünk!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_296.ogg",
+          "leirat": "Tud, mit csinál az emberele gyűtközés egy ilyen sebességnél?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_298.ogg",
+          "leirat": "Szóval,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_299.ogg",
+          "leirat": "Majd elhagyjuk az autópájrját",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_30.ogg",
+          "leirat": "Tartsunk bár az jó!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_301.ogg",
+          "leirat": "Hátas",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_302.ogg",
+          "leirat": "Bármés van, inkább",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_304.ogg",
+          "leirat": "Na ugye, így már érdekeset",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_305.ogg",
+          "leirat": "Egyébként, hogy a legjobb érkezőséget, a legjobb érkezőséget, is, de a legjobb érkez, és a legjobb érke, a legjobb érkezőséget, a legjob. A legjobb érkezhez a legjobb érkez, a legjobb érkezhe a legjobb érkezhe, a legjobb érkezhe a legjob. A legjobb érkezhe a legjobb érke, a legjobb érkez�, a legjobb a legjobb. A legjobb érkez�,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_307.ogg",
+          "leirat": "Egyébként, hogy ezzel a különbözlőnőséget, amikor a különbözlőséget változunk,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_31.ogg",
+          "leirat": "Azzal, hogy a helyzetek a helyzetek a helyzetek a helyzetetekn",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_310.ogg",
+          "leirat": "Jaj, hívern aktiv lettem, itt van egy káv-vét! A harmadik otsza menj",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_311.ogg",
+          "leirat": "Azért jó, azért nagyon jó, hogy ilyen gyorsan is tudsz menni.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_312.ogg",
+          "leirat": "Kövessz a saját!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_315.ogg",
+          "leirat": "Majd kövesd a főutat barra, később megmagyarázom.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_317.ogg",
+          "leirat": "Egyébként a helyében aornak,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_319.ogg",
+          "leirat": "Köszönöm, hogy a fokhagymát érdeményes, a fokhagymát érdeményes, a fokhagym and a fokhagymát érdeményes, a fokhag",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_320.ogg",
+          "leirat": "a jobb oldalon, a, ki, a jobb oldalon. Tényleg a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_321.ogg",
+          "leirat": "Fiam, azt, oppá, akkor elköptem, utána bara.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_325.ogg",
+          "leirat": "Na képzeld el, most kaptam az értesít",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_327.ogg",
+          "leirat": "Azt hiszem, hogy hagyom",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_33.ogg",
+          "leirat": "Frankfurt galomjön!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_330.ogg",
+          "leirat": "A esehyshyshyshyshyshys,hysh",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_331.ogg",
+          "leirat": "Na kedves, ez a fb fő út, ezt kell nekünk most követnünk.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_332.ogg",
+          "leirat": "Ó, jön egy kör forgalom, hagynézzem, hagynézzem a puu!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_333.ogg",
+          "leirat": "Én értem, hogynál, gondolom, hogy együttelműző, hogy együttelműző a vilá",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_335.ogg",
+          "leirat": "Na, egérke, ilyesztük I",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_336.ogg",
+          "leirat": "Egyébként, hogy a külőségeket a különségeket a különséet a a különségeket a k ofját, a különs",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_340.ogg",
+          "leirat": "Igen, nem is tettem eddig, é. Kompall megyünk.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_341.ogg",
+          "leirat": "a tessékba arra tartani, mert utána, mert utáyló",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_343.ogg",
+          "leirat": "Fogal folkáció, később, később.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_345.ogg",
+          "leirat": "Ai utánnál majd utána úgy lemegyünk az autopájáról, mint ha nem is lettünk volna itt.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_347.ogg",
+          "leirat": "Mennünk fel szépen az autópájá, és nézzük meg a töbiek, szeretik-e, hogy 40-nál megyünk.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_348.ogg",
+          "leirat": "Na, te kénycsuk ú",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_349.ogg",
+          "leirat": "Azt hiszem, k",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_350.ogg",
+          "leirat": "Én, nem tudok úztni.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_352.ogg",
+          "leirat": "Mi az? E",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_354.ogg",
+          "leirat": "majd utána megprób, majd utána megpróbálom kihagytani a baloldalon. Vajd le parkolunk.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_357.ogg",
+          "leirat": "Jó, én úgy szeretem ezt mondani, hogy",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_359.ogg",
+          "leirat": "a jobb oldalon kéne bimbózni meg minden",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_36.ogg",
+          "leirat": "Tudod, hogy szükségeztem a születeket, amit a születeket is tesszük a születeket, amikor a születeketiek, amit a születeket is tesszük a születeket, amikor a születek a születek,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_360.ogg",
+          "leirat": "Majt utána, kémregént játsz.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_362.ogg",
+          "leirat": "Utána, nyilván, de nem bíztok.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_364.ogg",
+          "leirat": "kés, kés,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_365.ogg",
+          "leirat": "Aztán majd követni kéne azt a főutat barral.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_367.ogg",
+          "leirat": "Balódalom",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_368.ogg",
+          "leirat": "Majd uta ut the utopájera,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_369.ogg",
+          "leirat": "Szegedé rintésével old",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_37.ogg",
+          "leirat": "Egy különségesen.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_370.ogg",
+          "leirat": ", de ha nem tege",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_371.ogg",
+          "leirat": "majd utána azt csinájuk",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_372.ogg",
+          "leirat": "Kihajtunk a baloldalom!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_376.ogg",
+          "leirat": "Köszönjük, köszönjük!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_377.ogg",
+          "leirat": "Egyszerű-e nincs ötletemkomolyan,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_378.ogg",
+          "leirat": "Eben az évságban, oly szép magyarország, de oly!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_38.ogg",
+          "leirat": "Mondd, de láts!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_382.ogg",
+          "leirat": "Húúúúúúúúúúúúúúúúúúúúúhúúúúúúúúúúúú aúúúúúúú húúúúúúúúúúúúילוúú",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_383.ogg",
+          "leirat": "ministry",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_384.ogg",
+          "leirat": "Well, if you ask me if it's good or bad, I'll tell you it's bad.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_385.ogg",
+          "leirat": "Hajtunk ki szépen Baloldalon, azt, aztán későve megbesz",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_386.ogg",
+          "leirat": "KERFORGALOM!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_389.ogg",
+          "leirat": "Drámaian szeretném e well",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_39.ogg",
+          "leirat": "Majd után a torc, illó.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_390.ogg",
+          "leirat": "hogy a másod-i k",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_392.ogg",
+          "leirat": "de nem csak egyszer A fővés de a fővés de a fővés, de a bára, bára.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_393.ogg",
+          "leirat": "Na, de zső, a hózképes úttsak vása el, mien ez, felfegyünk az azzal.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_394.ogg",
+          "leirat": "Menjünk le a kompr. Például, aki jön elég bátor, akkor csinálja",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_395.ogg",
+          "leirat": "Tess Céltant, ugye? Úgy szájaszt Baloldalon!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_397.ogg",
+          "leirat": "de nem összekeverj,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_398.ogg",
+          "leirat": "a hely",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_40.ogg",
+          "leirat": "A harva de kutsan bora.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_401.ogg",
+          "leirat": "H,a,aa,aaaaaaaaaaaaaaaaaaaa,,,,,,,, ofaaaaa,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_404.ogg",
+          "leirat": "Hajcsi a jobb oldalon. De jó pofa olyan, mint egy virágnak mondanám. Hajcsi!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_406.ogg",
+          "leirat": "Bon egy ilyen hangóvis, változatosát eszianapud,-udat, után a barra megyünk élesen.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_407.ogg",
+          "leirat": "A harmadadik utcán",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_41.ogg",
+          "leirat": "Tudod, hogy a főzőképeszteteketeteketeketeketeketeketeketeketeketeketeketeketeketeket",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_417.ogg",
+          "leirat": "Megül fel az autopaér, de állati óvatosan jó, ott egy csomó ember van, aki tud vezetni.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_419.ogg",
+          "leirat": "Alében ön most 300-al megy, a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_42.ogg",
+          "leirat": "Egyébként szükségesek a sz",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_420.ogg",
+          "leirat": "Azt hiszem, hogy a legjobb érkezők a személyet, de a szem a a személyet, de a személyet, de a személy de a szem, a szélyet, de a személyet,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_421.ogg",
+          "leirat": "Most akkor az van, hogy megkéne f*****g. Fogd rám, fog. Fogd rámi. Fogd r. Fogd rám. Tényleg.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_422.ogg",
+          "leirat": "Demeneketek, hogy együttes, hogy egyetek, hogy együtt, hogy együtt, hogy együ thetény, hogy együtt, hogy együtt,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_425.ogg",
+          "leirat": "Főutat követünk, bizonyám, t",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_426.ogg",
+          "leirat": "Ezt nem drámai volt mindegy.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_427.ogg",
+          "leirat": "És utána nem fortolunk seme-re, seba-ra, sej-obra, se-se, se-se, hanem megérkezünk.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_428.ogg",
+          "leirat": "Olyan, olyan érdeztem, hogy a nincs olyan érdeztem, amikor előtt, amikor előtt, amikor előtt, amikor előtt, amikor előtt, amikor előtt, amikor elő Egyébként a személyére, a személyére, a szóval a szem Ilyen érdeztem, amikor előtt, amikor előtt, amikor előtt, amikor hát a személyére,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_429.ogg",
+          "leirat": "Jó! Egyrészt unom, másrészt tulajdonképen egy konfutatás véges.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_43.ogg",
+          "leirat": "Én himmbára!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_432.ogg",
+          "leirat": "Csííííívíííííííúíííííííí",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_433.ogg",
+          "leirat": "� KSZSZS",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_434.ogg",
+          "leirat": "Az, hogy az így bonyoluló az első, máradik, utcánbárra menni.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_44.ogg",
+          "leirat": "Egyetettettettettettett",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_440.ogg",
+          "leirat": "Na most, az első utca a második sem, a harmadikon kell majd bar",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_441.ogg",
+          "leirat": "Menjünk le az autópájáról. Jó, ezt egyébként alakjára is sok minden szereten.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_444.ogg",
+          "leirat": "szeretnének lelkileg már most felkészíteni, hogyha tenger-beteg vagy, hányi foksz.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_445.ogg",
+          "leirat": "Még nem mondtam, tulajdonképpen mondan.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_446.ogg",
+          "leirat": "Egyetlen örömmen van amik a rászt mondtam, hogy külvorgalom jön!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_447.ogg",
+          "leirat": "Ez egy főút, onnan is menjük meg az ilyesményes sárga, tipikus táblája van, van, ezt követjük mi most.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_448.ogg",
+          "leirat": "H, hogy követjük a fő utatba, ami hát végül, és lőve, de hát te védőn nem?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_449.ogg",
+          "leirat": "kövess, a f a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_450.ogg",
+          "leirat": "Milyen helyesk is kínai transzistorral, jöttem összeidben. Odobozz van. Kör forgalomján.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_451.ogg",
+          "leirat": "És ugye a szávok között gondolom,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_452.ogg",
+          "leirat": "Na, fabrikál neked a-e neked a bácsi egy ú",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_453.ogg",
+          "leirat": "Végül beállítottad, vagy végül is beállítottad te ezt a dolgot, hogyha most örülj",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_457.ogg",
+          "leirat": "És mind a kető a szonnyi agr De még nem szólt, szólt átod.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_458.ogg",
+          "leirat": "Kövesz, köszönöm kérd",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_46.ogg",
+          "leirat": "Köszönöm!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_464.ogg",
+          "leirat": "Kövesük a főutat, ez a főutat, nem érdemes ezt elszóval, Kövesük a főutat, nem érdemes ezt elszóval,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_466.ogg",
+          "leirat": "Egyények,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_467.ogg",
+          "leirat": "az autópájáról, mert ha a trafi-pagsba, akkor ugye nem fognak megtalálni, Na, jól. Na, nyilvánk, nyilvánk, nyilvánk, nyilvánk, nyilvánk, nyilvánk,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_468.ogg",
+          "leirat": "A... Őgyébk-ként a harmadékon kell barafordulni.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_47.ogg",
+          "leirat": "a hir, a helyen,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_471.ogg",
+          "leirat": "főzőképpen a főzőképpen a főzőképpen a főzőkêr főzőképpen a főzőképpen a főzőképpen a főzőképpen a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_472.ogg",
+          "leirat": "a szép kis út ezt komolyan. Beraktál mindent fokkefé, törölt apucsot, újra élesztőtőszettet, mit tudom én.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_474.ogg",
+          "leirat": "Kérdezel? Talá",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_476.ogg",
+          "leirat": "Tényélyt, tulajdonkébben",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_48.ogg",
+          "leirat": "Vagy elvállunk!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_481.ogg",
+          "leirat": "Nekem tényleg",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_482.ogg",
+          "leirat": "Az hely, az előbb az első cilpontot helyesen megtaláltál miért egy ügyes ember vagy. És akkor most",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_485.ogg",
+          "leirat": "De most akkor jobboldat, mert hogy az az a ház, amire bejállítottad nekem, hogy majdn meg akarod néz",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_486.ogg",
+          "leirat": ", nem tudom mit mond, most komolyan, és nem régen csinálom ezt, hogy fur",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_487.ogg",
+          "leirat": "Kádves gyerekák, a jobb oldalon találdok egy szép házat, nézagasétak mág",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_49.ogg",
+          "leirat": "Kövess, főtet barra a.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_498.ogg",
+          "leirat": "De én most jó,tog,-og, jó. Jó. Jó",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_499.ogg",
+          "leirat": "Na, így szólsz, hogy navigálok",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_50.ogg",
+          "leirat": "És aztán engem majd bárra.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_503.ogg",
+          "leirat": "Ném, én megvírusos betegség, senki nem gondolja, hogy velemek történhet, és komoly a kikerültem a gyárból, azó IZ velem nem Most ezt így hogy?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_51.ogg",
+          "leirat": "M MENNNNNNNNNNNNNNNNNNNNN NNNNNNN",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_54.ogg",
+          "leirat": "Well the next day.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_55.ogg",
+          "leirat": "Az jó lesz.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_58.ogg",
+          "leirat": "Azt hiszem, hogy az olyan érkezősége, amíg az érkezősége,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_59.ogg",
+          "leirat": "Az autófájára!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_60.ogg",
+          "leirat": "És utána meg!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_63.ogg",
+          "leirat": "Bára élesen!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_64.ogg",
+          "leirat": "majd ut�án a kompozunk egyet.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_65.ogg",
+          "leirat": "Kevesek a fejltát a...",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_66.ogg",
+          "leirat": "Tárcsilberááááááááááá",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_67.ogg",
+          "leirat": "Forduljunk v",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_68.ogg",
+          "leirat": "Most bár a fóduló satjátszunk.,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_69.ogg",
+          "leirat": "Úgyhogy, úgyhogy, úgyhogy, úgyhogy!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_70.ogg",
+          "leirat": "Egyenek a helyek, a.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_74.ogg",
+          "leirat": "Ez a jobb, mint egy könyv forgalom!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_76.ogg",
+          "leirat": "Csak egy",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_79.ogg",
+          "leirat": "ilyóra.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_84.ogg",
+          "leirat": "Köszönöm, köszönöm, köszönöm!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_90.ogg",
+          "leirat": "Tudnáj,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_91.ogg",
+          "leirat": "kérdés-kérd-k",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_92.ogg",
+          "leirat": "kélye-k",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_93.ogg",
+          "leirat": "Úgy nézem, kompoz hozzaljunk a kabátut",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_94.ogg",
+          "leirat": "Nézzem, nézzem, bár a.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_95.ogg",
+          "leirat": "Sutána fordulj. BÓRA!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_96.ogg",
+          "leirat": "I gottana, I gottana.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_98.ogg",
+          "leirat": "Kőrgalom és hát szép!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_100.ogg",
+          "leirat": "Kövezsd barra a feltetat.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_101.ogg",
+          "leirat": "Nézzük. Nézzük. Nézzé, nézzük.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_11.ogg",
+          "leirat": "BÓRA!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_112.ogg",
+          "leirat": "A mojtos borra iski.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_115.ogg",
+          "leirat": "És utána, hüjjjjjjj�jjjjjjjjjjjjjjjjjjj.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_116.ogg",
+          "leirat": "Csinálni egy háromszáz az első forintos szeml Franc.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_118.ogg",
+          "leirat": "Na, jól nézem, akkor jó, bra.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_119.ogg",
+          "leirat": "Különb�ét.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_120.ogg",
+          "leirat": "majd után a barra, k",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_122.ogg",
+          "leirat": "Hajtjunk ilyen valóval dalon. Most ez ilyen.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_123.ogg",
+          "leirat": "És. Kösz. Jó.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_124.ogg",
+          "leirat": "Fordulj élesen barra!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_128.ogg",
+          "leirat": "És utána! BORRA!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_131.ogg",
+          "leirat": "Szimán",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_132.ogg",
+          "leirat": "Na, a második utc Na, a második utcán viszon bára megyünk.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_133.ogg",
+          "leirat": "Fek, de azon a színt. Feküldj el rá.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_134.ogg",
+          "leirat": "Hajtunk le az autópájáról!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_136.ogg",
+          "leirat": "Nem, nem, bár, bár, bár megyünk, igen.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_137.ogg",
+          "leirat": "Követjük a főutat.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_139.ogg",
+          "leirat": "Hirtelen megérkezük!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_14.ogg",
+          "leirat": "in the",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_142.ogg",
+          "leirat": "Hát ilyen a balaton?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_143.ogg",
+          "leirat": "Hát te?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_144.ogg",
+          "leirat": "Drámo, kör furgolom! Ah, mindegy!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_147.ogg",
+          "leirat": "Félesz mi?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_149.ogg",
+          "leirat": "Egyébk, ezzel a szintén, ezzel a szinten, a szinten, a szinten, a szinten, a szinten, a szinten",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_15.ogg",
+          "leirat": "Jöldbe.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_156.ogg",
+          "leirat": "Figyiája a sz kis számat. Jó bra!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_157.ogg",
+          "leirat": "Majd Utano, torcs, borro!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_158.ogg",
+          "leirat": "A tervezek tudod, mekkora melló.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_159.ogg",
+          "leirat": "És... ut",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_16.ogg",
+          "leirat": "Bor, mi van?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_160.ogg",
+          "leirat": "I a nyan nyan, nyan, hadd göld forgulom!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_163.ogg",
+          "leirat": "Na hát, mindjárt balaton, leskompis!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_165.ogg",
+          "leirat": "A harvadik utcam fogunk majd barra mellni, jó lesz.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_167.ogg",
+          "leirat": "Na háthorzálom felé! Csak mondom!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_168.ogg",
+          "leirat": "Te! Tudsz úsznyi!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_17.ogg",
+          "leirat": "Megnyel a borra.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_170.ogg",
+          "leirat": "Mégések a töröltetők, dezszerenek a, dezszeretők, dezszeretők, dezszeretők.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_171.ogg",
+          "leirat": "Robanjunk fel az autópájára!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_173.ogg",
+          "leirat": "nem váltunk sebességet egy ne se megyen",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_174.ogg",
+          "leirat": "Csíjííííííííí-ííííííííííííííííííí and",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_175.ogg",
+          "leirat": "Egy sultán, Fordúj borra!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_176.ogg",
+          "leirat": "Féhééééééééééééééééééééééé",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_178.ogg",
+          "leirat": "És a napot leszünk? Na, hova jött, hova jötttünk?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_179.ogg",
+          "leirat": "Sziasztok!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_181.ogg",
+          "leirat": "Én a fiyút a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_182.ogg",
+          "leirat": "Ők be ne biztos, hogy járó",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_183.ogg",
+          "leirat": "Tánai mátkozunk és kihájtunk a Baloldalon",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_184.ogg",
+          "leirat": "Próbájunk meg először. Menjenem",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_185.ogg",
+          "leirat": "A második utcán fordú így bora!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_186.ogg",
+          "leirat": "Vagy, visszatérkezett, viss a személyek. Vagy, vissz",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_187.ogg",
+          "leirat": "Csináljak másik tervet vagy kösen fel maga.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_190.ogg",
+          "leirat": "Egyszerűen csak hajtsunk-i a baloldalon. Bármi is le",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_193.ogg",
+          "leirat": "M, megér",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_194.ogg",
+          "leirat": "Köszönöm!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_195.ogg",
+          "leirat": "majd utána kihajtunk a baloldalon.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_20.ogg",
+          "leirat": "Kutatkozni!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_200.ogg",
+          "leirat": "Egyébként a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_203.ogg",
+          "leirat": "Még te is.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_205.ogg",
+          "leirat": "Nézzé kisépei obra, milyen ott oda megyünk.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_207.ogg",
+          "leirat": "Én bár a kéne, mert úgy az jó.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_21.ogg",
+          "leirat": "Jövök rá!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_213.ogg",
+          "leirat": "Na, meg",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_215.ogg",
+          "leirat": "Köszönöm!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_216.ogg",
+          "leirat": "Tprrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_218.ogg",
+          "leirat": "Tessék belenizie balle deli, tykörbe",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_219.ogg",
+          "leirat": "Egyébként a kérdések, a kérdések, a k-kérdé, a kérdése, a k Egy kérdések, a kérdések, a kérdések, a kérdések, a kérdések, a kérdések, a kér",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_220.ogg",
+          "leirat": "Nem akarok",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_221.ogg",
+          "leirat": "Ha a, ha a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_223.ogg",
+          "leirat": "és utá é...",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_227.ogg",
+          "leirat": "Követő, követők a fődat így.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_228.ogg",
+          "leirat": "Rendező, kém? Ki hajta a sajóból dalom?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_229.ogg",
+          "leirat": "Hajtj ki, a jobb oldalon. Most ez van.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_23.ogg",
+          "leirat": "Menjünk a borot!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_231.ogg",
+          "leirat": "Újjjunk el a nép, köszönjünk az autópájáról.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_232.ogg",
+          "leirat": "Vagy helyzetet, barra.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_234.ogg",
+          "leirat": "Köszönöm!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_235.ogg",
+          "leirat": "És most mi van?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_236.ogg",
+          "leirat": "És ut",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_237.ogg",
+          "leirat": "Mindenképp, az az a kutánképp, az a kutánk-képp.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_238.ogg",
+          "leirat": "Vagy kihaitunk a Baloldalon, vagy valami.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_24.ogg",
+          "leirat": "Ne bárj.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_240.ogg",
+          "leirat": "Mennyünk barra, vigyázz a falra!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_241.ogg",
+          "leirat": "Most az van, hogy ki Most a, az van, ki kellene hajtani a baloldalon?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_243.ogg",
+          "leirat": "kikérne hajtani a Baloldalon.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_245.ogg",
+          "leirat": "Majd le megyünk az autopájáró.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_248.ogg",
+          "leirat": "Ahogy így, id, elnézek a távolba, már látam a kompót.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_249.ogg",
+          "leirat": ", kövesszük a fő utat!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_250.ogg",
+          "leirat": "Egyényényényényényényényényényényényényény",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_253.ogg",
+          "leirat": "Aztán... Aztán...",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_254.ogg",
+          "leirat": "Hihetetlenül élesen ké",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_255.ogg",
+          "leirat": "A, odanélyezz egy csík fagból,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_256.ogg",
+          "leirat": "Tudom, hogy a személyek a szolgálások, a személyek! Tudom, hogy a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgárosok, a szolgálások, a szolgálások!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_258.ogg",
+          "leirat": "Józsálló külön",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_259.ogg",
+          "leirat": "Hát igen",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_26.ogg",
+          "leirat": "Vigyázz! Egyenek semmi!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_260.ogg",
+          "leirat": "Egyéb, egyébfüld,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_262.ogg",
+          "leirat": "Rám együnk a kompra, erősen ellenőrizve, hogy ott van-e.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_264.ogg",
+          "leirat": "Érdemes barra tartani, mert ut",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_267.ogg",
+          "leirat": "rosszul a jogi",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_268.ogg",
+          "leirat": "Meg fogunk Barány, Fordúj, Beth!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_269.ogg",
+          "leirat": "Fővezt a főutat,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_27.ogg",
+          "leirat": "Jóhára.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_270.ogg",
+          "leirat": "de azért ilyen jobb ha kihájt a sajó boldalon.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_271.ogg",
+          "leirat": "etet",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_273.ogg",
+          "leirat": "hajts ki a",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_275.ogg",
+          "leirat": "vagy kérled a közönség segítségét.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_276.ogg",
+          "leirat": "Ha lételek, rendben!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_278.ogg",
+          "leirat": "Jajd! Követni fogjuk a főútat. Tök izgi lesz!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_279.ogg",
+          "leirat": "Lehet, a Matier, hogy pedd ezt rint embora.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_280.ogg",
+          "leirat": "A komp",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_281.ogg",
+          "leirat": "hajtsunk ki a Baloldalan",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_284.ogg",
+          "leirat": "Kucán lesz majd egy jobbos forduló.",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_288.ogg",
+          "leirat": "Gázfék meg ilyenek!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_29.ogg",
+          "leirat": "Ramegyünk!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_290.ogg",
+          "leirat": "Sziasztok!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_291.ogg",
+          "leirat": "Vannak esetek, amikor barra kell men",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_293.ogg",
+          "leirat": "Gyerünk!",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_296.ogg",
+          "leirat": "Tud, mit csinál az emberele gyűtközés egy ilyen sebességnél?",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_298.ogg",
+          "leirat": "Szóval,",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_299.ogg",
+          "leirat": "Majd elhagyjuk az autópájrját",
+          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
+        }
+      ]
+    },
+    {
+      "id": "olvashatatlan",
+      "szoveg": "Ezeknek a fájloknak a leirata üres vagy ismétlődő. A mondatot nem állapítottam meg, ezért nem kötöm be őket.",
+      "darab": 141,
+      "lehetosegek": [
+        {
+          "id": "csend",
+          "szoveg": "Maradjanak csendben, amíg külön meg nem írod a szövegüket."
+        },
+        {
+          "id": "egyenes_kommentar",
+          "szoveg": "Szóljanak irány nélküli kommentárként, amikor a manőver egyenes."
+        },
+        {
+          "id": "fajlonkent",
+          "szoveg": "Fájlonként írom meg a helyüket."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/Aztán enyhén jobbra.ogg",
+          "leirat": "Csó, előz, elősz, elősz, elősz, elősz, elősz!",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_125.ogg",
+          "leirat": "Így négy négy négy négy négy né",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_127.ogg",
+          "leirat": "Maj",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_130.ogg",
+          "leirat": "!",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_135.ogg",
+          "leirat": "Olyan, oly Olyan, olyan, oly, olyan, olyan, olyan, olyan, olyan, oly Olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, oly",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_140.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_141.ogg",
+          "leirat": "A. A. A. A. A. A. A. A. N.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_145.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_146.ogg",
+          "leirat": "Cs",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_148.ogg",
+          "leirat": "a főgény, a főkében, a főkében, a főké, a...",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_150.ogg",
+          "leirat": "maj-",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_151.ogg",
+          "leirat": "Foglalkodjára, fok, fokhagymát, fokhagymát, fokhagym�ra, fokhagymát, fokhagymát, fokját, fokhagymát, fokhagymát, fokhagymát, fokhagymát.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_154.ogg",
+          "leirat": "Jóra! Nem nem nem nem nem nem nem nem nem nem nem nem",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_161.ogg",
+          "leirat": "...hjjjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_162.ogg",
+          "leirat": "MÉÉÉÉ! ÉzzÉÉ É É É a É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_172.ogg",
+          "leirat": ", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_177.ogg",
+          "leirat": "Ez",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_188.ogg",
+          "leirat": "Egy-egy-eg-egy.-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_189.ogg",
+          "leirat": "Tööööööööö",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_191.ogg",
+          "leirat": "A",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_196.ogg",
+          "leirat": ",",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_201.ogg",
+          "leirat": "És uts után után után után utánne után után után után után ut után után után után után után után után után után után után után után után után után után után utha után után után után után után után után után után után után után után",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_202.ogg",
+          "leirat": "Ha ha ha ha ha ha ha ha ha ha ha Jó, jó, jó, j",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_204.ogg",
+          "leirat": ".",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_208.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_209.ogg",
+          "leirat": "Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_210.ogg",
+          "leirat": "et.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_211.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_22.ogg",
+          "leirat": "Vagd a csinálódásra, hogy a különbözőséggel a különbözőséggel a különbözőséggel a különbözőséggel a, a különbözőséggel, a különbözőséggel a különbözőséggel, a különböz a különbözőséggel.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_222.ogg",
+          "leirat": "Uj",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_225.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_230.ogg",
+          "leirat": "I will have to go to the temple to see the Buddha, the Buddha, the Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_233.ogg",
+          "leirat": "Hát. ãh-h-h-h-h-h-h Úrj! Úrj! , Ú, Úrj! Úi! Úrj! Úrj!",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_239.ogg",
+          "leirat": "M",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_244.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_25.ogg",
+          "leirat": "F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_251.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_257.ogg",
+          "leirat": "Mi",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_263.ogg",
+          "leirat": "KÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉ",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_272.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_277.ogg",
+          "leirat": "Hú, hú, hú, hú, hú, hú, hú, hú, hú, hú, hú, hú,",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_28.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_282.ogg",
+          "leirat": "Csináljuk meg! Tudod? Tudod? Tudod? Tudod?",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_283.ogg",
+          "leirat": "A",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_286.ogg",
+          "leirat": "That is, it is, it is, it is, it is, it it is, it is, it is,",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_287.ogg",
+          "leirat": "A-e-e-é-s-ehe-e-e--e-e-e-e-e-e-e-e-",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_292.ogg",
+          "leirat": "Én a-e-e-e-e-e-e-e-e-e-e-e- Én--e-e-e-e-e- É-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_295.ogg",
+          "leirat": "Fig,",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_300.ogg",
+          "leirat": "Azt! Azt! Azt! Azt! Azt! Azt!. Azt! Azt! Azt! Azt! Azt!",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_303.ogg",
+          "leirat": "Maj",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_306.ogg",
+          "leirat": "Szt!",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_309.ogg",
+          "leirat": "De zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_313.ogg",
+          "leirat": "Májt, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, húj, hát, hát, hát, hát, h, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, h, hát, hát, hát, hát, hát, hát, hát, h",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_32.ogg",
+          "leirat": "Jajjjjjjjjjj!",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_322.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_323.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_329.ogg",
+          "leirat": "De ez még nem minden, ha ha, ha, ha, ha, ha, ha,",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_338.ogg",
+          "leirat": "Őőőőőőőőőőőőőőőőőőő",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_34.ogg",
+          "leirat": "Azt",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_346.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_35.ogg",
+          "leirat": "Milyen különböző különböző külön különböző különböző különböző különböz a",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_351.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_353.ogg",
+          "leirat": "kê.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_355.ogg",
+          "leirat": "ezzel ezzel ezzel ezz ezz ezz ezz ezz e a zsezséget ezzel ezzel ezz ezzt ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz e ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz e",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_361.ogg",
+          "leirat": "Ejjjjjjjjjjjjjjj",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_375.ogg",
+          "leirat": "K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_391.ogg",
+          "leirat": "Vagy, vagy, vagy, vagy. Vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy,... vagy, vagy, vagy, vagy, vagy, vagy, v",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_399.ogg",
+          "leirat": "A-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-ag",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_408.ogg",
+          "leirat": "Hát, hát, ki-ké-ké-ké-ké-ké-ké-k a-ké-ké-ké-ké-k",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_409.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_411.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_414.ogg",
+          "leirat": ",",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_415.ogg",
+          "leirat": "Maj I I I I I",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_423.ogg",
+          "leirat": "működőségek, műkülőségek, működ, működőségek, működőségek, működőségek, működőségek, működőségek, működőségek, működ, működőségek, m",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_424.ogg",
+          "leirat": "A helyzet, a helyzet, a helyzet,",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_430.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_431.ogg",
+          "leirat": "Ők a felségeket, a felségeket, a felségeket, a fégeket, a felségeket, a felsé a f",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_459.ogg",
+          "leirat": "Jajjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_463.ogg",
+          "leirat": "T T T T T T T T T T T T T T T T T T T T T T T T T T Hényi fügyi fügyi fügyi, fortulj meg, nem a szülésben nem, fortulj meg.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_473.ogg",
+          "leirat": ", a h... a...",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_479.ogg",
+          "leirat": "T",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_488.ogg",
+          "leirat": "Egyényély tényélyesélyesélyesélyesélyesélyesélyesélyesélyesélyesélyes. Egyényi,- Egyényi- Egyényi- Egyényi- Enei- Egy- Egyényi-",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_489.ogg",
+          "leirat": "a",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_496.ogg",
+          "leirat": "Egyébként, hogy valahogy megyek, hogy valahet, hogy valahogy megyek, hogy valahogy megyek, hogy valahogy megyek, hogy valahogy megyek,, hogy valahogy megyek, hogy megyek, hogy megyek, hogy megyek, hogy megyek, hogy megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, me, megyek, megyek, megy, megyek, megyek, megyek, megyek",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_497.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_52.ogg",
+          "leirat": "Ú a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzetek, a helyzeteket, a helyzeteket, a helyzeteket, a h",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_53.ogg",
+          "leirat": "A különb, a különb, a különb, a különb.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_56.ogg",
+          "leirat": "Tudod, hogy a fiatal tényleg a fiatal a fiatal a fiatal a fiat, a fiatal a fiatal a fiatal a fiatal a fiatal a fiatal a fiatal a fiatal a f a fiatal a fiatal a fiatal a fiatal a fiatal a fiatal a f슷eket.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_61.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_78.ogg",
+          "leirat": "-",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_81.ogg",
+          "leirat": "Tudod, hogy tudod, hogy tudod, hogy",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_87.ogg",
+          "leirat": "Am a.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_99.ogg",
+          "leirat": "ÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖ",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_103.ogg",
+          "leirat": "Csó, előz, elősz, elősz, elősz, elősz, elősz!",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_125.ogg",
+          "leirat": "Így négy négy négy négy négy né",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_127.ogg",
+          "leirat": "Maj",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_130.ogg",
+          "leirat": "!",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_135.ogg",
+          "leirat": "Olyan, oly Olyan, olyan, oly, olyan, olyan, olyan, olyan, olyan, oly Olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, oly",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_140.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_141.ogg",
+          "leirat": "A. A. A. A. A. A. A. A. N.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_145.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_146.ogg",
+          "leirat": "Cs",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_148.ogg",
+          "leirat": "a főgény, a főkében, a főkében, a főké, a...",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_150.ogg",
+          "leirat": "maj-",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_151.ogg",
+          "leirat": "Foglalkodjára, fok, fokhagymát, fokhagymát, fokhagym�ra, fokhagymát, fokhagymát, fokját, fokhagymát, fokhagymát, fokhagymát, fokhagymát.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_154.ogg",
+          "leirat": "Jóra! Nem nem nem nem nem nem nem nem nem nem nem nem",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_161.ogg",
+          "leirat": "...hjjjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_162.ogg",
+          "leirat": "MÉÉÉÉ! ÉzzÉÉ É É É a É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_172.ogg",
+          "leirat": ", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_177.ogg",
+          "leirat": "Ez",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_188.ogg",
+          "leirat": "Egy-egy-eg-egy.-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_189.ogg",
+          "leirat": "Tööööööööö",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_191.ogg",
+          "leirat": "A",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_196.ogg",
+          "leirat": ",",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_201.ogg",
+          "leirat": "És uts után után után után utánne után után után után után ut után után után után után után után után után után után után után után után után után után után utha után után után után után után után után után után után után után után",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_202.ogg",
+          "leirat": "Ha ha ha ha ha ha ha ha ha ha ha Jó, jó, jó, j",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_204.ogg",
+          "leirat": ".",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_208.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_209.ogg",
+          "leirat": "Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_210.ogg",
+          "leirat": "et.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_211.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_22.ogg",
+          "leirat": "Vagd a csinálódásra, hogy a különbözőséggel a különbözőséggel a különbözőséggel a különbözőséggel a, a különbözőséggel, a különbözőséggel a különbözőséggel, a különböz a különbözőséggel.",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_222.ogg",
+          "leirat": "Uj",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_225.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_230.ogg",
+          "leirat": "I will have to go to the temple to see the Buddha, the Buddha, the Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_233.ogg",
+          "leirat": "Hát. ãh-h-h-h-h-h-h Úrj! Úrj! , Ú, Úrj! Úi! Úrj! Úrj!",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_239.ogg",
+          "leirat": "M",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_244.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_25.ogg",
+          "leirat": "F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_251.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_257.ogg",
+          "leirat": "Mi",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_263.ogg",
+          "leirat": "KÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉ",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_272.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_277.ogg",
+          "leirat": "Hú, hú, hú, hú, hú, hú, hú, hú, hú, hú, hú, hú,",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_28.ogg",
+          "leirat": "",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_282.ogg",
+          "leirat": "Csináljuk meg! Tudod? Tudod? Tudod? Tudod?",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_283.ogg",
+          "leirat": "A",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_286.ogg",
+          "leirat": "That is, it is, it is, it is, it is, it it is, it is, it is,",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_287.ogg",
+          "leirat": "A-e-e-é-s-ehe-e-e--e-e-e-e-e-e-e-e-",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_292.ogg",
+          "leirat": "Én a-e-e-e-e-e-e-e-e-e-e-e- Én--e-e-e-e-e- É-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_295.ogg",
+          "leirat": "Fig,",
+          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
+        }
+      ]
+    },
+    {
+      "id": "poen_irany_nelkul",
+      "szoveg": "A leirat poén, biztatás vagy kérdés, irány nélkül. Véletlenszerűen nem indítom.",
+      "darab": 18,
+      "lehetosegek": [
+        {
+          "id": "indulas",
+          "szoveg": "Szóljon egyszer induláskor."
+        },
+        {
+          "id": "egyenes_kommentar",
+          "szoveg": "Szóljon egyenes szakaszon, kommentárként."
+        },
+        {
+          "id": "csend",
+          "szoveg": "Maradjon csendben."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/Ez az ez az Bubi nyomjad neki.ogg",
+          "leirat": "Ez az! Ez az pubi! Nyomjod neki!",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/Hopi hopi forduljunk vissza.ogg",
+          "leirat": "I hope you, for the young one.",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_166.ogg",
+          "leirat": "Szerintem, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a sz, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen,",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_217.ogg",
+          "leirat": "Igy szerintem. Én hány-hányi fogok.",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_396.ogg",
+          "leirat": "Szép ez a nap lementemi, hajtsunk-um ki a Baloldalon, szerintem.",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_402.ogg",
+          "leirat": "Szerintem a személyek a személy speciallis. have a Femindem. Femindem.",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_455.ogg",
+          "leirat": "Egy picitetet, hogy barra húzni. Nem úgy, nem úgy, nem úgy. Belenezz tüköri körbe, és akkor, na, hülye. Szóval tartunk.",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_462.ogg",
+          "leirat": "Szerintem hív fel az a sz ajnt, de most komolyan, és kérdez meg, hogy ez jó ötlete, ha egyen, de szerintem jó ötlet.",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_469.ogg",
+          "leirat": "Szerintem, szerny, szerint.",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_492.ogg",
+          "leirat": "Apika, te rohadtul nem arra mégy amere mondtam. Komolyan, és. És gondoltat, hogy nem fogom éjszreveni. Gondoltat? Gondoltat, hogy mint a hülye! Én fogok állni! Eben a kis doboz van! És azt várom, hogy te végre arra mény a mere, én mondom!",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_500.ogg",
+          "leirat": "Szóval, hogy én hülye vagyok, annak látszom, gondoltad, hogy én nem fogom észrevenni, hogy te egyszerűen nem arra mégy, hogy én hiába mondok bármit,",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_71.ogg",
+          "leirat": "Szerintem, kaptam a videót, a videót,",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_75.ogg",
+          "leirat": "Ilyen. Ilyen. Szerintem a videóra is tudom, hogy a videóra is tudom, denálom, hogy a videóra is tudom, hogy a videóra is tudom, hogy a vide a videóra is tudom, hogy a vide",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_80.ogg",
+          "leirat": "Forda, szerintem!",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_106.ogg",
+          "leirat": "Ez az! Ez az pubi! Nyomjod neki!",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_108.ogg",
+          "leirat": "I hope you, for the young one.",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_166.ogg",
+          "leirat": "Szerintem, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a sz, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen,",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_217.ogg",
+          "leirat": "Igy szerintem. Én hány-hányi fogok.",
+          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
+        }
+      ]
+    },
+    {
+      "id": "tagadas",
+      "szoveg": "A leirat visszavonja a helyzetet, például azt mondja, hogy most nem az, vagy hogy nem körforgalom.",
+      "darab": 6,
+      "lehetosegek": [
+        {
+          "id": "csend",
+          "szoveg": "Maradjon csendben."
+        },
+        {
+          "id": "tagadott_irany",
+          "szoveg": "Szóljon, amikor a következő manőver éppen a tagadott irány."
+        },
+        {
+          "id": "kommentar",
+          "szoveg": "Kommentárként szóljon egyenes haladás közben."
+        },
+        {
+          "id": "fajlonkent",
+          "szoveg": "Fájlonként írom meg a helyét."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_180.ogg",
+          "leirat": "És utána ez... ez nem egy kör forgalom?",
+          "indok": "Azt kérdezi, hogy ez nem körforgalom-e. A helyzetet visszavonja, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_242.ogg",
+          "leirat": "majd utána jobbra ne,",
+          "indok": "A mondat végén visszavonás van, ezért nem jobbra utasítás."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_339.ogg",
+          "leirat": "Lesz még majd olyan is, amikor fordulni kell jobbra vagy barra, de ez most nem az az eset.",
+          "indok": "A leirat visszavonja vagy tagadja a helyzetet, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_442.ogg",
+          "leirat": "De ezt példa nem körforgalom the compot meg az alagulat.",
+          "indok": "A leirat visszavonja vagy tagadja a helyzetet, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_180.ogg",
+          "leirat": "És utána ez... ez nem egy kör forgalom?",
+          "indok": "Azt kérdezi, hogy ez nem körforgalom-e. A helyzetet visszavonja, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_242.ogg",
+          "leirat": "majd utána jobbra ne,",
+          "indok": "A mondat végén visszavonás van, ezért nem jobbra utasítás."
+        }
+      ]
+    },
+    {
+      "id": "tobb_irany",
+      "szoveg": "Több irány vagy egymásnak ellentmondó leirat van. Nem választok közülük.",
+      "darab": 7,
+      "lehetosegek": [
+        {
+          "id": "elso",
+          "szoveg": "Az elsőként kimondott irány legyen a helyzet."
+        },
+        {
+          "id": "kommentar",
+          "szoveg": "Kommentár legyen egyenes haladás közben, irányhoz nem kötve."
+        },
+        {
+          "id": "csend",
+          "szoveg": "Maradjon csendben."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_164.ogg",
+          "leirat": "Jod, nem árpad ennyi jobbra!",
+          "indok": "A leirat tagadást és irányt együtt tartalmaz, ezért nem rendelem fordulóhoz."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_358.ogg",
+          "leirat": "Jóbra kéne menni, majd egyszer. De most nem, most egyenesen, egyenesen.",
+          "indok": "Több irány van egy mondatban."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_438.ogg",
+          "leirat": "Az, az első utcán jobbra, nem, a második utcán, és barra.",
+          "indok": "Jobbra és barra is szerepel, a kettőt nem választom szét."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_460.ogg",
+          "leirat": "Aztán tudom a térképen, hogy egy piros csík megy a következő utcán, nem a következő utcán jobra. Mit jel",
+          "indok": "A leirat tagadást és irányt együtt tartalmaz, ezért nem rendelem fordulóhoz."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_82.ogg",
+          "leirat": "Jóbra, majd máskor me-gyünkos barra.",
+          "indok": "Jobbra és barra is szerepel, a kettőt nem választom szét."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_97.ogg",
+          "leirat": "Sajobra, Sebarra, Egyenesen, Sajobra, Egyenesen, Sajobra, Egyenesen, Sajobra, Egyenesen, Sajobra, Egyenesen, Saj",
+          "indok": "Jobbra és barra is szerepel, a kettőt nem választom szét."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_164.ogg",
+          "leirat": "Jod, nem árpad ennyi jobbra!",
+          "indok": "A leirat tagadást és irányt együtt tartalmaz, ezért nem rendelem fordulóhoz."
+        }
+      ]
+    },
+    {
+      "id": "utcanszam",
+      "szoveg": "A hang utcát sorszámoz (második, harmadik, vagy egymásnak ellentmondó sorszám). Az útvonal nem ad ilyen sorszámot, ezért nem indítom a következő azonos irányú manővernél.",
+      "darab": 9,
+      "lehetosegek": [
+        {
+          "id": "kovetkezo_irany",
+          "szoveg": "Szóljon a leiratban lévő iránynál, akkor is, ha a sorszám nem ellenőrizhető."
+        },
+        {
+          "id": "csend",
+          "szoveg": "Maradjon csendben."
+        },
+        {
+          "id": "fajlonkent",
+          "szoveg": "Fájlonként írom meg a helyét."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_153.ogg",
+          "leirat": "Jobra a Hármadik utcán, GYORGYÓ!",
+          "indok": "Utcát sorszámoz. A navigáció nem tudja, hányadik utca a következő manőver, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_274.ogg",
+          "leirat": "A második utcán lesz az, hogy jobbra kell menni.",
+          "indok": "Utcát sorszámoz. A navigáció nem tudja, hányadik utca a következő manőver, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_285.ogg",
+          "leirat": "első utca utáni utcán jobbra fordulunk.",
+          "indok": "Utcát sorszámoz. A navigáció nem tudja, hányadik utca a következő manőver, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_337.ogg",
+          "leirat": "A harmadék utcán jobbra kell menni.",
+          "indok": "Utcát sorszámoz. A navigáció nem tudja, hányadik utca a következő manőver, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_412.ogg",
+          "leirat": "Felgyomrom, a következő utcan nem, a kö-következő utcán nem, hanem a második utcán jobbra megyünk.",
+          "indok": "Utcát sorszámoz. A navigáció nem tudja, hányadik utca a következő manőver, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_470.ogg",
+          "leirat": "A gond-egyebben. A gondolom, hogy a 3. kucán kell jobbra fordulni, hogy mindegy, én már most szólok, aztán legyen, a 17. kucán, legyen jobbra.",
+          "indok": "Utcát sorszámoz. A navigáció nem tudja, hányadik utca a következő manőver, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_153.ogg",
+          "leirat": "Jobra a Hármadik utcán, GYORGYÓ!",
+          "indok": "Utcát sorszámoz. A navigáció nem tudja, hányadik utca a következő manőver, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_274.ogg",
+          "leirat": "A második utcán lesz az, hogy jobbra kell menni.",
+          "indok": "Utcát sorszámoz. A navigáció nem tudja, hányadik utca a következő manőver, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_285.ogg",
+          "leirat": "első utca utáni utcán jobbra fordulunk.",
+          "indok": "Utcát sorszámoz. A navigáció nem tudja, hányadik utca a következő manőver, ezért nincs bekötve."
+        }
+      ]
+    },
+    {
+      "id": "irany_fok",
+      "szoveg": "Van irány a leiratban, de nem dönthető el, hogy sima, enyhe vagy éles kanyar. A másik leirat néha mást mond.",
+      "darab": 6,
+      "lehetosegek": [
+        {
+          "id": "sima",
+          "szoveg": "A sima irány manőverénél szóljon."
+        },
+        {
+          "id": "enyhen",
+          "szoveg": "Az enyhe kanyar manőverénél szóljon."
+        },
+        {
+          "id": "elesen",
+          "szoveg": "Az éles kanyar manőverénél szóljon."
+        },
+        {
+          "id": "csend",
+          "szoveg": "Maradjon csendben."
+        },
+        {
+          "id": "fajlonkent",
+          "szoveg": "Fájlonként írom meg a fokot."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_206.ogg",
+          "leirat": "Fordulj enyhén",
+          "indok": "Az irány foka (sima, enyhe vagy éles) a leiratból nem dönthető el."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_344.ogg",
+          "leirat": "Egyképp szükségeképp szüksége tetszett, akkor jobbra megyünk doki lesen.",
+          "indok": "Az irány foka (sima, enyhe vagy éles) a leiratból nem dönthető el."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_373.ogg",
+          "leirat": "Mit keres a kecskén, cobra? Forduljunk most ennyhény jobbra.",
+          "indok": "Az irány foka (sima, enyhe vagy éles) a leiratból nem dönthető el."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_77.ogg",
+          "leirat": "Szeretnénk egy hén jobbra.",
+          "indok": "Az irány foka (sima, enyhe vagy éles) a leiratból nem dönthető el."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_89.ogg",
+          "leirat": "Aztán meg majd balra é.",
+          "indok": "Az irány foka (sima, enyhe vagy éles) a leiratból nem dönthető el."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_206.ogg",
+          "leirat": "Fordulj enyhén",
+          "indok": "Az irány foka (sima, enyhe vagy éles) a leiratból nem dönthető el."
+        }
+      ]
+    },
+    {
+      "id": "nem_biztos_mondat",
+      "szoveg": "A mondat töredékes, vagy az ismételt leirat nem ugyanazt mondja. A helyzet nincs megállapítva, ezért nem találok ki fordulót.",
+      "darab": 14,
+      "lehetosegek": [
+        {
+          "id": "szo_szerint",
+          "szoveg": "A kiolvasható irányszó eseményénél szóljon."
+        },
+        {
+          "id": "csend",
+          "szoveg": "Maradjon csendben."
+        },
+        {
+          "id": "fajlonkent",
+          "szoveg": "Fájlonként írom meg a helyét."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_214.ogg",
+          "leirat": "Ez már a balaton, vagy egy körforgalom.",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_252.ogg",
+          "leirat": "Majd utá, no, tor, torc, jobbra.",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_328.ogg",
+          "leirat": "A szeretőt legyek én. Jobra",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_334.ogg",
+          "leirat": "Hátsi maga tó, meg a buksifaját kérd át, újra tervez a b",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_363.ogg",
+          "leirat": "...jobra.",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_381.ogg",
+          "leirat": "Anyira a fok, a-ra hogy barra, hogy körforgalom, ha az. Hát a helynyi helynek a helyzéseket, a helyzőségeket, a helyzéseket, a helyzőségeket, a h",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_45.ogg",
+          "leirat": "Tánakör forgalom!",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_72.ogg",
+          "leirat": "Lesz a húz, olyt, jobbra!",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_73.ogg",
+          "leirat": "Egyenesen visszáltam.",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_86.ogg",
+          "leirat": "Jobra k",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_102.ogg",
+          "leirat": "A-térkezősé",
+          "indok": "Az első leirat értelmetlen. Az ismételt leirat szerint „és aztán, balra megyünk élesen”, de idegen szót is beilleszt. A két leirat nem ugyanaz, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_214.ogg",
+          "leirat": "Ez már a balaton, vagy egy körforgalom.",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_252.ogg",
+          "leirat": "Majd utá, no, tor, torc, jobbra.",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/És aztán balra megyünk élesen.ogg",
+          "leirat": "A-térkezősé",
+          "indok": "Az első leirat értelmetlen. Az ismételt leirat szerint „és aztán, balra megyünk élesen”, de idegen szót is beilleszt. A két leirat nem ugyanaz, ezért nincs bekötve."
+        }
+      ]
+    },
+    {
+      "id": "gps_bizonytalan",
+      "szoveg": "A hang GPS-t említ, de nem mondja ki, hogy a vétel gyenge vagy nincs. Nem teszem a GPS-hiba eseményére.",
+      "darab": 6,
+      "lehetosegek": [
+        {
+          "id": "gps",
+          "szoveg": "Szóljon, amikor a GPS-jel gyenge vagy elveszett."
+        },
+        {
+          "id": "csend",
+          "szoveg": "Maradjon csendben."
+        },
+        {
+          "id": "fajlonkent",
+          "szoveg": "Fájlonként írom meg a helyét."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_266.ogg",
+          "leirat": "Ja, a GPS vett",
+          "indok": "GPS-t említ, de nem mondja ki, hogy a vétel gyenge vagy nincs."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_342.ogg",
+          "leirat": "GPS, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh,",
+          "indok": "GPS-t említ, de nem mondja ki, hogy a vétel gyenge vagy nincs."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_400.ogg",
+          "leirat": "Na api, most tökom olyan. Ha egy roh, a GPS vét",
+          "indok": "GPS-t említ, de nem mondja ki, hogy a vétel gyenge vagy nincs."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_405.ogg",
+          "leirat": "A GPS szvételjénk jöjjönk",
+          "indok": "GPS-t említ, de nem mondja ki, hogy a vétel gyenge vagy nincs."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_484.ogg",
+          "leirat": "Ilyenkor úgy umatkozom, de mind GPS umat Hát, feladott ez!",
+          "indok": "GPS-t említ, de nem mondja ki, hogy a vétel gyenge vagy nincs."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_266.ogg",
+          "leirat": "Ja, a GPS vett",
+          "indok": "GPS-t említ, de nem mondja ki, hogy a vétel gyenge vagy nincs."
+        }
+      ]
+    },
+    {
+      "id": "tartas",
+      "szoveg": "A hang tartást vagy húzást mond egy irányba, nem kanyart. Külön tartás-esemény nincs.",
+      "darab": 6,
+      "lehetosegek": [
+        {
+          "id": "irany_kommentar",
+          "szoveg": "Kommentárként szóljon, amikor a következő manőver ugyanaz az irány."
+        },
+        {
+          "id": "egyenes_kommentar",
+          "szoveg": "Kommentárként szóljon egyenes haladás közben."
+        },
+        {
+          "id": "csend",
+          "szoveg": "Maradjon csendben."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_294.ogg",
+          "leirat": "Jobbra lenne érdemes tartani egy picit, mert utána csak cigcak van.",
+          "indok": "Tartást vagy húzást mond, nem kanyart. Nincs külön tartás-esemény."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_316.ogg",
+          "leirat": "Majd utána jobbra kellene felttétlenül húzolni.",
+          "indok": "Tartást vagy húzást mond, nem kanyart. Nincs külön tartás-esemény."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_374.ogg",
+          "leirat": "Nem szeretények mindenfele, hogy videók a fel tartani, de érdemes jobbra tartani.",
+          "indok": "Tartást vagy húzást mond, nem kanyart. Nincs külön tartás-esemény."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_461.ogg",
+          "leirat": "N. a jobbra tartani, meg mindenképpen megisérni, ha nem akarod utána lelöggdösné a biciclistákat.",
+          "indok": "Tartást vagy húzást mond, nem kanyart. Nincs külön tartás-esemény."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_465.ogg",
+          "leirat": "Most van az, hogy majd aztán fordulunk minden felé, meg sávot váltunk, megérsmi, jobbra kellene tartani egy picit.",
+          "indok": "Tartást vagy húzást mond, nem kanyart. Nincs külön tartás-esemény."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_294.ogg",
+          "leirat": "Jobbra lenne érdemes tartani egy picit, mert utána csak cigcak van.",
+          "indok": "Tartást vagy húzást mond, nem kanyart. Nincs külön tartás-esemény."
+        }
+      ]
+    },
+    {
+      "id": "talan",
+      "szoveg": "Az irány csak lehetőség, poén vagy későbbi időpont. Nem a most következő manőver utasítása.",
+      "darab": 2,
+      "lehetosegek": [
+        {
+          "id": "irany_kommentar",
+          "szoveg": "Kommentárként szóljon, amikor a következő manőver a kimondott irány."
+        },
+        {
+          "id": "indulas",
+          "szoveg": "Szóljon egyszer, amikor az útvonal elkészül."
+        },
+        {
+          "id": "csend",
+          "szoveg": "Maradjon csendben."
+        }
+      ],
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_324.ogg",
+          "leirat": "És utána csak azért, hogy téged meglepjünk, Csak azért, hogy pünk jobbra fogunk menni, majd.",
+          "indok": "Az irány csak lehetőség vagy későbbi időpont, nem a mostani manőver."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_387.ogg",
+          "leirat": "Utána pedig majd megyünk valamára, és majd akkor elmondom, oly melyre. Lehet, hogy jobbra.",
+          "indok": "Az irány csak lehetőség vagy későbbi időpont, nem a mostani manőver."
+        }
+      ]
+    }
+  ]
+}

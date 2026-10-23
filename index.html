@@ -108,7 +108,8 @@
         #voice-box summary { min-height: 40px; padding: 8px 10px; font-size: 13px; font-weight: 700; cursor: pointer; }
         #voice-body { padding: 0 10px 8px; display: flex; flex-direction: column; gap: 6px; }
         #voice-note, #voice-status { margin: 0; font-size: 11px; line-height: 1.35; opacity: 0.8; }
-        #voice-enabled-row { display: flex; align-items: center; gap: 8px; min-height: 36px; font-size: 13px; font-weight: 700; }
+        #voice-enabled-row, #voice-volume-row { display: flex; align-items: center; gap: 8px; min-height: 36px; font-size: 13px; font-weight: 700; }
+        #voice-volume { flex: 1; min-width: 0; }
         .voice-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
         .voice-row span { flex: 1; min-width: 0; font-size: 12px; line-height: 1.3; }
         .voice-row input { width: 118px; font-size: 12px; }
@@ -234,8 +235,9 @@
                 <details id="voice-box">
                     <summary>Hangok</summary>
                     <div id="voice-body">
-                        <p id="voice-note">A hangcsomag eseménykonfigurációja hiányzik, ezért egyetlen fájl sincs manőverhez rendelve. Az útvonalat nem a hang dönti el.</p>
+                        <p id="voice-note">A hang a leirat szerinti helyzetben szól. Ami kérdéses, az csendben marad. Az útvonalat nem a hang dönti el.</p>
                         <label id="voice-enabled-row"><input id="voice-enabled" type="checkbox" checked> Hang be</label>
+                        <label id="voice-volume-row">Hangerő <input id="voice-volume" type="range" min="0" max="100" value="100" aria-label="Hangerő"></label>
                         <div id="voice-slots"></div>
                         <p id="voice-status"></p>
                     </div>
@@ -6603,6 +6605,29 @@
         return { meters: remain, name: dest && dest.name ? dest.name : "Cél", modifier: "", type: "arrive" };
     }
 
+    function followingManeuver(u) {
+        var seen = false;
+        var i;
+        var span = curve && curve.total ? curve.total : routeMeters;
+        for (i = 0; i < routeSteps.length; i++) {
+            var step = routeSteps[i];
+            var at = stepU(step);
+            if (at + 0.00001 < u) continue;
+            var type = step.type || "";
+            var mod = step.modifier || "";
+            if (type === "depart" || type === "notification") continue;
+            if ((type === "continue" || type === "new name") && (mod === "" || mod === "straight")) continue;
+            if (!seen) { seen = true; continue; }
+            var meters = typeof step.alongU === "number" ? (step.alongU - u) * span : (step.u0 - u) * routeMeters;
+            if (meters < 0) meters = 0;
+            return { meters: meters, name: step.name || "", modifier: mod, type: type, exit: step.exit };
+        }
+        if (!seen) return null;
+        var remain = (1 - Math.min(u, 1)) * span;
+        if (remain < 0) remain = 0;
+        return { meters: remain, name: dest && dest.name ? dest.name : "Cél", modifier: "", type: "arrive" };
+    }
+
     function currentStepName(u) {
         var i;
         var name = "";
@@ -6731,16 +6756,122 @@
         paintSheetLabel();
         syncChrome();
         paintRouteMap();
+        var gpsDown = gpsStatus === "weak" || gpsStatus === "lost";
+        if (gpsDown && !voiceGpsDown) {
+            voiceGpsDown = true;
+            voiceGpsEpisode += 1;
+        }
+        if (!gpsDown) voiceGpsDown = false;
+        if (gpsDown) considerVoice({ kind: "gps", seq: voiceGpsEpisode, type: "gps" });
         if (man && gpsOnRoute) considerVoice(man);
     }
 
-    function voiceSlotFor(man) {
+    function voiceEventFor(man) {
+        if (!man) return "";
+        if (man.kind === "reroute") return "ujratervezes";
+        if (man.kind === "indulas") return "indulas";
+        if (man.kind === "gps") return "gps_hiany";
+        var type = man.type || "";
+        if (type === "arrive") return "cel";
+        if (type === "exit roundabout" || type === "exit rotary") return "";
+        if (type === "roundabout" || type === "rotary") {
+            var exitN = roundaboutExit(man);
+            if (exitN && typeof voiceQueues !== "undefined" && voiceQueues["korforgalom_" + exitN] && voiceQueues["korforgalom_" + exitN].length) return "korforgalom_" + exitN;
+            return "korforgalom";
+        }
+        var mod = man.modifier || "";
+        if (mod === "sharp left") return "elesen_balra";
+        if (mod === "left") return "balra";
+        if (mod === "slight left") return "enyhen_balra";
+        if (mod === "straight") return "egyenes";
+        if (mod === "slight right") return "enyhen_jobbra";
+        if (mod === "right") return "jobbra";
+        if (mod === "sharp right") return "elesen_jobbra";
+        if (mod === "uturn") return "vissza";
         return "";
+    }
+
+    function voiceSlotFor(man) {
+        return voiceEventFor(man);
+    }
+
+    function voiceRank(rec) {
+        if (!rec) return 9;
+        if (rec.szerep === "elsodleges") return 0;
+        if (rec.szerep === "reakcio") return 1;
+        if (rec.szerep === "kommentar") return 2;
+        return 3;
+    }
+
+    function voiceQueueFrom(records) {
+        var buckets = {};
+        var i;
+        for (i = 0; i < records.length; i++) {
+            var rec = records[i];
+            if (!rec || rec.allapot !== "bekotve" || !rec.helyzet || rec.szerep === "folytatas") continue;
+            if (!buckets[rec.helyzet]) buckets[rec.helyzet] = [];
+            buckets[rec.helyzet].push(rec);
+        }
+        var names = Object.keys(buckets);
+        for (i = 0; i < names.length; i++) {
+            buckets[names[i]].sort(function (a, b) {
+                var rank = voiceRank(a) - voiceRank(b);
+                if (rank) return rank;
+                var ap = a.utvonal || "";
+                var bp = b.utvonal || "";
+                if (ap < bp) return -1;
+                if (ap > bp) return 1;
+                return 0;
+            });
+        }
+        var follow = {};
+        for (i = 0; i < records.length; i++) {
+            var clip = records[i];
+            if (!clip || clip.allapot !== "bekotve" || clip.szerep !== "folytatas" || !clip.helyzet) continue;
+            if (!follow[clip.helyzet]) follow[clip.helyzet] = [];
+            follow[clip.helyzet].push(clip);
+        }
+        names = Object.keys(follow);
+        for (i = 0; i < names.length; i++) {
+            follow[names[i]].sort(function (a, b) {
+                var ap = a.utvonal || "";
+                var bp = b.utvonal || "";
+                if (ap < bp) return -1;
+                if (ap > bp) return 1;
+                return 0;
+            });
+            buckets["folytatas:" + names[i]] = follow[names[i]];
+        }
+        return buckets;
+    }
+
+    function voicePick(queue, cursor) {
+        if (!queue || !queue.length) return null;
+        var n = queue.length;
+        var i = cursor % n;
+        if (i < 0) i += n;
+        return { index: i, item: queue[i], next: (i + 1) % n };
+    }
+
+    function voiceGain(muted, level) {
+        if (muted) return 0;
+        if (typeof level !== "number" || !isFinite(level)) return 1;
+        if (level < 0) return 0;
+        if (level > 1) return 1;
+        return level;
+    }
+
+    function voiceFollowOk(opts) {
+        if (!opts || opts.muted || opts.busy || opts.followed) return false;
+        if (!opts.nextEvent || !opts.clip) return false;
+        if (opts.clip.szerep !== "folytatas") return false;
+        if (opts.clip.helyzet !== opts.nextEvent) return false;
+        return true;
     }
 
     function voiceCueKey(man, slot, alongNow) {
         if (!slot) return "";
-        if (man && man.kind === "reroute") return "ujratervezes@" + String(man.seq || 0);
+        if (man && (man.kind === "reroute" || man.kind === "indulas" || man.kind === "gps")) return slot + "@" + String(man.seq || 0);
         var meters = man && typeof man.meters === "number" ? man.meters : 0;
         var target = (typeof alongNow === "number" ? alongNow : 0) + meters;
         return slot + "@" + (Math.round(target / 40) * 40);
@@ -6751,7 +6882,7 @@
         if (opts.muted) return false;
         if (opts.busy) return false;
         if (opts.key === opts.lastKey) return false;
-        if (opts.kind === "reroute") return true;
+        if (opts.kind === "reroute" || opts.kind === "indulas" || opts.kind === "gps") return true;
         if (typeof opts.meters !== "number" || opts.meters > 400 || opts.meters < 20) return false;
         return true;
     }
@@ -6762,9 +6893,45 @@
     var voiceMuted = false;
     var voiceAudio = null;
     var voiceSlots = [];
+    var voiceQueues = {};
+    var voiceCursor = {};
+    var voiceLevel = 1;
+    var voicePending = null;
+    var voiceGpsDown = false;
+    var voiceGpsEpisode = 0;
+
+    function voiceUrl(path) {
+        var parts = String(path || "").split("/");
+        var i;
+        for (i = 0; i < parts.length; i++) parts[i] = encodeURIComponent(parts[i]);
+        return parts.join("/");
+    }
+
+    function voiceStart(item, key) {
+        if (!item || !item.utvonal) return;
+        voiceLastKey = key;
+        voiceBusy = true;
+        if (!voiceAudio) voiceAudio = new Audio();
+        voiceAudio.onended = function () {
+            voiceBusy = false;
+            var pending = voicePending;
+            voicePending = null;
+            if (!pending || item.szerep === "folytatas") return;
+            var bucket = voiceQueues["folytatas:" + pending.nextEvent];
+            var picked = voicePick(bucket, voiceCursor["folytatas:" + pending.nextEvent] || 0);
+            if (!picked || !voiceFollowOk({ muted: voiceMuted, busy: false, nextEvent: pending.nextEvent, clip: picked.item, followed: false })) return;
+            voiceCursor["folytatas:" + pending.nextEvent] = picked.next;
+            voiceStart(picked.item, "folytatas@" + pending.key);
+        };
+        voiceAudio.onerror = function () { voiceBusy = false; voicePending = null; };
+        voiceAudio.volume = voiceGain(voiceMuted, voiceLevel);
+        voiceAudio.src = voiceUrl(item.utvonal);
+        var played = voiceAudio.play();
+        if (played && played.catch) played.catch(function () { voiceBusy = false; voicePending = null; });
+    }
 
     function considerVoice(man) {
-        var slot = voiceSlotFor(man);
+        var slot = voiceEventFor(man);
         var alongNow = curve && curve.total && typeof travel === "number" ? travel * curve.total : 0;
         var key = voiceCueKey(man, slot, alongNow);
         var meters = man && typeof man.meters === "number" ? man.meters : null;
@@ -6777,15 +6944,15 @@
             meters: meters,
             kind: man && man.kind
         })) return;
-        if (!voiceClips[slot]) return;
-        voiceLastKey = key;
-        voiceBusy = true;
-        if (!voiceAudio) voiceAudio = new Audio();
-        voiceAudio.onended = function () { voiceBusy = false; };
-        voiceAudio.onerror = function () { voiceBusy = false; };
-        voiceAudio.src = voiceClips[slot];
-        var played = voiceAudio.play();
-        if (played && played.catch) played.catch(function () { voiceBusy = false; });
+        var picked = voicePick(voiceQueues[slot], voiceCursor[slot] || 0);
+        if (!picked) return;
+        voiceCursor[slot] = picked.next;
+        var nextEvent = "";
+        if (man && man.kind !== "reroute" && man.kind !== "indulas" && man.kind !== "gps" && typeof travel === "number") {
+            nextEvent = voiceEventFor(followingManeuver(travel));
+        }
+        voicePending = picked.item.szerep === "folytatas" || !nextEvent ? null : { key: key, nextEvent: nextEvent };
+        voiceStart(picked.item, key);
     }
 
     function paintRouteMap() {
@@ -7666,7 +7833,24 @@
             if (voiceMuted && voiceAudio && voiceAudio.pause) {
                 voiceAudio.pause();
                 voiceBusy = false;
+                voicePending = null;
             }
+            if (voiceAudio) voiceAudio.volume = voiceGain(voiceMuted, voiceLevel);
+        });
+    }
+    var voiceVolume = document.getElementById("voice-volume");
+    try {
+        var storedRaw = localStorage.getItem("toonnav-voice-volume");
+        var storedLevel = storedRaw === null ? NaN : Number(storedRaw);
+        if (isFinite(storedLevel) && storedLevel >= 0 && storedLevel <= 100) voiceLevel = storedLevel / 100;
+    } catch (err) {}
+    if (voiceVolume) {
+        voiceVolume.value = String(Math.round(voiceLevel * 100));
+        voiceVolume.addEventListener("input", function () {
+            var next = Number(voiceVolume.value);
+            voiceLevel = voiceGain(false, next / 100);
+            try { localStorage.setItem("toonnav-voice-volume", String(Math.round(voiceLevel * 100))); } catch (err) {}
+            if (voiceAudio) voiceAudio.volume = voiceGain(voiceMuted, voiceLevel);
         });
     }
     fetch("hang/manifest.json", { cache: "no-store" }).then(function (res) {
@@ -7675,13 +7859,27 @@
     }).then(function (data) {
         var slots = data && data.slots ? data.slots : [];
         voicePaintSlots(slots);
-        var status = document.getElementById("voice-status");
-        if (!slots.length && status) status.textContent = "Eseménykonfiguráció nincs. A fájlok nincsenek manőverhez rendelve.";
         var i;
         for (i = 0; i < slots.length; i++) voiceStaticFallback(slots[i]);
+    }).catch(function () {});
+    fetch("hang/katalog.json", { cache: "no-store" }).then(function (res) {
+        if (!res.ok) throw new Error("katalog");
+        return res.json();
+    }).then(function (data) {
+        var rows = data && data.hangok ? data.hangok : [];
+        voiceQueues = voiceQueueFrom(rows);
+        var wired = 0;
+        var asked = 0;
+        var i;
+        for (i = 0; i < rows.length; i++) {
+            if (rows[i].allapot === "bekotve") wired += 1;
+            else asked += 1;
+        }
+        var status = document.getElementById("voice-status");
+        if (status) status.textContent = "Bekötve " + wired + " hang. Kérdésre vár " + asked + ".";
     }).catch(function () {
         var status = document.getElementById("voice-status");
-        if (status) status.textContent = "A hanglista nem tölthető. A hang/manifest.json hiányzik.";
+        if (status) status.textContent = "A hangkatalógus nem tölthető.";
     });
     fromInput.addEventListener("focus", function () {
         markField("from");
@@ -9024,6 +9222,7 @@
         loadSettlementSigns(coords);
         fillFacts();
         setSheet(false);
+        considerVoice({ kind: "indulas", seq: routeSeq, type: "depart" });
         paintHud();
     }
 
