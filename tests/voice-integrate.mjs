@@ -68,7 +68,7 @@ const need = {
   enyhen_balra: ["balra"],
   egyenes: ["egyenes"],
   vissza: ["vissza"],
-  korforgalom: ["korforgal"],
+  korforgalom: ["korforgal", "kor forgal"],
   gps_hiany: ["gps", "felmond"],
   ujratervezes: ["ujra"]
 };

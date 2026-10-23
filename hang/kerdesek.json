@@ -60,7 +60,7 @@
     {
       "id": "nincs_helyzet",
       "szoveg": "A leirat olvasható szavakat tartalmaz, de nincs benne olyan irány vagy helyzet, amihez a navigáció eseményt tud indítani. Fordulót nem találok ki hozzájuk.",
-      "darab": 402,
+      "darab": 393,
       "lehetosegek": [
         {
           "id": "csend",
@@ -83,11 +83,6 @@
         {
           "utvonal": "hang/clips/Balra.ogg",
           "leirat": "BÓRA!",
-          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
-        },
-        {
-          "utvonal": "hang/clips/Hhh újra tervezés.ogg",
-          "leirat": "V V V V",
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
         },
         {
@@ -316,11 +311,6 @@
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_180.ogg",
-          "leirat": "És utána ez... ez nem egy kör forgalom?",
-          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_181.ogg",
           "leirat": "Én a fiyút a",
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
@@ -403,11 +393,6 @@
         {
           "utvonal": "hang/clips/and_then_exit_left_21.ogg",
           "leirat": "Jövök rá!",
-          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_212.ogg",
-          "leirat": "Azt mondja, hogy utána kör forgalom jön.",
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
         },
         {
@@ -593,11 +578,6 @@
         {
           "utvonal": "hang/clips/and_then_exit_left_264.ogg",
           "leirat": "Érdemes barra tartani, mert ut",
-          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_265.ogg",
-          "leirat": "és ahogy így elnézem a térképet, utána kör forgalom jön.",
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
         },
         {
@@ -993,11 +973,6 @@
         {
           "utvonal": "hang/clips/and_then_exit_left_386.ogg",
           "leirat": "KERFORGALOM!",
-          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_388.ogg",
-          "leirat": "– És tudod, benne van! – Kör forgaló!",
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
         },
         {
@@ -1476,11 +1451,6 @@
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_110.ogg",
-          "leirat": "V V V V",
-          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_right_112.ogg",
           "leirat": "A mojtos borra iski.",
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
@@ -1696,11 +1666,6 @@
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_180.ogg",
-          "leirat": "És utána ez... ez nem egy kör forgalom?",
-          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_right_181.ogg",
           "leirat": "Én a fiyút a",
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
@@ -1783,11 +1748,6 @@
         {
           "utvonal": "hang/clips/and_then_exit_right_21.ogg",
           "leirat": "Jövök rá!",
-          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_212.ogg",
-          "leirat": "Azt mondja, hogy utána kör forgalom jön.",
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
         },
         {
@@ -1976,11 +1936,6 @@
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_265.ogg",
-          "leirat": "és ahogy így elnézem a térképet, utána kör forgalom jön.",
-          "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_right_267.ogg",
           "leirat": "rosszul a jogi",
           "indok": "A leiratból nincs egyértelmű irány vagy ismert, indítható helyzet."
@@ -2095,7 +2050,7 @@
     {
       "id": "olvashatatlan",
       "szoveg": "Ezeknek a fájloknak a leirata üres vagy ismétlődő. A mondatot nem állapítottam meg, ezért nem kötöm be őket.",
-      "darab": 148,
+      "darab": 141,
       "lehetosegek": [
         {
           "id": "csend",
@@ -2117,11 +2072,6 @@
           "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
         },
         {
-          "utvonal": "hang/clips/Hát szerintem,ő egyenesen.ogg",
-          "leirat": "Egyenesen... Egyenesen.",
-          "indok": "A leirat ugyanazt a szót ismétli, a mondat nincs megállapítva."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_125.ogg",
           "leirat": "Így négy négy négy négy négy né",
           "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
@@ -2130,11 +2080,6 @@
           "utvonal": "hang/clips/and_then_exit_left_127.ogg",
           "leirat": "Maj",
           "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_13.ogg",
-          "leirat": "Jóbra!",
-          "indok": "A leirat ugyanazt a szót ismétli, a mondat nincs megállapítva."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_130.ogg",
@@ -2377,11 +2322,6 @@
           "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_308.ogg",
-          "leirat": "Nyugodtan, egyenessen köz le, közlek-közlek-közlek-közlek-közlek-közlek-k.",
-          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_309.ogg",
           "leirat": "De zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső",
           "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
@@ -2422,11 +2362,6 @@
           "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_342.ogg",
-          "leirat": "GPS, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh,",
-          "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_346.ogg",
           "leirat": "",
           "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
@@ -2460,11 +2395,6 @@
           "utvonal": "hang/clips/and_then_exit_left_375.ogg",
           "leirat": "K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K",
           "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_381.ogg",
-          "leirat": "Anyira a fok, a-ra hogy barra, hogy körforgalom, ha az. Hát a helynyi helynek a helyzéseket, a helyzőségeket, a helyzéseket, a helyzőségeket, a h",
-          "indok": "A leirat ugyanazt a szót ismétli, a mondat nincs megállapítva."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_391.ogg",
@@ -2607,11 +2537,6 @@
           "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_109.ogg",
-          "leirat": "Egyenesen... Egyenesen.",
-          "indok": "A leirat ugyanazt a szót ismétli, a mondat nincs megállapítva."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_right_125.ogg",
           "leirat": "Így négy négy négy négy négy né",
           "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
@@ -2620,11 +2545,6 @@
           "utvonal": "hang/clips/and_then_exit_right_127.ogg",
           "leirat": "Maj",
           "indok": "A leirat üres vagy ismétlődő, a mondat nincs megállapítva."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_13.ogg",
-          "leirat": "Jóbra!",
-          "indok": "A leirat ugyanazt a szót ismétli, a mondat nincs megállapítva."
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_130.ogg",
@@ -2856,7 +2776,7 @@
     {
       "id": "poen_irany_nelkul",
       "szoveg": "A leirat poén, biztatás vagy kérdés, irány nélkül. Véletlenszerűen nem indítom.",
-      "darab": 21,
+      "darab": 18,
       "lehetosegek": [
         {
           "id": "indulas",
@@ -2880,11 +2800,6 @@
         {
           "utvonal": "hang/clips/Hopi hopi forduljunk vissza.ogg",
           "leirat": "I hope you, for the young one.",
-          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_117.ogg",
-          "leirat": "Kör forgalom lesz, szerintem.",
           "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
         },
         {
@@ -2923,11 +2838,6 @@
           "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_477.ogg",
-          "leirat": "Most, mi legyen, drága? Mert, hogy én mondok valamit, te meg nem azt csinálk csinálni Oké, oké, oké, te vagy a főnök? Újra tervezem? Vagy a se?",
-          "indok": "Hosszú szöveg, az újratervezés csak kérdés vagy töredék benne."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_492.ogg",
           "leirat": "Apika, te rohadtul nem arra mégy amere mondtam. Komolyan, és. És gondoltat, hogy nem fogom éjszreveni. Gondoltat? Gondoltat, hogy mint a hülye! Én fogok állni! Eben a kis doboz van! És azt várom, hogy te végre arra mény a mere, én mondom!",
           "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
@@ -2963,11 +2873,6 @@
           "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_117.ogg",
-          "leirat": "Kör forgalom lesz, szerintem.",
-          "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_right_166.ogg",
           "leirat": "Szerintem, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a sz, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen,",
           "indok": "Poén vagy reakció, irány nélkül. Véletlenszerűen nem indul."
@@ -2982,7 +2887,7 @@
     {
       "id": "tagadas",
       "szoveg": "A leirat visszavonja a helyzetet, például azt mondja, hogy most nem az, vagy hogy nem körforgalom.",
-      "darab": 4,
+      "darab": 6,
       "lehetosegek": [
         {
           "id": "csend",
@@ -3003,6 +2908,11 @@
       ],
       "fajlok": [
         {
+          "utvonal": "hang/clips/and_then_exit_left_180.ogg",
+          "leirat": "És utána ez... ez nem egy kör forgalom?",
+          "indok": "Azt kérdezi, hogy ez nem körforgalom-e. A helyzetet visszavonja, ezért nincs bekötve."
+        },
+        {
           "utvonal": "hang/clips/and_then_exit_left_242.ogg",
           "leirat": "majd utána jobbra ne,",
           "indok": "A mondat végén visszavonás van, ezért nem jobbra utasítás."
@@ -3016,6 +2926,11 @@
           "utvonal": "hang/clips/and_then_exit_left_442.ogg",
           "leirat": "De ezt példa nem körforgalom the compot meg az alagulat.",
           "indok": "A leirat visszavonja vagy tagadja a helyzetet, ezért nincs bekötve."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_180.ogg",
+          "leirat": "És utána ez... ez nem egy kör forgalom?",
+          "indok": "Azt kérdezi, hogy ez nem körforgalom-e. A helyzetet visszavonja, ezért nincs bekötve."
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_242.ogg",
@@ -3208,7 +3123,7 @@
     {
       "id": "nem_biztos_mondat",
       "szoveg": "A mondat töredékes, vagy az ismételt leirat nem ugyanazt mondja. A helyzet nincs megállapítva, ezért nem találok ki fordulót.",
-      "darab": 13,
+      "darab": 14,
       "lehetosegek": [
         {
           "id": "szo_szerint",
@@ -3247,6 +3162,11 @@
         {
           "utvonal": "hang/clips/and_then_exit_left_363.ogg",
           "leirat": "...jobra.",
+          "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_381.ogg",
+          "leirat": "Anyira a fok, a-ra hogy barra, hogy körforgalom, ha az. Hát a helynyi helynek a helyzéseket, a helyzőségeket, a helyzéseket, a helyzőségeket, a h",
           "indok": "A mondat töredékes, vagy a leiratok nem ugyanazt mondják, ezért a helyzet nincs megállapítva."
         },
         {
@@ -3294,7 +3214,7 @@
     {
       "id": "gps_bizonytalan",
       "szoveg": "A hang GPS-t említ, de nem mondja ki, hogy a vétel gyenge vagy nincs. Nem teszem a GPS-hiba eseményére.",
-      "darab": 5,
+      "darab": 6,
       "lehetosegek": [
         {
           "id": "gps",
@@ -3313,6 +3233,11 @@
         {
           "utvonal": "hang/clips/and_then_exit_left_266.ogg",
           "leirat": "Ja, a GPS vett",
+          "indok": "GPS-t említ, de nem mondja ki, hogy a vétel gyenge vagy nincs."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_342.ogg",
+          "leirat": "GPS, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh,",
           "indok": "GPS-t említ, de nem mondja ki, hogy a vétel gyenge vagy nincs."
         },
         {

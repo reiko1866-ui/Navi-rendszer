@@ -1,7 +1,7 @@
 {
   "osszesen": 697,
-  "bekotve": 71,
-  "kerdes": 626,
+  "bekotve": 86,
+  "kerdes": 611,
   "fajlnev": "Az and_then_exit_left és and_then_exit_right azonos sorszáma gyakran ugyanaz a hang. A név nem kijárat és nem külön utasítás. Mindkét útvonal külön rekord, a lejátszás a hang alapján közös.",
   "esemenyek": {
     "enyhen_jobbra": {
@@ -20,10 +20,56 @@
         }
       ]
     },
+    "ujratervezes": {
+      "indito": "Újratervezés kérése indul.",
+      "darab": 7,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/Hhh újra tervezés.ogg",
+          "szerep": "elsodleges",
+          "leirat": "V V V V"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_114.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Uír a tervezés?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_226.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Újra tervezze."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_477.ogg",
+          "szerep": "kommentar",
+          "leirat": "Most, mi legyen, drága? Mert, hogy én mondok valamit, te meg nem azt csinálk csinálni Oké, oké, oké, te vagy a főnök? Újra tervezem? Vagy a se?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_110.ogg",
+          "szerep": "elsodleges",
+          "leirat": "V V V V"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_114.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Uír a tervezés?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_226.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Újra tervezze."
+        }
+      ]
+    },
     "egyenes": {
       "indito": "A következő manőver egyenes.",
-      "darab": 16,
+      "darab": 19,
       "fajlok": [
+        {
+          "utvonal": "hang/clips/Hát szerintem,ő egyenesen.ogg",
+          "szerep": "kommentar",
+          "leirat": "Egyenesen... Egyenesen."
+        },
         {
           "utvonal": "hang/clips/and_then_exit_left_107.ogg",
           "szerep": "elsodleges",
@@ -48,6 +94,11 @@
           "utvonal": "hang/clips/and_then_exit_left_246.ogg",
           "szerep": "elsodleges",
           "leirat": "Hát hirtelen egyenesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_308.ogg",
+          "szerep": "kommentar",
+          "leirat": "Nyugodtan, egyenessen köz le, közlek-közlek-közlek-közlek-közlek-közlek-k."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_318.ogg",
@@ -85,6 +136,11 @@
           "leirat": "Isel meg vagy, akkor egyenesen."
         },
         {
+          "utvonal": "hang/clips/and_then_exit_right_109.ogg",
+          "szerep": "kommentar",
+          "leirat": "Egyenesen... Egyenesen."
+        },
+        {
           "utvonal": "hang/clips/and_then_exit_right_138.ogg",
           "szerep": "folytatas",
           "leirat": "Aztán egyenesben."
@@ -108,7 +164,7 @@
     },
     "jobbra": {
       "indito": "A következő manőver iránya jobbra.",
-      "darab": 23,
+      "darab": 25,
       "fajlok": [
         {
           "utvonal": "hang/clips/and_then_exit_left_113.ogg",
@@ -124,6 +180,11 @@
           "utvonal": "hang/clips/and_then_exit_left_126.ogg",
           "szerep": "kommentar",
           "leirat": "Jó, ha jobbra mennél!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_13.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Jóbra!"
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_152.ogg",
@@ -191,6 +252,11 @@
           "leirat": "Jó, ha jobbra mennél!"
         },
         {
+          "utvonal": "hang/clips/and_then_exit_right_13.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Jóbra!"
+        },
+        {
           "utvonal": "hang/clips/and_then_exit_right_152.ogg",
           "szerep": "kommentar",
           "leirat": "Én jóbra, nem valami radikális dolog."
@@ -227,29 +293,59 @@
         }
       ]
     },
-    "ujratervezes": {
-      "indito": "Újratervezés kérése indul.",
-      "darab": 4,
+    "korforgalom": {
+      "indito": "A következő manőver körforgalom. A hang kijáratszámot nem mond.",
+      "darab": 10,
       "fajlok": [
         {
-          "utvonal": "hang/clips/and_then_exit_left_114.ogg",
-          "szerep": "elsodleges",
-          "leirat": "Uír a tervezés?"
+          "utvonal": "hang/clips/and_then_exit_left_117.ogg",
+          "szerep": "kommentar",
+          "leirat": "Kör forgalom lesz, szerintem."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_226.ogg",
-          "szerep": "elsodleges",
-          "leirat": "Újra tervezze."
+          "utvonal": "hang/clips/and_then_exit_left_155.ogg",
+          "szerep": "kommentar",
+          "leirat": ", körforgalom jön, és majd szólok,"
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_114.ogg",
-          "szerep": "elsodleges",
-          "leirat": "Uír a tervezés?"
+          "utvonal": "hang/clips/and_then_exit_left_212.ogg",
+          "szerep": "folytatas",
+          "leirat": "Azt mondja, hogy utána kör forgalom jön."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_226.ogg",
-          "szerep": "elsodleges",
-          "leirat": "Újra tervezze."
+          "utvonal": "hang/clips/and_then_exit_left_265.ogg",
+          "szerep": "folytatas",
+          "leirat": "és ahogy így elnézem a térképet, utána kör forgalom jön."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_388.ogg",
+          "szerep": "kommentar",
+          "leirat": "– És tudod, benne van! – Kör forgaló!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_443.ogg",
+          "szerep": "kommentar",
+          "leirat": "Számubra a körforgalmak nők, nőneműek. Mér, hát itt kerek, érted"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_117.ogg",
+          "szerep": "kommentar",
+          "leirat": "Kör forgalom lesz, szerintem."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_155.ogg",
+          "szerep": "kommentar",
+          "leirat": ", körforgalom jön, és majd szólok,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_212.ogg",
+          "szerep": "folytatas",
+          "leirat": "Azt mondja, hogy utána kör forgalom jön."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_265.ogg",
+          "szerep": "folytatas",
+          "leirat": "és ahogy így elnézem a térképet, utána kör forgalom jön."
         }
       ]
     },
@@ -332,27 +428,6 @@
           "utvonal": "hang/clips/and_then_exit_right_129.ogg",
           "szerep": "reakcio",
           "leirat": "Nincs GPS-vétel! Felmondok!"
-        }
-      ]
-    },
-    "korforgalom": {
-      "indito": "A következő manőver körforgalom. A hang kijáratszámot nem mond.",
-      "darab": 3,
-      "fajlok": [
-        {
-          "utvonal": "hang/clips/and_then_exit_left_155.ogg",
-          "szerep": "kommentar",
-          "leirat": ", körforgalom jön, és majd szólok,"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_443.ogg",
-          "szerep": "kommentar",
-          "leirat": "Számubra a körforgalmak nők, nőneműek. Mér, hát itt kerek, érted"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_155.ogg",
-          "szerep": "kommentar",
-          "leirat": ", körforgalom jön, és majd szólok,"
         }
       ]
     },

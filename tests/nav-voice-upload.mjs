@@ -26,7 +26,7 @@ try {
   say("SLOTS " + rows);
   check("no-upload-rows", rows === 0, "n=" + rows);
   const statusText = await page.$eval("#voice-status", (el) => el.textContent || "");
-  check("status-counts", statusText === "Bekötve 71 hang. Kérdésre vár 626.", statusText);
+  check("status-counts", statusText === "Bekötve 86 hang. Kérdésre vár 611.", statusText);
   check("volume-slider", await page.$eval("#voice-volume", (el) => el.value === "100"));
   await page.$eval("#voice-volume", (el) => {
     el.value = "40";
