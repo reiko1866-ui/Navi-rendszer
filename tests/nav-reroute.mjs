@@ -143,6 +143,8 @@ try {
   await new Promise((r) => setTimeout(r, 1400));
   await searchPick(page, "#to-q", "Vörösmarty tér Budapest", "Vörösmarty");
   await page.waitForFunction(() => /Tervezett útvonal/.test(document.getElementById("nav-note").textContent || ""), { timeout: 30000 });
+  for (let i = 0; i < 40 && !route; i++) await new Promise((r) => setTimeout(r, 50));
+  if (!route) throw new Error("OSRM response was not captured");
   const coords = route.geometry.coordinates;
   const home = pointAt(coords, 80);
   const t0 = Date.now();
