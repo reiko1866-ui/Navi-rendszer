@@ -21,11 +21,18 @@ try {
   page.on("pageerror", (err) => say("PAGE " + String(err)));
   await page.setViewport({ width: 360, height: 740, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
   await page.goto(origin + "/index.html?gfx=mobile", { waitUntil: "domcontentloaded", timeout: 40000 });
-  await page.waitForFunction(() => /Eseménykonfiguráció nincs/.test((document.getElementById("voice-status").textContent || "")), { timeout: 10000 });
+  await page.waitForFunction(() => /Bekötve/.test((document.getElementById("voice-status").textContent || "")), { timeout: 10000 });
   const rows = await page.$$eval("#voice-slots .voice-row", (els) => els.length);
   say("SLOTS " + rows);
-  check("no-event-rows", rows === 0, "n=" + rows);
-  check("config-missing-status", /Eseménykonfiguráció nincs/.test(await page.$eval("#voice-status", (el) => el.textContent || "")));
+  check("no-upload-rows", rows === 0, "n=" + rows);
+  const statusText = await page.$eval("#voice-status", (el) => el.textContent || "");
+  check("status-counts", statusText === "Bekötve 71 hang. Kérdésre vár 626.", statusText);
+  check("volume-slider", await page.$eval("#voice-volume", (el) => el.value === "100"));
+  await page.$eval("#voice-volume", (el) => {
+    el.value = "40";
+    el.dispatchEvent(new Event("input"));
+  });
+  check("volume-saves", await page.evaluate(() => localStorage.getItem("toonnav-voice-volume")) === "40");
   check("mute-starts-on", await page.$eval("#voice-enabled", (el) => el.checked === true));
   await page.$eval("#voice-enabled", (el) => { el.checked = false; el.dispatchEvent(new Event("change")); });
   check("mute-saves", await page.evaluate(() => localStorage.getItem("toonnav-voice")) === "off");

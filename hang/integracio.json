@@ -1,0 +1,426 @@
+{
+  "osszesen": 697,
+  "bekotve": 71,
+  "kerdes": 626,
+  "fajlnev": "Az and_then_exit_left és and_then_exit_right azonos sorszáma gyakran ugyanaz a hang. A név nem kijárat és nem külön utasítás. Mindkét útvonal külön rekord, a lejátszás a hang alapján közös.",
+  "esemenyek": {
+    "enyhen_jobbra": {
+      "indito": "A következő manőver enyhén jobbra.",
+      "darab": 2,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/Enyhén jobbra zászló nélkül.ogg",
+          "szerep": "kommentar",
+          "leirat": "Én jobbra zászló nélkül."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_105.ogg",
+          "szerep": "kommentar",
+          "leirat": "Én jobbra zászló nélkül."
+        }
+      ]
+    },
+    "egyenes": {
+      "indito": "A következő manőver egyenes.",
+      "darab": 16,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_107.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Isel meg vagy, akkor egyenesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_138.ogg",
+          "szerep": "folytatas",
+          "leirat": "Aztán egyenesben."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_169.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Előre egyenesen szépen tovább!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_199.ogg",
+          "szerep": "folytatas",
+          "leirat": "pedig majd hat-utána egyenesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_246.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Hát hirtelen egyenesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_318.ogg",
+          "szerep": "kommentar",
+          "leirat": "hogy egyenesen kéne tová, menni."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_326.ogg",
+          "szerep": "kommentar",
+          "leirat": "Nézzem a térképet, egyenesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_356.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Szasztán, mert én már most tudom, hogy egyenesen kell menne. Felir."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_410.ogg",
+          "szerep": "kommentar",
+          "leirat": "Ha például egyenesen lenne kedved menni, de télyek"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_83.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Menjül szi szépen egyenesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_85.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Szépen egyenesán, Sán, Szépen, Egyenesán,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_107.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Isel meg vagy, akkor egyenesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_138.ogg",
+          "szerep": "folytatas",
+          "leirat": "Aztán egyenesben."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_169.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Előre egyenesen szépen tovább!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_199.ogg",
+          "szerep": "folytatas",
+          "leirat": "pedig majd hat-utána egyenesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_246.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Hát hirtelen egyenesen."
+        }
+      ]
+    },
+    "jobbra": {
+      "indito": "A következő manőver iránya jobbra.",
+      "darab": 23,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_113.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Látod a lehet hethőséget? Jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_12.ogg",
+          "szerep": "folytatas",
+          "leirat": "Utána jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_126.ogg",
+          "szerep": "kommentar",
+          "leirat": "Jó, ha jobbra mennél!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_152.ogg",
+          "szerep": "kommentar",
+          "leirat": "Én jóbra, nem valami radikális dolog."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_18.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Menj el jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_19.ogg",
+          "szerep": "folytatas",
+          "leirat": "Uti, utána jobbra megyünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_197.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Jóbra, megyünk! Jóbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_198.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Követjük a főutat, most, most ez a projekt, és jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_261.ogg",
+          "szerep": "kommentar",
+          "leirat": "Minden versbe kell a rím, jobbra"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_289.ogg",
+          "szerep": "kommentar",
+          "leirat": "Jobbra? Hmm? Kanyarodjon le valahol, ah, ahol, hát úgy sikerül."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_366.ogg",
+          "szerep": "folytatas",
+          "leirat": "és utána, és ezt büszkelem, bárki előtt, jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_57.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Kési hárok, de jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_88.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Most! Jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_113.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Látod a lehet hethőséget? Jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_12.ogg",
+          "szerep": "folytatas",
+          "leirat": "Utána jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_126.ogg",
+          "szerep": "kommentar",
+          "leirat": "Jó, ha jobbra mennél!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_152.ogg",
+          "szerep": "kommentar",
+          "leirat": "Én jóbra, nem valami radikális dolog."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_18.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Menj el jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_19.ogg",
+          "szerep": "folytatas",
+          "leirat": "Uti, utána jobbra megyünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_197.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Jóbra, megyünk! Jóbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_198.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Követjük a főutat, most, most ez a projekt, és jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_261.ogg",
+          "szerep": "kommentar",
+          "leirat": "Minden versbe kell a rím, jobbra"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_289.ogg",
+          "szerep": "kommentar",
+          "leirat": "Jobbra? Hmm? Kanyarodjon le valahol, ah, ahol, hát úgy sikerül."
+        }
+      ]
+    },
+    "ujratervezes": {
+      "indito": "Újratervezés kérése indul.",
+      "darab": 4,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_114.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Uír a tervezés?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_226.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Újra tervezze."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_114.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Uír a tervezés?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_226.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Újra tervezze."
+        }
+      ]
+    },
+    "elesen_jobbra": {
+      "indito": "A következő manőver élesen jobbra.",
+      "darab": 9,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_121.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Menj el, szépen jobbra élesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_224.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Rájtad van a felszemem, jobbra megyünk élesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_247.ogg",
+          "szerep": "folytatas",
+          "leirat": "Meg majd! Jobbra megyünk! Élesen!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_314.ogg",
+          "szerep": "elsodleges",
+          "leirat": "És ide, az van írva, jöbra élesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_111.ogg",
+          "szerep": "folytatas",
+          "leirat": "és utána megy, jubra, éles, lesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_121.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Menj el, szépen jobbra élesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_224.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Rájtad van a felszemem, jobbra megyünk élesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_247.ogg",
+          "szerep": "folytatas",
+          "leirat": "Meg majd! Jobbra megyünk! Élesen!"
+        },
+        {
+          "utvonal": "hang/clips/És utána jobbra élesen.ogg",
+          "szerep": "folytatas",
+          "leirat": "és utána megy, jubra, éles, lesen."
+        }
+      ]
+    },
+    "gps_hiany": {
+      "indito": "A GPS-jel gyenge vagy elveszett.",
+      "darab": 5,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_129.ogg",
+          "szerep": "reakcio",
+          "leirat": "Nincs GPS-vétel! Felmondok!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_379.ogg",
+          "szerep": "reakcio",
+          "leirat": "A GPS vétel gyenge."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_380.ogg",
+          "szerep": "reakcio",
+          "leirat": "Hogy a GPS vétel gyenge."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_403.ogg",
+          "szerep": "reakcio",
+          "leirat": "Most akkor jó szórakozást kívánok, mert nincs GPS vétel és"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_129.ogg",
+          "szerep": "reakcio",
+          "leirat": "Nincs GPS-vétel! Felmondok!"
+        }
+      ]
+    },
+    "korforgalom": {
+      "indito": "A következő manőver körforgalom. A hang kijáratszámot nem mond.",
+      "darab": 3,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_155.ogg",
+          "szerep": "kommentar",
+          "leirat": ", körforgalom jön, és majd szólok,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_443.ogg",
+          "szerep": "kommentar",
+          "leirat": "Számubra a körforgalmak nők, nőneműek. Mér, hát itt kerek, érted"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_155.ogg",
+          "szerep": "kommentar",
+          "leirat": ", körforgalom jön, és majd szólok,"
+        }
+      ]
+    },
+    "vissza": {
+      "indito": "A következő manőver visszafordulás.",
+      "darab": 9,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_192.ogg",
+          "szerep": "folytatas",
+          "leirat": "utána visszafordulunk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_297.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Te! Fordulj vissza, ahol lehet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_413.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Fordul vissza ahol lehet jó"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_418.ogg",
+          "szerep": "folytatas",
+          "leirat": "Majd utána visszafordulunk, mert otthon hagyen a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_437.ogg",
+          "szerep": "folytatas",
+          "leirat": "Majd utána aztán visszaford"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_501.ogg",
+          "szerep": "folytatas",
+          "leirat": "Majd utána visszafordulunk mert erőtetéss lehet, ami jelent ére utal és ilyenkor mindig v visszafordulunk, mert erőteretész leltem, ami"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_62.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Uh-oh! Fordói vissza!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_192.ogg",
+          "szerep": "folytatas",
+          "leirat": "utána visszafordulunk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_297.ogg",
+          "szerep": "elsodleges",
+          "leirat": "Te! Fordulj vissza, ahol lehet."
+        }
+      ]
+    }
+  },
+  "kerdes_csoportok": [
+    "forgalom",
+    "gps_es_irany",
+    "nincs_helyzet",
+    "olvashatatlan",
+    "poen_irany_nelkul",
+    "tagadas",
+    "tobb_irany",
+    "utcanszam",
+    "irany_fok",
+    "nem_biztos_mondat",
+    "gps_bizonytalan",
+    "tartas",
+    "talan"
+  ]
+}
