@@ -234,7 +234,7 @@
                 <details id="voice-box">
                     <summary>Hangok</summary>
                     <div id="voice-body">
-                        <p id="voice-note">Csak az a mondat szólal meg, amelyiknek a szövege ellenőrzött utasítás. A vicces, bizonytalan és az „aztán” kezdetű mondatok nem szólnak. Az útvonalat nem a hang dönti el.</p>
+                        <p id="voice-note">A hangcsomag eseménykonfigurációja hiányzik, ezért egyetlen fájl sincs manőverhez rendelve. Az útvonalat nem a hang dönti el.</p>
                         <label id="voice-enabled-row"><input id="voice-enabled" type="checkbox" checked> Hang be</label>
                         <div id="voice-slots"></div>
                         <p id="voice-status"></p>
@@ -6735,15 +6735,6 @@
     }
 
     function voiceSlotFor(man) {
-        if (!man) return "";
-        if (man.kind === "reroute") return "ujratervezes";
-        var type = man.type || "";
-        if (type === "arrive") return "";
-        if (type === "exit roundabout" || type === "exit rotary") return "";
-        if (type === "roundabout" || type === "rotary") return "";
-        var mod = man.modifier || "";
-        if (mod === "sharp left") return "balra-elesen";
-        if (mod === "right") return "jobbra";
         return "";
     }
 
@@ -7684,6 +7675,8 @@
     }).then(function (data) {
         var slots = data && data.slots ? data.slots : [];
         voicePaintSlots(slots);
+        var status = document.getElementById("voice-status");
+        if (!slots.length && status) status.textContent = "Eseménykonfiguráció nincs. A fájlok nincsenek manőverhez rendelve.";
         var i;
         for (i = 0; i < slots.length; i++) voiceStaticFallback(slots[i]);
     }).catch(function () {

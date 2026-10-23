@@ -1,0 +1,9 @@
+{
+  "referencia": "A korábban számolt 697 ogg fájl a hang/clips mappában.",
+  "osszehasonlitas": "A helyi munkapéldány, a HEAD és az origin/cursor/toonnav-voice-upload-b5ab ugyanazt a 697 ogg útvonalat tartalmazza.",
+  "elerheto": 697,
+  "hianyzo_hangfajlok": [],
+  "hianyzo_konfiguracio": [
+    "Az eredeti csomag eseménykonfigurációja nincs a projektben. Nincs .sii, .sui vagy más hang-esemény tábla. A fájlnévből eseményt nem rendelünk."
+  ]
+}
