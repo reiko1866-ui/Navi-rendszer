@@ -234,7 +234,7 @@
                 <details id="voice-box">
                     <summary>Hangok</summary>
                     <div id="voice-body">
-                        <p id="voice-note">Egy-egy hang tölthető fel eseményenként. A fájl a készüléken marad. Az útvonalat nem a hang dönti el.</p>
+                        <p id="voice-note">Csak az a mondat szólal meg, amelyiknek a szövege ellenőrzött utasítás. A vicces, bizonytalan és az „aztán” kezdetű mondatok nem szólnak. Az útvonalat nem a hang dönti el.</p>
                         <label id="voice-enabled-row"><input id="voice-enabled" type="checkbox" checked> Hang be</label>
                         <div id="voice-slots"></div>
                         <p id="voice-status"></p>
@@ -6738,17 +6738,12 @@
         if (!man) return "";
         if (man.kind === "reroute") return "ujratervezes";
         var type = man.type || "";
-        if (type === "arrive") return "cel";
+        if (type === "arrive") return "";
         if (type === "exit roundabout" || type === "exit rotary") return "";
-        if (type === "roundabout" || type === "rotary") {
-            var exitN = roundaboutExit(man);
-            if (exitN >= 1 && exitN <= 3) return "korforgalom-" + exitN;
-            return "korforgalom";
-        }
+        if (type === "roundabout" || type === "rotary") return "";
         var mod = man.modifier || "";
-        if (mod === "left" || mod === "sharp left") return "balra";
-        if (mod === "right" || mod === "sharp right") return "jobbra";
-        if (mod === "straight" || mod === "slight left" || mod === "slight right") return "egyenesen";
+        if (mod === "sharp left") return "balra-elesen";
+        if (mod === "right") return "jobbra";
         return "";
     }
 
@@ -7656,7 +7651,10 @@
 
     function voiceStaticFallback(slot) {
         if (!slot || !slot.file || voiceClips[slot.id]) return;
-        fetch("hang/" + slot.file, { cache: "no-store" }).then(function (res) {
+        var parts = String(slot.file).split("/");
+        var i;
+        for (i = 0; i < parts.length; i++) parts[i] = encodeURIComponent(parts[i]);
+        fetch("hang/" + parts.join("/"), { cache: "no-store" }).then(function (res) {
             if (!res.ok) return null;
             var type = res.headers.get("content-type") || "";
             if (type.indexOf("audio/") !== 0 && type.indexOf("application/ogg") !== 0) return null;

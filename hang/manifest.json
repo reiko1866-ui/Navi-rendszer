@@ -1,16 +1,25 @@
 {
-  "note": "Ide tölthető fel egy-egy navigációs hang. A teljes SCS-csomag nem való ide. A hang nem választ útvonalat: csak akkor szólal meg, ha a navigáció már ezt az eseményt mutatta. A felhasználási engedélyt a nyilvános terjesztés előtt ellenőrizni kell.",
+  "note": "A hang nem választ útvonalat. Csak olyan klip van bekötve, amelynek a kimondott szövege két független leiratban ugyanaz az azonnali utasítás. A fájlnévben lévő szám nem kijárat és nem távolság. Az and_then_exit_right sorozat bájtra azonos más fájlokkal. A vicces, feltételes és az „aztán” vagy „utána” kezdetű mondatok nincsenek bekötve. A felhasználási engedély a nyilvános terjesztés előtt nincs ellenőrizve.",
   "formats": ["ogg", "mp3", "m4a", "aac", "webm", "wav"],
-  "androidBrowser": "Ezeket a formátumokat a Chrome Android le tudja játszani. Az SCS-ben lévő eredeti kódolást csak a kicsomagolt fájl fejléce igazolja.",
+  "androidBrowser": "A feltöltött fájlok Ogg Vorbis, 22050 Hz, mono hangok. Ezt a Chrome Android le tudja játszani.",
   "slots": [
-    {"id": "balra", "file": "clips/balra.ogg", "event": "Balra vagy élesen balra"},
-    {"id": "jobbra", "file": "clips/jobbra.ogg", "event": "Jobbra vagy élesen jobbra"},
-    {"id": "egyenesen", "file": "clips/egyenesen.ogg", "event": "Egyenesen, enyhén balra vagy enyhén jobbra"},
-    {"id": "korforgalom", "file": "clips/korforgalom.ogg", "event": "Körforgalom kijáratszám nélkül, vagy 3-nál nagyobb kijárat"},
-    {"id": "korforgalom-1", "file": "clips/korforgalom-1.ogg", "event": "Körforgalom, 1. kijárat"},
-    {"id": "korforgalom-2", "file": "clips/korforgalom-2.ogg", "event": "Körforgalom, 2. kijárat"},
-    {"id": "korforgalom-3", "file": "clips/korforgalom-3.ogg", "event": "Körforgalom, 3. kijárat"},
-    {"id": "ujratervezes", "file": "clips/ujratervezes.ogg", "event": "Újratervezés indítása"},
-    {"id": "cel", "file": "clips/cel.ogg", "event": "Cél"}
+    {
+      "id": "jobbra",
+      "file": "clips/and_then_exit_left_18.ogg",
+      "event": "Jobbra",
+      "heard": "Menj el jobbra!"
+    },
+    {
+      "id": "balra-elesen",
+      "file": "clips/and_then_exit_left_63.ogg",
+      "event": "Élesen balra",
+      "heard": "Balra élesen"
+    },
+    {
+      "id": "ujratervezes",
+      "file": "clips/Hhh újra tervezés.ogg",
+      "event": "Újratervezés",
+      "heard": "újra tervezés"
+    }
   ]
 }

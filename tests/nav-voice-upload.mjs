@@ -41,11 +41,17 @@ try {
   page.on("pageerror", (err) => say("PAGE " + String(err)));
   await page.setViewport({ width: 360, height: 740, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
   await page.goto(origin + "/index.html?gfx=mobile", { waitUntil: "domcontentloaded", timeout: 40000 });
-  await page.waitForFunction(() => document.querySelectorAll("#voice-slots .voice-row").length >= 9, { timeout: 10000 });
+  await page.waitForFunction(() => document.querySelectorAll("#voice-slots .voice-row").length === 3, { timeout: 10000 });
   const labels = await page.$$eval("#voice-slots .voice-row span", (els) => els.map((el) => el.textContent));
   say("SLOTS " + labels.join(" | "));
-  check("nine-slots", labels.length === 9, "n=" + labels.length);
-  check("roundabout-slot", labels.some((text) => text.indexOf("2. kijárat") >= 0));
+  check("three-verified-slots", labels.length === 3, "n=" + labels.length);
+  check("right-slot", labels.indexOf("Jobbra") >= 0);
+  check("no-invented-exit", labels.every((text) => text.indexOf("kijárat") < 0));
+  await page.waitForFunction(() => {
+    const marks = Array.from(document.querySelectorAll("#voice-slots small"));
+    return marks.length === 3 && marks.every((el) => el.textContent === "fájl");
+  }, { timeout: 8000 });
+  check("static-clips-loaded", true);
   check("mute-starts-on", await page.$eval("#voice-enabled", (el) => el.checked === true));
   const wav = "/tmp/toonnav-voice-probe.wav";
   fs.writeFileSync(wav, wavBytes());
