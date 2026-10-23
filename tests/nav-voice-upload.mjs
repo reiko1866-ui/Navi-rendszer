@@ -21,12 +21,12 @@ try {
   page.on("pageerror", (err) => say("PAGE " + String(err)));
   await page.setViewport({ width: 360, height: 740, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
   await page.goto(origin + "/index.html?gfx=mobile", { waitUntil: "domcontentloaded", timeout: 40000 });
-  await page.waitForFunction(() => /Bekötve/.test((document.getElementById("voice-status").textContent || "")), { timeout: 10000 });
+  await page.waitForFunction(() => /Összes 697/.test((document.getElementById("voice-status").textContent || "")), { timeout: 10000 });
   const rows = await page.$$eval("#voice-slots .voice-row", (els) => els.length);
   say("SLOTS " + rows);
   check("no-upload-rows", rows === 0, "n=" + rows);
   const statusText = await page.$eval("#voice-status", (el) => el.textContent || "");
-  check("status-counts", statusText === "Bekötve 86 hang. Kérdésre vár 611.", statusText);
+  check("status-counts", statusText === "Összes 697. Hozzárendelt 86. Hozzárendelésre vár 611. Jóváhagyott, szólhat 0. Felismerés hiányzik 0.", statusText);
   check("volume-slider", await page.$eval("#voice-volume", (el) => el.value === "100"));
   await page.$eval("#voice-volume", (el) => {
     el.value = "40";

@@ -1,501 +1,3647 @@
 {
   "osszesen": 697,
-  "bekotve": 86,
-  "kerdes": 611,
-  "fajlnev": "Az and_then_exit_left és and_then_exit_right azonos sorszáma gyakran ugyanaz a hang. A név nem kijárat és nem külön utasítás. Mindkét útvonal külön rekord, a lejátszás a hang alapján közös.",
+  "szamlalo": {
+    "osszes": 697,
+    "hozzarendelt": 86,
+    "varo": 611,
+    "jovahagyott": 0,
+    "hianyzo": 0
+  },
+  "lejatszas": "A navigációs sorba csak a mentve állapot és mukodik felismerés kerül. Az ellenorzes javaslat és a hianyzik esemény nem szól. A bájtra azonos fájlok külön rekordok.",
+  "mod": "felvaltva",
   "esemenyek": {
-    "enyhen_jobbra": {
-      "indito": "A következő manőver enyhén jobbra.",
-      "darab": 2,
+    "nincs": {
+      "nev": "Még nincs hozzárendelve",
+      "felismeres": "nincs",
+      "darab": 611,
       "fajlok": [
         {
-          "utvonal": "hang/clips/Enyhén jobbra zászló nélkül.ogg",
-          "szerep": "kommentar",
-          "leirat": "Én jobbra zászló nélkül."
+          "utvonal": "hang/clips/Aztán enyhén jobbra.ogg",
+          "allapot": "nincs",
+          "leirat": "Csó, előz, elősz, elősz, elősz, elősz, elősz!"
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_105.ogg",
-          "szerep": "kommentar",
-          "leirat": "Én jobbra zászló nélkül."
+          "utvonal": "hang/clips/Balra.ogg",
+          "allapot": "nincs",
+          "leirat": "BÓRA!"
+        },
+        {
+          "utvonal": "hang/clips/Dugó felé közeledsz.ogg",
+          "allapot": "nincs",
+          "leirat": "dugó felé közelhetsz."
+        },
+        {
+          "utvonal": "hang/clips/Ez az ez az Bubi nyomjad neki.ogg",
+          "allapot": "nincs",
+          "leirat": "Ez az! Ez az pubi! Nyomjod neki!"
+        },
+        {
+          "utvonal": "hang/clips/Hopi hopi forduljunk vissza.ogg",
+          "allapot": "nincs",
+          "leirat": "I hope you, for the young one."
+        },
+        {
+          "utvonal": "hang/clips/Kövesd balra a fő utat.ogg",
+          "allapot": "nincs",
+          "leirat": "Kövezsd barra a feltetat."
+        },
+        {
+          "utvonal": "hang/clips/Na mizu menjünk jobbra.ogg",
+          "allapot": "nincs",
+          "leirat": "Nézzük. Nézzük. Nézzé, nézzük."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_112.ogg",
+          "allapot": "nincs",
+          "leirat": "A mojtos borra iski."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_115.ogg",
+          "allapot": "nincs",
+          "leirat": "És utána, hüjjjjjjj�jjjjjjjjjjjjjjjjjjj."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_116.ogg",
+          "allapot": "nincs",
+          "leirat": "Csinálni egy háromszáz az első forintos szeml Franc."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_118.ogg",
+          "allapot": "nincs",
+          "leirat": "Na, jól nézem, akkor jó, bra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_119.ogg",
+          "allapot": "nincs",
+          "leirat": "Különb�ét."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_120.ogg",
+          "allapot": "nincs",
+          "leirat": "majd után a barra, k"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_122.ogg",
+          "allapot": "nincs",
+          "leirat": "Hajtjunk ilyen valóval dalon. Most ez ilyen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_123.ogg",
+          "allapot": "nincs",
+          "leirat": "És. Kösz. Jó."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_124.ogg",
+          "allapot": "nincs",
+          "leirat": "Fordulj élesen barra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_125.ogg",
+          "allapot": "nincs",
+          "leirat": "Így négy négy négy négy négy né"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_127.ogg",
+          "allapot": "nincs",
+          "leirat": "Maj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_128.ogg",
+          "allapot": "nincs",
+          "leirat": "És utána! BORRA!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_130.ogg",
+          "allapot": "nincs",
+          "leirat": "!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_131.ogg",
+          "allapot": "nincs",
+          "leirat": "Szimán"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_132.ogg",
+          "allapot": "nincs",
+          "leirat": "Na, a második utc Na, a második utcán viszon bára megyünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_133.ogg",
+          "allapot": "nincs",
+          "leirat": "Fek, de azon a színt. Feküldj el rá."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_134.ogg",
+          "allapot": "nincs",
+          "leirat": "Hajtunk le az autópájáról!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_135.ogg",
+          "allapot": "nincs",
+          "leirat": "Olyan, oly Olyan, olyan, oly, olyan, olyan, olyan, olyan, olyan, oly Olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, oly"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_136.ogg",
+          "allapot": "nincs",
+          "leirat": "Nem, nem, bár, bár, bár megyünk, igen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_137.ogg",
+          "allapot": "nincs",
+          "leirat": "Követjük a főutat."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_139.ogg",
+          "allapot": "nincs",
+          "leirat": "Hirtelen megérkezük!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_14.ogg",
+          "allapot": "nincs",
+          "leirat": "in the"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_140.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_141.ogg",
+          "allapot": "nincs",
+          "leirat": "A. A. A. A. A. A. A. A. N."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_142.ogg",
+          "allapot": "nincs",
+          "leirat": "Hát ilyen a balaton?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_143.ogg",
+          "allapot": "nincs",
+          "leirat": "Hát te?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_144.ogg",
+          "allapot": "nincs",
+          "leirat": "Drámo, kör furgolom! Ah, mindegy!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_145.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_146.ogg",
+          "allapot": "nincs",
+          "leirat": "Cs"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_147.ogg",
+          "allapot": "nincs",
+          "leirat": "Félesz mi?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_148.ogg",
+          "allapot": "nincs",
+          "leirat": "a főgény, a főkében, a főkében, a főké, a..."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_149.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébk, ezzel a szintén, ezzel a szinten, a szinten, a szinten, a szinten, a szinten, a szinten"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_15.ogg",
+          "allapot": "nincs",
+          "leirat": "Jöldbe."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_150.ogg",
+          "allapot": "nincs",
+          "leirat": "maj-"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_151.ogg",
+          "allapot": "nincs",
+          "leirat": "Foglalkodjára, fok, fokhagymát, fokhagymát, fokhagym�ra, fokhagymát, fokhagymát, fokját, fokhagymát, fokhagymát, fokhagymát, fokhagymát."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_153.ogg",
+          "allapot": "nincs",
+          "leirat": "Jobra a Hármadik utcán, GYORGYÓ!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_154.ogg",
+          "allapot": "nincs",
+          "leirat": "Jóra! Nem nem nem nem nem nem nem nem nem nem nem nem"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_156.ogg",
+          "allapot": "nincs",
+          "leirat": "Figyiája a sz kis számat. Jó bra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_157.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd Utano, torcs, borro!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_158.ogg",
+          "allapot": "nincs",
+          "leirat": "A tervezek tudod, mekkora melló."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_159.ogg",
+          "allapot": "nincs",
+          "leirat": "És... ut"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_16.ogg",
+          "allapot": "nincs",
+          "leirat": "Bor, mi van?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_160.ogg",
+          "allapot": "nincs",
+          "leirat": "I a nyan nyan, nyan, hadd göld forgulom!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_161.ogg",
+          "allapot": "nincs",
+          "leirat": "...hjjjjjjjjjjjjjjjjjjjjjjjjjjjjj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_162.ogg",
+          "allapot": "nincs",
+          "leirat": "MÉÉÉÉ! ÉzzÉÉ É É É a É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_163.ogg",
+          "allapot": "nincs",
+          "leirat": "Na hát, mindjárt balaton, leskompis!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_164.ogg",
+          "allapot": "nincs",
+          "leirat": "Jod, nem árpad ennyi jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_165.ogg",
+          "allapot": "nincs",
+          "leirat": "A harvadik utcam fogunk majd barra mellni, jó lesz."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_166.ogg",
+          "allapot": "nincs",
+          "leirat": "Szerintem, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a sz, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_167.ogg",
+          "allapot": "nincs",
+          "leirat": "Na háthorzálom felé! Csak mondom!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_168.ogg",
+          "allapot": "nincs",
+          "leirat": "Te! Tudsz úsznyi!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_17.ogg",
+          "allapot": "nincs",
+          "leirat": "Megnyel a borra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_170.ogg",
+          "allapot": "nincs",
+          "leirat": "Mégések a töröltetők, dezszerenek a, dezszeretők, dezszeretők, dezszeretők."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_171.ogg",
+          "allapot": "nincs",
+          "leirat": "Robanjunk fel az autópájára!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_172.ogg",
+          "allapot": "nincs",
+          "leirat": ", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_173.ogg",
+          "allapot": "nincs",
+          "leirat": "nem váltunk sebességet egy ne se megyen"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_174.ogg",
+          "allapot": "nincs",
+          "leirat": "Csíjííííííííí-ííííííííííííííííííí and"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_175.ogg",
+          "allapot": "nincs",
+          "leirat": "Egy sultán, Fordúj borra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_176.ogg",
+          "allapot": "nincs",
+          "leirat": "Féhééééééééééééééééééééééé"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_177.ogg",
+          "allapot": "nincs",
+          "leirat": "Ez"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_178.ogg",
+          "allapot": "nincs",
+          "leirat": "És a napot leszünk? Na, hova jött, hova jötttünk?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_179.ogg",
+          "allapot": "nincs",
+          "leirat": "Sziasztok!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_180.ogg",
+          "allapot": "nincs",
+          "leirat": "És utána ez... ez nem egy kör forgalom?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_181.ogg",
+          "allapot": "nincs",
+          "leirat": "Én a fiyút a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_182.ogg",
+          "allapot": "nincs",
+          "leirat": "Ők be ne biztos, hogy járó"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_183.ogg",
+          "allapot": "nincs",
+          "leirat": "Tánai mátkozunk és kihájtunk a Baloldalon"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_184.ogg",
+          "allapot": "nincs",
+          "leirat": "Próbájunk meg először. Menjenem"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_185.ogg",
+          "allapot": "nincs",
+          "leirat": "A második utcán fordú így bora!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_186.ogg",
+          "allapot": "nincs",
+          "leirat": "Vagy, visszatérkezett, viss a személyek. Vagy, vissz"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_187.ogg",
+          "allapot": "nincs",
+          "leirat": "Csináljak másik tervet vagy kösen fel maga."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_188.ogg",
+          "allapot": "nincs",
+          "leirat": "Egy-egy-eg-egy.-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_189.ogg",
+          "allapot": "nincs",
+          "leirat": "Tööööööööö"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_190.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyszerűen csak hajtsunk-i a baloldalon. Bármi is le"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_191.ogg",
+          "allapot": "nincs",
+          "leirat": "A"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_193.ogg",
+          "allapot": "nincs",
+          "leirat": "M, megér"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_194.ogg",
+          "allapot": "nincs",
+          "leirat": "Köszönöm!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_195.ogg",
+          "allapot": "nincs",
+          "leirat": "majd utána kihajtunk a baloldalon."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_196.ogg",
+          "allapot": "nincs",
+          "leirat": ","
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_20.ogg",
+          "allapot": "nincs",
+          "leirat": "Kutatkozni!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_200.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébként a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_201.ogg",
+          "allapot": "nincs",
+          "leirat": "És uts után után után után utánne után után után után után ut után után után után után után után után után után után után után után után után után után után utha után után után után után után után után után után után után után után"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_202.ogg",
+          "allapot": "nincs",
+          "leirat": "Ha ha ha ha ha ha ha ha ha ha ha Jó, jó, jó, j"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_203.ogg",
+          "allapot": "nincs",
+          "leirat": "Még te is."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_204.ogg",
+          "allapot": "nincs",
+          "leirat": "."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_205.ogg",
+          "allapot": "nincs",
+          "leirat": "Nézzé kisépei obra, milyen ott oda megyünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_206.ogg",
+          "allapot": "nincs",
+          "leirat": "Fordulj enyhén"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_207.ogg",
+          "allapot": "nincs",
+          "leirat": "Én bár a kéne, mert úgy az jó."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_208.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_209.ogg",
+          "allapot": "nincs",
+          "leirat": "Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_21.ogg",
+          "allapot": "nincs",
+          "leirat": "Jövök rá!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_210.ogg",
+          "allapot": "nincs",
+          "leirat": "et."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_211.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_213.ogg",
+          "allapot": "nincs",
+          "leirat": "Na, meg"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_214.ogg",
+          "allapot": "nincs",
+          "leirat": "Ez már a balaton, vagy egy körforgalom."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_215.ogg",
+          "allapot": "nincs",
+          "leirat": "Köszönöm!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_216.ogg",
+          "allapot": "nincs",
+          "leirat": "Tprrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_217.ogg",
+          "allapot": "nincs",
+          "leirat": "Igy szerintem. Én hány-hányi fogok."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_218.ogg",
+          "allapot": "nincs",
+          "leirat": "Tessék belenizie balle deli, tykörbe"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_219.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébként a kérdések, a kérdések, a k-kérdé, a kérdése, a k Egy kérdések, a kérdések, a kérdések, a kérdések, a kérdések, a kérdések, a kér"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_22.ogg",
+          "allapot": "nincs",
+          "leirat": "Vagd a csinálódásra, hogy a különbözőséggel a különbözőséggel a különbözőséggel a különbözőséggel a, a különbözőséggel, a különbözőséggel a különbözőséggel, a különböz a különbözőséggel."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_220.ogg",
+          "allapot": "nincs",
+          "leirat": "Nem akarok"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_221.ogg",
+          "allapot": "nincs",
+          "leirat": "Ha a, ha a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_222.ogg",
+          "allapot": "nincs",
+          "leirat": "Uj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_223.ogg",
+          "allapot": "nincs",
+          "leirat": "és utá é..."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_225.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_227.ogg",
+          "allapot": "nincs",
+          "leirat": "Követő, követők a fődat így."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_228.ogg",
+          "allapot": "nincs",
+          "leirat": "Rendező, kém? Ki hajta a sajóból dalom?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_229.ogg",
+          "allapot": "nincs",
+          "leirat": "Hajtj ki, a jobb oldalon. Most ez van."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_23.ogg",
+          "allapot": "nincs",
+          "leirat": "Menjünk a borot!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_230.ogg",
+          "allapot": "nincs",
+          "leirat": "I will have to go to the temple to see the Buddha, the Buddha, the Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_231.ogg",
+          "allapot": "nincs",
+          "leirat": "Újjjunk el a nép, köszönjünk az autópájáról."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_232.ogg",
+          "allapot": "nincs",
+          "leirat": "Vagy helyzetet, barra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_233.ogg",
+          "allapot": "nincs",
+          "leirat": "Hát. ãh-h-h-h-h-h-h Úrj! Úrj! , Ú, Úrj! Úi! Úrj! Úrj!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_234.ogg",
+          "allapot": "nincs",
+          "leirat": "Köszönöm!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_235.ogg",
+          "allapot": "nincs",
+          "leirat": "És most mi van?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_236.ogg",
+          "allapot": "nincs",
+          "leirat": "És ut"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_237.ogg",
+          "allapot": "nincs",
+          "leirat": "Mindenképp, az az a kutánképp, az a kutánk-képp."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_238.ogg",
+          "allapot": "nincs",
+          "leirat": "Vagy kihaitunk a Baloldalon, vagy valami."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_239.ogg",
+          "allapot": "nincs",
+          "leirat": "M"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_24.ogg",
+          "allapot": "nincs",
+          "leirat": "Ne bárj."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_240.ogg",
+          "allapot": "nincs",
+          "leirat": "Mennyünk barra, vigyázz a falra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_241.ogg",
+          "allapot": "nincs",
+          "leirat": "Most az van, hogy ki Most a, az van, ki kellene hajtani a baloldalon?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_242.ogg",
+          "allapot": "nincs",
+          "leirat": "majd utána jobbra ne,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_243.ogg",
+          "allapot": "nincs",
+          "leirat": "kikérne hajtani a Baloldalon."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_244.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_245.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd le megyünk az autopájáró."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_248.ogg",
+          "allapot": "nincs",
+          "leirat": "Ahogy így, id, elnézek a távolba, már látam a kompót."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_249.ogg",
+          "allapot": "nincs",
+          "leirat": ", kövesszük a fő utat!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_25.ogg",
+          "allapot": "nincs",
+          "leirat": "F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_250.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyényényényényényényényényényényényényény"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_251.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_252.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd utá, no, tor, torc, jobbra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_253.ogg",
+          "allapot": "nincs",
+          "leirat": "Aztán... Aztán..."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_254.ogg",
+          "allapot": "nincs",
+          "leirat": "Hihetetlenül élesen ké"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_255.ogg",
+          "allapot": "nincs",
+          "leirat": "A, odanélyezz egy csík fagból,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_256.ogg",
+          "allapot": "nincs",
+          "leirat": "Tudom, hogy a személyek a szolgálások, a személyek! Tudom, hogy a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgárosok, a szolgálások, a szolgálások!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_257.ogg",
+          "allapot": "nincs",
+          "leirat": "Mi"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_258.ogg",
+          "allapot": "nincs",
+          "leirat": "Józsálló külön"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_259.ogg",
+          "allapot": "nincs",
+          "leirat": "Hát igen"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_26.ogg",
+          "allapot": "nincs",
+          "leirat": "Vigyázz! Egyenek semmi!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_260.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyéb, egyébfüld,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_262.ogg",
+          "allapot": "nincs",
+          "leirat": "Rám együnk a kompra, erősen ellenőrizve, hogy ott van-e."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_263.ogg",
+          "allapot": "nincs",
+          "leirat": "KÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉ"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_264.ogg",
+          "allapot": "nincs",
+          "leirat": "Érdemes barra tartani, mert ut"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_266.ogg",
+          "allapot": "nincs",
+          "leirat": "Ja, a GPS vett"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_267.ogg",
+          "allapot": "nincs",
+          "leirat": "rosszul a jogi"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_268.ogg",
+          "allapot": "nincs",
+          "leirat": "Meg fogunk Barány, Fordúj, Beth!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_269.ogg",
+          "allapot": "nincs",
+          "leirat": "Fővezt a főutat,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_27.ogg",
+          "allapot": "nincs",
+          "leirat": "Jóhára."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_270.ogg",
+          "allapot": "nincs",
+          "leirat": "de azért ilyen jobb ha kihájt a sajó boldalon."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_271.ogg",
+          "allapot": "nincs",
+          "leirat": "etet"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_272.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_273.ogg",
+          "allapot": "nincs",
+          "leirat": "hajts ki a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_274.ogg",
+          "allapot": "nincs",
+          "leirat": "A második utcán lesz az, hogy jobbra kell menni."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_275.ogg",
+          "allapot": "nincs",
+          "leirat": "vagy kérled a közönség segítségét."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_276.ogg",
+          "allapot": "nincs",
+          "leirat": "Ha lételek, rendben!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_277.ogg",
+          "allapot": "nincs",
+          "leirat": "Hú, hú, hú, hú, hú, hú, hú, hú, hú, hú, hú, hú,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_278.ogg",
+          "allapot": "nincs",
+          "leirat": "Jajd! Követni fogjuk a főútat. Tök izgi lesz!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_279.ogg",
+          "allapot": "nincs",
+          "leirat": "Lehet, a Matier, hogy pedd ezt rint embora."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_28.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_280.ogg",
+          "allapot": "nincs",
+          "leirat": "A komp"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_281.ogg",
+          "allapot": "nincs",
+          "leirat": "hajtsunk ki a Baloldalan"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_282.ogg",
+          "allapot": "nincs",
+          "leirat": "Csináljuk meg! Tudod? Tudod? Tudod? Tudod?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_283.ogg",
+          "allapot": "nincs",
+          "leirat": "A"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_284.ogg",
+          "allapot": "nincs",
+          "leirat": "Kucán lesz majd egy jobbos forduló."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_285.ogg",
+          "allapot": "nincs",
+          "leirat": "első utca utáni utcán jobbra fordulunk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_286.ogg",
+          "allapot": "nincs",
+          "leirat": "That is, it is, it is, it is, it is, it it is, it is, it is,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_287.ogg",
+          "allapot": "nincs",
+          "leirat": "A-e-e-é-s-ehe-e-e--e-e-e-e-e-e-e-e-"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_288.ogg",
+          "allapot": "nincs",
+          "leirat": "Gázfék meg ilyenek!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_29.ogg",
+          "allapot": "nincs",
+          "leirat": "Ramegyünk!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_290.ogg",
+          "allapot": "nincs",
+          "leirat": "Sziasztok!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_291.ogg",
+          "allapot": "nincs",
+          "leirat": "Vannak esetek, amikor barra kell men"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_292.ogg",
+          "allapot": "nincs",
+          "leirat": "Én a-e-e-e-e-e-e-e-e-e-e-e- Én--e-e-e-e-e- É-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_293.ogg",
+          "allapot": "nincs",
+          "leirat": "Gyerünk!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_294.ogg",
+          "allapot": "nincs",
+          "leirat": "Jobbra lenne érdemes tartani egy picit, mert utána csak cigcak van."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_295.ogg",
+          "allapot": "nincs",
+          "leirat": "Fig,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_296.ogg",
+          "allapot": "nincs",
+          "leirat": "Tud, mit csinál az emberele gyűtközés egy ilyen sebességnél?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_298.ogg",
+          "allapot": "nincs",
+          "leirat": "Szóval,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_299.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd elhagyjuk az autópájrját"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_30.ogg",
+          "allapot": "nincs",
+          "leirat": "Tartsunk bár az jó!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_300.ogg",
+          "allapot": "nincs",
+          "leirat": "Azt! Azt! Azt! Azt! Azt! Azt!. Azt! Azt! Azt! Azt! Azt!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_301.ogg",
+          "allapot": "nincs",
+          "leirat": "Hátas"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_302.ogg",
+          "allapot": "nincs",
+          "leirat": "Bármés van, inkább"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_303.ogg",
+          "allapot": "nincs",
+          "leirat": "Maj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_304.ogg",
+          "allapot": "nincs",
+          "leirat": "Na ugye, így már érdekeset"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_305.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébként, hogy a legjobb érkezőséget, a legjobb érkezőséget, is, de a legjobb érkez, és a legjobb érke, a legjobb érkezőséget, a legjob. A legjobb érkezhez a legjobb érkez, a legjobb érkezhe a legjobb érkezhe, a legjobb érkezhe a legjob. A legjobb érkezhe a legjobb érke, a legjobb érkez�, a legjobb a legjobb. A legjobb érkez�,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_306.ogg",
+          "allapot": "nincs",
+          "leirat": "Szt!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_307.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébként, hogy ezzel a különbözlőnőséget, amikor a különbözlőséget változunk,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_309.ogg",
+          "allapot": "nincs",
+          "leirat": "De zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső, de zső"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_31.ogg",
+          "allapot": "nincs",
+          "leirat": "Azzal, hogy a helyzetek a helyzetek a helyzetek a helyzetetekn"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_310.ogg",
+          "allapot": "nincs",
+          "leirat": "Jaj, hívern aktiv lettem, itt van egy káv-vét! A harmadik otsza menj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_311.ogg",
+          "allapot": "nincs",
+          "leirat": "Azért jó, azért nagyon jó, hogy ilyen gyorsan is tudsz menni."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_312.ogg",
+          "allapot": "nincs",
+          "leirat": "Kövessz a saját!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_313.ogg",
+          "allapot": "nincs",
+          "leirat": "Májt, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, húj, hát, hát, hát, hát, h, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, hát, h, hát, hát, hát, hát, hát, hát, hát, h"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_315.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd kövesd a főutat barra, később megmagyarázom."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_316.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd utána jobbra kellene felttétlenül húzolni."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_317.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébként a helyében aornak,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_319.ogg",
+          "allapot": "nincs",
+          "leirat": "Köszönöm, hogy a fokhagymát érdeményes, a fokhagymát érdeményes, a fokhagym and a fokhagymát érdeményes, a fokhag"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_32.ogg",
+          "allapot": "nincs",
+          "leirat": "Jajjjjjjjjjj!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_320.ogg",
+          "allapot": "nincs",
+          "leirat": "a jobb oldalon, a, ki, a jobb oldalon. Tényleg a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_321.ogg",
+          "allapot": "nincs",
+          "leirat": "Fiam, azt, oppá, akkor elköptem, utána bara."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_322.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_323.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_324.ogg",
+          "allapot": "nincs",
+          "leirat": "És utána csak azért, hogy téged meglepjünk, Csak azért, hogy pünk jobbra fogunk menni, majd."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_325.ogg",
+          "allapot": "nincs",
+          "leirat": "Na képzeld el, most kaptam az értesít"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_327.ogg",
+          "allapot": "nincs",
+          "leirat": "Azt hiszem, hogy hagyom"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_328.ogg",
+          "allapot": "nincs",
+          "leirat": "A szeretőt legyek én. Jobra"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_329.ogg",
+          "allapot": "nincs",
+          "leirat": "De ez még nem minden, ha ha, ha, ha, ha, ha, ha,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_33.ogg",
+          "allapot": "nincs",
+          "leirat": "Frankfurt galomjön!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_330.ogg",
+          "allapot": "nincs",
+          "leirat": "A esehyshyshyshyshyshys,hysh"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_331.ogg",
+          "allapot": "nincs",
+          "leirat": "Na kedves, ez a fb fő út, ezt kell nekünk most követnünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_332.ogg",
+          "allapot": "nincs",
+          "leirat": "Ó, jön egy kör forgalom, hagynézzem, hagynézzem a puu!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_333.ogg",
+          "allapot": "nincs",
+          "leirat": "Én értem, hogynál, gondolom, hogy együttelműző, hogy együttelműző a vilá"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_334.ogg",
+          "allapot": "nincs",
+          "leirat": "Hátsi maga tó, meg a buksifaját kérd át, újra tervez a b"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_335.ogg",
+          "allapot": "nincs",
+          "leirat": "Na, egérke, ilyesztük I"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_336.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébként, hogy a külőségeket a különségeket a különséet a a különségeket a k ofját, a különs"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_337.ogg",
+          "allapot": "nincs",
+          "leirat": "A harmadék utcán jobbra kell menni."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_338.ogg",
+          "allapot": "nincs",
+          "leirat": "Őőőőőőőőőőőőőőőőőőő"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_339.ogg",
+          "allapot": "nincs",
+          "leirat": "Lesz még majd olyan is, amikor fordulni kell jobbra vagy barra, de ez most nem az az eset."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_34.ogg",
+          "allapot": "nincs",
+          "leirat": "Azt"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_340.ogg",
+          "allapot": "nincs",
+          "leirat": "Igen, nem is tettem eddig, é. Kompall megyünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_341.ogg",
+          "allapot": "nincs",
+          "leirat": "a tessékba arra tartani, mert utána, mert utáyló"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_342.ogg",
+          "allapot": "nincs",
+          "leirat": "GPS, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh, ahhh,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_343.ogg",
+          "allapot": "nincs",
+          "leirat": "Fogal folkáció, később, később."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_344.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyképp szükségeképp szüksége tetszett, akkor jobbra megyünk doki lesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_345.ogg",
+          "allapot": "nincs",
+          "leirat": "Ai utánnál majd utána úgy lemegyünk az autopájáról, mint ha nem is lettünk volna itt."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_346.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_347.ogg",
+          "allapot": "nincs",
+          "leirat": "Mennünk fel szépen az autópájá, és nézzük meg a töbiek, szeretik-e, hogy 40-nál megyünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_348.ogg",
+          "allapot": "nincs",
+          "leirat": "Na, te kénycsuk ú"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_349.ogg",
+          "allapot": "nincs",
+          "leirat": "Azt hiszem, k"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_35.ogg",
+          "allapot": "nincs",
+          "leirat": "Milyen különböző különböző külön különböző különböző különböző különböz a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_350.ogg",
+          "allapot": "nincs",
+          "leirat": "Én, nem tudok úztni."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_351.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_352.ogg",
+          "allapot": "nincs",
+          "leirat": "Mi az? E"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_353.ogg",
+          "allapot": "nincs",
+          "leirat": "kê."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_354.ogg",
+          "allapot": "nincs",
+          "leirat": "majd utána megprób, majd utána megpróbálom kihagytani a baloldalon. Vajd le parkolunk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_355.ogg",
+          "allapot": "nincs",
+          "leirat": "ezzel ezzel ezzel ezz ezz ezz ezz ezz e a zsezséget ezzel ezzel ezz ezzt ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz e ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz ezz e"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_357.ogg",
+          "allapot": "nincs",
+          "leirat": "Jó, én úgy szeretem ezt mondani, hogy"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_358.ogg",
+          "allapot": "nincs",
+          "leirat": "Jóbra kéne menni, majd egyszer. De most nem, most egyenesen, egyenesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_359.ogg",
+          "allapot": "nincs",
+          "leirat": "a jobb oldalon kéne bimbózni meg minden"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_36.ogg",
+          "allapot": "nincs",
+          "leirat": "Tudod, hogy szükségeztem a születeket, amit a születeket is tesszük a születeket, amikor a születeketiek, amit a születeket is tesszük a születeket, amikor a születek a születek,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_360.ogg",
+          "allapot": "nincs",
+          "leirat": "Majt utána, kémregént játsz."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_361.ogg",
+          "allapot": "nincs",
+          "leirat": "Ejjjjjjjjjjjjjjj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_362.ogg",
+          "allapot": "nincs",
+          "leirat": "Utána, nyilván, de nem bíztok."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_363.ogg",
+          "allapot": "nincs",
+          "leirat": "...jobra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_364.ogg",
+          "allapot": "nincs",
+          "leirat": "kés, kés,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_365.ogg",
+          "allapot": "nincs",
+          "leirat": "Aztán majd követni kéne azt a főutat barral."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_367.ogg",
+          "allapot": "nincs",
+          "leirat": "Balódalom"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_368.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd uta ut the utopájera,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_369.ogg",
+          "allapot": "nincs",
+          "leirat": "Szegedé rintésével old"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_37.ogg",
+          "allapot": "nincs",
+          "leirat": "Egy különségesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_370.ogg",
+          "allapot": "nincs",
+          "leirat": ", de ha nem tege"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_371.ogg",
+          "allapot": "nincs",
+          "leirat": "majd utána azt csinájuk"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_372.ogg",
+          "allapot": "nincs",
+          "leirat": "Kihajtunk a baloldalom!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_373.ogg",
+          "allapot": "nincs",
+          "leirat": "Mit keres a kecskén, cobra? Forduljunk most ennyhény jobbra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_374.ogg",
+          "allapot": "nincs",
+          "leirat": "Nem szeretények mindenfele, hogy videók a fel tartani, de érdemes jobbra tartani."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_375.ogg",
+          "allapot": "nincs",
+          "leirat": "K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K K"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_376.ogg",
+          "allapot": "nincs",
+          "leirat": "Köszönjük, köszönjük!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_377.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyszerű-e nincs ötletemkomolyan,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_378.ogg",
+          "allapot": "nincs",
+          "leirat": "Eben az évságban, oly szép magyarország, de oly!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_38.ogg",
+          "allapot": "nincs",
+          "leirat": "Mondd, de láts!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_381.ogg",
+          "allapot": "nincs",
+          "leirat": "Anyira a fok, a-ra hogy barra, hogy körforgalom, ha az. Hát a helynyi helynek a helyzéseket, a helyzőségeket, a helyzéseket, a helyzőségeket, a h"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_382.ogg",
+          "allapot": "nincs",
+          "leirat": "Húúúúúúúúúúúúúúúúúúúúúhúúúúúúúúúúúú aúúúúúúú húúúúúúúúúúúúילוúú"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_383.ogg",
+          "allapot": "nincs",
+          "leirat": "ministry"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_384.ogg",
+          "allapot": "nincs",
+          "leirat": "Well, if you ask me if it's good or bad, I'll tell you it's bad."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_385.ogg",
+          "allapot": "nincs",
+          "leirat": "Hajtunk ki szépen Baloldalon, azt, aztán későve megbesz"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_386.ogg",
+          "allapot": "nincs",
+          "leirat": "KERFORGALOM!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_387.ogg",
+          "allapot": "nincs",
+          "leirat": "Utána pedig majd megyünk valamára, és majd akkor elmondom, oly melyre. Lehet, hogy jobbra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_389.ogg",
+          "allapot": "nincs",
+          "leirat": "Drámaian szeretném e well"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_39.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd után a torc, illó."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_390.ogg",
+          "allapot": "nincs",
+          "leirat": "hogy a másod-i k"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_391.ogg",
+          "allapot": "nincs",
+          "leirat": "Vagy, vagy, vagy, vagy. Vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy, vagy,... vagy, vagy, vagy, vagy, vagy, vagy, v"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_392.ogg",
+          "allapot": "nincs",
+          "leirat": "de nem csak egyszer A fővés de a fővés de a fővés, de a bára, bára."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_393.ogg",
+          "allapot": "nincs",
+          "leirat": "Na, de zső, a hózképes úttsak vása el, mien ez, felfegyünk az azzal."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_394.ogg",
+          "allapot": "nincs",
+          "leirat": "Menjünk le a kompr. Például, aki jön elég bátor, akkor csinálja"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_395.ogg",
+          "allapot": "nincs",
+          "leirat": "Tess Céltant, ugye? Úgy szájaszt Baloldalon!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_396.ogg",
+          "allapot": "nincs",
+          "leirat": "Szép ez a nap lementemi, hajtsunk-um ki a Baloldalon, szerintem."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_397.ogg",
+          "allapot": "nincs",
+          "leirat": "de nem összekeverj,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_398.ogg",
+          "allapot": "nincs",
+          "leirat": "a hely"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_399.ogg",
+          "allapot": "nincs",
+          "leirat": "A-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-agy-ag"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_40.ogg",
+          "allapot": "nincs",
+          "leirat": "A harva de kutsan bora."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_400.ogg",
+          "allapot": "nincs",
+          "leirat": "Na api, most tökom olyan. Ha egy roh, a GPS vét"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_401.ogg",
+          "allapot": "nincs",
+          "leirat": "H,a,aa,aaaaaaaaaaaaaaaaaaaa,,,,,,,, ofaaaaa,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_402.ogg",
+          "allapot": "nincs",
+          "leirat": "Szerintem a személyek a személy speciallis. have a Femindem. Femindem."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_404.ogg",
+          "allapot": "nincs",
+          "leirat": "Hajcsi a jobb oldalon. De jó pofa olyan, mint egy virágnak mondanám. Hajcsi!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_405.ogg",
+          "allapot": "nincs",
+          "leirat": "A GPS szvételjénk jöjjönk"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_406.ogg",
+          "allapot": "nincs",
+          "leirat": "Bon egy ilyen hangóvis, változatosát eszianapud,-udat, után a barra megyünk élesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_407.ogg",
+          "allapot": "nincs",
+          "leirat": "A harmadadik utcán"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_408.ogg",
+          "allapot": "nincs",
+          "leirat": "Hát, hát, ki-ké-ké-ké-ké-ké-ké-k a-ké-ké-ké-ké-k"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_409.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_41.ogg",
+          "allapot": "nincs",
+          "leirat": "Tudod, hogy a főzőképeszteteketeteketeketeketeketeketeketeketeketeketeketeketeketeket"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_411.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_412.ogg",
+          "allapot": "nincs",
+          "leirat": "Felgyomrom, a következő utcan nem, a kö-következő utcán nem, hanem a második utcán jobbra megyünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_414.ogg",
+          "allapot": "nincs",
+          "leirat": ","
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_415.ogg",
+          "allapot": "nincs",
+          "leirat": "Maj I I I I I"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_417.ogg",
+          "allapot": "nincs",
+          "leirat": "Megül fel az autopaér, de állati óvatosan jó, ott egy csomó ember van, aki tud vezetni."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_419.ogg",
+          "allapot": "nincs",
+          "leirat": "Alében ön most 300-al megy, a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_42.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébként szükségesek a sz"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_420.ogg",
+          "allapot": "nincs",
+          "leirat": "Azt hiszem, hogy a legjobb érkezők a személyet, de a szem a a személyet, de a személyet, de a személy de a szem, a szélyet, de a személyet,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_421.ogg",
+          "allapot": "nincs",
+          "leirat": "Most akkor az van, hogy megkéne f*****g. Fogd rám, fog. Fogd rámi. Fogd r. Fogd rám. Tényleg."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_422.ogg",
+          "allapot": "nincs",
+          "leirat": "Demeneketek, hogy együttes, hogy egyetek, hogy együtt, hogy együtt, hogy együ thetény, hogy együtt, hogy együtt,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_423.ogg",
+          "allapot": "nincs",
+          "leirat": "működőségek, műkülőségek, működ, működőségek, működőségek, működőségek, működőségek, működőségek, működőségek, működ, működőségek, m"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_424.ogg",
+          "allapot": "nincs",
+          "leirat": "A helyzet, a helyzet, a helyzet,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_425.ogg",
+          "allapot": "nincs",
+          "leirat": "Főutat követünk, bizonyám, t"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_426.ogg",
+          "allapot": "nincs",
+          "leirat": "Ezt nem drámai volt mindegy."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_427.ogg",
+          "allapot": "nincs",
+          "leirat": "És utána nem fortolunk seme-re, seba-ra, sej-obra, se-se, se-se, hanem megérkezünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_428.ogg",
+          "allapot": "nincs",
+          "leirat": "Olyan, olyan érdeztem, hogy a nincs olyan érdeztem, amikor előtt, amikor előtt, amikor előtt, amikor előtt, amikor előtt, amikor előtt, amikor elő Egyébként a személyére, a személyére, a szóval a szem Ilyen érdeztem, amikor előtt, amikor előtt, amikor előtt, amikor hát a személyére,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_429.ogg",
+          "allapot": "nincs",
+          "leirat": "Jó! Egyrészt unom, másrészt tulajdonképen egy konfutatás véges."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_43.ogg",
+          "allapot": "nincs",
+          "leirat": "Én himmbára!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_430.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_431.ogg",
+          "allapot": "nincs",
+          "leirat": "Ők a felségeket, a felségeket, a felségeket, a fégeket, a felségeket, a felsé a f"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_432.ogg",
+          "allapot": "nincs",
+          "leirat": "Csííííívíííííííúíííííííí"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_433.ogg",
+          "allapot": "nincs",
+          "leirat": "� KSZSZS"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_434.ogg",
+          "allapot": "nincs",
+          "leirat": "Az, hogy az így bonyoluló az első, máradik, utcánbárra menni."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_438.ogg",
+          "allapot": "nincs",
+          "leirat": "Az, az első utcán jobbra, nem, a második utcán, és barra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_44.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyetettettettettettett"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_440.ogg",
+          "allapot": "nincs",
+          "leirat": "Na most, az első utca a második sem, a harmadikon kell majd bar"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_441.ogg",
+          "allapot": "nincs",
+          "leirat": "Menjünk le az autópájáról. Jó, ezt egyébként alakjára is sok minden szereten."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_442.ogg",
+          "allapot": "nincs",
+          "leirat": "De ezt példa nem körforgalom the compot meg az alagulat."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_444.ogg",
+          "allapot": "nincs",
+          "leirat": "szeretnének lelkileg már most felkészíteni, hogyha tenger-beteg vagy, hányi foksz."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_445.ogg",
+          "allapot": "nincs",
+          "leirat": "Még nem mondtam, tulajdonképpen mondan."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_446.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyetlen örömmen van amik a rászt mondtam, hogy külvorgalom jön!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_447.ogg",
+          "allapot": "nincs",
+          "leirat": "Ez egy főút, onnan is menjük meg az ilyesményes sárga, tipikus táblája van, van, ezt követjük mi most."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_448.ogg",
+          "allapot": "nincs",
+          "leirat": "H, hogy követjük a fő utatba, ami hát végül, és lőve, de hát te védőn nem?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_449.ogg",
+          "allapot": "nincs",
+          "leirat": "kövess, a f a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_45.ogg",
+          "allapot": "nincs",
+          "leirat": "Tánakör forgalom!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_450.ogg",
+          "allapot": "nincs",
+          "leirat": "Milyen helyesk is kínai transzistorral, jöttem összeidben. Odobozz van. Kör forgalomján."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_451.ogg",
+          "allapot": "nincs",
+          "leirat": "És ugye a szávok között gondolom,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_452.ogg",
+          "allapot": "nincs",
+          "leirat": "Na, fabrikál neked a-e neked a bácsi egy ú"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_453.ogg",
+          "allapot": "nincs",
+          "leirat": "Végül beállítottad, vagy végül is beállítottad te ezt a dolgot, hogyha most örülj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_455.ogg",
+          "allapot": "nincs",
+          "leirat": "Egy picitetet, hogy barra húzni. Nem úgy, nem úgy, nem úgy. Belenezz tüköri körbe, és akkor, na, hülye. Szóval tartunk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_457.ogg",
+          "allapot": "nincs",
+          "leirat": "És mind a kető a szonnyi agr De még nem szólt, szólt átod."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_458.ogg",
+          "allapot": "nincs",
+          "leirat": "Kövesz, köszönöm kérd"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_459.ogg",
+          "allapot": "nincs",
+          "leirat": "Jajjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_46.ogg",
+          "allapot": "nincs",
+          "leirat": "Köszönöm!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_460.ogg",
+          "allapot": "nincs",
+          "leirat": "Aztán tudom a térképen, hogy egy piros csík megy a következő utcán, nem a következő utcán jobra. Mit jel"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_461.ogg",
+          "allapot": "nincs",
+          "leirat": "N. a jobbra tartani, meg mindenképpen megisérni, ha nem akarod utána lelöggdösné a biciclistákat."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_462.ogg",
+          "allapot": "nincs",
+          "leirat": "Szerintem hív fel az a sz ajnt, de most komolyan, és kérdez meg, hogy ez jó ötlete, ha egyen, de szerintem jó ötlet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_463.ogg",
+          "allapot": "nincs",
+          "leirat": "T T T T T T T T T T T T T T T T T T T T T T T T T T Hényi fügyi fügyi fügyi, fortulj meg, nem a szülésben nem, fortulj meg."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_464.ogg",
+          "allapot": "nincs",
+          "leirat": "Kövesük a főutat, ez a főutat, nem érdemes ezt elszóval, Kövesük a főutat, nem érdemes ezt elszóval,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_465.ogg",
+          "allapot": "nincs",
+          "leirat": "Most van az, hogy majd aztán fordulunk minden felé, meg sávot váltunk, megérsmi, jobbra kellene tartani egy picit."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_466.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyények,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_467.ogg",
+          "allapot": "nincs",
+          "leirat": "az autópájáról, mert ha a trafi-pagsba, akkor ugye nem fognak megtalálni, Na, jól. Na, nyilvánk, nyilvánk, nyilvánk, nyilvánk, nyilvánk, nyilvánk,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_468.ogg",
+          "allapot": "nincs",
+          "leirat": "A... Őgyébk-ként a harmadékon kell barafordulni."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_469.ogg",
+          "allapot": "nincs",
+          "leirat": "Szerintem, szerny, szerint."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_47.ogg",
+          "allapot": "nincs",
+          "leirat": "a hir, a helyen,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_470.ogg",
+          "allapot": "nincs",
+          "leirat": "A gond-egyebben. A gondolom, hogy a 3. kucán kell jobbra fordulni, hogy mindegy, én már most szólok, aztán legyen, a 17. kucán, legyen jobbra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_471.ogg",
+          "allapot": "nincs",
+          "leirat": "főzőképpen a főzőképpen a főzőképpen a főzőkêr főzőképpen a főzőképpen a főzőképpen a főzőképpen a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_472.ogg",
+          "allapot": "nincs",
+          "leirat": "a szép kis út ezt komolyan. Beraktál mindent fokkefé, törölt apucsot, újra élesztőtőszettet, mit tudom én."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_473.ogg",
+          "allapot": "nincs",
+          "leirat": ", a h... a..."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_474.ogg",
+          "allapot": "nincs",
+          "leirat": "Kérdezel? Talá"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_476.ogg",
+          "allapot": "nincs",
+          "leirat": "Tényélyt, tulajdonkébben"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_479.ogg",
+          "allapot": "nincs",
+          "leirat": "T"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_48.ogg",
+          "allapot": "nincs",
+          "leirat": "Vagy elvállunk!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_481.ogg",
+          "allapot": "nincs",
+          "leirat": "Nekem tényleg"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_482.ogg",
+          "allapot": "nincs",
+          "leirat": "Az hely, az előbb az első cilpontot helyesen megtaláltál miért egy ügyes ember vagy. És akkor most"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_484.ogg",
+          "allapot": "nincs",
+          "leirat": "Ilyenkor úgy umatkozom, de mind GPS umat Hát, feladott ez!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_485.ogg",
+          "allapot": "nincs",
+          "leirat": "De most akkor jobboldat, mert hogy az az a ház, amire bejállítottad nekem, hogy majdn meg akarod néz"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_486.ogg",
+          "allapot": "nincs",
+          "leirat": ", nem tudom mit mond, most komolyan, és nem régen csinálom ezt, hogy fur"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_487.ogg",
+          "allapot": "nincs",
+          "leirat": "Kádves gyerekák, a jobb oldalon találdok egy szép házat, nézagasétak mág"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_488.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyényély tényélyesélyesélyesélyesélyesélyesélyesélyesélyesélyesélyes. Egyényi,- Egyényi- Egyényi- Egyényi- Enei- Egy- Egyényi-"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_489.ogg",
+          "allapot": "nincs",
+          "leirat": "a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_49.ogg",
+          "allapot": "nincs",
+          "leirat": "Kövess, főtet barra a."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_492.ogg",
+          "allapot": "nincs",
+          "leirat": "Apika, te rohadtul nem arra mégy amere mondtam. Komolyan, és. És gondoltat, hogy nem fogom éjszreveni. Gondoltat? Gondoltat, hogy mint a hülye! Én fogok állni! Eben a kis doboz van! És azt várom, hogy te végre arra mény a mere, én mondom!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_496.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébként, hogy valahogy megyek, hogy valahet, hogy valahogy megyek, hogy valahogy megyek, hogy valahogy megyek, hogy valahogy megyek,, hogy valahogy megyek, hogy megyek, hogy megyek, hogy megyek, hogy megyek, hogy megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, megyek, me, megyek, megyek, megy, megyek, megyek, megyek, megyek"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_497.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_498.ogg",
+          "allapot": "nincs",
+          "leirat": "De én most jó,tog,-og, jó. Jó. Jó"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_499.ogg",
+          "allapot": "nincs",
+          "leirat": "Na, így szólsz, hogy navigálok"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_50.ogg",
+          "allapot": "nincs",
+          "leirat": "És aztán engem majd bárra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_500.ogg",
+          "allapot": "nincs",
+          "leirat": "Szóval, hogy én hülye vagyok, annak látszom, gondoltad, hogy én nem fogom észrevenni, hogy te egyszerűen nem arra mégy, hogy én hiába mondok bármit,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_502.ogg",
+          "allapot": "nincs",
+          "leirat": "A következő keresztesződés-esben, ami igazából nap is látszhat, Itt kellene, hogy jobbra menni, majd utána ata-hídom, és beleveszni a zenészetben nincs GPS-vétel."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_503.ogg",
+          "allapot": "nincs",
+          "leirat": "Ném, én megvírusos betegség, senki nem gondolja, hogy velemek történhet, és komoly a kikerültem a gyárból, azó IZ velem nem Most ezt így hogy?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_51.ogg",
+          "allapot": "nincs",
+          "leirat": "M MENNNNNNNNNNNNNNNNNNNNN NNNNNNN"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_52.ogg",
+          "allapot": "nincs",
+          "leirat": "Ú a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzeteket, a helyzetek, a helyzeteket, a helyzeteket, a helyzeteket, a h"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_53.ogg",
+          "allapot": "nincs",
+          "leirat": "A különb, a különb, a különb, a különb."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_54.ogg",
+          "allapot": "nincs",
+          "leirat": "Well the next day."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_55.ogg",
+          "allapot": "nincs",
+          "leirat": "Az jó lesz."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_56.ogg",
+          "allapot": "nincs",
+          "leirat": "Tudod, hogy a fiatal tényleg a fiatal a fiatal a fiatal a fiat, a fiatal a fiatal a fiatal a fiatal a fiatal a fiatal a fiatal a fiatal a f a fiatal a fiatal a fiatal a fiatal a fiatal a fiatal a f슷eket."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_58.ogg",
+          "allapot": "nincs",
+          "leirat": "Azt hiszem, hogy az olyan érkezősége, amíg az érkezősége,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_59.ogg",
+          "allapot": "nincs",
+          "leirat": "Az autófájára!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_60.ogg",
+          "allapot": "nincs",
+          "leirat": "És utána meg!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_61.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_63.ogg",
+          "allapot": "nincs",
+          "leirat": "Bára élesen!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_64.ogg",
+          "allapot": "nincs",
+          "leirat": "majd ut�án a kompozunk egyet."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_65.ogg",
+          "allapot": "nincs",
+          "leirat": "Kevesek a fejltát a..."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_66.ogg",
+          "allapot": "nincs",
+          "leirat": "Tárcsilberááááááááááá"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_67.ogg",
+          "allapot": "nincs",
+          "leirat": "Forduljunk v"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_68.ogg",
+          "allapot": "nincs",
+          "leirat": "Most bár a fóduló satjátszunk.,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_69.ogg",
+          "allapot": "nincs",
+          "leirat": "Úgyhogy, úgyhogy, úgyhogy, úgyhogy!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_70.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyenek a helyek, a."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_71.ogg",
+          "allapot": "nincs",
+          "leirat": "Szerintem, kaptam a videót, a videót,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_72.ogg",
+          "allapot": "nincs",
+          "leirat": "Lesz a húz, olyt, jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_73.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyenesen visszáltam."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_74.ogg",
+          "allapot": "nincs",
+          "leirat": "Ez a jobb, mint egy könyv forgalom!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_75.ogg",
+          "allapot": "nincs",
+          "leirat": "Ilyen. Ilyen. Szerintem a videóra is tudom, hogy a videóra is tudom, denálom, hogy a videóra is tudom, hogy a videóra is tudom, hogy a vide a videóra is tudom, hogy a vide"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_76.ogg",
+          "allapot": "nincs",
+          "leirat": "Csak egy"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_77.ogg",
+          "allapot": "nincs",
+          "leirat": "Szeretnénk egy hén jobbra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_78.ogg",
+          "allapot": "nincs",
+          "leirat": "-"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_79.ogg",
+          "allapot": "nincs",
+          "leirat": "ilyóra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_80.ogg",
+          "allapot": "nincs",
+          "leirat": "Forda, szerintem!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_81.ogg",
+          "allapot": "nincs",
+          "leirat": "Tudod, hogy tudod, hogy tudod, hogy"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_82.ogg",
+          "allapot": "nincs",
+          "leirat": "Jóbra, majd máskor me-gyünkos barra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_84.ogg",
+          "allapot": "nincs",
+          "leirat": "Köszönöm, köszönöm, köszönöm!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_86.ogg",
+          "allapot": "nincs",
+          "leirat": "Jobra k"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_87.ogg",
+          "allapot": "nincs",
+          "leirat": "Am a."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_89.ogg",
+          "allapot": "nincs",
+          "leirat": "Aztán meg majd balra é."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_90.ogg",
+          "allapot": "nincs",
+          "leirat": "Tudnáj,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_91.ogg",
+          "allapot": "nincs",
+          "leirat": "kérdés-kérd-k"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_92.ogg",
+          "allapot": "nincs",
+          "leirat": "kélye-k"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_93.ogg",
+          "allapot": "nincs",
+          "leirat": "Úgy nézem, kompoz hozzaljunk a kabátut"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_94.ogg",
+          "allapot": "nincs",
+          "leirat": "Nézzem, nézzem, bár a."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_95.ogg",
+          "allapot": "nincs",
+          "leirat": "Sutána fordulj. BÓRA!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_96.ogg",
+          "allapot": "nincs",
+          "leirat": "I gottana, I gottana."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_97.ogg",
+          "allapot": "nincs",
+          "leirat": "Sajobra, Sebarra, Egyenesen, Sajobra, Egyenesen, Sajobra, Egyenesen, Sajobra, Egyenesen, Sajobra, Egyenesen, Saj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_98.ogg",
+          "allapot": "nincs",
+          "leirat": "Kőrgalom és hát szép!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_99.ogg",
+          "allapot": "nincs",
+          "leirat": "ÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖ"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_100.ogg",
+          "allapot": "nincs",
+          "leirat": "Kövezsd barra a feltetat."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_101.ogg",
+          "allapot": "nincs",
+          "leirat": "Nézzük. Nézzük. Nézzé, nézzük."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_102.ogg",
+          "allapot": "nincs",
+          "leirat": "A-térkezősé"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_103.ogg",
+          "allapot": "nincs",
+          "leirat": "Csó, előz, elősz, elősz, elősz, elősz, elősz!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_104.ogg",
+          "allapot": "nincs",
+          "leirat": "dugó felé közelhetsz."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_106.ogg",
+          "allapot": "nincs",
+          "leirat": "Ez az! Ez az pubi! Nyomjod neki!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_108.ogg",
+          "allapot": "nincs",
+          "leirat": "I hope you, for the young one."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_11.ogg",
+          "allapot": "nincs",
+          "leirat": "BÓRA!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_112.ogg",
+          "allapot": "nincs",
+          "leirat": "A mojtos borra iski."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_115.ogg",
+          "allapot": "nincs",
+          "leirat": "És utána, hüjjjjjjj�jjjjjjjjjjjjjjjjjjj."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_116.ogg",
+          "allapot": "nincs",
+          "leirat": "Csinálni egy háromszáz az első forintos szeml Franc."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_118.ogg",
+          "allapot": "nincs",
+          "leirat": "Na, jól nézem, akkor jó, bra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_119.ogg",
+          "allapot": "nincs",
+          "leirat": "Különb�ét."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_120.ogg",
+          "allapot": "nincs",
+          "leirat": "majd után a barra, k"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_122.ogg",
+          "allapot": "nincs",
+          "leirat": "Hajtjunk ilyen valóval dalon. Most ez ilyen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_123.ogg",
+          "allapot": "nincs",
+          "leirat": "És. Kösz. Jó."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_124.ogg",
+          "allapot": "nincs",
+          "leirat": "Fordulj élesen barra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_125.ogg",
+          "allapot": "nincs",
+          "leirat": "Így négy négy négy négy négy né"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_127.ogg",
+          "allapot": "nincs",
+          "leirat": "Maj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_128.ogg",
+          "allapot": "nincs",
+          "leirat": "És utána! BORRA!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_130.ogg",
+          "allapot": "nincs",
+          "leirat": "!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_131.ogg",
+          "allapot": "nincs",
+          "leirat": "Szimán"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_132.ogg",
+          "allapot": "nincs",
+          "leirat": "Na, a második utc Na, a második utcán viszon bára megyünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_133.ogg",
+          "allapot": "nincs",
+          "leirat": "Fek, de azon a színt. Feküldj el rá."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_134.ogg",
+          "allapot": "nincs",
+          "leirat": "Hajtunk le az autópájáról!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_135.ogg",
+          "allapot": "nincs",
+          "leirat": "Olyan, oly Olyan, olyan, oly, olyan, olyan, olyan, olyan, olyan, oly Olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, olyan, oly"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_136.ogg",
+          "allapot": "nincs",
+          "leirat": "Nem, nem, bár, bár, bár megyünk, igen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_137.ogg",
+          "allapot": "nincs",
+          "leirat": "Követjük a főutat."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_139.ogg",
+          "allapot": "nincs",
+          "leirat": "Hirtelen megérkezük!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_14.ogg",
+          "allapot": "nincs",
+          "leirat": "in the"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_140.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_141.ogg",
+          "allapot": "nincs",
+          "leirat": "A. A. A. A. A. A. A. A. N."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_142.ogg",
+          "allapot": "nincs",
+          "leirat": "Hát ilyen a balaton?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_143.ogg",
+          "allapot": "nincs",
+          "leirat": "Hát te?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_144.ogg",
+          "allapot": "nincs",
+          "leirat": "Drámo, kör furgolom! Ah, mindegy!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_145.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_146.ogg",
+          "allapot": "nincs",
+          "leirat": "Cs"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_147.ogg",
+          "allapot": "nincs",
+          "leirat": "Félesz mi?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_148.ogg",
+          "allapot": "nincs",
+          "leirat": "a főgény, a főkében, a főkében, a főké, a..."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_149.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébk, ezzel a szintén, ezzel a szinten, a szinten, a szinten, a szinten, a szinten, a szinten"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_15.ogg",
+          "allapot": "nincs",
+          "leirat": "Jöldbe."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_150.ogg",
+          "allapot": "nincs",
+          "leirat": "maj-"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_151.ogg",
+          "allapot": "nincs",
+          "leirat": "Foglalkodjára, fok, fokhagymát, fokhagymát, fokhagym�ra, fokhagymát, fokhagymát, fokját, fokhagymát, fokhagymát, fokhagymát, fokhagymát."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_153.ogg",
+          "allapot": "nincs",
+          "leirat": "Jobra a Hármadik utcán, GYORGYÓ!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_154.ogg",
+          "allapot": "nincs",
+          "leirat": "Jóra! Nem nem nem nem nem nem nem nem nem nem nem nem"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_156.ogg",
+          "allapot": "nincs",
+          "leirat": "Figyiája a sz kis számat. Jó bra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_157.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd Utano, torcs, borro!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_158.ogg",
+          "allapot": "nincs",
+          "leirat": "A tervezek tudod, mekkora melló."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_159.ogg",
+          "allapot": "nincs",
+          "leirat": "És... ut"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_16.ogg",
+          "allapot": "nincs",
+          "leirat": "Bor, mi van?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_160.ogg",
+          "allapot": "nincs",
+          "leirat": "I a nyan nyan, nyan, hadd göld forgulom!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_161.ogg",
+          "allapot": "nincs",
+          "leirat": "...hjjjjjjjjjjjjjjjjjjjjjjjjjjjjj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_162.ogg",
+          "allapot": "nincs",
+          "leirat": "MÉÉÉÉ! ÉzzÉÉ É É É a É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É É"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_163.ogg",
+          "allapot": "nincs",
+          "leirat": "Na hát, mindjárt balaton, leskompis!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_164.ogg",
+          "allapot": "nincs",
+          "leirat": "Jod, nem árpad ennyi jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_165.ogg",
+          "allapot": "nincs",
+          "leirat": "A harvadik utcam fogunk majd barra mellni, jó lesz."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_166.ogg",
+          "allapot": "nincs",
+          "leirat": "Szerintem, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen, hogy a sz, hogy a szépen, hogy a szépen, hogy a szépen, hogy a szépen,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_167.ogg",
+          "allapot": "nincs",
+          "leirat": "Na háthorzálom felé! Csak mondom!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_168.ogg",
+          "allapot": "nincs",
+          "leirat": "Te! Tudsz úsznyi!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_17.ogg",
+          "allapot": "nincs",
+          "leirat": "Megnyel a borra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_170.ogg",
+          "allapot": "nincs",
+          "leirat": "Mégések a töröltetők, dezszerenek a, dezszeretők, dezszeretők, dezszeretők."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_171.ogg",
+          "allapot": "nincs",
+          "leirat": "Robanjunk fel az autópájára!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_172.ogg",
+          "allapot": "nincs",
+          "leirat": ", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_173.ogg",
+          "allapot": "nincs",
+          "leirat": "nem váltunk sebességet egy ne se megyen"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_174.ogg",
+          "allapot": "nincs",
+          "leirat": "Csíjííííííííí-ííííííííííííííííííí and"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_175.ogg",
+          "allapot": "nincs",
+          "leirat": "Egy sultán, Fordúj borra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_176.ogg",
+          "allapot": "nincs",
+          "leirat": "Féhééééééééééééééééééééééé"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_177.ogg",
+          "allapot": "nincs",
+          "leirat": "Ez"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_178.ogg",
+          "allapot": "nincs",
+          "leirat": "És a napot leszünk? Na, hova jött, hova jötttünk?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_179.ogg",
+          "allapot": "nincs",
+          "leirat": "Sziasztok!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_180.ogg",
+          "allapot": "nincs",
+          "leirat": "És utána ez... ez nem egy kör forgalom?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_181.ogg",
+          "allapot": "nincs",
+          "leirat": "Én a fiyút a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_182.ogg",
+          "allapot": "nincs",
+          "leirat": "Ők be ne biztos, hogy járó"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_183.ogg",
+          "allapot": "nincs",
+          "leirat": "Tánai mátkozunk és kihájtunk a Baloldalon"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_184.ogg",
+          "allapot": "nincs",
+          "leirat": "Próbájunk meg először. Menjenem"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_185.ogg",
+          "allapot": "nincs",
+          "leirat": "A második utcán fordú így bora!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_186.ogg",
+          "allapot": "nincs",
+          "leirat": "Vagy, visszatérkezett, viss a személyek. Vagy, vissz"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_187.ogg",
+          "allapot": "nincs",
+          "leirat": "Csináljak másik tervet vagy kösen fel maga."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_188.ogg",
+          "allapot": "nincs",
+          "leirat": "Egy-egy-eg-egy.-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-egy-"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_189.ogg",
+          "allapot": "nincs",
+          "leirat": "Tööööööööö"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_190.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyszerűen csak hajtsunk-i a baloldalon. Bármi is le"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_191.ogg",
+          "allapot": "nincs",
+          "leirat": "A"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_193.ogg",
+          "allapot": "nincs",
+          "leirat": "M, megér"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_194.ogg",
+          "allapot": "nincs",
+          "leirat": "Köszönöm!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_195.ogg",
+          "allapot": "nincs",
+          "leirat": "majd utána kihajtunk a baloldalon."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_196.ogg",
+          "allapot": "nincs",
+          "leirat": ","
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_20.ogg",
+          "allapot": "nincs",
+          "leirat": "Kutatkozni!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_200.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébként a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_201.ogg",
+          "allapot": "nincs",
+          "leirat": "És uts után után után után utánne után után után után után ut után után után után után után után után után után után után után után után után után után után utha után után után után után után után után után után után után után után"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_202.ogg",
+          "allapot": "nincs",
+          "leirat": "Ha ha ha ha ha ha ha ha ha ha ha Jó, jó, jó, j"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_203.ogg",
+          "allapot": "nincs",
+          "leirat": "Még te is."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_204.ogg",
+          "allapot": "nincs",
+          "leirat": "."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_205.ogg",
+          "allapot": "nincs",
+          "leirat": "Nézzé kisépei obra, milyen ott oda megyünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_206.ogg",
+          "allapot": "nincs",
+          "leirat": "Fordulj enyhén"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_207.ogg",
+          "allapot": "nincs",
+          "leirat": "Én bár a kéne, mert úgy az jó."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_208.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_209.ogg",
+          "allapot": "nincs",
+          "leirat": "Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl. Csl."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_21.ogg",
+          "allapot": "nincs",
+          "leirat": "Jövök rá!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_210.ogg",
+          "allapot": "nincs",
+          "leirat": "et."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_211.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_213.ogg",
+          "allapot": "nincs",
+          "leirat": "Na, meg"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_214.ogg",
+          "allapot": "nincs",
+          "leirat": "Ez már a balaton, vagy egy körforgalom."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_215.ogg",
+          "allapot": "nincs",
+          "leirat": "Köszönöm!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_216.ogg",
+          "allapot": "nincs",
+          "leirat": "Tprrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_217.ogg",
+          "allapot": "nincs",
+          "leirat": "Igy szerintem. Én hány-hányi fogok."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_218.ogg",
+          "allapot": "nincs",
+          "leirat": "Tessék belenizie balle deli, tykörbe"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_219.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyébként a kérdések, a kérdések, a k-kérdé, a kérdése, a k Egy kérdések, a kérdések, a kérdések, a kérdések, a kérdések, a kérdések, a kér"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_22.ogg",
+          "allapot": "nincs",
+          "leirat": "Vagd a csinálódásra, hogy a különbözőséggel a különbözőséggel a különbözőséggel a különbözőséggel a, a különbözőséggel, a különbözőséggel a különbözőséggel, a különböz a különbözőséggel."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_220.ogg",
+          "allapot": "nincs",
+          "leirat": "Nem akarok"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_221.ogg",
+          "allapot": "nincs",
+          "leirat": "Ha a, ha a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_222.ogg",
+          "allapot": "nincs",
+          "leirat": "Uj"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_223.ogg",
+          "allapot": "nincs",
+          "leirat": "és utá é..."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_225.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_227.ogg",
+          "allapot": "nincs",
+          "leirat": "Követő, követők a fődat így."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_228.ogg",
+          "allapot": "nincs",
+          "leirat": "Rendező, kém? Ki hajta a sajóból dalom?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_229.ogg",
+          "allapot": "nincs",
+          "leirat": "Hajtj ki, a jobb oldalon. Most ez van."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_23.ogg",
+          "allapot": "nincs",
+          "leirat": "Menjünk a borot!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_230.ogg",
+          "allapot": "nincs",
+          "leirat": "I will have to go to the temple to see the Buddha, the Buddha, the Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha Buddha"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_231.ogg",
+          "allapot": "nincs",
+          "leirat": "Újjjunk el a nép, köszönjünk az autópájáról."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_232.ogg",
+          "allapot": "nincs",
+          "leirat": "Vagy helyzetet, barra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_233.ogg",
+          "allapot": "nincs",
+          "leirat": "Hát. ãh-h-h-h-h-h-h Úrj! Úrj! , Ú, Úrj! Úi! Úrj! Úrj!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_234.ogg",
+          "allapot": "nincs",
+          "leirat": "Köszönöm!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_235.ogg",
+          "allapot": "nincs",
+          "leirat": "És most mi van?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_236.ogg",
+          "allapot": "nincs",
+          "leirat": "És ut"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_237.ogg",
+          "allapot": "nincs",
+          "leirat": "Mindenképp, az az a kutánképp, az a kutánk-képp."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_238.ogg",
+          "allapot": "nincs",
+          "leirat": "Vagy kihaitunk a Baloldalon, vagy valami."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_239.ogg",
+          "allapot": "nincs",
+          "leirat": "M"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_24.ogg",
+          "allapot": "nincs",
+          "leirat": "Ne bárj."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_240.ogg",
+          "allapot": "nincs",
+          "leirat": "Mennyünk barra, vigyázz a falra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_241.ogg",
+          "allapot": "nincs",
+          "leirat": "Most az van, hogy ki Most a, az van, ki kellene hajtani a baloldalon?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_242.ogg",
+          "allapot": "nincs",
+          "leirat": "majd utána jobbra ne,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_243.ogg",
+          "allapot": "nincs",
+          "leirat": "kikérne hajtani a Baloldalon."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_244.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_245.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd le megyünk az autopájáró."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_248.ogg",
+          "allapot": "nincs",
+          "leirat": "Ahogy így, id, elnézek a távolba, már látam a kompót."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_249.ogg",
+          "allapot": "nincs",
+          "leirat": ", kövesszük a fő utat!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_25.ogg",
+          "allapot": "nincs",
+          "leirat": "F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_250.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyényényényényényényényényényényényényény"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_251.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_252.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd utá, no, tor, torc, jobbra."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_253.ogg",
+          "allapot": "nincs",
+          "leirat": "Aztán... Aztán..."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_254.ogg",
+          "allapot": "nincs",
+          "leirat": "Hihetetlenül élesen ké"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_255.ogg",
+          "allapot": "nincs",
+          "leirat": "A, odanélyezz egy csík fagból,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_256.ogg",
+          "allapot": "nincs",
+          "leirat": "Tudom, hogy a személyek a szolgálások, a személyek! Tudom, hogy a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgálások, a szolgárosok, a szolgálások, a szolgálások!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_257.ogg",
+          "allapot": "nincs",
+          "leirat": "Mi"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_258.ogg",
+          "allapot": "nincs",
+          "leirat": "Józsálló külön"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_259.ogg",
+          "allapot": "nincs",
+          "leirat": "Hát igen"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_26.ogg",
+          "allapot": "nincs",
+          "leirat": "Vigyázz! Egyenek semmi!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_260.ogg",
+          "allapot": "nincs",
+          "leirat": "Egyéb, egyébfüld,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_262.ogg",
+          "allapot": "nincs",
+          "leirat": "Rám együnk a kompra, erősen ellenőrizve, hogy ott van-e."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_263.ogg",
+          "allapot": "nincs",
+          "leirat": "KÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉ"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_264.ogg",
+          "allapot": "nincs",
+          "leirat": "Érdemes barra tartani, mert ut"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_266.ogg",
+          "allapot": "nincs",
+          "leirat": "Ja, a GPS vett"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_267.ogg",
+          "allapot": "nincs",
+          "leirat": "rosszul a jogi"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_268.ogg",
+          "allapot": "nincs",
+          "leirat": "Meg fogunk Barány, Fordúj, Beth!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_269.ogg",
+          "allapot": "nincs",
+          "leirat": "Fővezt a főutat,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_27.ogg",
+          "allapot": "nincs",
+          "leirat": "Jóhára."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_270.ogg",
+          "allapot": "nincs",
+          "leirat": "de azért ilyen jobb ha kihájt a sajó boldalon."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_271.ogg",
+          "allapot": "nincs",
+          "leirat": "etet"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_272.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_273.ogg",
+          "allapot": "nincs",
+          "leirat": "hajts ki a"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_274.ogg",
+          "allapot": "nincs",
+          "leirat": "A második utcán lesz az, hogy jobbra kell menni."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_275.ogg",
+          "allapot": "nincs",
+          "leirat": "vagy kérled a közönség segítségét."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_276.ogg",
+          "allapot": "nincs",
+          "leirat": "Ha lételek, rendben!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_277.ogg",
+          "allapot": "nincs",
+          "leirat": "Hú, hú, hú, hú, hú, hú, hú, hú, hú, hú, hú, hú,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_278.ogg",
+          "allapot": "nincs",
+          "leirat": "Jajd! Követni fogjuk a főútat. Tök izgi lesz!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_279.ogg",
+          "allapot": "nincs",
+          "leirat": "Lehet, a Matier, hogy pedd ezt rint embora."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_28.ogg",
+          "allapot": "nincs",
+          "leirat": ""
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_280.ogg",
+          "allapot": "nincs",
+          "leirat": "A komp"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_281.ogg",
+          "allapot": "nincs",
+          "leirat": "hajtsunk ki a Baloldalan"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_282.ogg",
+          "allapot": "nincs",
+          "leirat": "Csináljuk meg! Tudod? Tudod? Tudod? Tudod?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_283.ogg",
+          "allapot": "nincs",
+          "leirat": "A"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_284.ogg",
+          "allapot": "nincs",
+          "leirat": "Kucán lesz majd egy jobbos forduló."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_285.ogg",
+          "allapot": "nincs",
+          "leirat": "első utca utáni utcán jobbra fordulunk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_286.ogg",
+          "allapot": "nincs",
+          "leirat": "That is, it is, it is, it is, it is, it it is, it is, it is,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_287.ogg",
+          "allapot": "nincs",
+          "leirat": "A-e-e-é-s-ehe-e-e--e-e-e-e-e-e-e-e-"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_288.ogg",
+          "allapot": "nincs",
+          "leirat": "Gázfék meg ilyenek!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_29.ogg",
+          "allapot": "nincs",
+          "leirat": "Ramegyünk!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_290.ogg",
+          "allapot": "nincs",
+          "leirat": "Sziasztok!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_291.ogg",
+          "allapot": "nincs",
+          "leirat": "Vannak esetek, amikor barra kell men"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_292.ogg",
+          "allapot": "nincs",
+          "leirat": "Én a-e-e-e-e-e-e-e-e-e-e-e- Én--e-e-e-e-e- É-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_293.ogg",
+          "allapot": "nincs",
+          "leirat": "Gyerünk!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_294.ogg",
+          "allapot": "nincs",
+          "leirat": "Jobbra lenne érdemes tartani egy picit, mert utána csak cigcak van."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_295.ogg",
+          "allapot": "nincs",
+          "leirat": "Fig,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_296.ogg",
+          "allapot": "nincs",
+          "leirat": "Tud, mit csinál az emberele gyűtközés egy ilyen sebességnél?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_298.ogg",
+          "allapot": "nincs",
+          "leirat": "Szóval,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_299.ogg",
+          "allapot": "nincs",
+          "leirat": "Majd elhagyjuk az autópájrját"
+        },
+        {
+          "utvonal": "hang/clips/És aztán balra megyünk élesen.ogg",
+          "allapot": "nincs",
+          "leirat": "A-térkezősé"
         }
       ]
     },
-    "ujratervezes": {
-      "indito": "Újratervezés kérése indul.",
-      "darab": 7,
-      "fajlok": [
-        {
-          "utvonal": "hang/clips/Hhh újra tervezés.ogg",
-          "szerep": "elsodleges",
-          "leirat": "V V V V"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_114.ogg",
-          "szerep": "elsodleges",
-          "leirat": "Uír a tervezés?"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_226.ogg",
-          "szerep": "elsodleges",
-          "leirat": "Újra tervezze."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_477.ogg",
-          "szerep": "kommentar",
-          "leirat": "Most, mi legyen, drága? Mert, hogy én mondok valamit, te meg nem azt csinálk csinálni Oké, oké, oké, te vagy a főnök? Újra tervezem? Vagy a se?"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_110.ogg",
-          "szerep": "elsodleges",
-          "leirat": "V V V V"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_114.ogg",
-          "szerep": "elsodleges",
-          "leirat": "Uír a tervezés?"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_226.ogg",
-          "szerep": "elsodleges",
-          "leirat": "Újra tervezze."
-        }
-      ]
+    "indulas": {
+      "nev": "Indulás",
+      "felismeres": "mukodik",
+      "darab": 0,
+      "fajlok": []
+    },
+    "utvonal_kesz": {
+      "nev": "Útvonaltervezés kész",
+      "felismeres": "mukodik",
+      "darab": 0,
+      "fajlok": []
     },
     "egyenes": {
-      "indito": "A következő manőver egyenes.",
-      "darab": 19,
+      "nev": "Egyenes haladás",
+      "felismeres": "mukodik",
+      "darab": 15,
       "fajlok": [
         {
           "utvonal": "hang/clips/Hát szerintem,ő egyenesen.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Egyenesen... Egyenesen."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_107.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Isel meg vagy, akkor egyenesen."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_138.ogg",
-          "szerep": "folytatas",
-          "leirat": "Aztán egyenesben."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_169.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Előre egyenesen szépen tovább!"
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_199.ogg",
-          "szerep": "folytatas",
-          "leirat": "pedig majd hat-utána egyenesen."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_246.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Hát hirtelen egyenesen."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_308.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Nyugodtan, egyenessen köz le, közlek-közlek-közlek-közlek-közlek-közlek-k."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_318.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "hogy egyenesen kéne tová, menni."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_326.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Nézzem a térképet, egyenesen."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_356.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Szasztán, mert én már most tudom, hogy egyenesen kell menne. Felir."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_410.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Ha például egyenesen lenne kedved menni, de télyek"
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_83.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Menjül szi szépen egyenesen."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_85.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Szépen egyenesán, Sán, Szépen, Egyenesán,"
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_107.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Isel meg vagy, akkor egyenesen."
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_109.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Egyenesen... Egyenesen."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_138.ogg",
-          "szerep": "folytatas",
-          "leirat": "Aztán egyenesben."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_right_169.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Előre egyenesen szépen tovább!"
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_199.ogg",
-          "szerep": "folytatas",
-          "leirat": "pedig majd hat-utána egyenesen."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_right_246.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Hát hirtelen egyenesen."
         }
       ]
     },
+    "balra": {
+      "nev": "Balra fordulás",
+      "felismeres": "mukodik",
+      "darab": 0,
+      "fajlok": []
+    },
     "jobbra": {
-      "indito": "A következő manőver iránya jobbra.",
-      "darab": 25,
+      "nev": "Jobbra fordulás",
+      "felismeres": "mukodik",
+      "darab": 20,
       "fajlok": [
         {
           "utvonal": "hang/clips/and_then_exit_left_113.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Látod a lehet hethőséget? Jobbra!"
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_12.ogg",
-          "szerep": "folytatas",
-          "leirat": "Utána jobbra!"
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_126.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Jó, ha jobbra mennél!"
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_13.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Jóbra!"
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_152.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Én jóbra, nem valami radikális dolog."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_18.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Menj el jobbra!"
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_19.ogg",
-          "szerep": "folytatas",
-          "leirat": "Uti, utána jobbra megyünk."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_197.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Jóbra, megyünk! Jóbra!"
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_198.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Követjük a főutat, most, most ez a projekt, és jobbra!"
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_261.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Minden versbe kell a rím, jobbra"
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_289.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Jobbra? Hmm? Kanyarodjon le valahol, ah, ahol, hát úgy sikerül."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_366.ogg",
-          "szerep": "folytatas",
-          "leirat": "és utána, és ezt büszkelem, bárki előtt, jobbra!"
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_57.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Kési hárok, de jobbra!"
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_88.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Most! Jobbra!"
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_113.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Látod a lehet hethőséget? Jobbra!"
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_12.ogg",
-          "szerep": "folytatas",
-          "leirat": "Utána jobbra!"
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_right_126.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Jó, ha jobbra mennél!"
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_13.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Jóbra!"
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_152.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Én jóbra, nem valami radikális dolog."
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_18.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Menj el jobbra!"
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_19.ogg",
-          "szerep": "folytatas",
-          "leirat": "Uti, utána jobbra megyünk."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_right_197.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Jóbra, megyünk! Jóbra!"
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_198.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Követjük a főutat, most, most ez a projekt, és jobbra!"
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_261.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Minden versbe kell a rím, jobbra"
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_289.ogg",
-          "szerep": "kommentar",
+          "allapot": "ellenorzes",
           "leirat": "Jobbra? Hmm? Kanyarodjon le valahol, ah, ahol, hát úgy sikerül."
         }
       ]
     },
-    "korforgalom": {
-      "indito": "A következő manőver körforgalom. A hang kijáratszámot nem mond.",
-      "darab": 10,
+    "enyhen_balra": {
+      "nev": "Enyhe balra",
+      "felismeres": "mukodik",
+      "darab": 0,
+      "fajlok": []
+    },
+    "enyhen_jobbra": {
+      "nev": "Enyhe jobbra",
+      "felismeres": "mukodik",
+      "darab": 2,
       "fajlok": [
         {
-          "utvonal": "hang/clips/and_then_exit_left_117.ogg",
-          "szerep": "kommentar",
-          "leirat": "Kör forgalom lesz, szerintem."
+          "utvonal": "hang/clips/Enyhén jobbra zászló nélkül.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Én jobbra zászló nélkül."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_155.ogg",
-          "szerep": "kommentar",
-          "leirat": ", körforgalom jön, és majd szólok,"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_212.ogg",
-          "szerep": "folytatas",
-          "leirat": "Azt mondja, hogy utána kör forgalom jön."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_265.ogg",
-          "szerep": "folytatas",
-          "leirat": "és ahogy így elnézem a térképet, utána kör forgalom jön."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_388.ogg",
-          "szerep": "kommentar",
-          "leirat": "– És tudod, benne van! – Kör forgaló!"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_443.ogg",
-          "szerep": "kommentar",
-          "leirat": "Számubra a körforgalmak nők, nőneműek. Mér, hát itt kerek, érted"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_117.ogg",
-          "szerep": "kommentar",
-          "leirat": "Kör forgalom lesz, szerintem."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_155.ogg",
-          "szerep": "kommentar",
-          "leirat": ", körforgalom jön, és majd szólok,"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_212.ogg",
-          "szerep": "folytatas",
-          "leirat": "Azt mondja, hogy utána kör forgalom jön."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_265.ogg",
-          "szerep": "folytatas",
-          "leirat": "és ahogy így elnézem a térképet, utána kör forgalom jön."
+          "utvonal": "hang/clips/and_then_exit_right_105.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Én jobbra zászló nélkül."
         }
       ]
     },
+    "elesen_balra": {
+      "nev": "Éles balra",
+      "felismeres": "mukodik",
+      "darab": 0,
+      "fajlok": []
+    },
     "elesen_jobbra": {
-      "indito": "A következő manőver élesen jobbra.",
-      "darab": 9,
+      "nev": "Éles jobbra",
+      "felismeres": "mukodik",
+      "darab": 5,
       "fajlok": [
         {
           "utvonal": "hang/clips/and_then_exit_left_121.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Menj el, szépen jobbra élesen."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_224.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Rájtad van a felszemem, jobbra megyünk élesen."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_247.ogg",
-          "szerep": "folytatas",
-          "leirat": "Meg majd! Jobbra megyünk! Élesen!"
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_314.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "És ide, az van írva, jöbra élesen."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_111.ogg",
-          "szerep": "folytatas",
-          "leirat": "és utána megy, jubra, éles, lesen."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_right_121.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Menj el, szépen jobbra élesen."
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_224.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Rájtad van a felszemem, jobbra megyünk élesen."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_247.ogg",
-          "szerep": "folytatas",
-          "leirat": "Meg majd! Jobbra megyünk! Élesen!"
-        },
-        {
-          "utvonal": "hang/clips/És utána jobbra élesen.ogg",
-          "szerep": "folytatas",
-          "leirat": "és utána megy, jubra, éles, lesen."
-        }
-      ]
-    },
-    "gps_hiany": {
-      "indito": "A GPS-jel gyenge vagy elveszett.",
-      "darab": 5,
-      "fajlok": [
-        {
-          "utvonal": "hang/clips/and_then_exit_left_129.ogg",
-          "szerep": "reakcio",
-          "leirat": "Nincs GPS-vétel! Felmondok!"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_379.ogg",
-          "szerep": "reakcio",
-          "leirat": "A GPS vétel gyenge."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_380.ogg",
-          "szerep": "reakcio",
-          "leirat": "Hogy a GPS vétel gyenge."
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_left_403.ogg",
-          "szerep": "reakcio",
-          "leirat": "Most akkor jó szórakozást kívánok, mert nincs GPS vétel és"
-        },
-        {
-          "utvonal": "hang/clips/and_then_exit_right_129.ogg",
-          "szerep": "reakcio",
-          "leirat": "Nincs GPS-vétel! Felmondok!"
         }
       ]
     },
     "vissza": {
-      "indito": "A következő manőver visszafordulás.",
-      "darab": 9,
+      "nev": "Visszafordulás",
+      "felismeres": "mukodik",
+      "darab": 4,
       "fajlok": [
         {
-          "utvonal": "hang/clips/and_then_exit_left_192.ogg",
-          "szerep": "folytatas",
-          "leirat": "utána visszafordulunk."
-        },
-        {
           "utvonal": "hang/clips/and_then_exit_left_297.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Te! Fordulj vissza, ahol lehet."
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_413.ogg",
-          "szerep": "elsodleges",
+          "allapot": "ellenorzes",
           "leirat": "Fordul vissza ahol lehet jó"
         },
         {
+          "utvonal": "hang/clips/and_then_exit_left_62.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Uh-oh! Fordói vissza!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_297.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Te! Fordulj vissza, ahol lehet."
+        }
+      ]
+    },
+    "korforgalom": {
+      "nev": "Körforgalom megközelítése",
+      "felismeres": "mukodik",
+      "darab": 6,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_117.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Kör forgalom lesz, szerintem."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_155.ogg",
+          "allapot": "ellenorzes",
+          "leirat": ", körforgalom jön, és majd szólok,"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_388.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "– És tudod, benne van! – Kör forgaló!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_443.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Számubra a körforgalmak nők, nőneműek. Mér, hát itt kerek, érted"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_117.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Kör forgalom lesz, szerintem."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_155.ogg",
+          "allapot": "ellenorzes",
+          "leirat": ", körforgalom jön, és majd szólok,"
+        }
+      ]
+    },
+    "korforgalom_kijarat": {
+      "nev": "Körforgalmi kijárat",
+      "felismeres": "mukodik",
+      "darab": 0,
+      "fajlok": []
+    },
+    "folytatas": {
+      "nev": "Manőver utáni folytatás",
+      "felismeres": "mukodik",
+      "darab": 22,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_12.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Utána jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_138.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Aztán egyenesben."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_19.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Uti, utána jobbra megyünk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_192.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "utána visszafordulunk."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_199.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "pedig majd hat-utána egyenesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_212.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Azt mondja, hogy utána kör forgalom jön."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_247.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Meg majd! Jobbra megyünk! Élesen!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_265.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "és ahogy így elnézem a térképet, utána kör forgalom jön."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_366.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "és utána, és ezt büszkelem, bárki előtt, jobbra!"
+        },
+        {
           "utvonal": "hang/clips/and_then_exit_left_418.ogg",
-          "szerep": "folytatas",
+          "allapot": "ellenorzes",
           "leirat": "Majd utána visszafordulunk, mert otthon hagyen a"
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_437.ogg",
-          "szerep": "folytatas",
+          "allapot": "ellenorzes",
           "leirat": "Majd utána aztán visszaford"
         },
         {
           "utvonal": "hang/clips/and_then_exit_left_501.ogg",
-          "szerep": "folytatas",
+          "allapot": "ellenorzes",
           "leirat": "Majd utána visszafordulunk mert erőtetéss lehet, ami jelent ére utal és ilyenkor mindig v visszafordulunk, mert erőteretész leltem, ami"
         },
         {
-          "utvonal": "hang/clips/and_then_exit_left_62.ogg",
-          "szerep": "elsodleges",
-          "leirat": "Uh-oh! Fordói vissza!"
+          "utvonal": "hang/clips/and_then_exit_right_111.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "és utána megy, jubra, éles, lesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_12.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Utána jobbra!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_138.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Aztán egyenesben."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_19.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Uti, utána jobbra megyünk."
         },
         {
           "utvonal": "hang/clips/and_then_exit_right_192.ogg",
-          "szerep": "folytatas",
+          "allapot": "ellenorzes",
           "leirat": "utána visszafordulunk."
         },
         {
-          "utvonal": "hang/clips/and_then_exit_right_297.ogg",
-          "szerep": "elsodleges",
-          "leirat": "Te! Fordulj vissza, ahol lehet."
+          "utvonal": "hang/clips/and_then_exit_right_199.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "pedig majd hat-utána egyenesen."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_212.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Azt mondja, hogy utána kör forgalom jön."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_247.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Meg majd! Jobbra megyünk! Élesen!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_265.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "és ahogy így elnézem a térképet, utána kör forgalom jön."
+        },
+        {
+          "utvonal": "hang/clips/És utána jobbra élesen.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "és utána megy, jubra, éles, lesen."
         }
       ]
+    },
+    "ujratervezes": {
+      "nev": "Újratervezés",
+      "felismeres": "mukodik",
+      "darab": 7,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/Hhh újra tervezés.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "V V V V"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_114.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Uír a tervezés?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_226.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Újra tervezze."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_477.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Most, mi legyen, drága? Mert, hogy én mondok valamit, te meg nem azt csinálk csinálni Oké, oké, oké, te vagy a főnök? Újra tervezem? Vagy a se?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_110.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "V V V V"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_114.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Uír a tervezés?"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_226.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Újra tervezze."
+        }
+      ]
+    },
+    "rossz_irany": {
+      "nev": "Rossz irány / letérés az útvonalról",
+      "felismeres": "mukodik",
+      "darab": 0,
+      "fajlok": []
+    },
+    "gps_hiany": {
+      "nev": "GPS-jel elvesztése vagy gyengesége",
+      "felismeres": "mukodik",
+      "darab": 5,
+      "fajlok": [
+        {
+          "utvonal": "hang/clips/and_then_exit_left_129.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Nincs GPS-vétel! Felmondok!"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_379.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "A GPS vétel gyenge."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_380.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Hogy a GPS vétel gyenge."
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_left_403.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Most akkor jó szórakozást kívánok, mert nincs GPS vétel és"
+        },
+        {
+          "utvonal": "hang/clips/and_then_exit_right_129.ogg",
+          "allapot": "ellenorzes",
+          "leirat": "Nincs GPS-vétel! Felmondok!"
+        }
+      ]
+    },
+    "cel": {
+      "nev": "Célhoz érkezés",
+      "felismeres": "mukodik",
+      "darab": 0,
+      "fajlok": []
+    },
+    "dugo": {
+      "nev": "Forgalmi dugó",
+      "felismeres": "hianyzik",
+      "darab": 0,
+      "fajlok": []
+    },
+    "sebesseghatar": {
+      "nev": "Sebességhatár túllépése",
+      "felismeres": "hianyzik",
+      "darab": 0,
+      "fajlok": []
+    },
+    "kommentar": {
+      "nev": "Általános navigációs kommentár",
+      "felismeres": "hianyzik",
+      "darab": 0,
+      "fajlok": []
+    },
+    "masik_folytatas": {
+      "nev": "Egy másik hang folytatása",
+      "felismeres": "mukodik",
+      "darab": 0,
+      "fajlok": []
+    },
+    "egyeb": {
+      "nev": "Egyéb, saját esemény",
+      "felismeres": "hianyzik",
+      "darab": 0,
+      "fajlok": []
     }
-  },
-  "kerdes_csoportok": [
-    "forgalom",
-    "gps_es_irany",
-    "nincs_helyzet",
-    "olvashatatlan",
-    "poen_irany_nelkul",
-    "tagadas",
-    "tobb_irany",
-    "utcanszam",
-    "irany_fok",
-    "nem_biztos_mondat",
-    "gps_bizonytalan",
-    "tartas",
-    "talan"
-  ]
+  }
 }

@@ -1,0 +1,6282 @@
+{
+  "verzio": 1,
+  "alap_mod": "felvaltva",
+  "modok": {},
+  "egyeb_esemenyek": [],
+  "megjegyzes": "A tetelek a kézi hozzárendelés. Az ellenorzes állapot javaslat, jóváhagyás nélkül nem szól. A mentve állapot szól, ha az esemény felismerése mukodik. A hianyzik felismerésű esemény menthető, de nem indul.",
+  "tetelek": [
+    {
+      "utvonal": "hang/clips/Aztán enyhén jobbra.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/Balra.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/Dugó felé közeledsz.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/Enyhén jobbra zászló nélkül.ogg",
+      "esemeny": "enyhen_jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/Ez az ez az Bubi nyomjad neki.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/Hhh újra tervezés.ogg",
+      "esemeny": "ujratervezes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/Hopi hopi forduljunk vissza.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/Hát szerintem,ő egyenesen.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/Kövesd balra a fő utat.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/Na mizu menjünk jobbra.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_107.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_112.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_113.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_114.ogg",
+      "esemeny": "ujratervezes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_115.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_116.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_117.ogg",
+      "esemeny": "korforgalom",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_118.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_119.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_12.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: jobbra. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_120.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_121.ogg",
+      "esemeny": "elesen_jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_122.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_123.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_124.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_125.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_126.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_127.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_128.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_129.ogg",
+      "esemeny": "gps_hiany",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: reakcio. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_13.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_130.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_131.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_132.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_133.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_134.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_135.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_136.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_137.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_138.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: egyenes. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_139.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_14.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_140.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_141.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_142.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_143.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_144.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_145.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_146.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_147.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_148.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_149.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_15.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_150.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_151.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_152.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_153.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_154.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_155.ogg",
+      "esemeny": "korforgalom",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_156.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_157.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_158.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_159.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_16.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_160.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_161.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_162.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_163.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_164.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_165.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_166.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_167.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_168.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_169.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_17.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_170.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_171.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_172.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_173.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_174.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_175.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_176.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_177.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_178.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_179.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_18.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_180.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_181.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_182.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_183.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_184.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_185.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_186.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_187.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_188.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_189.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_19.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: jobbra. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_190.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_191.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_192.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: vissza. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_193.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_194.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_195.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_196.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_197.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_198.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_199.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: egyenes. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_20.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_200.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_201.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_202.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_203.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_204.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_205.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_206.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_207.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_208.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_209.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_21.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_210.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_211.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_212.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: korforgalom. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_213.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_214.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_215.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_216.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_217.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_218.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_219.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_22.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_220.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_221.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_222.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_223.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_224.ogg",
+      "esemeny": "elesen_jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_225.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_226.ogg",
+      "esemeny": "ujratervezes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_227.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_228.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_229.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_23.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_230.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_231.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_232.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_233.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_234.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_235.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_236.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_237.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_238.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_239.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_24.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_240.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_241.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_242.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_243.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_244.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_245.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_246.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_247.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: elesen_jobbra. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_248.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_249.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_25.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_250.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_251.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_252.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_253.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_254.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_255.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_256.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_257.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_258.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_259.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_26.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_260.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_261.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_262.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_263.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_264.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_265.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: korforgalom. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_266.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_267.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_268.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_269.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_27.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_270.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_271.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_272.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_273.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_274.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_275.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_276.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_277.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_278.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_279.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_28.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_280.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_281.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_282.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_283.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_284.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_285.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_286.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_287.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_288.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_289.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_29.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_290.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_291.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_292.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_293.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_294.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_295.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_296.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_297.ogg",
+      "esemeny": "vissza",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_298.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_299.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_30.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_300.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_301.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_302.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_303.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_304.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_305.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_306.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_307.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_308.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_309.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_31.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_310.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_311.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_312.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_313.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_314.ogg",
+      "esemeny": "elesen_jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_315.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_316.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_317.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_318.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_319.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_32.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_320.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_321.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_322.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_323.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_324.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_325.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_326.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_327.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_328.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_329.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_33.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_330.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_331.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_332.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_333.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_334.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_335.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_336.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_337.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_338.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_339.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_34.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_340.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_341.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_342.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_343.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_344.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_345.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_346.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_347.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_348.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_349.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_35.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_350.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_351.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_352.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_353.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_354.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_355.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_356.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_357.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_358.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_359.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_36.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_360.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_361.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_362.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_363.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_364.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_365.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_366.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: jobbra. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_367.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_368.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_369.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_37.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_370.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_371.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_372.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_373.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_374.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_375.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_376.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_377.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_378.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_379.ogg",
+      "esemeny": "gps_hiany",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: reakcio. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_38.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_380.ogg",
+      "esemeny": "gps_hiany",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: reakcio. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_381.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_382.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_383.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_384.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_385.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_386.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_387.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_388.ogg",
+      "esemeny": "korforgalom",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_389.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_39.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_390.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_391.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_392.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_393.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_394.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_395.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_396.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_397.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_398.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_399.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_40.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_400.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_401.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_402.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_403.ogg",
+      "esemeny": "gps_hiany",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: reakcio. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_404.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_405.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_406.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_407.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_408.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_409.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_41.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_410.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_411.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_412.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_413.ogg",
+      "esemeny": "vissza",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_414.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_415.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_417.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_418.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: vissza. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_419.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_42.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_420.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_421.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_422.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_423.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_424.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_425.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_426.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_427.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_428.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_429.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_43.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_430.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_431.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_432.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_433.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_434.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_437.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: vissza. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_438.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_44.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_440.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_441.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_442.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_443.ogg",
+      "esemeny": "korforgalom",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_444.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_445.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_446.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_447.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_448.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_449.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_45.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_450.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_451.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_452.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_453.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_455.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_457.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_458.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_459.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_46.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_460.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_461.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_462.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_463.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_464.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_465.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_466.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_467.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_468.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_469.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_47.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_470.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_471.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_472.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_473.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_474.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_476.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_477.ogg",
+      "esemeny": "ujratervezes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_479.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_48.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_481.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_482.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_484.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_485.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_486.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_487.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_488.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_489.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_49.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_492.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_496.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_497.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_498.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_499.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_50.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_500.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_501.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: vissza. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_502.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_503.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_51.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_52.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_53.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_54.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_55.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_56.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_57.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_58.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_59.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_60.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_61.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_62.ogg",
+      "esemeny": "vissza",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_63.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_64.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_65.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_66.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_67.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_68.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_69.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_70.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_71.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_72.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_73.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_74.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_75.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_76.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_77.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_78.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_79.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_80.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_81.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_82.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_83.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_84.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_85.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_86.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_87.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_88.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_89.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_90.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_91.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_92.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_93.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_94.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_95.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_96.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_97.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_98.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_left_99.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_100.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_101.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_102.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_103.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_104.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_105.ogg",
+      "esemeny": "enyhen_jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_106.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_107.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_108.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_109.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_11.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_110.ogg",
+      "esemeny": "ujratervezes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_111.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: elesen_jobbra. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_112.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_113.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_114.ogg",
+      "esemeny": "ujratervezes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_115.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_116.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_117.ogg",
+      "esemeny": "korforgalom",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_118.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_119.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_12.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: jobbra. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_120.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_121.ogg",
+      "esemeny": "elesen_jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_122.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_123.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_124.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_125.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_126.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_127.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_128.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_129.ogg",
+      "esemeny": "gps_hiany",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: reakcio. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_13.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_130.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_131.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_132.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_133.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_134.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_135.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_136.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_137.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_138.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: egyenes. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_139.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_14.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_140.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_141.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_142.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_143.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_144.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_145.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_146.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_147.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_148.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_149.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_15.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_150.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_151.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_152.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_153.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_154.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_155.ogg",
+      "esemeny": "korforgalom",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_156.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_157.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_158.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_159.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_16.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_160.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_161.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_162.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_163.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_164.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_165.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_166.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_167.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_168.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_169.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_17.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_170.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_171.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_172.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_173.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_174.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_175.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_176.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_177.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_178.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_179.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_18.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_180.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_181.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_182.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_183.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_184.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_185.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_186.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_187.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_188.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_189.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_19.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: jobbra. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_190.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_191.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_192.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: vissza. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_193.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_194.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_195.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_196.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_197.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_198.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_199.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: egyenes. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_20.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_200.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_201.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_202.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_203.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_204.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_205.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_206.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_207.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_208.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_209.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_21.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_210.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_211.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_212.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: korforgalom. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_213.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_214.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_215.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_216.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_217.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_218.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_219.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_22.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_220.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_221.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_222.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_223.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_224.ogg",
+      "esemeny": "elesen_jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_225.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_226.ogg",
+      "esemeny": "ujratervezes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_227.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_228.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_229.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_23.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_230.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_231.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_232.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_233.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_234.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_235.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_236.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_237.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_238.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_239.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_24.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_240.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_241.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_242.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_243.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_244.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_245.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_246.ogg",
+      "esemeny": "egyenes",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_247.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: elesen_jobbra. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_248.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_249.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_25.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_250.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_251.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_252.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_253.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_254.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_255.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_256.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_257.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_258.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_259.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_26.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_260.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_261.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_262.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_263.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_264.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_265.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: korforgalom. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_266.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_267.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_268.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_269.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_27.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_270.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_271.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_272.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_273.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_274.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_275.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_276.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_277.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_278.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_279.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_28.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_280.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_281.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_282.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_283.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_284.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_285.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_286.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_287.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_288.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_289.ogg",
+      "esemeny": "jobbra",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat, szerep: kommentar. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_29.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_290.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_291.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_292.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_293.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_294.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_295.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_296.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_297.ogg",
+      "esemeny": "vissza",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_298.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/and_then_exit_right_299.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/És aztán balra megyünk élesen.ogg",
+      "esemeny": "",
+      "sajat_nev": "",
+      "megjegyzes": "",
+      "allapot": "nincs",
+      "sorrend": 0,
+      "elozo": ""
+    },
+    {
+      "utvonal": "hang/clips/És utána jobbra élesen.ogg",
+      "esemeny": "folytatas",
+      "sajat_nev": "",
+      "megjegyzes": "Automatikus javaslat. Eredeti következő helyzet: elesen_jobbra. Jóváhagyás nélkül nem szól.",
+      "allapot": "ellenorzes",
+      "sorrend": 1,
+      "elozo": ""
+    }
+  ]
+}

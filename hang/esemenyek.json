@@ -1,0 +1,119 @@
+{
+  "esemenyek": [
+    {
+      "id": "nincs",
+      "nev": "Még nincs hozzárendelve",
+      "felismeres": "nincs"
+    },
+    {
+      "id": "indulas",
+      "nev": "Indulás",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "utvonal_kesz",
+      "nev": "Útvonaltervezés kész",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "egyenes",
+      "nev": "Egyenes haladás",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "balra",
+      "nev": "Balra fordulás",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "jobbra",
+      "nev": "Jobbra fordulás",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "enyhen_balra",
+      "nev": "Enyhe balra",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "enyhen_jobbra",
+      "nev": "Enyhe jobbra",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "elesen_balra",
+      "nev": "Éles balra",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "elesen_jobbra",
+      "nev": "Éles jobbra",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "vissza",
+      "nev": "Visszafordulás",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "korforgalom",
+      "nev": "Körforgalom megközelítése",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "korforgalom_kijarat",
+      "nev": "Körforgalmi kijárat",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "folytatas",
+      "nev": "Manőver utáni folytatás",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "ujratervezes",
+      "nev": "Újratervezés",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "rossz_irany",
+      "nev": "Rossz irány / letérés az útvonalról",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "gps_hiany",
+      "nev": "GPS-jel elvesztése vagy gyengesége",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "cel",
+      "nev": "Célhoz érkezés",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "dugo",
+      "nev": "Forgalmi dugó",
+      "felismeres": "hianyzik"
+    },
+    {
+      "id": "sebesseghatar",
+      "nev": "Sebességhatár túllépése",
+      "felismeres": "hianyzik"
+    },
+    {
+      "id": "kommentar",
+      "nev": "Általános navigációs kommentár",
+      "felismeres": "hianyzik"
+    },
+    {
+      "id": "masik_folytatas",
+      "nev": "Egy másik hang folytatása",
+      "felismeres": "mukodik"
+    },
+    {
+      "id": "egyeb",
+      "nev": "Egyéb, saját esemény",
+      "felismeres": "hianyzik"
+    }
+  ]
+}

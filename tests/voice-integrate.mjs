@@ -41,6 +41,7 @@ check("question-has-id", asked.every((row) => row.kerdes && row.esemeny_hozzaren
 
 const mapped = [];
 Object.keys(map.esemenyek).forEach((key) => {
+  if (key === "nincs") return;
   map.esemenyek[key].fajlok.forEach((file) => mapped.push(file.utvonal));
 });
 const askedPaths = [];
@@ -90,21 +91,21 @@ rows.forEach((row) => {
 });
 check("identical-bytes-share-assignment", Array.from(twins.values()).every((set) => set.size === 1));
 
-const src = ["roundaboutExit", "voiceRank", "voiceQueueFrom", "voicePick", "voiceGain", "voiceFollowOk", "voiceShouldPlay", "voiceEventFor", "voiceCueKey"].map(extract).join("\n");
-const harness = new Function("check", "wired", src + `
-  const queues = voiceQueueFrom(wired);
+const src = ["voiceEventList", "voiceRecognition", "voiceLiveEvent", "voiceQueueFrom", "voicePick", "voicePickMode", "voiceGain", "voiceFollowOk", "voiceShouldPlay", "voiceEventFor", "voiceCueKey"].map(extract).join("\n");
+const harness = new Function("check", src + `
+  const saved = [
+    { utvonal: "b.ogg", kezi_allapot: "mentve", kezi_esemeny: "jobbra", kezi_sorrend: 2 },
+    { utvonal: "a.ogg", kezi_allapot: "mentve", kezi_esemeny: "jobbra", kezi_sorrend: 1 },
+    { utvonal: "s.ogg", kezi_allapot: "ellenorzes", kezi_esemeny: "jobbra", kezi_sorrend: 0 },
+    { utvonal: "d.ogg", kezi_allapot: "mentve", kezi_esemeny: "dugo", kezi_sorrend: 0 },
+    { utvonal: "f.ogg", kezi_allapot: "mentve", kezi_esemeny: "folytatas", kezi_sorrend: 1 }
+  ];
+  const queues = voiceQueueFrom(saved);
   const rights = (queues.jobbra || []).map((row) => row.utvonal);
-  const follows = (queues["folytatas:jobbra"] || []).map((row) => row.utvonal);
-  check("primary-excludes-follow", rights.every((path) => follows.indexOf(path) < 0));
-  check("follow-bucket", follows.length > 0 && follows.every((path) => rights.indexOf(path) < 0));
-  let ordered = true;
-  let last = -1;
-  (queues.jobbra || []).forEach((row) => {
-    const rank = voiceRank(row);
-    if (rank < last) ordered = false;
-    last = rank;
-  });
-  check("primary-order", ordered);
+  check("saved-right-only", rights.join(",") === "a.ogg,b.ogg", rights.join(","));
+  check("suggestion-not-queued", rights.indexOf("s.ogg") < 0);
+  check("missing-recognition-not-queued", !queues.dugo);
+  check("follow-not-in-primary", rights.indexOf("f.ogg") < 0);
   const sample = [{ utvonal: "a" }, { utvonal: "b" }, { utvonal: "c" }];
   const seen = [];
   let cursor = 0;
@@ -114,6 +115,10 @@ const harness = new Function("check", "wired", src + `
     cursor = pick.next;
   }
   check("cycle-no-repeat-until-end", seen.slice(0, 3).join(",") === "a,b,c" && seen[3] === "a", seen.join(","));
+  const rotated = voicePickMode(sample, 0, "felvaltva", "a", null);
+  check("rotate-skips-last", rotated.item.utvonal === "b");
+  check("same-clip-mode", voicePickMode(sample, 2, "ugyanaz", "c", null).item.utvonal === "a");
+  check("random-avoids-last", voicePickMode(sample, 0, "veletlen", "a", function () { return 0; }).item.utvonal !== "a");
   check("gain-mute", voiceGain(true, 0.4) === 0);
   check("gain-level", voiceGain(false, 0.4) === 0.4);
   check("gain-cap", voiceGain(false, 2) === 1);
@@ -126,9 +131,11 @@ const harness = new Function("check", "wired", src + `
   check("right-event", voiceEventFor({ type: "turn", modifier: "right", meters: 80 }) === "jobbra");
   check("sharp-not-plain-right", voiceEventFor({ type: "turn", modifier: "sharp right", meters: 80 }) === "elesen_jobbra");
   check("roundabout-without-number", voiceEventFor({ type: "roundabout", exit: 2, meters: 40 }) === "korforgalom");
+  check("roundabout-exit-event", voiceEventFor({ type: "exit roundabout", exit: 2, meters: 30 }) === "korforgalom_kijarat");
   check("reroute-event", voiceEventFor({ kind: "reroute", seq: 4 }) === "ujratervezes");
+  check("offroute-event", voiceEventFor({ kind: "rossz_irany", seq: 4 }) === "rossz_irany");
   check("reroute-key", voiceCueKey({ kind: "reroute", seq: 4 }, "ujratervezes", 0) !== voiceCueKey({ kind: "reroute", seq: 5 }, "ujratervezes", 0));
 `);
-harness(check, wired);
+harness(check);
 console.log(fails.length ? "VOICE-INTEGRATE-FAIL " + fails.length : "VOICE-INTEGRATE-OK");
 if (fails.length) process.exitCode = 1;
