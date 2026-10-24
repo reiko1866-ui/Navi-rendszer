@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToonNav</string>
+    <string name="from_hint">Indulás</string>
+    <string name="to_hint">Cél</string>
+    <string name="search">Keres</string>
+    <string name="start_nav">Navigáció indítása</string>
+    <string name="stop_nav">Leállítás</string>
+    <string name="preview">Útvonal-előnézet</string>
+    <string name="arrival">Érkezés</string>
+    <string name="remaining">Hátralévő</string>
+    <string name="open_settings">Beállítások</string>
+    <string name="status_token">A Mapbox token nincs beállítva. Írd a MAPBOX_PUBLIC_TOKEN sort az android/local.properties fájlba, majd fordítsd újra az alkalmazást.</string>
+    <string name="status_permission">A helyengedély hiányzik. Engedélyezd a pontos helyet a navigációhoz.</string>
+    <string name="status_gps">A GPS jel nem érkezik. Várj a műholdra, vagy kapcsold be a helymeghatározást.</string>
+    <string name="status_gps_off">A helymeghatározás ki van kapcsolva a telefonon.</string>
+    <string name="status_map">A térkép nem tölthető be. Ellenőrizd a hálózatot.</string>
+    <string name="status_search">A keresés nem érhető el. Ellenőrizd a hálózatot.</string>
+    <string name="status_search_limit">A kereső most korlátoz. Próbáld újra egy kicsit később.</string>
+    <string name="status_no_result">Nincs találat a megadott címre.</string>
+    <string name="status_planning">Közúti útvonal kérése…</string>
+    <string name="status_route">Erre a két pontra nincs autóval járható út.</string>
+    <string name="status_route_network">Az útvonaltervezés nem érhető el. Ellenőrizd a hálózatot.</string>
+    <string name="status_route_cancel">Az útvonaltervezés megszakadt.</string>
+    <string name="status_same_point">Az indulás és a cél ugyanaz a pont. Válassz távolabbi célt.</string>
+    <string name="status_follow">Indulás. A jel a térképen követ.</string>
+</resources>
