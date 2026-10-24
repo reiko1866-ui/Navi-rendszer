@@ -7,6 +7,22 @@ import org.junit.Test
 
 class ManeuverEventsTest {
     @Test
+    fun usesTheBannerRoadNameWhenTheRouteProvidesOne() {
+        assertEquals("Fő utca", ManeuverEvents.roadName("Fordulj balra", listOf("turn" to "balra", "text" to "Fő utca")))
+        assertEquals("Fordulj balra", ManeuverEvents.roadName("Fordulj balra", emptyList()))
+        assertEquals("Petőfi utca", ManeuverEvents.currentRoad(listOf("Petőfi", " ", "utca")))
+        assertEquals("", ManeuverEvents.currentRoad(listOf(null, " ")))
+    }
+
+    @Test
+    fun pointsTheBannerArrowWithTheModifier() {
+        assertEquals(-90f, ManeuverEvents.bannerRotation("left"))
+        assertEquals(135f, ManeuverEvents.bannerRotation("sharp right"))
+        assertEquals(0f, ManeuverEvents.bannerRotation("straight"))
+        assertEquals(180f, ManeuverEvents.bannerRotation("uturn"))
+    }
+
+    @Test
     fun mapsTurnModifiers() {
         assertEquals("balra", ManeuverEvents.eventId("turn", "left"))
         assertEquals("korforgalom_kijarat", ManeuverEvents.eventId("exit roundabout", "right"))

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="gutter">12dp</dimen>
+    <dimen name="maneuver_min">72dp</dimen>
+    <dimen name="tool_text">11sp</dimen>
+    <dimen name="maneuver_distance">26sp</dimen>
+    <dimen name="maneuver_road">15sp</dimen>
+    <dimen name="speed_text">22sp</dimen>
+    <dimen name="road_title">16sp</dimen>
+    <dimen name="eta_text">20sp</dimen>
+    <dimen name="speed_size">64dp</dimen>
+    <dimen name="tool_size">44dp</dimen>
+    <dimen name="tools_top">88dp</dimen>
+    <dimen name="tools_bottom">148dp</dimen>
+    <dimen name="arrow_size">44dp</dimen>
+</resources>
