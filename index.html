@@ -10,41 +10,49 @@
         button, input { font-family: inherit; color: inherit; touch-action: manipulation; }
         #cluster {
             position: fixed; z-index: 4;
-            top: calc(6px + env(safe-area-inset-top));
-            left: calc(6px + env(safe-area-inset-left));
-            width: min(400px, calc(100vw - 12px - env(safe-area-inset-left) - env(safe-area-inset-right)));
-            display: flex; flex-direction: column; gap: 6px;
-            max-height: calc(100dvh - 12px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+            top: 0; left: 0; right: 0;
+            display: flex; flex-direction: column; gap: 0;
+            max-height: calc(100dvh - env(safe-area-inset-bottom));
             overflow: hidden;
             pointer-events: none;
         }
         body.sheet-open #sheet { flex: 1 1 auto; }
         #cluster > * { pointer-events: auto; }
-        #maneuver, #sheet, #speed-pill, #tools button, #garage {
-            background: rgba(8, 16, 30, 0.88);
+        #sheet, #garage {
+            background: rgba(8, 16, 30, 0.92);
             border: 1px solid rgba(255,255,255,0.14);
             box-shadow: 0 6px 16px rgba(0,0,0,0.22);
         }
         #maneuver {
             display: flex; align-items: center; gap: 8px;
-            min-height: 52px; padding: 6px 8px 6px 6px; border-radius: 16px;
+            min-height: 72px;
+            padding: calc(8px + env(safe-area-inset-top)) 10px 10px 8px;
+            background: #1a78d4;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.22);
         }
         #arrow {
-            width: 44px; height: 44px; border-radius: 12px;
-            background: #123a86;
+            width: 54px; height: 54px;
             display: grid; place-items: center; flex: none;
         }
         #arrow svg { display: block; }
         #maneuver-text { min-width: 0; flex: 1; }
-        #dist { display: block; font-size: 26px; font-weight: 780; letter-spacing: -0.04em; line-height: 1; }
+        #dist { display: block; font-size: 32px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
         #street, #hint {
             display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        #street { margin-top: 2px; font-size: 16px; font-weight: 750; opacity: 1; }
-        #hint { margin-top: 1px; font-size: 12px; opacity: 0.78; }
-        #clock { flex: none; align-self: flex-start; margin-top: 2px; font-size: 12px; font-weight: 700; opacity: 0.9; padding-right: 2px; }
+        #street { margin-top: 2px; font-size: 16px; font-weight: 650; opacity: 0.96; }
+        #hint { margin-top: 1px; font-size: 13px; font-weight: 650; opacity: 0.88; }
+        body.driving #hint { display: none; }
+        #nav-search {
+            flex: none; width: 44px; height: 44px; border: 0; border-radius: 50%;
+            background: rgba(255,255,255,0.16);
+            display: grid; place-items: center;
+        }
+        #clock { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
         #sheet {
-            border-radius: 14px; display: flex; flex-direction: column;
+            margin: 8px 10px 0;
+            width: min(440px, calc(100vw - 20px));
+            border-radius: 16px; display: flex; flex-direction: column;
             min-height: 0; overflow: hidden;
         }
         #sheet-toggle {
@@ -149,19 +157,22 @@
         #goal-attr { margin: 0; font-size: 10px; line-height: 1.35; opacity: 0.72; }
         #goal-attr a { color: #9be7ff; }
         #speed-pill {
-            position: fixed; z-index: 3;
-            left: calc(8px + env(safe-area-inset-left));
-            bottom: calc(8px + env(safe-area-inset-bottom));
-            min-width: 64px; height: 40px; border-radius: 20px;
-            display: flex; align-items: baseline; justify-content: center; gap: 3px;
-            padding: 0 10px;
+            position: fixed; z-index: 5;
+            left: calc(12px + env(safe-area-inset-left));
+            top: calc(168px + env(safe-area-inset-top));
+            width: 84px; height: 84px; border-radius: 50%;
+            background: #fff; color: #16181c;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.28);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        #speed { font-size: 18px; font-weight: 780; line-height: 1; }
-        #speed-pill span { font-size: 10px; opacity: 0.75; }
+        body.driving #speed-pill { top: calc(96px + env(safe-area-inset-top)); }
+        body.sheet-open #speed-pill, body.sheet-open #tools { display: none; }
+        #speed { font-size: 28px; font-weight: 800; line-height: 1; color: #111; }
+        #speed-pill span { font-size: 12px; font-weight: 700; color: #333; opacity: 1; }
         #route-map {
             position: fixed; z-index: 3;
-            right: calc(8px + env(safe-area-inset-right));
-            bottom: calc(54px + env(safe-area-inset-bottom));
+            right: calc(70px + env(safe-area-inset-right));
+            bottom: calc(96px + env(safe-area-inset-bottom));
             width: 104px; height: 104px; border-radius: 16px;
             background: rgba(8, 16, 30, 0.82);
             border: 1px solid rgba(255,255,255,0.2);
@@ -169,25 +180,57 @@
         }
         #route-map[hidden] { display: none; }
         #tools {
-            position: fixed; z-index: 3;
-            right: calc(8px + env(safe-area-inset-right));
-            bottom: calc(8px + env(safe-area-inset-bottom));
-            display: flex; gap: 6px;
+            position: fixed; z-index: 5;
+            right: calc(12px + env(safe-area-inset-right));
+            top: calc(168px + env(safe-area-inset-top));
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
-        #time, #gfx, #garage-open, #search-reopen, #map-toggle {
-            height: 40px; border-radius: 14px; padding: 0;
+        body.driving #tools { top: calc(96px + env(safe-area-inset-top)); }
+        #time, #gfx, #garage-open, #search-reopen, #map-toggle, #voice-mute, #compass {
+            width: 48px; height: 48px; border-radius: 50%; padding: 0; border: 0;
+            background: #fff; color: #1a73c7;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.22);
             display: grid; place-items: center;
+            font-size: 12px; font-weight: 800; line-height: 1.05;
         }
-        #time { width: 40px; font-size: 15px; }
-        #gfx { min-width: 44px; padding: 0 7px; font-size: 11px; font-weight: 750; }
-        #garage-open { min-width: 44px; padding: 0 7px; font-size: 11px; font-weight: 750; line-height: 1.1; }
-        #search-reopen, #map-toggle { min-width: 44px; padding: 0 8px; font-size: 12px; font-weight: 750; }
+        #time { font-size: 16px; color: #e0a020; }
         #search-reopen[hidden] { display: none; }
+        #compass { color: #1c1c1c; position: relative; }
+        #compass::before {
+            content: "";
+            position: absolute; top: 7px; left: 50%;
+            width: 0; height: 0; margin-left: -4px;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 9px solid #e23b32;
+        }
+        #voice-mute[aria-pressed="true"] .on, #voice-mute:not([aria-pressed="true"]) .off { display: none; }
         body.driving #sheet { display: none; }
+        #drive-card {
+            display: none;
+            position: fixed; z-index: 4;
+            left: 10px; right: 10px;
+            bottom: calc(10px + env(safe-area-inset-bottom));
+            min-height: 68px; padding: 10px 14px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.96); color: #1a1c1f;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+            align-items: center; gap: 12px;
+        }
+        body.driving #drive-card { display: flex; }
+        #drive-road { min-width: 0; flex: 1; }
+        #road-now, #drive-status {
+            display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        #road-now { font-size: 17px; font-weight: 800; color: #142018; }
+        #drive-status { margin-top: 2px; font-size: 13px; font-weight: 650; color: #3d4440; }
+        #arrival { flex: none; text-align: right; }
+        #eta { display: block; font-size: 22px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; color: #142018; }
+        #arrival span { display: block; margin-top: 2px; font-size: 12px; font-weight: 700; color: #4a524c; }
         body.night #time .sun, body:not(.night) #time .moon { opacity: 0.35; }
         #garage {
             position: fixed; z-index: 6;
-            left: 50%; bottom: calc(58px + env(safe-area-inset-bottom));
+            left: 50%; bottom: calc(92px + env(safe-area-inset-bottom));
             transform: translateX(-50%);
             width: min(420px, calc(100vw - 16px - env(safe-area-inset-left) - env(safe-area-inset-right)));
             max-height: min(42vh, 280px);
@@ -224,6 +267,11 @@
         @media (min-width: 720px) {
             #garage-list { grid-template-columns: repeat(3, 1fr); }
             #garage { max-height: min(46vh, 320px); }
+            #drive-card {
+                left: 50%; right: auto;
+                width: min(560px, calc(100vw - 24px));
+                transform: translateX(-50%);
+            }
         }
 </style>
 </head>
@@ -238,7 +286,9 @@
                 <span id="street">Nincs útvonal</span>
                 <span id="hint">A kocsi áll</span>
             </div>
-            <span id="clock">--:--</span>
+            <button id="nav-search" type="button" aria-label="Keresés">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.25" stroke="#fff" stroke-width="2.4"/><path d="M15.4 15.4 L20 20" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>
+            </button>
         </div>
         <section id="sheet" aria-label="Keresés és útvonal">
             <button id="sheet-toggle" type="button" aria-expanded="false" aria-controls="sheet-body">
@@ -284,15 +334,39 @@
         <span>km/h</span>
     </div>
     <div id="tools">
+        <button id="search-reopen" type="button" hidden aria-label="Keresés">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12 L20 5 L13 20 L11 13 Z" fill="#1a78d4"/></svg>
+        </button>
+        <button id="voice-mute" type="button" aria-pressed="false" aria-label="Hang bekapcsolva">
+            <svg class="on" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 10 H8 L13 6 V18 L8 14 H4 Z" fill="#1a78d4"/><path d="M16 9.5 C17.2 10.5 17.2 13.5 16 14.5" stroke="#1a78d4" stroke-width="1.8" stroke-linecap="round"/><path d="M18 7.5 C20.4 9.4 20.4 14.6 18 16.5" stroke="#1a78d4" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg class="off" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 10 H8 L13 6 V18 L8 14 H4 Z" fill="#8a93a0"/><path d="M16 9 L21 15 M21 9 L16 15" stroke="#c43737" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <div id="compass" title="A kocsi iránya az útvonal szerint"><b id="compass-letter">É</b></div>
         <button id="time" type="button" aria-label="Nappal vagy éjszaka">
             <span class="sun">☀</span>
             <span class="moon">☾</span>
         </button>
-        <button id="gfx" type="button" aria-label="Grafikai részletesség">Mobil</button>
-        <button id="map-toggle" type="button" aria-pressed="false" aria-controls="route-map">Térkép</button>
-        <button id="search-reopen" type="button" hidden>Keresés</button>
-        <button id="garage-open" type="button" aria-label="Garázs. Látható modell: Személyautó">Autó</button>
+        <button id="gfx" type="button" aria-label="Grafika: mobil">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2" stroke="#1a78d4" stroke-width="1.8"/><path d="M8 20 H16" stroke="#1a78d4" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <button id="map-toggle" type="button" aria-pressed="false" aria-controls="route-map" aria-label="Kis térkép">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6.5 L9 4.5 L15 6.5 L20 4.5 V17.5 L15 19.5 L9 17.5 L4 19.5 Z" stroke="#1a78d4" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4.5 V17.5 M15 6.5 V19.5" stroke="#1a78d4" stroke-width="1.7"/></svg>
+        </button>
+        <button id="garage-open" type="button" aria-label="Garázs. Látható modell: Személyautó" title="Személyautó">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 14 L6 9.5 H18 L20 14 V17 H4 Z" stroke="#1a78d4" stroke-width="1.7" stroke-linejoin="round"/><circle cx="7.5" cy="16.5" r="1.4" fill="#1a78d4"/><circle cx="16.5" cy="16.5" r="1.4" fill="#1a78d4"/></svg>
+        </button>
     </div>
+    <section id="drive-card" aria-label="Aktuális út">
+        <div id="drive-road">
+            <b id="road-now">Nincs élő útvonal</b>
+            <span id="drive-status">A kocsi áll</span>
+        </div>
+        <div id="arrival">
+            <b id="eta">--:--</b>
+            <span>tervezett</span>
+        </div>
+        <span id="clock" hidden>--:--</span>
+    </section>
     <canvas id="route-map" width="208" height="208" hidden aria-label="Az útvonal kis térképe"></canvas>
     <section id="garage" hidden aria-label="Autóválasztó">
         <div id="garage-head">
@@ -4000,6 +4074,10 @@
     var clockEl = document.getElementById("clock");
     var streetEl = document.getElementById("street");
     var hintEl = document.getElementById("hint");
+    var driveStatusEl = document.getElementById("drive-status");
+    var roadEl = document.getElementById("road-now");
+    var etaEl = document.getElementById("eta");
+    var compassEl = document.getElementById("compass-letter");
     var arrowEl = document.getElementById("arrow");
     var night = false;
     var travel = 0.18;
@@ -4698,14 +4776,15 @@
     gravelTex.repeat.set(14, 3);
     gravelMat = new THREE.MeshLambertMaterial({ map: gravelTex, color: 0xffffff });
     var lineMat = basic(0xf7f8fa);
-    var guideMat = basic(0x3ec9d2);
+    var guideMat = basic(0x2bd36a);
+    var chevMat = basic(0xffffff);
     addStrip(0, 4.15, 0.08, gfxUltra ? 480 : 360, roadMat, 0, 0);
     addStrip(5.5, 1.35, 0.055, gfxUltra ? 320 : 240, gravelMat, 0, 0);
     addStrip(-5.5, 1.35, 0.055, gfxUltra ? 320 : 240, gravelMat, 0, 0);
     addStrip(3.72, 0.08, 0.11, 360, lineMat, 0, 0);
     addStrip(-3.72, 0.08, 0.11, 360, lineMat, 0, 0);
     addStrip(0, 0.07, 0.115, 360, lineMat, 2, 5);
-    addStrip(1.35, 0.13, 0.1, 360, guideMat, 0, 0);
+    addStrip(1.35, 0.55, 0.12, 360, guideMat, 0, 0);
     addStrip(3.98, 0.13, 0.1, 200, lambert(0xf3efe4), 0, 0);
     addStrip(-3.98, 0.13, 0.1, 200, lambert(0xe7e2d4), 0, 0);
 
@@ -5724,17 +5803,17 @@
 
     var guideGeo = new THREE.BufferGeometry();
     guideGeo.setAttribute("position", new THREE.Float32BufferAttribute([
-        0, 0.02, 0.55,
-        -0.22, 0.02, -0.05,
-        0, 0.02, 0.08,
-        0, 0.02, 0.55,
-        0, 0.02, 0.08,
-        0.22, 0.02, -0.05
+        0, 0.04, 0.9,
+        -0.36, 0.04, -0.18,
+        0, 0.04, 0.12,
+        0, 0.04, 0.9,
+        0, 0.04, 0.12,
+        0.36, 0.04, -0.18
     ], 3));
     guideGeo.computeVertexNormals();
     var gi;
     for (gi = 0; gi < 4; gi++) {
-        var chev = new THREE.Mesh(guideGeo, guideMat);
+        var chev = new THREE.Mesh(guideGeo, chevMat);
         scene.add(chev);
         chevrons.push(chev);
     }
@@ -6335,11 +6414,6 @@
         if (id === "openwheel") return "Nyitott kerekű";
         return "Személyautó";
     }
-    function carShort(id) {
-        if (id === "sf90") return "SF90";
-        if (id === "openwheel") return "Nyitott";
-        return "Autó";
-    }
     function selectCar(id) {
         wantedCar = id;
         if (!carCatalog[id]) {
@@ -6383,7 +6457,7 @@
         }
         var garageOpen = document.getElementById("garage-open");
         if (garageOpen) {
-            garageOpen.textContent = carShort(visibleCar);
+            garageOpen.title = carLabel(visibleCar);
             garageOpen.setAttribute("aria-label", "Garázs. Látható modell: " + carLabel(visibleCar));
         }
         var credit = document.getElementById("car-credit");
@@ -6643,7 +6717,7 @@
             "sharp left": -125
         }[mod];
         if (rot === undefined) rot = 0;
-        arrowEl.innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" style="transform:rotate(' + rot + 'deg)"><path d="M12 19 V6" stroke="white" stroke-width="2.6" stroke-linecap="round"/><path d="M6.5 11.5 L12 6 L17.5 11.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        arrowEl.innerHTML = '<svg width="46" height="46" viewBox="0 0 24 24" fill="none" style="transform:rotate(' + rot + 'deg)"><path d="M12 20.5 V7" stroke="white" stroke-width="2.8" stroke-linecap="round"/><path d="M5 12.4 L12 5.2 L19 12.4" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
         arrowEl.style.opacity = routeActive ? "1" : "0.4";
     }
 
@@ -6794,6 +6868,36 @@
         }
     }
 
+    function paintArrival() {
+        if (!etaEl) return;
+        if (!routeActive || !(routeSeconds > 0)) {
+            etaEl.textContent = "--:--";
+            return;
+        }
+        var frac = gpsOnRoute ? (1 - Math.min(travel, 1)) : 1;
+        if (frac < 0) frac = 0;
+        var when = new Date(Date.now() + routeSeconds * frac * 1000);
+        var h = when.getHours();
+        var m = when.getMinutes();
+        etaEl.textContent = (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
+    }
+
+    function paintCompass() {
+        if (!compassEl) return;
+        var deg = Math.atan2(Math.sin(carYaw), -Math.cos(carYaw)) * 180 / Math.PI;
+        if (deg < 0) deg += 360;
+        var names = ["É", "K", "D", "Ny"];
+        compassEl.textContent = names[Math.round(deg / 90) % 4];
+    }
+
+    function paintVoiceButton() {
+        var btn = document.getElementById("voice-mute");
+        if (!btn) return;
+        var muted = !!voiceMuted;
+        btn.setAttribute("aria-pressed", muted ? "true" : "false");
+        btn.setAttribute("aria-label", muted ? "Hang kikapcsolva" : "Hang bekapcsolva");
+    }
+
     function paintHud() {
         var man;
         if (routeActive && routeMeters > 0 && gpsOnRoute) {
@@ -6805,20 +6909,27 @@
                 hintEl.textContent = liveState + " · " + (dest && dest.name ? dest.name : "Megérkeztél");
             } else {
                 streetEl.textContent = maneuverPhrase(man);
-                hintEl.textContent = liveState + " · " + currentStepName(travel);
+                hintEl.textContent = liveState + " · Maradj az útvonalon";
             }
+            if (roadEl) roadEl.textContent = currentStepName(travel);
             setArrow(man.type === "arrive" ? "straight" : man.modifier);
         } else if (routeActive && routeMeters > 0) {
             distEl.textContent = "—";
             streetEl.textContent = "A kocsi áll";
             hintEl.textContent = gpsPhrase();
+            if (roadEl) roadEl.textContent = gpsOnRoute ? currentStepName(travel) : "Az útvonalon kívül";
             setArrow("straight");
         } else {
             distEl.textContent = "—";
             streetEl.textContent = "Nincs útvonal";
             hintEl.textContent = gpsPhrase();
+            if (roadEl) roadEl.textContent = "Nincs élő útvonal";
             setArrow("straight");
         }
+        if (driveStatusEl && hintEl) driveStatusEl.textContent = hintEl.textContent;
+        paintArrival();
+        paintCompass();
+        paintVoiceButton();
         var speedPill = document.getElementById("speed-pill");
         var readout = shownSpeed();
         if (readout === null) {
@@ -7992,7 +8103,7 @@
         var reach = 150;
         var scale = (Math.min(w, h) * 0.42) / reach;
         ctx.beginPath();
-        ctx.strokeStyle = "#2fe3ef";
+        ctx.strokeStyle = "#2bd36a";
         ctx.lineWidth = 6;
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
@@ -8043,7 +8154,7 @@
     var gfxButton = document.getElementById("gfx");
     function paintGfx() {
         if (!gfxButton) return;
-        gfxButton.textContent = gfxUltra ? "Ultra" : "Mobil";
+        gfxButton.setAttribute("aria-label", gfxUltra ? "Grafika: részletes" : "Grafika: mobil");
         gfxButton.setAttribute("aria-pressed", gfxUltra ? "true" : "false");
     }
     paintGfx();
@@ -8725,6 +8836,11 @@
         setSheet(true);
         markField("to");
     });
+    var navSearch = document.getElementById("nav-search");
+    if (navSearch) navSearch.addEventListener("click", function () {
+        setSheet(true);
+        markField("to");
+    });
     var mapToggle = document.getElementById("map-toggle");
     var routeMap = document.getElementById("route-map");
     if (mapToggle && routeMap) mapToggle.addEventListener("click", function () {
@@ -8855,8 +8971,15 @@
                 voicePending = null;
             }
             if (voiceAudio) voiceAudio.volume = voiceGain(voiceMuted, voiceLevel);
+            paintVoiceButton();
         });
     }
+    var voiceMute = document.getElementById("voice-mute");
+    if (voiceMute && voiceEnabled) voiceMute.addEventListener("click", function () {
+        voiceEnabled.checked = !voiceEnabled.checked;
+        voiceEnabled.dispatchEvent(new Event("change"));
+    });
+    paintVoiceButton();
     var voiceVolume = document.getElementById("voice-volume");
     try {
         var storedRaw = localStorage.getItem("toonnav-voice-volume");
@@ -9554,7 +9677,7 @@
         atlasVergeMat = new THREE.MeshBasicMaterial({ color: atlasVergeDay });
         atlasCurbMat = new THREE.MeshBasicMaterial({ color: atlasCurbDay });
         atlasEdgeMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xfffaf3).convertSRGBToLinear() });
-        atlasGuideMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0x14b8c4).convertSRGBToLinear() });
+        atlasGuideMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0x2bd36a).convertSRGBToLinear() });
         routeLeafMat = new THREE.MeshBasicMaterial({ color: atlasLeafDay });
         routePineMat = new THREE.MeshBasicMaterial({ color: atlasPineDay });
         routeWallMat = new THREE.MeshBasicMaterial({ color: atlasWallDay });
@@ -9578,11 +9701,11 @@
         addRouteMesh(buildStripAlong(pts, 0, 4.15, 0.08, txs, tzs), atlasRoadMat);
         addRouteMesh(buildStripAlong(pts, 3.72, 0.09, 0.12, txs, tzs), atlasEdgeMat);
         addRouteMesh(buildStripAlong(pts, -3.72, 0.09, 0.12, txs, tzs), atlasEdgeMat);
-        addRouteMesh(buildStripAlong(pts, 1.35, 0.16, 0.125, txs, tzs), atlasGuideMat);
+        addRouteMesh(buildStripAlong(pts, 1.35, 0.62, 0.14, txs, tzs), atlasGuideMat);
         addRouteMesh(buildStripAlong(pts, 4.05, 0.11, 0.1, txs, tzs), atlasCurbMat);
         addRouteMesh(buildStripAlong(pts, -4.05, 0.11, 0.1, txs, tzs), atlasCurbMat);
         var arrow;
-        for (arrow = 0; arrow < chevrons.length; arrow++) chevrons[arrow].material = atlasGuideMat;
+        for (arrow = 0; arrow < chevrons.length; arrow++) chevrons[arrow].material = chevMat;
     }
 
     function poseOnRoute(along, side) {
@@ -9869,7 +9992,7 @@
             aligned = false;
             prevTangent.set(0, 0, 1);
             var arrow;
-            for (arrow = 0; arrow < chevrons.length; arrow++) chevrons[arrow].material = guideMat;
+            for (arrow = 0; arrow < chevrons.length; arrow++) chevrons[arrow].material = chevMat;
             updateMood(mood);
         }
         if (routeBox) {
@@ -10502,7 +10625,7 @@
             if (tmpA.lengthSq() < 0.0001) tmpA.set(1, 0, 0);
             tmpA.normalize();
             chevPos.addScaledVector(tmpA, 1.25);
-            chevPos.y = 0.16;
+            chevPos.y = 0.22;
             if (followOrigin) {
                 chevrons[w].position.set(chevPos.x - routePos.x, chevPos.y, chevPos.z - routePos.z);
                 chevrons[w].lookAt(chevPos.x - routePos.x + chevTan.x, chevPos.y, chevPos.z - routePos.z + chevTan.z);
