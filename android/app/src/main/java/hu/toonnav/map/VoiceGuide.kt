@@ -11,6 +11,7 @@ class VoiceGuide(private val assets: AssetManager) {
     private val recognition = HashMap<String, String>()
     private var player: MediaPlayer? = null
     private var lastKey = ""
+    var enabled: Boolean = true
 
     fun load() {
         recognition.clear()
@@ -46,6 +47,7 @@ class VoiceGuide(private val assets: AssetManager) {
     }
 
     fun speak(kind: String, eventId: String, meters: Double?, cue: String) {
+        if (!enabled) return
         val key = kind + "@" + eventId + "@" + cue
         if (!ManeuverEvents.shouldSpeak(kind, meters, lastKey, key)) return
         val paths = queues[eventId] ?: return
