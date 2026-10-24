@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ToonNav" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/nav_blue</item>
+        <item name="android:statusBarColor">@color/nav_blue</item>
+    </style>
+</resources>
