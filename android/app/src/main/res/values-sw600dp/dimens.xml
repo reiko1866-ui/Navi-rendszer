@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="gutter">28dp</dimen>
+    <dimen name="maneuver_min">100dp</dimen>
+    <dimen name="maneuver_distance">36sp</dimen>
+    <dimen name="tool_text">14sp</dimen>
+    <dimen name="speed_size">88dp</dimen>
+    <dimen name="tool_size">52dp</dimen>
+    <dimen name="tools_top">128dp</dimen>
+    <dimen name="tools_bottom">180dp</dimen>
+</resources>

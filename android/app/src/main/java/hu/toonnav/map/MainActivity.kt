@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
@@ -12,11 +13,12 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.provider.Settings
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -52,6 +54,10 @@ import com.mapbox.navigation.base.options.NavigationOptions
 import com.mapbox.navigation.base.route.NavigationRoute
 import com.mapbox.navigation.base.route.NavigationRouterCallback
 import com.mapbox.navigation.base.route.RouterFailure
+import com.mapbox.navigation.base.speed.model.SpeedUnit
+import com.mapbox.navigation.base.trip.model.roadobject.incident.Incident
+import com.mapbox.navigation.base.trip.model.roadobject.incident.IncidentType
+import com.mapbox.navigation.base.trip.model.roadobject.railwaycrossing.RailwayCrossing
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.MapboxNavigationProvider
 import com.mapbox.navigation.core.directions.session.RoutesObserver
@@ -82,6 +88,8 @@ class MainActivity : ComponentActivity() {
     private val search = PhotonSearch()
     private val voice by lazy { VoiceGuide(assets) }
     private val navigationLocationProvider = NavigationLocationProvider()
+    private val hud = DriveHud(this)
+    private val hudPrefs by lazy { getSharedPreferences("toonnav-hud", MODE_PRIVATE) }
 
     private lateinit var mapHost: FrameLayout
     private lateinit var statusText: TextView
@@ -92,16 +100,27 @@ class MainActivity : ComponentActivity() {
     private lateinit var results: LinearLayout
     private lateinit var previewCard: LinearLayout
     private lateinit var previewMeta: TextView
-    private lateinit var maneuverCard: LinearLayout
-    private lateinit var maneuverArrow: ImageView
-    private lateinit var stepDistance: TextView
-    private lateinit var maneuverText: TextView
-    private lateinit var driveCard: LinearLayout
-    private lateinit var remainText: TextView
-    private lateinit var etaText: TextView
-    private lateinit var cameraTools: LinearLayout
-    private lateinit var recenterButton: Button
-    private lateinit var overviewButton: Button
+    private var voiceOn = true
+    private var nightMode = false
+    private var northUp = false
+    private var searchOpen = true
+    private var lastBearing: Double? = null
+    private var shownSpeed: Int? = null
+    private var speedNotice: Notice? = null
+    private var roadNotices = emptyList<Notice>()
+    private var tripRoad = ""
+    private var tripRemaining = ""
+    private var tripArrival = "--:--"
+    private var maneuverDistance = ""
+    private var maneuverRoad = ""
+    private var maneuverRotation = 0f
+    private var recenterNeeded = false
+    private var overviewShown = false
+    private var lastRoutes: List<NavigationRoute> = emptyList()
+    private var lastProgress: RouteProgress? = null
+    private var hudReady = false
+    private var statusError = true
+    private var lastPlaces = emptyList<Place>()
 
     private var mapView: MapView? = null
     private var viewportDataSource: MapboxNavigationViewportDataSource? = null
@@ -137,16 +156,17 @@ class MainActivity : ComponentActivity() {
         locationGranted = fine || coarse
         if (locationGranted) {
             clearStatus()
-            settingsButton.visibility = android.view.View.GONE
+            settingsButton.visibility = View.GONE
             startLocationSession()
         } else {
             showStatus(getString(R.string.status_permission))
-            settingsButton.visibility = android.view.View.VISIBLE
+            settingsButton.visibility = View.VISIBLE
         }
     }
 
     private val routesObserver = RoutesObserver { update ->
         val routes = update.navigationRoutes
+        lastRoutes = routes
         if (routes.isEmpty()) {
             routeDrawn = false
             return@RoutesObserver
@@ -171,44 +191,54 @@ class MainActivity : ComponentActivity() {
             hasFix = true
             awaitingGps = false
             lastFixElapsed = SystemClock.elapsedRealtime()
+            lastBearing = enhanced.bearing
+            shownSpeed = GpsSpeed.kmh(enhanced.speed, 0L)
             navigationLocationProvider.changePosition(enhanced, locationMatcherResult.keyPoints)
             viewportDataSource?.onLocationChanged(enhanced)
             viewportDataSource?.evaluate()
+            tripRoad = ManeuverEvents.currentRoad(locationMatcherResult.road.components.map { it.text })
+            speedNotice = RoadNotices.postedLimit(
+                SpeedLimitSample(locationMatcherResult.speedLimitInfo?.speed, speedUnit(locationMatcherResult.speedLimitInfo?.unit)),
+                System.currentTimeMillis(),
+                0L
+            )
+            refreshHud()
             if (statusText.text == getString(R.string.status_gps)) clearStatus()
         }
     }
 
     private val progressObserver = RouteProgressObserver { progress ->
         if (!guiding) return@RouteProgressObserver
+        lastProgress = progress
         val banner = progress.bannerInstructions?.primary()
         val instruction = banner?.text()?.takeIf { it.isNotBlank() } ?: "Tovább"
         val type = banner?.type()
         val modifier = banner?.modifier()
+        val components = banner?.components().orEmpty().map { it.type() to it.text() }
         val stepMeters = progress.currentLegProgress?.currentStepProgress?.distanceRemaining?.toDouble()
-        stepDistance.text = if (stepMeters == null) "—" else ManeuverEvents.formatDistance(stepMeters)
-        maneuverText.text = instruction
-        maneuverArrow.rotation = ManeuverEvents.bannerRotation(modifier)
-        remainText.text = getString(R.string.remaining) + " " +
-            ManeuverEvents.formatDistance(progress.distanceRemaining.toDouble()) + " · " +
-            ManeuverEvents.formatDuration(progress.durationRemaining)
-        etaText.text = getString(R.string.arrival) + " " + clockAfter(progress.durationRemaining)
+        maneuverDistance = if (stepMeters == null) "—" else ManeuverEvents.formatDistance(stepMeters)
+        maneuverRoad = ManeuverEvents.roadName(instruction, components)
+        maneuverRotation = ManeuverEvents.bannerRotation(modifier)
+        tripRemaining = getString(R.string.remaining) + " " + ManeuverEvents.formatDuration(progress.durationRemaining)
+        tripArrival = clockAfter(progress.durationRemaining)
+        roadNotices = RoadNotices.fromRoadObjects(roadSamples(progress), System.currentTimeMillis())
         val eventId = ManeuverEvents.eventId(type, modifier)
         val stepIndex = progress.currentLegProgress?.currentStepProgress?.stepIndex ?: 0
         voice.speak("turn", eventId, stepMeters, instruction + "@" + stepIndex)
         viewportDataSource?.onRouteProgressChanged(progress)
         viewportDataSource?.evaluate()
         renderRouteProgress(progress)
+        refreshHud()
     }
 
     private val cameraStateObserver = NavigationCameraStateChangedObserver { state ->
         val following = state == NavigationCameraState.FOLLOWING ||
             state == NavigationCameraState.TRANSITION_TO_FOLLOWING
         cameraFollows = following
-        if (!::recenterButton.isInitialized || !guiding) return@NavigationCameraStateChangedObserver
-        recenterButton.visibility = if (following) android.view.View.GONE else android.view.View.VISIBLE
-        val overview = state == NavigationCameraState.OVERVIEW ||
+        overviewShown = state == NavigationCameraState.OVERVIEW ||
             state == NavigationCameraState.TRANSITION_TO_OVERVIEW
-        overviewButton.setText(if (overview) R.string.follow_view else R.string.overview)
+        recenterNeeded = guiding && !following
+        if (::statusText.isInitialized) refreshHud()
     }
 
     private val moveListener = object : OnMoveListener {
@@ -231,13 +261,21 @@ class MainActivity : ComponentActivity() {
 
     private val gpsWatch = object : Runnable {
         override fun run() {
-            val stale = lastFixElapsed > 0L &&
-                SystemClock.elapsedRealtime() - lastFixElapsed > DriveCamera.gpsStaleMs
-            val showingGps = statusText.text == getString(R.string.status_gps)
-            if (guiding && stale && (statusText.visibility != android.view.View.VISIBLE || showingGps)) {
-                showStatus(getString(R.string.status_gps))
+            if (lastFixElapsed > 0L && ::statusText.isInitialized) {
+                val age = SystemClock.elapsedRealtime() - lastFixElapsed
+                if (age > GpsSpeed.freshMs && (shownSpeed != null || speedNotice != null)) {
+                    shownSpeed = null
+                    speedNotice = null
+                    refreshHud()
+                }
+                if (guiding && age > DriveCamera.gpsStaleMs) {
+                    val showingGps = statusText.text == getString(R.string.status_gps)
+                    if (statusText.visibility != View.VISIBLE || showingGps) {
+                        showStatus(getString(R.string.status_gps))
+                    }
+                }
             }
-            mainHandler.postDelayed(this, 4000)
+            mainHandler.postDelayed(this, 1000)
         }
     }
 
@@ -246,23 +284,59 @@ class MainActivity : ComponentActivity() {
         val token = BuildConfig.MAPBOX_PUBLIC_TOKEN
         if (token.isNotBlank()) MapboxOptions.accessToken = token
         setContentView(R.layout.activity_main)
-        bindViews()
+        voiceOn = hudPrefs.getBoolean("voice", true)
+        nightMode = hudPrefs.getBoolean("night", false)
+        northUp = hudPrefs.getBoolean("north", false)
+        voice.enabled = voiceOn
+        inflateHud()
         Thread { voice.load() }.start()
         if (token.isBlank()) {
+            searchOpen = false
             showStatus(getString(R.string.status_token))
-            searchCard.visibility = android.view.View.GONE
+            searchCard.visibility = View.GONE
             return
         }
         buildMap()
-        wireSearch()
-        findViewById<Button>(R.id.startButton).setOnClickListener { startGuidance() }
-        findViewById<Button>(R.id.stopButton).setOnClickListener { stopGuidance() }
-        recenterButton.setOnClickListener { recenter() }
-        overviewButton.setOnClickListener { toggleOverview() }
-        settingsButton.setOnClickListener { openAppSettings() }
         ensureNavigation()
         requestLocationPermission()
         mainHandler.post(gpsWatch)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        inflateHud()
+        applyDriveFraming()
+        viewportDataSource?.evaluate()
+    }
+
+    private fun inflateHud() {
+        val fromText = if (::fromField.isInitialized) fromField.text?.toString().orEmpty() else ""
+        val toText = if (::toField.isInitialized) toField.text?.toString().orEmpty() else ""
+        val previewText = if (::previewMeta.isInitialized) previewMeta.text?.toString().orEmpty() else ""
+        val status = if (::statusText.isInitialized) statusText.text?.toString().orEmpty() else ""
+        val statusVisible = ::statusText.isInitialized && statusText.visibility == View.VISIBLE
+        val settingsVisible = ::settingsButton.isInitialized && settingsButton.visibility == View.VISIBLE
+        val host = findViewById<FrameLayout>(R.id.hudHost)
+        host.removeAllViews()
+        layoutInflater.inflate(R.layout.activity_hud, host, true)
+        bindViews()
+        hud.bind(host)
+        hudReady = true
+        if (fromText.isNotEmpty()) fromField.setText(fromText)
+        if (toText.isNotEmpty()) toField.setText(toText)
+        if (previewText.isNotEmpty()) previewMeta.text = previewText
+        settingsButton.visibility = if (settingsVisible) View.VISIBLE else View.GONE
+        wireSearch()
+        findViewById<Button>(R.id.startButton).setOnClickListener { startGuidance() }
+        findViewById<Button>(R.id.stopButton).setOnClickListener { stopGuidance() }
+        findViewById<ImageButton>(R.id.searchButton).setOnClickListener { toggleSearch() }
+        findViewById<ImageButton>(R.id.voiceButton).setOnClickListener { toggleVoice() }
+        findViewById<TextView>(R.id.orientationButton).setOnClickListener { toggleNorth() }
+        findViewById<TextView>(R.id.themeButton).setOnClickListener { toggleNight() }
+        findViewById<ImageButton>(R.id.overviewButton).setOnClickListener { toggleOverview() }
+        findViewById<ImageButton>(R.id.recenterButton).setOnClickListener { recenter() }
+        settingsButton.setOnClickListener { openAppSettings() }
+        restoreHud(status, statusVisible)
     }
 
     override fun onStart() {
@@ -292,16 +366,6 @@ class MainActivity : ComponentActivity() {
         results = findViewById(R.id.results)
         previewCard = findViewById(R.id.previewCard)
         previewMeta = findViewById(R.id.previewMeta)
-        maneuverCard = findViewById(R.id.maneuverCard)
-        maneuverArrow = findViewById(R.id.maneuverArrow)
-        stepDistance = findViewById(R.id.stepDistance)
-        maneuverText = findViewById(R.id.maneuverText)
-        driveCard = findViewById(R.id.driveCard)
-        remainText = findViewById(R.id.remainText)
-        etaText = findViewById(R.id.etaText)
-        cameraTools = findViewById(R.id.cameraTools)
-        recenterButton = findViewById(R.id.recenterButton)
-        overviewButton = findViewById(R.id.overviewButton)
     }
 
     private fun buildMap() {
@@ -361,28 +425,12 @@ class MainActivity : ComponentActivity() {
         map.gestures.addOnRotateListener(rotateListener)
         map.gestures.addOnScaleListener(scaleListener)
         map.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> applyDriveFraming() }
-        map.mapboxMap.loadStyle(Style.MAPBOX_STREETS) { style ->
+        applyBearingMode()
+        map.mapboxMap.loadStyle(mapStyleUri()) { style ->
             loadedStyle = style
-            val scale = DriveCamera.carModelScale
-            map.location.apply {
-                setLocationProvider(navigationLocationProvider)
-                locationPuck = LocationPuck3D(
-                    modelUri = "asset://car.glb",
-                    modelScale = listOf(scale, scale, scale),
-                    modelRotation = listOf(0f, 0f, DriveCamera.carModelYaw),
-                    modelTranslation = listOf(0f, 0f, 0f),
-                    modelElevationReference = ModelElevationReference.GROUND,
-                    modelScaleMode = ModelScaleMode.VIEWPORT,
-                    modelCastShadows = false,
-                    modelReceiveShadows = false,
-                    modelEmissiveStrength = 0.85f
-                )
-                puckBearingEnabled = true
-                puckBearing = PuckBearing.COURSE
-                enabled = true
-                pulsingEnabled = false
-                showAccuracyRing = false
-            }
+            installPuck(map)
+            if (lastRoutes.isNotEmpty()) drawRoutes(lastRoutes)
+            lastProgress?.let { renderRouteProgress(it) }
         }
         map.mapboxMap.subscribeMapLoadingError {
             showStatus(getString(R.string.status_map))
@@ -417,6 +465,7 @@ class MainActivity : ComponentActivity() {
                 result.onSuccess { places -> showPlaces(places) }
                 result.onFailure { err ->
                     results.removeAllViews()
+                    lastPlaces = emptyList()
                     when (err) {
                         is SearchLimit -> showStatus(getString(R.string.status_search_limit))
                         else -> showStatus(getString(R.string.status_search))
@@ -427,6 +476,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun showPlaces(places: List<Place>) {
+        lastPlaces = places
         results.removeAllViews()
         if (places.isEmpty()) {
             showStatus(getString(R.string.status_no_result))
@@ -445,6 +495,7 @@ class MainActivity : ComponentActivity() {
     private fun choosePlace(place: Place) {
         hideKeyboard()
         results.removeAllViews()
+        lastPlaces = emptyList()
         if (resultTarget == "from") {
             origin = place
             fromField.setText(place.name)
@@ -470,9 +521,8 @@ class MainActivity : ComponentActivity() {
         guiding = false
         overviewLocked = false
         routeDrawn = false
-        maneuverCard.visibility = android.view.View.GONE
-        driveCard.visibility = android.view.View.GONE
-        cameraTools.visibility = android.view.View.GONE
+        searchOpen = true
+        hud.showGuidance(false)
         val seq = ++routeSeq
         showStatus(getString(R.string.status_planning), error = false)
         val options = RouteOptions.builder()
@@ -494,7 +544,7 @@ class MainActivity : ComponentActivity() {
                     thrown is IOException || (failure.message ?: "").contains("resolve", ignoreCase = true)
                 }
                 mainHandler.post {
-                    previewCard.visibility = android.view.View.GONE
+                    previewCard.visibility = View.GONE
                     showStatus(getString(if (network) R.string.status_route_network else R.string.status_route))
                 }
             }
@@ -514,9 +564,8 @@ class MainActivity : ComponentActivity() {
                     previewMeta.text = ManeuverEvents.formatDistance(distance) + " · " +
                         ManeuverEvents.formatDuration(duration) + "\n" +
                         getString(R.string.arrival) + " " + clockAfter(duration)
-                    previewCard.visibility = android.view.View.VISIBLE
-                    maneuverCard.visibility = android.view.View.GONE
-                    driveCard.visibility = android.view.View.GONE
+                    previewCard.visibility = View.VISIBLE
+                    hud.showGuidance(false)
                     voice.speak("utvonal_kesz", "utvonal_kesz", null, "kesz")
                 }
             }
@@ -544,18 +593,19 @@ class MainActivity : ComponentActivity() {
         }
         guiding = true
         overviewLocked = false
+        searchOpen = false
         clearStatus()
-        previewCard.visibility = android.view.View.GONE
-        searchCard.visibility = android.view.View.GONE
-        maneuverCard.visibility = android.view.View.VISIBLE
-        driveCard.visibility = android.view.View.VISIBLE
-        cameraTools.visibility = android.view.View.VISIBLE
-        recenterButton.visibility = android.view.View.GONE
-        overviewButton.setText(R.string.overview)
-        stepDistance.text = ""
-        maneuverText.text = getString(R.string.status_follow)
-        maneuverArrow.rotation = 0f
+        previewCard.visibility = View.GONE
+        searchCard.visibility = View.GONE
+        maneuverDistance = ""
+        maneuverRoad = getString(R.string.status_follow)
+        maneuverRotation = 0f
+        tripRemaining = ""
+        tripArrival = "--:--"
+        hud.showGuidance(true)
+        refreshHud()
         applyDriveFraming()
+        applyBearingMode()
         viewportDataSource?.evaluate()
         navigationCamera?.requestNavigationCameraToFollowing()
         voice.speak("indulas", "indulas", null, "indulas")
@@ -565,11 +615,10 @@ class MainActivity : ComponentActivity() {
         guiding = false
         overviewLocked = false
         cameraFollows = false
-        maneuverCard.visibility = android.view.View.GONE
-        driveCard.visibility = android.view.View.GONE
-        cameraTools.visibility = android.view.View.GONE
-        searchCard.visibility = android.view.View.VISIBLE
-        if (previewMeta.text.isNotBlank()) previewCard.visibility = android.view.View.VISIBLE
+        searchOpen = true
+        hud.showGuidance(false)
+        searchCard.visibility = View.VISIBLE
+        if (previewMeta.text.isNotBlank()) previewCard.visibility = View.VISIBLE
         clearManeuverArrow()
         navigationCamera?.requestNavigationCameraToOverview()
     }
@@ -606,10 +655,11 @@ class MainActivity : ComponentActivity() {
         cameraFollows = false
         routeDrawn = false
         acceptedRouteId = null
-        previewCard.visibility = android.view.View.GONE
-        maneuverCard.visibility = android.view.View.GONE
-        driveCard.visibility = android.view.View.GONE
-        cameraTools.visibility = android.view.View.GONE
+        previewCard.visibility = View.GONE
+        if (::previewMeta.isInitialized) previewMeta.text = ""
+        searchOpen = true
+        hud.showGuidance(false)
+        searchCard.visibility = View.VISIBLE
         navigationRef?.setNavigationRoutes(emptyList())
         viewportDataSource?.clearRouteData()
         viewportDataSource?.evaluate()
@@ -707,14 +757,15 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun showStatus(text: String, error: Boolean = true) {
-        statusText.setTextColor(androidx.core.content.ContextCompat.getColor(this, if (error) R.color.nav_error else R.color.nav_ok))
+        statusError = error
+        statusText.setTextColor(ContextCompat.getColor(this, if (error) R.color.nav_error else R.color.nav_ok))
         statusText.text = text
-        statusText.visibility = android.view.View.VISIBLE
+        statusText.visibility = View.VISIBLE
     }
 
     private fun clearStatus() {
         statusText.text = ""
-        statusText.visibility = android.view.View.GONE
+        statusText.visibility = View.GONE
     }
 
     private fun hideKeyboard() {
@@ -726,6 +777,157 @@ class MainActivity : ComponentActivity() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         intent.data = Uri.fromParts("package", packageName, null)
         startActivity(intent)
+    }
+
+    private fun refreshHud() {
+        if (!hudReady) return
+        hud.renderManeuver(maneuverDistance, maneuverRoad, maneuverRotation)
+        hud.renderTrip(tripRoad, tripRemaining, tripArrival)
+        hud.renderSpeed(shownSpeed)
+        val now = System.currentTimeMillis()
+        val limit = speedNotice?.let { listOf(it) }.orEmpty()
+        hud.renderNotices(RoadNotices.visible(limit, now) + RoadNotices.visible(roadNotices, now))
+        hud.renderControls(voiceOn, northUp, nightMode, overviewShown, lastBearing, recenterNeeded)
+    }
+
+    private fun restoreHud(status: String, statusVisible: Boolean) {
+        searchCard.visibility = if (searchOpen) View.VISIBLE else View.GONE
+        hud.showGuidance(guiding)
+        previewCard.visibility = if (!guiding && previewMeta.text.isNotBlank()) View.VISIBLE else View.GONE
+        if (lastPlaces.isNotEmpty() && searchOpen) {
+            showPlaces(lastPlaces)
+        } else if (statusVisible && status.isNotEmpty()) {
+            showStatus(status, statusError)
+        } else {
+            clearStatus()
+        }
+        refreshHud()
+    }
+
+    private fun toggleSearch() {
+        searchOpen = !searchOpen
+        searchCard.visibility = if (searchOpen) View.VISIBLE else View.GONE
+    }
+
+    private fun toggleVoice() {
+        voiceOn = !voiceOn
+        voice.enabled = voiceOn
+        hudPrefs.edit().putBoolean("voice", voiceOn).apply()
+        refreshHud()
+    }
+
+    private fun toggleNorth() {
+        northUp = !northUp
+        hudPrefs.edit().putBoolean("north", northUp).apply()
+        applyBearingMode()
+        refreshHud()
+    }
+
+    private fun toggleNight() {
+        nightMode = !nightMode
+        hudPrefs.edit().putBoolean("night", nightMode).apply()
+        val map = mapView
+        if (map == null) {
+            refreshHud()
+            return
+        }
+        map.mapboxMap.loadStyle(mapStyleUri()) { style ->
+            loadedStyle = style
+            installPuck(map)
+            if (lastRoutes.isNotEmpty()) drawRoutes(lastRoutes)
+            lastProgress?.let { renderRouteProgress(it) }
+        }
+        refreshHud()
+    }
+
+    private fun applyBearingMode() {
+        val viewport = viewportDataSource ?: return
+        viewport.options.followingFrameOptions.bearingUpdatesAllowed = true
+        if (northUp) {
+            viewport.followingBearingPropertyOverride(0.0)
+        } else {
+            viewport.followingBearingPropertyOverride(null)
+        }
+        viewport.evaluate()
+    }
+
+    private fun mapStyleUri(): String {
+        return if (nightMode) Style.DARK else Style.MAPBOX_STREETS
+    }
+
+    private fun installPuck(map: MapView) {
+        val scale = DriveCamera.carModelScale
+        map.location.apply {
+            setLocationProvider(navigationLocationProvider)
+            locationPuck = LocationPuck3D(
+                modelUri = "asset://car.glb",
+                modelScale = listOf(scale, scale, scale),
+                modelRotation = listOf(0f, 0f, DriveCamera.carModelYaw),
+                modelTranslation = listOf(0f, 0f, 0f),
+                modelElevationReference = ModelElevationReference.GROUND,
+                modelScaleMode = ModelScaleMode.VIEWPORT,
+                modelCastShadows = false,
+                modelReceiveShadows = false,
+                modelEmissiveStrength = 0.85f
+            )
+            puckBearingEnabled = true
+            puckBearing = PuckBearing.COURSE
+            enabled = true
+            pulsingEnabled = false
+            showAccuracyRing = false
+        }
+    }
+
+    private fun speedUnit(unit: SpeedUnit?): String? {
+        return when (unit) {
+            SpeedUnit.KILOMETERS_PER_HOUR -> "KILOMETERS_PER_HOUR"
+            SpeedUnit.MILES_PER_HOUR -> "MILES_PER_HOUR"
+            SpeedUnit.METERS_PER_SECOND -> "METERS_PER_SECOND"
+            null -> null
+        }
+    }
+
+    private fun roadSamples(progress: RouteProgress): List<RoadObjectSample> {
+        return progress.upcomingRoadObjects.mapNotNull { upcoming ->
+            val distance = upcoming.distanceToStart
+            when (val roadObject = upcoming.roadObject) {
+                is Incident -> {
+                    val info = roadObject.info
+                    RoadObjectSample(
+                        id = roadObject.id,
+                        type = incidentTypeName(info.type),
+                        subType = info.subType,
+                        closed = info.isClosed,
+                        distanceMeters = distance,
+                        endTimeMs = info.endTime?.time,
+                        provider = roadObject.provider
+                    )
+                }
+                is RailwayCrossing -> RoadObjectSample(
+                    id = roadObject.id,
+                    type = "RAILWAY_CROSSING",
+                    subType = null,
+                    closed = false,
+                    distanceMeters = distance,
+                    endTimeMs = null,
+                    provider = roadObject.provider
+                )
+                else -> null
+            }
+        }
+    }
+
+    private fun incidentTypeName(type: Int): String {
+        return when (type) {
+            IncidentType.CONSTRUCTION -> "CONSTRUCTION"
+            IncidentType.ROAD_CLOSURE -> "ROAD_CLOSURE"
+            IncidentType.ACCIDENT -> "ACCIDENT"
+            IncidentType.ROAD_HAZARD -> "ROAD_HAZARD"
+            IncidentType.WEATHER -> "WEATHER"
+            IncidentType.LANE_RESTRICTION -> "LANE_RESTRICTION"
+            IncidentType.DISABLED_VEHICLE -> "DISABLED_VEHICLE"
+            else -> "UNKNOWN"
+        }
     }
 
     private fun clockAfter(seconds: Double): String {

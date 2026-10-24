@@ -24,6 +24,18 @@ object ManeuverEvents {
         "masik_folytatas"
     )
 
+    fun roadName(primary: String?, components: List<Pair<String?, String?>>): String {
+        val named = components.firstOrNull { (type, text) ->
+            type == "text" && !text.isNullOrBlank()
+        }?.second?.trim()
+        if (!named.isNullOrEmpty()) return named
+        return primary?.trim().orEmpty()
+    }
+
+    fun currentRoad(parts: List<String?>): String {
+        return parts.mapNotNull { part -> part?.trim()?.takeIf { it.isNotEmpty() } }.joinToString(" ")
+    }
+
     fun bannerRotation(modifier: String?): Float {
         return when (modifier ?: "") {
             "sharp left" -> -135f
