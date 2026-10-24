@@ -7,6 +7,14 @@ import org.junit.Test
 
 class ManeuverEventsTest {
     @Test
+    fun pointsTheBannerArrowWithTheModifier() {
+        assertEquals(-90f, ManeuverEvents.bannerRotation("left"))
+        assertEquals(135f, ManeuverEvents.bannerRotation("sharp right"))
+        assertEquals(0f, ManeuverEvents.bannerRotation("straight"))
+        assertEquals(180f, ManeuverEvents.bannerRotation("uturn"))
+    }
+
+    @Test
     fun mapsTurnModifiers() {
         assertEquals("balra", ManeuverEvents.eventId("turn", "left"))
         assertEquals("korforgalom_kijarat", ManeuverEvents.eventId("exit roundabout", "right"))

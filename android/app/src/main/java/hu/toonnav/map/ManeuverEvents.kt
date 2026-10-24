@@ -24,6 +24,19 @@ object ManeuverEvents {
         "masik_folytatas"
     )
 
+    fun bannerRotation(modifier: String?): Float {
+        return when (modifier ?: "") {
+            "sharp left" -> -135f
+            "left" -> -90f
+            "slight left" -> -35f
+            "slight right" -> 35f
+            "right" -> 90f
+            "sharp right" -> 135f
+            "uturn" -> 180f
+            else -> 0f
+        }
+    }
+
     fun eventId(type: String?, modifier: String?): String {
         val kind = type ?: ""
         if (kind == "arrive") return "cel"

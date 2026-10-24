@@ -10,6 +10,10 @@
     <string name="arrival">Érkezés</string>
     <string name="remaining">Hátralévő</string>
     <string name="open_settings">Beállítások</string>
+    <string name="maneuver_arrow">Következő manőver</string>
+    <string name="recenter">Középre</string>
+    <string name="overview">Áttekintés</string>
+    <string name="follow_view">Követés</string>
     <string name="status_token">A Mapbox token nincs beállítva. Írd a MAPBOX_PUBLIC_TOKEN sort az android/local.properties fájlba, majd fordítsd újra az alkalmazást.</string>
     <string name="status_permission">A helyengedély hiányzik. Engedélyezd a pontos helyet a navigációhoz.</string>
     <string name="status_gps">A GPS jel nem érkezik. Várj a műholdra, vagy kapcsold be a helymeghatározást.</string>

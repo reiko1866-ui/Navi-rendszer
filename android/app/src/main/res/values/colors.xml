@@ -5,4 +5,9 @@
     <color name="nav_card">#F7F8FA</color>
     <color name="nav_error">#8C2F2F</color>
     <color name="nav_ok">#1D6B3A</color>
+    <color name="route_green">#1F9D4A</color>
+    <color name="route_casing">#0C5A2C</color>
+    <color name="route_traveled">#B7C4B4</color>
+    <color name="route_traveled_casing">#8FA08C</color>
+    <color name="route_arrow">#F4C430</color>
 </resources>
