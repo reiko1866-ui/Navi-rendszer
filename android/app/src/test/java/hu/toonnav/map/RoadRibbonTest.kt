@@ -24,6 +24,7 @@ class RoadRibbonTest {
     fun aStraightRouteStaysCenteredAndDoesNotInventACircuit() {
         val strip = RoadRibbon.project(lon, lat, 90.0, listOf(point(0.0), point(40.0), point(120.0), point(220.0)))
         assertTrue(strip.ready)
+        assertTrue(strip.kerbSide.all { it == 0 })
         assertTrue(strip.center.all { kotlin.math.abs(it.x - 0.5f) < 0.08f })
         assertTrue(strip.center.first().y > strip.center.last().y)
         assertFalse(RoadRibbon.project(lon, lat, 90.0, emptyList()).ready)
@@ -36,6 +37,7 @@ class RoadRibbonTest {
         val straight = RoadRibbon.project(lon, lat, 90.0, listOf(point(0.0), point(80.0), point(180.0)))
         val bend = RoadRibbon.project(lon, lat, 90.0, route)
         assertTrue(bend.center.last().x > straight.center.last().x + 0.04f)
+        assertTrue(bend.kerbSide.any { it == 1 })
     }
 
     @Test
@@ -73,6 +75,7 @@ class RoadRibbonTest {
         val route = listOf(point(0.0), point(40.0), bend(90.0, 50.0), bend(130.0, 110.0))
         val strip = RoadRibbon.project(lon, lat, 90.0, route)
         assertTrue(strip.center.last().x < 0.46f)
+        assertTrue(strip.kerbSide.any { it == -1 })
         assertEquals("FORDULJ JOBBRA", CockpitInstruction.line("Jobbra, Fő utca", 90f))
         assertEquals("FORDULJ BALRA", CockpitInstruction.line("Balra", -90f))
         assertEquals("EGYENESEN", CockpitInstruction.line("Egyenesen", 0f))
@@ -103,7 +106,7 @@ class PilotCockpitShotTest {
         val view = PilotCockpitView(context)
         val route = route()
         val strip = RoadRibbon.project(19.0, 47.0, 90.0, route)
-        view.show(87, 300.0, CockpitInstruction.line("Jobbra", 90f), 90f, strip)
+        view.show(87, 300.0, CockpitInstruction.line("Jobbra", 90f), 90f, strip, 0.0, "parazs", true, 14)
         val width = 1080
         val height = 1920
         view.measure(
@@ -118,19 +121,11 @@ class PilotCockpitShotTest {
         FileOutputStream(File(dir, "pilot.png")).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
         assertEquals("FORDULJ JOBBRA", CockpitInstruction.line("Jobbra", 90f))
         assertTrue(strip.ready)
-        assertTrue(bitmap.getPixel(540, 1200) != 0)
-        val screen = bitmap.getPixel(540, 1230)
-        val wheelBelow = bitmap.getPixel(540, 1680)
-        assertTrue(android.graphics.Color.red(screen) + android.graphics.Color.green(screen) + android.graphics.Color.blue(screen) < 80)
-        assertTrue(android.graphics.Color.red(wheelBelow) < 80)
-        var speedRed = false
-        for (y in 860..1040 step 3) {
-            for (x in 460..640 step 8) {
-                val pixel = bitmap.getPixel(x, y)
-                if (android.graphics.Color.red(pixel) > 160 && android.graphics.Color.green(pixel) < 100) speedRed = true
-            }
-        }
-        assertTrue(speedRed)
+        val road = bitmap.getPixel(540, 900)
+        assertTrue(android.graphics.Color.red(road) in 30..80)
+        val livery = bitmap.getPixel(540, 1408)
+        assertTrue(android.graphics.Color.red(livery) > 150)
+        assertTrue(android.graphics.Color.red(livery) > android.graphics.Color.green(livery) + 40)
     }
 
     private fun route(): List<OsrmPoint> {

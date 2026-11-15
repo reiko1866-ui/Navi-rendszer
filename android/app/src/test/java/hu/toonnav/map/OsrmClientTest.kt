@@ -72,6 +72,17 @@ class OsrmClientTest {
     }
 
     @Test
+    fun readsExplicitIntersectionClassesWithoutInventingOne() {
+        val json = routeJson().replace(
+            """{"distance":400,"name":"Fő utca","maneuver":{"type":"turn","modifier":"right","location":[19.045,47.495]}}""",
+            """{"distance":400,"name":"Fő utca","maneuver":{"type":"turn","modifier":"right","location":[19.045,47.495]},"intersections":[{"classes":["motorway"]}]}"""
+        )
+        val ready = OsrmClient.parse(json) as OsrmResult.Ready
+        assertEquals(listOf("motorway"), ready.plan.steps[1].classes)
+        assertEquals(emptyList<String>(), ready.plan.steps[0].classes)
+    }
+
+    @Test
     fun buildsTheDrivingGeoJsonUrl() {
         assertEquals(
             "https://routing.openstreetmap.de/routed-car/route/v1/driving/" +

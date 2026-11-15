@@ -18,7 +18,7 @@ data class RoutePose(
 object RouteMotion {
     const val stoppedMetersPerSecond = 0.8
     const val maxPredictMs = 2_500L
-    const val lookAheadMeters = 18.0
+    const val lookAheadMeters = 28.0
     const val offRouteMeters = 80.0
 
     fun pose(

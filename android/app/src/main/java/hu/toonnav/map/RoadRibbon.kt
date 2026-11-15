@@ -1,6 +1,7 @@
 package hu.toonnav.map
 
 import java.util.Locale
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
@@ -14,7 +15,8 @@ data class ScreenPoint(val x: Float, val y: Float)
 data class RoadStrip(
     val left: List<ScreenPoint>,
     val right: List<ScreenPoint>,
-    val center: List<ScreenPoint>
+    val center: List<ScreenPoint>,
+    val kerbSide: List<Int> = emptyList()
 ) {
     val ready: Boolean get() = center.size >= 2
 
@@ -26,9 +28,10 @@ data class RoadStrip(
 object RoadRibbon {
     const val aheadMeters = 280.0
     const val halfWidthMeters = 3.8
+    const val sampleMeters = 3.0
     private const val eyeMeters = 18.0
-    private const val stepMeters = 4.0
     private const val awayLimitMeters = 80.0
+    private const val kerbTurn = 0.07
 
     fun project(lon: Double, lat: Double, bearingDegrees: Double, route: List<OsrmPoint>): RoadStrip {
         if (!lon.isFinite() || !lat.isFinite() || !bearingDegrees.isFinite() || route.size < 2) {
@@ -51,7 +54,8 @@ object RoadRibbon {
         return RoadStrip(
             left = ribbon.map { place(it.left.forward, it.left.right) },
             right = ribbon.map { place(it.right.forward, it.right.right) },
-            center = ribbon.map { place(it.center.forward, it.center.right) }
+            center = ribbon.map { place(it.center.forward, it.center.right) },
+            kerbSide = ribbon.map { it.side }
         )
     }
 
@@ -68,15 +72,19 @@ object RoadRibbon {
         if (end - nearest.along < 6.0) return null
         val samples = ArrayList<RibbonSample>()
         var cursor = nearest.along
+        var previousForward = 1.0
+        var previousRight = 0.0
+        var hasPrevious = false
         while (cursor <= end + 0.01) {
             val center = at(points, along, cursor) ?: break
-            val ahead = at(points, along, (cursor + stepMeters).coerceAtMost(total)) ?: center
-            val behind = at(points, along, (cursor - stepMeters).coerceAtLeast(0.0)) ?: center
+            val ahead = at(points, along, (cursor + sampleMeters).coerceAtMost(total)) ?: center
+            val behind = at(points, along, (cursor - sampleMeters).coerceAtLeast(0.0)) ?: center
             val tangentForward = ahead.forward - behind.forward
             val tangentRight = ahead.right - behind.right
             val length = hypot(tangentForward, tangentRight).coerceAtLeast(0.001)
             val rightForward = -tangentRight / length
             val rightSide = tangentForward / length
+            val side = kerbSide(previousForward, previousRight, tangentForward, tangentRight, hasPrevious)
             samples.add(
                 RibbonSample(
                     center = center,
@@ -87,10 +95,14 @@ object RoadRibbon {
                     right = Vec(
                         center.forward + rightForward * halfWidthMeters,
                         center.right + rightSide * halfWidthMeters
-                    )
+                    ),
+                    side = side
                 )
             )
-            cursor += stepMeters
+            previousForward = tangentForward
+            previousRight = tangentRight
+            hasPrevious = true
+            cursor += sampleMeters
         }
         return if (samples.size < 2) null else samples
     }
@@ -143,6 +155,28 @@ object RoadRibbon {
         return ScreenPoint(x, perspective)
     }
 
+    /**
+     * Positive means the route turns right. The kerb is decorative and only
+     * follows a bend that is already in the route geometry.
+     */
+    private fun kerbSide(
+        previousForward: Double,
+        previousRight: Double,
+        tangentForward: Double,
+        tangentRight: Double,
+        hasPrevious: Boolean
+    ): Int {
+        if (!hasPrevious) return 0
+        val previous = hypot(previousForward, previousRight).coerceAtLeast(0.001)
+        val current = hypot(tangentForward, tangentRight).coerceAtLeast(0.001)
+        val turn = (previousForward * tangentRight - previousRight * tangentForward) / (previous * current)
+        return when {
+            abs(turn) < kerbTurn -> 0
+            turn > 0.0 -> 1
+            else -> -1
+        }
+    }
+
     private fun distance(from: Vec, to: Vec): Double {
         return hypot(to.forward - from.forward, to.right - from.right)
     }
@@ -151,7 +185,7 @@ object RoadRibbon {
 
     private data class Closest(val along: Double, val distance: Double)
 
-    private data class RibbonSample(val center: Vec, val left: Vec, val right: Vec)
+    private data class RibbonSample(val center: Vec, val left: Vec, val right: Vec, val side: Int)
 }
 
 /**

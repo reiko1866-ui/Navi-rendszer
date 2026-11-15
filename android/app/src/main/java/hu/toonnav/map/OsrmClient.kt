@@ -19,7 +19,8 @@ data class OsrmStep(
     val name: String,
     val distanceMeters: Double,
     val durationSeconds: Double?,
-    val maneuver: OsrmManeuver
+    val maneuver: OsrmManeuver,
+    val classes: List<String> = emptyList()
 )
 
 data class OsrmWaypoint(
@@ -164,12 +165,33 @@ class OsrmClient {
                                 modifier = maneuver.optString("modifier"),
                                 location = OsrmPoint(lon, lat),
                                 exit = wholeExit(maneuver.opt("exit"))
-                            )
+                            ),
+                            classes = readClasses(step)
                         )
                     )
                 }
             }
             return steps
+        }
+
+        private fun readClasses(step: JSONObject): List<String> {
+            val found = LinkedHashSet<String>()
+            val own = step.optJSONArray("classes")
+            if (own != null) {
+                for (index in 0 until own.length()) {
+                    val name = own.optString(index).trim()
+                    if (name.isNotEmpty()) found.add(name)
+                }
+            }
+            val intersections = step.optJSONArray("intersections") ?: return found.toList()
+            for (index in 0 until intersections.length()) {
+                val classes = intersections.optJSONObject(index)?.optJSONArray("classes") ?: continue
+                for (classIndex in 0 until classes.length()) {
+                    val name = classes.optString(classIndex).trim()
+                    if (name.isNotEmpty()) found.add(name)
+                }
+            }
+            return found.toList()
         }
 
         private fun readWaypoints(root: JSONObject): List<OsrmWaypoint> {

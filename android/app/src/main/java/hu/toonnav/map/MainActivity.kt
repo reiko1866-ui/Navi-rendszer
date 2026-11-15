@@ -115,7 +115,25 @@ class MainActivity : ComponentActivity() {
     private var displayedBearing: Double? = null
     private var cockpitGliding = false
     private val reroutes = RerouteSession()
+    private var pilotMapOpen = false
+    private var finishDismissed = false
+    private var offRouteSpoken = false
+    private var pilotNoticeText = ""
+    private var tripRemaining = "—"
+    private var tripEta = "--:--"
+    private var roadKindLabel = ""
+    private var stopDialog: android.app.AlertDialog? = null
     private lateinit var finishLayer: FrameLayout
+    private lateinit var pilotSpeed: TextView
+    private lateinit var pilotManeuver: TextView
+    private lateinit var pilotManeuverDistance: TextView
+    private lateinit var pilotRemaining: TextView
+    private lateinit var pilotEta: TextView
+    private lateinit var pilotRoadKind: TextView
+    private lateinit var pilotNotice: TextView
+    private lateinit var pilotMap: Button
+    private lateinit var pilotVoice: Button
+    private lateinit var pilotNight: Button
     private var appliedMarker = 0
     private var lastLocation: Location? = null
     private var lastTrust = GpsTrust.LOST
@@ -259,6 +277,7 @@ class MainActivity : ComponentActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         inflateHud()
+        presentDrive()
         refreshReadout()
     }
 
@@ -280,7 +299,7 @@ class MainActivity : ComponentActivity() {
         wireSearch()
         findViewById<Button>(R.id.closeSearch).setOnClickListener { closeSearch() }
         findViewById<Button>(R.id.startButton).setOnClickListener { startGuidance() }
-        findViewById<Button>(R.id.stopButton).setOnClickListener { stopGuidance() }
+        findViewById<Button>(R.id.stopButton).setOnClickListener { confirmStop() }
         findViewById<ImageButton>(R.id.searchButton).setOnClickListener { toggleSearch() }
         findViewById<TextView>(R.id.cockpitToggle).setOnClickListener { toggleCockpit() }
         val openGarage = View.OnClickListener {
@@ -293,10 +312,17 @@ class MainActivity : ComponentActivity() {
         findViewById<TextView>(R.id.themeButton).setOnClickListener { toggleNight() }
         findViewById<ImageButton>(R.id.overviewButton).setOnClickListener { showOverview() }
         findViewById<ImageButton>(R.id.recenterButton).setOnClickListener { recenter() }
-        findViewById<Button>(R.id.pilotStop).setOnClickListener { stopGuidance() }
+        findViewById<Button>(R.id.pilotStop).setOnClickListener { confirmStop() }
         findViewById<Button>(R.id.pilotSearch).setOnClickListener { toggleSearch() }
         findViewById<Button>(R.id.pilotGarage).setOnClickListener {
             startActivity(Intent(this, GarageActivity::class.java))
+        }
+        findViewById<Button>(R.id.pilotMap).setOnClickListener { togglePilotMap() }
+        findViewById<Button>(R.id.pilotVoice).setOnClickListener { toggleVoice() }
+        findViewById<Button>(R.id.pilotNight).setOnClickListener { toggleNight() }
+        findViewById<Button>(R.id.finishMap).setOnClickListener {
+            finishDismissed = true
+            revealFinish()
         }
         settingsButton.setOnClickListener {
             if (openLocationSettings) openLocationSourceSettings() else openAppSettings()
@@ -309,6 +335,16 @@ class MainActivity : ComponentActivity() {
         pilotLayer = findViewById(R.id.pilotLayer)
         pilotCockpit = findViewById(R.id.pilotCockpit)
         finishLayer = findViewById(R.id.finishLayer)
+        pilotSpeed = findViewById(R.id.pilotSpeed)
+        pilotManeuver = findViewById(R.id.pilotManeuver)
+        pilotManeuverDistance = findViewById(R.id.pilotManeuverDistance)
+        pilotRemaining = findViewById(R.id.pilotRemaining)
+        pilotEta = findViewById(R.id.pilotEta)
+        pilotRoadKind = findViewById(R.id.pilotRoadKind)
+        pilotNotice = findViewById(R.id.pilotNotice)
+        pilotMap = findViewById(R.id.pilotMap)
+        pilotVoice = findViewById(R.id.pilotVoice)
+        pilotNight = findViewById(R.id.pilotNight)
         hudHost = findViewById(R.id.hudHost)
         statusText = findViewById(R.id.statusText)
         settingsButton = findViewById(R.id.settingsButton)
@@ -580,12 +616,24 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun rerouteFromHere() {
-        val goal = destination ?: return
-        if (!sawFix || !lastLatitude.isFinite() || !lastLongitude.isFinite()) return
+        val goal = destination
         val now = SystemClock.elapsedRealtime()
-        if (!reroutes.allow(now, confirmed = true, guiding = driveView.guiding)) return
+        if (goal == null || !sawFix || !lastLatitude.isFinite() || !lastLongitude.isFinite() || !driveView.guiding) {
+            reportReroute(getString(R.string.status_off_route), true)
+            return
+        }
+        if (reroutes.inFlight) {
+            reportReroute(getString(R.string.status_reroute_working), false)
+            return
+        }
+        if (!reroutes.allow(now, confirmed = true, guiding = true)) {
+            if (reroutes.cooling(now)) reportReroute(getString(R.string.status_reroute_unavailable), true)
+            else reportReroute(getString(R.string.status_off_route), true)
+            return
+        }
         val seq = ++routeSeq
         reroutes.started()
+        reportReroute(getString(R.string.status_reroute_working), false)
         routes.requestRoute(lastLongitude, lastLatitude, goal.lon, goal.lat) { result ->
             mainHandler.post {
                 if (seq != routeSeq) return@post
@@ -597,16 +645,23 @@ class MainActivity : ComponentActivity() {
                     is OsrmResult.Ready -> adoptReroute(result.plan)
                     else -> {
                         reroutes.failed(SystemClock.elapsedRealtime())
-                        showStatus(getString(R.string.status_route_network))
+                        reportReroute(getString(R.string.status_reroute_unavailable), true)
                     }
                 }
             }
         }
     }
 
+    private fun reportReroute(text: String, error: Boolean) {
+        pilotNoticeText = text
+        showStatus(text, error)
+        paintPilotReadout()
+    }
+
     private fun adoptReroute(plan: OsrmRoutePlan) {
         val json = RouteLineJson.feature(plan.coordinates) ?: run {
             reroutes.failed(SystemClock.elapsedRealtime())
+            reportReroute(getString(R.string.status_reroute_unavailable), true)
             return
         }
         activePlan = plan
@@ -617,9 +672,13 @@ class MainActivity : ComponentActivity() {
         loadedStyle?.let { drawRoute(it) }
         reroutes.succeeded(SystemClock.elapsedRealtime())
         navigationHold = false
+        offRouteSpoken = false
+        pilotNoticeText = ""
         clearStatus()
         rememberDrive()
+        voice.halt()
         voice.speak("reroute", "reroute", null, "ujratervezes")
+        paintPilotReadout()
     }
 
     private fun showPlan(plan: OsrmRoutePlan) {
@@ -750,6 +809,10 @@ class MainActivity : ComponentActivity() {
         }
         guidance.setPlan(plan)
         driveView = driveView.start()
+        finishDismissed = false
+        offRouteSpoken = false
+        pilotMapOpen = false
+        pilotNoticeText = ""
         following = true
         overviewShown = false
         previewCard.visibility = View.GONE
@@ -760,8 +823,23 @@ class MainActivity : ComponentActivity() {
         voice.speak("indulas", "indulas", null, "indulas")
     }
 
+    private fun confirmStop() {
+        if (stopDialog?.isShowing == true) return
+        stopDialog = android.app.AlertDialog.Builder(this)
+            .setTitle(R.string.stop_confirm_title)
+            .setMessage(R.string.stop_confirm_message)
+            .setPositiveButton(R.string.stop_nav) { _, _ -> stopGuidance() }
+            .setNegativeButton(R.string.stop_cancel, null)
+            .show()
+    }
+
     private fun stopGuidance() {
         reroutes.reset()
+        voice.halt()
+        offRouteSpoken = false
+        pilotMapOpen = false
+        pilotNoticeText = ""
+        finishDismissed = false
         driveView = driveView.cancel()
         pilotDistance = null
         pilotInstruction = ""
@@ -822,7 +900,7 @@ class MainActivity : ComponentActivity() {
 
     private fun revealFinish() {
         if (!::finishLayer.isInitialized) return
-        val celebrate = FinishCeremony.ready(
+        val celebrate = !finishDismissed && FinishCeremony.ready(
             driveView.arrived,
             if (lastHasSpeed) lastSpeedMps.toDouble() else null,
             lastHasSpeed,
@@ -832,35 +910,69 @@ class MainActivity : ComponentActivity() {
         if (celebrate) finishLayer.bringToFront()
     }
 
+    private fun togglePilotMap() {
+        pilotMapOpen = !pilotMapOpen
+        placePilotMap(pilotVisible)
+        refreshPilotControls()
+    }
+
     private fun placePilotMap(pilot: Boolean) {
         if (!::mapHost.isInitialized) return
         val params = mapHost.layoutParams as FrameLayout.LayoutParams
         val density = resources.displayMetrics.density
-        if (pilot) {
-            val screenW = resources.displayMetrics.widthPixels
-            val screenH = resources.displayMetrics.heightPixels
-            params.width = (screenW * 0.24f).toInt().coerceAtLeast((88 * density).toInt())
-            params.height = (screenH * 0.15f).toInt().coerceAtLeast((108 * density).toInt())
-            params.gravity = Gravity.TOP or Gravity.END
-            params.topMargin = (screenH * 0.012f).toInt()
-            params.marginEnd = (screenW * 0.042f).toInt()
+        val screenW = resources.displayMetrics.widthPixels
+        val screenH = resources.displayMetrics.heightPixels
+        if (pilot && pilotMapOpen) {
+            params.width = (screenW * 0.46f).toInt().coerceAtLeast((148 * density).toInt())
+            params.height = (screenH * 0.30f).toInt().coerceAtLeast((160 * density).toInt())
+            params.gravity = Gravity.TOP or Gravity.START
+            params.topMargin = (16 * density).toInt()
+            params.leftMargin = (12 * density).toInt()
+            params.marginStart = params.leftMargin
+            params.marginEnd = 0
             val frame = (3 * density).toInt().coerceAtLeast(2)
             mapHost.setPadding(frame, frame, frame, frame)
             mapHost.setBackgroundColor(0xFFFF3B12.toInt())
             mapHost.elevation = 16f * density
+            mapHost.visibility = View.VISIBLE
+        } else if (pilot) {
+            params.width = FrameLayout.LayoutParams.MATCH_PARENT
+            params.height = FrameLayout.LayoutParams.MATCH_PARENT
+            params.topMargin = 0
+            params.leftMargin = 0
+            params.marginStart = 0
+            params.marginEnd = 0
+            mapHost.setPadding(0, 0, 0, 0)
+            mapHost.visibility = View.GONE
         } else {
             params.width = FrameLayout.LayoutParams.MATCH_PARENT
             params.height = FrameLayout.LayoutParams.MATCH_PARENT
             params.gravity = Gravity.TOP or Gravity.START
             params.topMargin = 0
+            params.leftMargin = 0
+            params.marginStart = 0
             params.marginEnd = 0
             mapHost.setPadding(0, 0, 0, 0)
             mapHost.setBackgroundColor(0x00000000)
             mapHost.elevation = 0f
+            mapHost.visibility = View.VISIBLE
         }
         mapHost.layoutParams = params
+        if (::pilotCockpit.isInitialized) {
+            if (pilot && pilotMapOpen) {
+                pilotCockpit.setMapWindow(
+                    true,
+                    params.leftMargin.toFloat(),
+                    params.topMargin.toFloat(),
+                    (params.leftMargin + params.width).toFloat(),
+                    (params.topMargin + params.height).toFloat()
+                )
+            } else {
+                pilotCockpit.setMapWindow(false, 0f, 0f, 0f, 0f)
+            }
+        }
         if (pilot) {
-            mapHost.bringToFront()
+            if (::pilotLayer.isInitialized) pilotLayer.bringToFront()
             if (::hudHost.isInitialized) hudHost.bringToFront()
         }
     }
@@ -889,7 +1001,19 @@ class MainActivity : ComponentActivity() {
             RoadRibbon.project(pose.lon, pose.lat, pose.bearingDegrees, routePoints)
         }
         val speed = if (!sawFix) null else GpsReadout.speedKmh(lastSpeedMps, lastHasSpeed, age)
-        pilotCockpit.show(speed, pilotDistance, pilotInstruction, pilotArrow, strip, pose?.alongMeters ?: 0.0)
+        val garage = GarageStore(this)
+        pilotCockpit.show(
+            speed,
+            pilotDistance,
+            pilotInstruction,
+            pilotArrow,
+            strip,
+            pose?.alongMeters ?: 0.0,
+            garage.carId(),
+            nightMode,
+            garage.number()
+        )
+        paintPilotReadout(speed, updateSpeed = true)
         revealFinish()
         val moving = pose != null && lastHasSpeed && lastSpeedMps >= RouteMotion.stoppedMetersPerSecond && age in 0..GpsSpeed.freshMs
         if (moving && !cockpitGliding) {
@@ -972,7 +1096,9 @@ class MainActivity : ComponentActivity() {
     private fun toggleVoice() {
         voiceOn = !voiceOn
         voice.enabled = voiceOn
+        if (!voiceOn) voice.silence()
         hudPrefs.edit().putBoolean("voice", voiceOn).apply()
+        refreshPilotControls()
         refreshHud()
     }
 
@@ -986,6 +1112,8 @@ class MainActivity : ComponentActivity() {
     private fun toggleNight() {
         nightMode = !nightMode
         hudPrefs.edit().putBoolean("night", nightMode).apply()
+        refreshPilotControls()
+        refreshPilot()
         locationReady = false
         applyStyle()
         refreshHud()
@@ -1185,16 +1313,27 @@ class MainActivity : ComponentActivity() {
         pilotDistance = cue.maneuverDistanceMeters
         pilotInstruction = CockpitInstruction.line(cue.maneuverLabel, cue.arrowDegrees)
         pilotArrow = cue.arrowDegrees
+        tripRemaining = ManeuverEvents.formatDistance(cue.remainingMeters)
+        tripEta = etaText(cue)
+        val kind = RoadClassifier.classify(cue.maneuverType, cue.roadClasses)
+        roadKindLabel = RoadClassifier.label(RoadGuidance.shown(kind, cue.offRouteConfirmed, cue.progressHeld))
         refreshPilot()
+        speakCue(cue)
         when {
             cue.arrived -> {
                 navigationHold = true
+                offRouteSpoken = false
+                pilotNoticeText = ""
                 endDriveOnArrival()
                 showStatus(getString(R.string.status_arrived), error = false)
             }
             cue.offRouteConfirmed -> {
                 navigationHold = true
-                showStatus(getString(R.string.status_off_route))
+                if (!offRouteSpoken) {
+                    voice.halt()
+                    voice.speak("rossz_irany", "rossz_irany", null, "letérés")
+                    offRouteSpoken = true
+                }
                 rerouteFromHere()
             }
             cue.trust == GpsTrust.LOST -> {
@@ -1207,15 +1346,20 @@ class MainActivity : ComponentActivity() {
             }
             else -> {
                 navigationHold = false
+                offRouteSpoken = false
                 val current = statusText.text?.toString().orEmpty()
                 if (current == getString(R.string.status_off_route) ||
+                    current == getString(R.string.status_reroute_working) ||
+                    current == getString(R.string.status_reroute_unavailable) ||
                     current == getString(R.string.status_gps_poor) ||
                     current == getString(R.string.status_gps) ||
                     current == getString(R.string.status_gps_search) ||
                     current == getString(R.string.status_precise) ||
                     current == getString(R.string.status_arrived)
                 ) {
+                    pilotNoticeText = ""
                     clearStatus()
+                    paintPilotReadout()
                 }
             }
         }
@@ -1225,6 +1369,41 @@ class MainActivity : ComponentActivity() {
         if (driveView.guiding && activePlan != null) {
             DriveSessionMemory.hold(activePlan!!, routeJson, routePoints, traveledMeters, origin, destination)
         }
+    }
+
+    private fun speakCue(cue: GuidanceCue) {
+        if (!driveView.guiding || cue.arrived || cue.progressHeld || cue.offRouteConfirmed) return
+        val event = ManeuverEvents.eventId(cue.maneuverType, cue.maneuverModifier)
+        if (event.isEmpty()) return
+        val kind = RoadClassifier.classify(cue.maneuverType, cue.roadClasses)
+        voice.speak(
+            "turn",
+            event,
+            cue.maneuverDistanceMeters,
+            event + ":" + cue.maneuverLabel,
+            RoadGuidance.leadMeters(kind, cue.maneuverType)
+        )
+    }
+
+    private fun paintPilotReadout(speed: Int? = null, updateSpeed: Boolean = false) {
+        if (!::pilotSpeed.isInitialized) return
+        if (updateSpeed) pilotSpeed.text = speed?.toString() ?: "—"
+        pilotManeuver.text = pilotInstruction
+        pilotManeuverDistance.text = if (pilotDistance == null) "—" else ManeuverEvents.formatDistance(pilotDistance ?: 0.0)
+        pilotRemaining.text = getString(R.string.remaining) + " " + tripRemaining
+        pilotEta.text = getString(R.string.arrival) + " " + tripEta
+        pilotRoadKind.text = roadKindLabel
+        pilotRoadKind.visibility = if (roadKindLabel.isBlank()) View.GONE else View.VISIBLE
+        pilotNotice.text = pilotNoticeText
+        pilotNotice.visibility = if (pilotVisible && pilotNoticeText.isNotBlank()) View.VISIBLE else View.GONE
+        refreshPilotControls()
+    }
+
+    private fun refreshPilotControls() {
+        if (!::pilotVoice.isInitialized) return
+        pilotVoice.text = getString(if (voiceOn) R.string.voice_on else R.string.voice_off)
+        pilotMap.text = getString(if (pilotMapOpen) R.string.map_close else R.string.map_open)
+        pilotNight.text = getString(if (nightMode) R.string.day_mode else R.string.night_mode)
     }
 
     private fun etaText(cue: GuidanceCue): String {

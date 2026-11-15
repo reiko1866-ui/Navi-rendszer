@@ -142,6 +142,17 @@ class RouteProgressTest {
     }
 
     @Test
+    fun aClearDepartureConfirmsSoonerThanASmallOne() {
+        val clear = OffRouteHold()
+        assertFalse(clear.observe(true, 0L, 10.0, 200.0))
+        assertTrue(clear.observe(true, 4_000L, 10.0, 200.0))
+        val small = OffRouteHold()
+        assertFalse(small.observe(true, 0L, 10.0, 90.0))
+        assertFalse(small.observe(true, 4_000L, 10.0, 90.0))
+        assertTrue(small.observe(true, 8_000L, 10.0, 90.0))
+    }
+
+    @Test
     fun rejectsMissingAccuracy() {
         val hold = OffRouteHold()
         assertFalse(hold.observe(true, 0L, null))

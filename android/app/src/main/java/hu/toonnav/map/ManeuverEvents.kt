@@ -75,10 +75,17 @@ object ManeuverEvents {
         return true
     }
 
-    fun shouldSpeak(kind: String, meters: Double?, lastKey: String, key: String): Boolean {
+    fun shouldSpeak(
+        kind: String,
+        meters: Double?,
+        lastKey: String,
+        key: String,
+        maxMeters: Double = 400.0
+    ): Boolean {
         if (key.isBlank() || key == lastKey) return false
         if (kind == "reroute" || kind == "indulas" || kind == "utvonal_kesz" || kind == "gps" || kind == "rossz_irany") return true
-        if (meters == null || meters > 400.0 || meters < 20.0) return false
+        val lead = if (maxMeters.isFinite() && maxMeters >= 20.0) maxMeters else 400.0
+        if (meters == null || meters > lead || meters < 20.0) return false
         return true
     }
 

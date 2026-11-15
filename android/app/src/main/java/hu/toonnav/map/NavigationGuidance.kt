@@ -102,7 +102,10 @@ data class GuidanceCue(
     val arrived: Boolean,
     val offRouteConfirmed: Boolean,
     val trust: GpsTrust,
-    val progressHeld: Boolean
+    val progressHeld: Boolean,
+    val maneuverType: String = "",
+    val maneuverModifier: String = "",
+    val roadClasses: List<String> = emptyList()
 )
 
 data class FollowCamera(
@@ -243,7 +246,10 @@ class GuidanceSession {
             arrived = false,
             offRouteConfirmed = offRouteConfirmed,
             trust = trust,
-            progressHeld = held
+            progressHeld = held,
+            maneuverType = maneuver.type,
+            maneuverModifier = maneuver.modifier,
+            roadClasses = maneuver.classes
         )
     }
 }

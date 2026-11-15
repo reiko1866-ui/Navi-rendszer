@@ -11,7 +11,7 @@
     <string name="garage_use">Ezt az autót használom</string>
     <string name="garage_number">Rajtszám</string>
     <string name="garage_hero">Kiválasztott versenyautó</string>
-    <string name="garage_note">A festés a térkép jelölője lesz. Az irány számítása nem változik.</string>
+    <string name="garage_note">A festés a vezetési nézetben és a térkép jelölőjén látszik. Az irány számítása nem változik.</string>
     <string name="from_hint">Indulás</string>
     <string name="to_hint">Cél</string>
     <string name="destination_title">Célállomás</string>
@@ -84,6 +84,14 @@
     <string name="status_same_point">Az indulás és a cél ugyanaz a pont. Válassz távolabbi célt.</string>
     <string name="status_follow">Indulás. A jel a térképen követ.</string>
     <string name="status_off_route">Letértél az útvonalról.</string>
+    <string name="status_reroute_working">Újratervezés folyamatban. A jelenlegi útvonal megmarad, amíg az új meg nem érkezik.</string>
+    <string name="status_reroute_unavailable">Az újratervezés most nem érhető el. A legutóbbi érvényes útvonal megmaradt.</string>
+    <string name="stop_confirm_title">Leállítod a navigációt?</string>
+    <string name="stop_confirm_message">A vezetés és a hangbemondás leáll. A térkép megmarad.</string>
+    <string name="stop_cancel">Mégse</string>
+    <string name="map_open">Térkép</string>
+    <string name="map_close">Térkép bezárása</string>
+    <string name="finish_map">Vissza a térképre</string>
     <string name="status_arrived">Megérkeztél a célhoz.</string>
     <string name="status_gps_poor">A GPS pontatlan, ezért a célba érés és a letérés még nem számít.</string>
 </resources>

@@ -8,7 +8,8 @@ data class RouteManeuver(
     val modifier: String,
     val name: String,
     val exit: Int?,
-    val alongMeters: Double
+    val alongMeters: Double,
+    val classes: List<String> = emptyList()
 )
 
 data class RouteUpdate(
@@ -119,7 +120,8 @@ object RouteProgress {
                     name = step.name,
                     exit = step.maneuver.exit,
                     alongMeters = monotonic,
-                    ignored = ignorable(step)
+                    ignored = ignorable(step),
+                    classes = step.classes
                 )
             )
         }
@@ -178,9 +180,10 @@ object RouteProgress {
         val name: String,
         val exit: Int?,
         val alongMeters: Double,
-        val ignored: Boolean
+        val ignored: Boolean,
+        val classes: List<String> = emptyList()
     ) {
-        fun toManeuver() = RouteManeuver(type, modifier, name, exit, alongMeters)
+        fun toManeuver() = RouteManeuver(type, modifier, name, exit, alongMeters, classes)
     }
 }
 
@@ -188,7 +191,18 @@ class OffRouteHold {
     private var sinceMs = 0L
     private var samples = 0
 
-    fun observe(offRoute: Boolean, timeMs: Long, accuracyMeters: Double?): Boolean {
+    companion object {
+        const val clearDepartureMeters = 160.0
+        const val clearHoldMs = 4_000L
+        const val normalHoldMs = 8_000L
+    }
+
+    fun observe(
+        offRoute: Boolean,
+        timeMs: Long,
+        accuracyMeters: Double?,
+        crossTrackMeters: Double = Double.NaN
+    ): Boolean {
         if (accuracyMeters == null || !accuracyMeters.isFinite() || accuracyMeters < 0.0 || accuracyMeters > 40.0) {
             reset()
             return false
@@ -209,7 +223,9 @@ class OffRouteHold {
             return false
         }
         samples += 1
-        return samples >= 2 && elapsed >= 8_000L
+        val clear = crossTrackMeters.isFinite() && crossTrackMeters >= clearDepartureMeters
+        val holdMs = if (clear) clearHoldMs else normalHoldMs
+        return samples >= 2 && elapsed >= holdMs
     }
 
     fun reset() {
@@ -243,7 +259,7 @@ class RouteProgressTracker {
     fun update(lon: Double, lat: Double, timeMs: Long, accuracyMeters: Double?): TrackedProgress? {
         val route = plan ?: return null
         val update = RouteProgress.project(route, lon, lat)
-        val confirmed = hold.observe(update.offRoute, timeMs, accuracyMeters)
+        val confirmed = hold.observe(update.offRoute, timeMs, accuracyMeters, update.crossTrackMeters)
         last = update
         return TrackedProgress(update, confirmed)
     }

@@ -18,10 +18,13 @@ import java.util.concurrent.TimeUnit
 class GarageFleetTest {
     @Test
     fun offersFourOriginalCarsAndKeepsTheCurrentMarkerUntilOneIsChosen() {
-        assertEquals(4, GarageFleet.cars.size)
-        assertEquals(4, GarageFleet.cars.map { it.id }.toSet().size)
-        assertEquals(4, GarageFleet.cars.map { it.marker }.toSet().size)
-        assertEquals(4, GarageFleet.cars.map { it.name }.toSet().size)
+        assertEquals(5, GarageFleet.cars.size)
+        assertEquals(5, GarageFleet.cars.map { it.id }.toSet().size)
+        assertEquals(5, GarageFleet.cars.map { it.marker }.toSet().size)
+        assertEquals(5, GarageFleet.cars.map { it.name }.toSet().size)
+        assertEquals(R.drawable.ic_race_car, GarageFleet.car("alap")!!.marker)
+        assertEquals("alap", GarageFleet.shown(null).id)
+        assertEquals("parazs", GarageFleet.shown("parazs").id)
         assertTrue(GarageFleet.cars.all { it.defaultNumber in GarageFleet.numberMin..GarageFleet.numberMax })
         assertEquals(R.drawable.ic_race_car, GarageFleet.markerRes(null))
         assertEquals(R.drawable.ic_race_car, GarageFleet.markerRes("ismeretlen"))
