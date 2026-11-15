@@ -1,5 +1,6 @@
 package hu.toonnav.map
 
+import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.widget.Button
@@ -42,6 +43,9 @@ class GarageActivity : ComponentActivity() {
         findViewById<Button>(R.id.garageUse).setOnClickListener {
             store.write(carId, number)
             finish()
+        }
+        findViewById<Button>(R.id.garagePrototype).setOnClickListener {
+            startActivity(Intent(this, RacePrototypeActivity::class.java).putExtra(RacePrototypeActivity.EXTRA_CAR, carId))
         }
         buildRow()
         render()

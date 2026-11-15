@@ -165,6 +165,15 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/garagePrototype"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#243044"
+        android:text="@string/garage_prototype"
+        android:textColor="#FFFFFF" />
+
+    <Button
         android:id="@+id/garageUse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
