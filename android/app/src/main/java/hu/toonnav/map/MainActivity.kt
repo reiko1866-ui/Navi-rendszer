@@ -113,6 +113,9 @@ class MainActivity : ComponentActivity() {
     private var lastAccuracy: Double? = null
     private var lastBearing: Double? = null
     private var displayedBearing: Double? = null
+    private var cockpitGliding = false
+    private val reroutes = RerouteSession()
+    private lateinit var finishLayer: FrameLayout
     private var appliedMarker = 0
     private var lastLocation: Location? = null
     private var lastTrust = GpsTrust.LOST
@@ -216,6 +219,8 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onPause() {
+        cockpitGliding = false
+        mainHandler.removeCallbacks(cockpitGlide)
         mapView?.onPause()
         super.onPause()
     }
@@ -290,6 +295,9 @@ class MainActivity : ComponentActivity() {
         findViewById<ImageButton>(R.id.recenterButton).setOnClickListener { recenter() }
         findViewById<Button>(R.id.pilotStop).setOnClickListener { stopGuidance() }
         findViewById<Button>(R.id.pilotSearch).setOnClickListener { toggleSearch() }
+        findViewById<Button>(R.id.pilotGarage).setOnClickListener {
+            startActivity(Intent(this, GarageActivity::class.java))
+        }
         settingsButton.setOnClickListener {
             if (openLocationSettings) openLocationSourceSettings() else openAppSettings()
         }
@@ -300,6 +308,7 @@ class MainActivity : ComponentActivity() {
         mapHost = findViewById(R.id.mapHost)
         pilotLayer = findViewById(R.id.pilotLayer)
         pilotCockpit = findViewById(R.id.pilotCockpit)
+        finishLayer = findViewById(R.id.finishLayer)
         hudHost = findViewById(R.id.hudHost)
         statusText = findViewById(R.id.statusText)
         settingsButton = findViewById(R.id.settingsButton)
@@ -570,6 +579,49 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun rerouteFromHere() {
+        val goal = destination ?: return
+        if (!sawFix || !lastLatitude.isFinite() || !lastLongitude.isFinite()) return
+        val now = SystemClock.elapsedRealtime()
+        if (!reroutes.allow(now, confirmed = true, guiding = driveView.guiding)) return
+        val seq = ++routeSeq
+        reroutes.started()
+        routes.requestRoute(lastLongitude, lastLatitude, goal.lon, goal.lat) { result ->
+            mainHandler.post {
+                if (seq != routeSeq) return@post
+                if (!driveView.guiding) {
+                    reroutes.reset()
+                    return@post
+                }
+                when (result) {
+                    is OsrmResult.Ready -> adoptReroute(result.plan)
+                    else -> {
+                        reroutes.failed(SystemClock.elapsedRealtime())
+                        showStatus(getString(R.string.status_route_network))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun adoptReroute(plan: OsrmRoutePlan) {
+        val json = RouteLineJson.feature(plan.coordinates) ?: run {
+            reroutes.failed(SystemClock.elapsedRealtime())
+            return
+        }
+        activePlan = plan
+        routeJson = json
+        routePoints = plan.coordinates
+        traveledMeters = 0.0
+        guidance.setPlan(plan)
+        loadedStyle?.let { drawRoute(it) }
+        reroutes.succeeded(SystemClock.elapsedRealtime())
+        navigationHold = false
+        clearStatus()
+        rememberDrive()
+        voice.speak("reroute", "reroute", null, "ujratervezes")
+    }
+
     private fun showPlan(plan: OsrmRoutePlan) {
         val json = RouteLineJson.feature(plan.coordinates)
         if (json == null) {
@@ -649,6 +701,7 @@ class MainActivity : ComponentActivity() {
         activePlan = null
         routeJson = null
         routePoints = emptyList()
+        reroutes.reset()
         traveledMeters = 0.0
         guidance.clear()
         pilotDistance = null
@@ -708,6 +761,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun stopGuidance() {
+        reroutes.reset()
         driveView = driveView.cancel()
         pilotDistance = null
         pilotInstruction = ""
@@ -762,7 +816,20 @@ class MainActivity : ComponentActivity() {
         if (::pilotLayer.isInitialized) {
             pilotLayer.visibility = if (pilotVisible) View.VISIBLE else View.GONE
         }
+        revealFinish()
         refreshPilot()
+    }
+
+    private fun revealFinish() {
+        if (!::finishLayer.isInitialized) return
+        val celebrate = FinishCeremony.ready(
+            driveView.arrived,
+            if (lastHasSpeed) lastSpeedMps.toDouble() else null,
+            lastHasSpeed,
+            sawFix
+        )
+        finishLayer.visibility = if (celebrate) View.VISIBLE else View.GONE
+        if (celebrate) finishLayer.bringToFront()
     }
 
     private fun placePilotMap(pilot: Boolean) {
@@ -770,11 +837,13 @@ class MainActivity : ComponentActivity() {
         val params = mapHost.layoutParams as FrameLayout.LayoutParams
         val density = resources.displayMetrics.density
         if (pilot) {
-            params.width = (156 * density).toInt()
-            params.height = (210 * density).toInt()
+            val screenW = resources.displayMetrics.widthPixels
+            val screenH = resources.displayMetrics.heightPixels
+            params.width = (screenW * 0.24f).toInt().coerceAtLeast((88 * density).toInt())
+            params.height = (screenH * 0.15f).toInt().coerceAtLeast((108 * density).toInt())
             params.gravity = Gravity.TOP or Gravity.END
-            params.topMargin = (54 * density).toInt()
-            params.marginEnd = (14 * density).toInt()
+            params.topMargin = (screenH * 0.012f).toInt()
+            params.marginEnd = (screenW * 0.042f).toInt()
             val frame = (3 * density).toInt().coerceAtLeast(2)
             mapHost.setPadding(frame, frame, frame, frame)
             mapHost.setBackgroundColor(0xFFFF3B12.toInt())
@@ -796,19 +865,40 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val cockpitGlide = Runnable {
+        cockpitGliding = false
+        if (!pilotVisible) return@Runnable
+        refreshPilot()
+    }
+
     private fun refreshPilot() {
         if (!::pilotCockpit.isInitialized || !pilotVisible) return
-        val bearing = displayedBearing
-        val strip = if (bearing == null || !lastLatitude.isFinite() || !lastLongitude.isFinite()) {
+        val age = if (sawFix) SystemClock.elapsedRealtime() - lastFixElapsed else -1L
+        val pose = RouteMotion.pose(
+            routePoints,
+            lastLongitude,
+            lastLatitude,
+            if (lastHasSpeed) lastSpeedMps.toDouble() else null,
+            lastHasSpeed,
+            age,
+            sawFix
+        )
+        val strip = if (pose == null) {
             RoadStrip.EMPTY
         } else {
-            RoadRibbon.project(lastLongitude, lastLatitude, bearing, routePoints)
+            RoadRibbon.project(pose.lon, pose.lat, pose.bearingDegrees, routePoints)
         }
-        val speed = if (!sawFix) null else {
-            val age = SystemClock.elapsedRealtime() - lastFixElapsed
-            GpsReadout.speedKmh(lastSpeedMps, lastHasSpeed, age)
+        val speed = if (!sawFix) null else GpsReadout.speedKmh(lastSpeedMps, lastHasSpeed, age)
+        pilotCockpit.show(speed, pilotDistance, pilotInstruction, pilotArrow, strip, pose?.alongMeters ?: 0.0)
+        revealFinish()
+        val moving = pose != null && lastHasSpeed && lastSpeedMps >= RouteMotion.stoppedMetersPerSecond && age in 0..GpsSpeed.freshMs
+        if (moving && !cockpitGliding) {
+            cockpitGliding = true
+            mainHandler.postDelayed(cockpitGlide, 40L)
+        } else if (!moving && cockpitGliding) {
+            cockpitGliding = false
+            mainHandler.removeCallbacks(cockpitGlide)
         }
-        pilotCockpit.show(speed, pilotDistance, pilotInstruction, pilotArrow, strip)
     }
 
     private fun rememberDrive() {
@@ -1105,6 +1195,7 @@ class MainActivity : ComponentActivity() {
             cue.offRouteConfirmed -> {
                 navigationHold = true
                 showStatus(getString(R.string.status_off_route))
+                rerouteFromHere()
             }
             cue.trust == GpsTrust.LOST -> {
                 navigationHold = true

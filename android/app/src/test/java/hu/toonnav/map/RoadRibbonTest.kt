@@ -39,6 +39,36 @@ class RoadRibbonTest {
     }
 
     @Test
+    fun approachingABendPullsItDownTheWindshield() {
+        val route = listOf(point(0.0), point(70.0), bend(120.0, -45.0), bend(160.0, -95.0))
+        val distant = RoadRibbon.project(lon, lat, 90.0, route)
+        val closerOrigin = shift(60.0, 0.0)
+        val closer = RoadRibbon.project(closerOrigin.lon, closerOrigin.lat, 90.0, route)
+        assertTrue(distant.ready && closer.ready)
+        assertTrue(closer.center.maxOf { it.x } > distant.center.maxOf { it.x } + 0.04f)
+    }
+
+    @Test
+    fun theRoadFollowsTheTravelDirectionAndIgnoresADistantRoute() {
+        val route = listOf(point(0.0), point(40.0), point(90.0))
+        val east = RoadRibbon.project(lon, lat, 90.0, route)
+        val north = RoadRibbon.project(lon, lat, 0.0, route)
+        assertTrue(kotlin.math.abs(east.center.last().x - 0.5f) < 0.08f)
+        assertTrue(north.center.last().x > east.center.last().x + 0.08f)
+        val farAway = shift(0.0, 400.0)
+        assertFalse(RoadRibbon.project(farAway.lon, farAway.lat, 90.0, route).ready)
+    }
+
+    @Test
+    fun headingJitterDoesNotShakeTheCockpit() {
+        val settled = CockpitHeading.smooth(90.0, 90.8)
+        assertEquals(90.0, settled!!, 0.01)
+        val turning = CockpitHeading.smooth(90.0, 130.0)
+        assertTrue(turning!! > 90.0 && turning < 112.0)
+        assertEquals(40.0, CockpitHeading.smooth(null, 40.0)!!, 0.01)
+    }
+
+    @Test
     fun aLeftBendMovesTheLineLeftAndTheInstructionUsesTheExistingArrow() {
         val route = listOf(point(0.0), point(40.0), bend(90.0, 50.0), bend(130.0, 110.0))
         val strip = RoadRibbon.project(lon, lat, 90.0, route)
@@ -51,6 +81,8 @@ class RoadRibbonTest {
     }
 
     private fun point(eastMeters: Double): OsrmPoint = bend(eastMeters, 0.0)
+
+    private fun shift(eastMeters: Double, northMeters: Double): OsrmPoint = bend(eastMeters, northMeters)
 
     private fun bend(eastMeters: Double, northMeters: Double): OsrmPoint {
         val lat0 = Math.toRadians(lat)
@@ -87,6 +119,18 @@ class PilotCockpitShotTest {
         assertEquals("FORDULJ JOBBRA", CockpitInstruction.line("Jobbra", 90f))
         assertTrue(strip.ready)
         assertTrue(bitmap.getPixel(540, 1200) != 0)
+        val screen = bitmap.getPixel(540, 1230)
+        val wheelBelow = bitmap.getPixel(540, 1680)
+        assertTrue(android.graphics.Color.red(screen) + android.graphics.Color.green(screen) + android.graphics.Color.blue(screen) < 80)
+        assertTrue(android.graphics.Color.red(wheelBelow) < 80)
+        var speedRed = false
+        for (y in 860..1040 step 3) {
+            for (x in 460..640 step 8) {
+                val pixel = bitmap.getPixel(x, y)
+                if (android.graphics.Color.red(pixel) > 160 && android.graphics.Color.green(pixel) < 100) speedRed = true
+            }
+        }
+        assertTrue(speedRed)
     }
 
     private fun route(): List<OsrmPoint> {

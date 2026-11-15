@@ -21,6 +21,18 @@
             android:layout_height="match_parent" />
 
         <Button
+            android:id="@+id/pilotGarage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="18dp"
+            android:backgroundTint="#3A2420"
+            android:minHeight="40dp"
+            android:text="@string/garage_open"
+            android:textColor="@color/cockpit_ink" />
+
+        <Button
             android:id="@+id/pilotSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,6 +55,19 @@
             android:minHeight="40dp"
             android:text="@string/stop_nav"
             android:textColor="@color/cockpit_ink" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/finishLayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:visibility="gone">
+
+        <hu.toonnav.map.FinishPodiumView
+            android:id="@+id/finishPodium"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </FrameLayout>
 
     <FrameLayout

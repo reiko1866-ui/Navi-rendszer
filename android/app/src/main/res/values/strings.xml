@@ -5,6 +5,8 @@
     <string name="racing_edition">ToonNav Racing Edition</string>
     <string name="garage_title">GARÁZS</string>
     <string name="garage_open">Garázs</string>
+    <string name="podium_title">PÓDIUM</string>
+    <string name="podium_arrived">Célba értél</string>
     <string name="garage_back">Vissza</string>
     <string name="garage_use">Ezt az autót használom</string>
     <string name="garage_number">Rajtszám</string>
