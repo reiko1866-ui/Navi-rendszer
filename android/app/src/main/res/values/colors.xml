@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="nav_blue">#1A78D4</color>
+    <color name="cockpit_bg">#121418</color>
+    <color name="cockpit_ink">#F6F3EE</color>
+    <color name="cockpit_muted">#C8C0B6</color>
+    <color name="cockpit_accent">#FF4A1A</color>
+    <color name="cockpit_accent_soft">#FFB08A</color>
+    <color name="cockpit_caution">#F0A202</color>
+    <color name="cockpit_alert">#E85D4C</color>
+    <color name="cockpit_ok">#7DCEA0</color>
     <color name="nav_ink">#142018</color>
     <color name="nav_card">#F7F8FA</color>
     <color name="nav_error">#8C2F2F</color>
@@ -10,4 +18,16 @@
     <color name="route_traveled">#B7C4B4</color>
     <color name="route_traveled_casing">#8FA08C</color>
     <color name="route_arrow">#F4C430</color>
+    <color name="race_route">#FF3B12</color>
+    <color name="race_route_night">#FF4E1A</color>
+    <color name="race_route_sheen">#FFE2C6</color>
+    <color name="race_route_sheen_night">#FFD2A4</color>
+    <color name="race_casing">#4A100C</color>
+    <color name="race_casing_night">#A34828</color>
+    <color name="race_glow">#FF7A2E</color>
+    <color name="race_glow_night">#FF6A22</color>
+    <color name="race_done">#C4A99C</color>
+    <color name="race_done_night">#6A5E58</color>
+    <color name="race_done_casing">#6A534A</color>
+    <color name="race_done_casing_night">#3C3532</color>
 </resources>

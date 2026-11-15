@@ -10,6 +10,42 @@
         android:layout_height="match_parent" />
 
     <FrameLayout
+        android:id="@+id/pilotLayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <hu.toonnav.map.PilotCockpitView
+            android:id="@+id/pilotCockpit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/pilotSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="18dp"
+            android:backgroundTint="#3A2420"
+            android:minHeight="40dp"
+            android:text="@string/search_reopen"
+            android:textColor="@color/cockpit_ink" />
+
+        <Button
+            android:id="@+id/pilotStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="18dp"
+            android:backgroundTint="#3A2420"
+            android:minHeight="40dp"
+            android:text="@string/stop_nav"
+            android:textColor="@color/cockpit_ink" />
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/hudHost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
