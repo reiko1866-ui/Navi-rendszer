@@ -54,35 +54,63 @@ object RaceGeometry {
     const val deckTop = 0.04
     const val deckDepth = 0.08
     const val shoulderWidth = 2.2
-    const val asphaltTile = 4.0
+    const val asphaltTile = 2.5
     const val grassTile = 4.0
     const val gravelTile = 2.0
+    const val chunkMeters = 250.0
 
-    fun worldModel(samples: List<RoadSample>, heightAt: ((Double, Double) -> Float)? = null): List<RaceMesh> {
+    /** Stable patches of asphalt tint. Nearby cells differ, and the run is not a fixed stripe. */
+    fun wearLayer(along: Double): Int {
+        val cell = (along / 28.0).toInt()
+        val mixed = cell * 1103515245 + 12345
+        return mixed.ushr(16) and 3
+    }
+
+    fun chunkIndex(along: Double): Int = kotlin.math.floor(along / chunkMeters).toInt().coerceAtLeast(0)
+
+    fun chunksCovering(along: Double, routeEnd: Double, behind: Double = 220.0, ahead: Double = 1_700.0): IntRange {
+        if (routeEnd <= 1.0) return 0..0
+        val first = chunkIndex((along - behind).coerceAtLeast(0.0))
+        val lastAlong = (along + ahead).coerceAtMost((routeEnd - 0.01).coerceAtLeast(0.0))
+        return first..chunkIndex(lastAlong)
+    }
+
+    fun worldModel(
+        samples: List<RoadSample>,
+        heightAt: ((Double, Double) -> Float)? = null,
+        fromAlong: Double = Double.NEGATIVE_INFINITY,
+        untilAlong: Double = Double.POSITIVE_INFINITY
+    ): List<RaceMesh> {
         if (samples.size < 2) return emptyList()
         val grass = MeshBuilder()
-        val asphalt = MeshBuilder()
+        val asphalt = Array(4) { MeshBuilder() }
         val shoulder = MeshBuilder()
         val rubber = MeshBuilder()
         val dashes = MeshBuilder()
         val edges = MeshBuilder()
+        val blend = MeshBuilder()
         val kerbRed = MeshBuilder()
         val kerbWhite = MeshBuilder()
-        ground(grass, samples, heightAt)
+        val asphaltNames = arrayOf("asphalt", "asphaltWarm", "asphaltCool", "asphaltDark")
         for (index in 0 until samples.size - 1) {
             val a = samples[index]
             val b = samples[index + 1]
+            if (a.along < fromAlong || a.along >= untilAlong) continue
             val rightA = rightAt(samples, index)
             val rightB = rightAt(samples, index + 1)
             val profileA = RoadProfile.of(a.kind)
             val profileB = RoadProfile.of(b.kind)
             val halfA = profileA.halfWidth
             val halfB = profileB.halfWidth
-            deck(asphalt, a, b, rightA, rightB, -halfA, halfA, -halfB, halfB, deckTop, deckDepth, asphaltTile)
+            deck(asphalt[wearLayer(a.along)], a, b, rightA, rightB, -halfA, halfA, -halfB, halfB, deckTop, deckDepth, asphaltTile)
             val shoulderA = profileA.shoulder
             val shoulderB = profileB.shoulder
             ribbon(shoulder, a, b, rightA, rightB, -(halfA + shoulderA), -halfA, -(halfB + shoulderB), -halfB, 0.012, gravelTile)
             ribbon(shoulder, a, b, rightA, rightB, halfA, halfA + shoulderA, halfB, halfB + shoulderB, 0.012, gravelTile)
+            ribbon(blend, a, b, rightA, rightB, -(halfA + 0.42), -(halfA - 0.08), -(halfB + 0.42), -(halfB - 0.08), deckTop + 0.007, asphaltTile)
+            ribbon(blend, a, b, rightA, rightB, halfA - 0.08, halfA + 0.42, halfB - 0.08, halfB + 0.42, deckTop + 0.007, asphaltTile)
+            verge(grass, a, b, rightA, rightB, -(halfA + shoulderA), -(halfA + shoulderA + 90.0), -(halfB + shoulderB), -(halfB + shoulderB + 90.0), heightAt)
+            verge(grass, a, b, rightA, rightB, halfA + shoulderA, halfA + shoulderA + 90.0, halfB + shoulderB, halfB + shoulderB + 90.0, heightAt)
             val trackA = (halfA * 0.34).coerceAtMost(1.15)
             val trackB = (halfB * 0.34).coerceAtMost(1.15)
             ribbon(rubber, a, b, rightA, rightB, trackA - 0.16, trackA + 0.16, trackB - 0.16, trackB + 0.16, deckTop + 0.008, asphaltTile)
@@ -92,7 +120,7 @@ object RaceGeometry {
                 ribbon(edges, a, b, rightA, rightB, -(halfA - 0.12), -(halfA - 0.28), -(halfB - 0.12), -(halfB - 0.28), deckTop + 0.012, 1.0)
             }
             if (profileA.center == CenterMark.DASH && profileB.center == CenterMark.DASH && ((a.along / 6.0).toInt()) % 2 == 0) {
-                ribbon(dashes, a, b, rightA, rightB, 0.09, -0.09, 0.09, -0.09, deckTop + 0.014, 1.0)
+                ribbon(dashes, a, b, rightA, rightB, 0.13, -0.13, 0.13, -0.13, deckTop + 0.016, 1.0)
             }
             val corner = abs(a.turn) >= kerbTurn || abs(b.turn) >= kerbTurn
             if (corner && profileA.kerbs && profileB.kerbs) {
@@ -109,13 +137,72 @@ object RaceGeometry {
         return listOf(
             grass.build("grass"),
             shoulder.build("shoulder"),
-            asphalt.build("asphalt"),
             rubber.build("rubber"),
             edges.build("edge"),
+            blend.build("vergeBlend"),
             dashes.build("marking"),
             kerbRed.build("kerbRed"),
             kerbWhite.build("kerbWhite")
-        ).filter { it.vertexCount >= 3 }
+        ).plus(asphalt.mapIndexed { index, builder -> builder.build(asphaltNames[index]) }).filter { it.vertexCount >= 3 }
+    }
+
+    /**
+     * Coarse ground from the same elevation field, outside the road verge.
+     * An empty field produces nothing, so a missing survey does not invent hills.
+     */
+    fun horizon(
+        samples: List<RoadSample>,
+        heightAt: (Double, Double) -> Float,
+        centerEast: Double,
+        centerNorth: Double
+    ): RaceMesh? {
+        if (samples.size < 2) return null
+        val builder = MeshBuilder()
+        val radius = 760.0
+        val step = 52.0
+        var east = centerEast - radius
+        while (east < centerEast + radius) {
+            val nextEast = east + step
+            var north = centerNorth - radius
+            while (north < centerNorth + radius) {
+                val nextNorth = north + step
+                val midEast = (east + nextEast) * 0.5
+                val midNorth = (north + nextNorth) * 0.5
+                if (hypot(midEast - centerEast, midNorth - centerNorth) <= radius && roadDistance(samples, midEast, midNorth) > 70.0) {
+                    val y00 = heightAt(east, north) - 0.12f
+                    val y10 = heightAt(nextEast, north) - 0.12f
+                    val y11 = heightAt(nextEast, nextNorth) - 0.12f
+                    val y01 = heightAt(east, nextNorth) - 0.12f
+                    val u0 = (east / grassTile).toFloat()
+                    val u1 = (nextEast / grassTile).toFloat()
+                    val v0 = (north / grassTile).toFloat()
+                    val v1 = (nextNorth / grassTile).toFloat()
+                    val a = builder.add(floatArrayOf(east.toFloat(), y00, north.toFloat()), u0, v0)
+                    val b = builder.add(floatArrayOf(nextEast.toFloat(), y10, north.toFloat()), u1, v0)
+                    val c = builder.add(floatArrayOf(nextEast.toFloat(), y11, nextNorth.toFloat()), u1, v1)
+                    val d = builder.add(floatArrayOf(east.toFloat(), y01, nextNorth.toFloat()), u0, v1)
+                    builder.quad(a, b, c, d)
+                }
+                north = nextNorth
+            }
+            east = nextEast
+        }
+        val mesh = builder.build("grass")
+        return if (mesh.vertexCount >= 3) mesh else null
+    }
+
+    fun libraryModel(): RaceModel {
+        val materials = materials()
+        val meshes = materials.map { material ->
+            RaceMesh(
+                material.name,
+                floatArrayOf(0f, -80f, 0f, 0.2f, -80f, 0f, 0f, -80f, 0.2f),
+                floatArrayOf(0f, 1f, 0f, 0f, 1f, 0f, 0f, 1f, 0f),
+                floatArrayOf(0f, 0f, 1f, 0f, 0f, 1f),
+                intArrayOf(0, 1, 2)
+            )
+        }
+        return RaceModel(emptyList(), meshes, materials)
     }
 
     fun materials(): List<RaceMaterial> {
@@ -127,7 +214,14 @@ object RaceGeometry {
             RaceMaterial("edge", 0.92f, 0.92f, 0.90f, 0f, 0.45f),
             RaceMaterial("marking", 0.95f, 0.95f, 0.93f, 0f, 0.42f),
             RaceMaterial("kerbRed", 0.82f, 0.08f, 0.05f, 0f, 0.4f),
-            RaceMaterial("kerbWhite", 0.93f, 0.93f, 0.91f, 0f, 0.4f)
+            RaceMaterial("kerbWhite", 0.93f, 0.93f, 0.91f, 0f, 0.4f),
+            RaceMaterial("vergeBlend", 0.18f, 0.16f, 0.13f, 0f, 0.94f, 0.58f),
+            RaceMaterial("canopy", 0.14f, 0.26f, 0.10f, 0f, 0.88f),
+            RaceMaterial("canopyDark", 0.08f, 0.16f, 0.07f, 0f, 0.92f),
+            RaceMaterial("trunk", 0.20f, 0.13f, 0.07f, 0f, 0.86f),
+            RaceMaterial("building", 0.55f, 0.52f, 0.47f, 0f, 0.82f),
+            RaceMaterial("buildingWarm", 0.58f, 0.46f, 0.38f, 0f, 0.84f),
+            RaceMaterial("buildingCool", 0.46f, 0.49f, 0.54f, 0f, 0.8f)
         )
     }
 
@@ -210,51 +304,6 @@ object RaceGeometry {
         wall(builder, a, b, rightA, rightB, toA, toB, top, top - depth, tile)
     }
 
-    private fun ground(builder: MeshBuilder, samples: List<RoadSample>, heightAt: ((Double, Double) -> Float)?) {
-        var minEast = Double.POSITIVE_INFINITY
-        var maxEast = Double.NEGATIVE_INFINITY
-        var minNorth = Double.POSITIVE_INFINITY
-        var maxNorth = Double.NEGATIVE_INFINITY
-        for (sample in samples) {
-            if (sample.east < minEast) minEast = sample.east
-            if (sample.east > maxEast) maxEast = sample.east
-            if (sample.north < minNorth) minNorth = sample.north
-            if (sample.north > maxNorth) maxNorth = sample.north
-        }
-        val pad = 110.0
-        minEast -= pad
-        maxEast += pad
-        minNorth -= pad
-        maxNorth += pad
-        val spanEast = (maxEast - minEast).coerceAtLeast(1.0)
-        val spanNorth = (maxNorth - minNorth).coerceAtLeast(1.0)
-        var step = 48.0
-        while ((spanEast / step) * (spanNorth / step) > 2400.0) step *= 1.4
-        var east = minEast
-        while (east < maxEast - 0.01) {
-            val nextEast = (east + step).coerceAtMost(maxEast)
-            var north = minNorth
-            while (north < maxNorth - 0.01) {
-                val nextNorth = (north + step).coerceAtMost(maxNorth)
-                val u0 = (east / grassTile).toFloat()
-                val u1 = (nextEast / grassTile).toFloat()
-                val v0 = (north / grassTile).toFloat()
-                val v1 = (nextNorth / grassTile).toFloat()
-                val y00 = groundHeight(samples, heightAt, east, north)
-                val y10 = groundHeight(samples, heightAt, nextEast, north)
-                val y11 = groundHeight(samples, heightAt, nextEast, nextNorth)
-                val y01 = groundHeight(samples, heightAt, east, nextNorth)
-                val a = builder.add(floatArrayOf(east.toFloat(), y00, north.toFloat()), u0, v0)
-                val b = builder.add(floatArrayOf(nextEast.toFloat(), y10, north.toFloat()), u1, v0)
-                val c = builder.add(floatArrayOf(nextEast.toFloat(), y11, nextNorth.toFloat()), u1, v1)
-                val d = builder.add(floatArrayOf(east.toFloat(), y01, nextNorth.toFloat()), u0, v1)
-                builder.quad(a, b, c, d)
-                north = nextNorth
-            }
-            east = nextEast
-        }
-    }
-
     private fun wall(
         builder: MeshBuilder,
         a: RoadSample,
@@ -298,6 +347,59 @@ object RaceGeometry {
         val b1 = builder.add(edge(b, rightB, toB, lift), (toB / tile).toFloat(), v1)
         val b0 = builder.add(edge(b, rightB, fromB, lift), (fromB / tile).toFloat(), v1)
         builder.quad(a0, b0, b1, a1)
+    }
+
+    private fun verge(
+        builder: MeshBuilder,
+        a: RoadSample,
+        b: RoadSample,
+        rightA: Pair<Double, Double>,
+        rightB: Pair<Double, Double>,
+        innerA: Double,
+        outerA: Double,
+        innerB: Double,
+        outerB: Double,
+        heightAt: ((Double, Double) -> Float)?
+    ) {
+        val bands = doubleArrayOf(0.0, 0.12, 0.34, 1.0)
+        for (band in 0 until bands.size - 1) {
+            val fromA = innerA + (outerA - innerA) * bands[band]
+            val toA = innerA + (outerA - innerA) * bands[band + 1]
+            val fromB = innerB + (outerB - innerB) * bands[band]
+            val toB = innerB + (outerB - innerB) * bands[band + 1]
+            val v0 = (a.along / grassTile).toFloat()
+            val v1 = (b.along / grassTile).toFloat()
+            val a0 = builder.add(vergePoint(a, rightA, fromA, heightAt), (fromA / grassTile).toFloat(), v0)
+            val a1 = builder.add(vergePoint(a, rightA, toA, heightAt), (toA / grassTile).toFloat(), v0)
+            val b1 = builder.add(vergePoint(b, rightB, toB, heightAt), (toB / grassTile).toFloat(), v1)
+            val b0 = builder.add(vergePoint(b, rightB, fromB, heightAt), (fromB / grassTile).toFloat(), v1)
+            builder.quad(a0, b0, b1, a1)
+        }
+    }
+
+    private fun vergePoint(
+        sample: RoadSample,
+        right: Pair<Double, Double>,
+        offset: Double,
+        heightAt: ((Double, Double) -> Float)?
+    ): FloatArray {
+        val east = sample.east + right.first * offset
+        val north = sample.north + right.second * offset
+        val profile = RoadProfile.of(sample.kind)
+        val edge = profile.halfWidth + profile.shoulder
+        val surveyed = heightAt?.invoke(east, north) ?: sample.elevation
+        val blend = ((abs(offset) - edge) / 22.0).coerceIn(0.0, 1.0).toFloat()
+        val y = sample.elevation * (1f - blend) + surveyed * blend
+        return floatArrayOf(east.toFloat(), y, north.toFloat())
+    }
+
+    private fun roadDistance(samples: List<RoadSample>, east: Double, north: Double): Double {
+        var best = Double.POSITIVE_INFINITY
+        for (sample in samples) {
+            val distance = hypot(sample.east - east, sample.north - north)
+            if (distance < best) best = distance
+        }
+        return best
     }
 
     private fun edge(sample: RoadSample, right: Pair<Double, Double>, offset: Double, lift: Double): FloatArray {
@@ -355,40 +457,6 @@ object RaceGeometry {
     private fun elevAt(elevations: FloatArray, index: Int): Float {
         if (index !in elevations.indices) return 0f
         return elevations[index]
-    }
-
-    private fun groundHeight(
-        samples: List<RoadSample>,
-        heightAt: ((Double, Double) -> Float)?,
-        east: Double,
-        north: Double
-    ): Float {
-        var best = 0f
-        var bestDistance = Double.POSITIVE_INFINITY
-        for (sample in samples) {
-            val distance = hypot(sample.east - east, sample.north - north)
-            if (distance < bestDistance) {
-                bestDistance = distance
-                best = sample.elevation
-            }
-        }
-        val surveyed = heightAt?.invoke(east, north) ?: return best
-        val blend = (bestDistance / 18.0).coerceIn(0.0, 1.0).toFloat()
-        return best * (1f - blend) + surveyed * blend
-    }
-
-    private fun at(points: List<Pair<Double, Double>>, along: DoubleArray, distance: Double): Pair<Double, Double> {
-        if (distance <= 0.0) return points.first()
-        for (index in 0 until points.size - 1) {
-            if (distance > along[index + 1]) continue
-            val span = (along[index + 1] - along[index]).coerceAtLeast(0.001)
-            val blend = ((distance - along[index]) / span).coerceIn(0.0, 1.0)
-            val start = points[index]
-            val end = points[index + 1]
-            return (start.first + (end.first - start.first) * blend) to
-                (start.second + (end.second - start.second) * blend)
-        }
-        return points.last()
     }
 
     private class MeshBuilder {

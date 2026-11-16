@@ -177,9 +177,10 @@ class RacePrototypeTest {
         val heights = floatArrayOf(0f, 6f)
         val samples = RaceGeometry.sampleRoute(straight, 2.0, emptyList(), heights)
         assertTrue(samples.last().elevation > 5f)
-        val road = RaceGeometry.worldModel(samples).first { it.material == "asphalt" }
         var highest = 0f
-        for (index in 1 until road.positions.size step 3) highest = maxOf(highest, road.positions[index])
+        for (road in RaceGeometry.worldModel(samples).filter { it.material.startsWith("asphalt") }) {
+            for (index in 1 until road.positions.size step 3) highest = maxOf(highest, road.positions[index])
+        }
         assertTrue(highest > 5f)
         val surface = samples.last().elevation.toDouble() + RaceGeometry.deckTop
         val planted = RaceCamera.carTransform(0.0, 40.0, 0.0, surface)
@@ -206,6 +207,91 @@ class RacePrototypeTest {
     }
 
     @Test
+    fun corridorChunksMeetWithoutRebuildingTheWholeRoute() {
+        val points = ArrayList<Pair<Double, Double>>()
+        var north = 0.0
+        while (north <= 900.0) {
+            points.add(0.0 to north)
+            north += 20.0
+        }
+        val samples = RaceGeometry.sampleRoute(points, 2.5)
+        val end = samples.last().along
+        val covered = HashSet<Int>()
+        for (index in 0 until samples.size - 1) covered.add(RaceGeometry.chunkIndex(samples[index].along))
+        assertEquals(RaceGeometry.chunksCovering(0.0, end).toSet(), covered)
+        val first = RaceGeometry.worldModel(samples, null, 0.0, RaceGeometry.chunkMeters)
+        val second = RaceGeometry.worldModel(samples, null, RaceGeometry.chunkMeters, RaceGeometry.chunkMeters * 2)
+        assertTrue(first.any { it.material.startsWith("asphalt") })
+        assertTrue(second.any { it.material.startsWith("asphalt") })
+        assertEquals(maxNorth(first).toDouble(), minNorth(second).toDouble(), 0.2)
+        val names = RaceGeometry.worldModel(samples).map { it.material }.toSet()
+        assertTrue(names.contains("asphalt"))
+        assertTrue(names.any { it.startsWith("asphalt") && it != "asphalt" })
+        val straight = line(0.0, 40.0)
+        val road = RaceGeometry.worldModel(RaceGeometry.sampleRoute(straight, 2.0)).first { it.material.startsWith("asphalt") }
+        val frame = RoadFrame.quaternions(road)
+        val length = kotlin.math.sqrt(frame[0] * frame[0] + frame[1] * frame[1] + frame[2] * frame[2] + frame[3] * frame[3])
+        assertEquals(1.0, length.toDouble(), 0.001)
+    }
+
+    @Test
+    fun sceneryUsesMappedFeaturesAndStaysOffTheRoad() {
+        val samples = RaceGeometry.sampleRoute(line(0.0, 80.0), 2.0)
+        assertTrue(Scenery.obstructs(0.0, 20.0, samples))
+        assertTrue(!Scenery.obstructs(40.0, 20.0, samples))
+        val square = listOf(30.0 to 10.0, 80.0 to 10.0, 80.0 to 70.0, 30.0 to 70.0, 30.0 to 10.0)
+        assertTrue(Scenery.inside(50.0, 40.0, square))
+        assertTrue(!Scenery.inside(0.0, 40.0, square))
+        val wood = Scenery.forestPoints(square, 4, samples)
+        assertTrue(wood.isNotEmpty())
+        assertTrue(wood.all { Scenery.inside(it.first, it.second, square) && !Scenery.obstructs(it.first, it.second, samples) })
+        val origin = OsrmPoint(19.0, 47.0)
+        val json = """
+            {"elements":[
+              {"type":"node","lon":19.0,"lat":47.0,"tags":{"natural":"tree"}},
+              {"type":"node","lon":19.001,"lat":47.0,"tags":{"natural":"tree"}},
+              {"type":"way","tags":{"building":"yes","height":"12"},"geometry":[
+                {"lon":19.0,"lat":47.0002},{"lon":19.00005,"lat":47.0002},
+                {"lon":19.00005,"lat":47.00025},{"lon":19.0,"lat":47.00025},{"lon":19.0,"lat":47.0002}
+              ]},
+              {"type":"way","tags":{"building":"yes","building:levels":"2"},"geometry":[
+                {"lon":19.0011,"lat":47.0004},{"lon":19.0012,"lat":47.0004},
+                {"lon":19.0012,"lat":47.0005},{"lon":19.0011,"lat":47.0005},{"lon":19.0011,"lat":47.0004}
+              ]}
+            ]}
+        """.trimIndent()
+        val meshes = Scenery.parse(json, origin, samples, null)
+        assertTrue(meshes.any { it.material == "trunk" })
+        assertTrue(meshes.any { it.material.startsWith("building") })
+        val buildings = meshes.filter { it.material.startsWith("building") }
+        assertEquals(1, buildings.size)
+        var highest = 0f
+        for (mesh in buildings) {
+            for (index in 1 until mesh.positions.size step 3) highest = maxOf(highest, mesh.positions[index])
+        }
+        assertTrue(highest > 5f)
+    }
+
+    @Test
+    fun distantGroundFollowsSurveyedElevationAndAvoidsTheCarriageway() {
+        val samples = RaceGeometry.sampleRoute(line(0.0, 40.0), 2.0)
+        val hills = RaceGeometry.horizon(samples, { east, _ -> if (kotlin.math.abs(east) > 120.0) 18f else 0f }, 0.0, 20.0)
+        assertTrue(hills != null)
+        var far = 0f
+        var nearRoad = false
+        val mesh = hills!!
+        for (index in mesh.positions.indices step 3) {
+            val east = mesh.positions[index]
+            val height = mesh.positions[index + 1]
+            val north = mesh.positions[index + 2]
+            if (kotlin.math.abs(east) > 120f) far = maxOf(far, height)
+            if (kotlin.math.abs(east) < 12f && north in 0f..40f) nearRoad = true
+        }
+        assertTrue(far > 10f)
+        assertTrue(!nearRoad)
+    }
+
+    @Test
     fun theMeshWindowFollowsTheCarInsteadOfTheWholeRoute() {
         val points = ArrayList<Pair<Double, Double>>()
         var north = 0.0
@@ -219,6 +305,20 @@ class RacePrototypeTest {
         assertTrue(near.last().along < 2000.0)
         assertTrue(far.first().along > 2000.0)
         assertTrue(far.last().along - far.first().along < 2100.0)
+    }
+
+    private fun maxNorth(meshes: List<RaceMesh>): Float = northLimit(meshes, highest = true)
+
+    private fun minNorth(meshes: List<RaceMesh>): Float = northLimit(meshes, highest = false)
+
+    private fun northLimit(meshes: List<RaceMesh>, highest: Boolean): Float {
+        var value = if (highest) Float.NEGATIVE_INFINITY else Float.POSITIVE_INFINITY
+        for (mesh in meshes.filter { it.material.startsWith("asphalt") }) {
+            for (index in 2 until mesh.positions.size step 3) {
+                value = if (highest) maxOf(value, mesh.positions[index]) else minOf(value, mesh.positions[index])
+            }
+        }
+        return value
     }
 
     private fun eastSpan(mesh: RaceMesh): Double {

@@ -35,11 +35,20 @@ object TerrainTiles {
      */
     fun load(points: List<OsrmPoint>): ((Double, Double) -> Float)? {
         if (points.size < 2) return null
+        val required = points.map { tileIndex(it.lon, it.lat) }.toSet()
+        val wanted = HashSet<Pair<Int, Int>>()
+        for (key in required) {
+            for (dx in -1..1) for (dy in -1..1) wanted.add(key.first + dx to key.second + dy)
+        }
         val tiles = HashMap<Pair<Int, Int>, IntArray>()
-        for (point in points) {
-            val key = tileIndex(point.lon, point.lat)
-            if (key in tiles) continue
-            tiles[key] = fetch(key.first, key.second) ?: return null
+        var extras = 0
+        for (key in wanted) {
+            if (key !in required && extras >= 18) continue
+            val pixels = fetch(key.first, key.second)
+            if (pixels != null) {
+                tiles[key] = pixels
+                if (key !in required) extras++
+            } else if (key in required) return null
         }
         val origin = points.first()
         val datum = sample(origin, tiles) ?: return null

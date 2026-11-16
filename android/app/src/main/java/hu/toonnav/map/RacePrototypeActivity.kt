@@ -74,14 +74,21 @@ class RacePrototypeActivity : ComponentActivity() {
     private var offRouteSpoken = false
     private var routeSeq = 0
     private var plan: OsrmRoutePlan? = null
-    private var route = emptyList<OsrmPoint>()
-    private var samples = emptyList<RoadSample>()
+    @Volatile private var route = emptyList<OsrmPoint>()
+    @Volatile private var samples = emptyList<RoadSample>()
     private var roadKinds = emptyList<RoadKind>()
     private var elevations = FloatArray(0)
-    private var terrain: ((Double, Double) -> Float)? = null
-    private var windowEnd = 0.0
-    private var buildingRoad = false
+    @Volatile private var terrain: ((Double, Double) -> Float)? = null
+    @Volatile private var windowEnd = 0.0
+    @Volatile private var buildingRoad = false
+    @Volatile private var buildingScenery = false
+    @Volatile private var geometryGeneration = 0
+    @Volatile private var sceneryGeneration = 0
+    private val sceneryReady = HashSet<Int>()
+    private var horizonCenter = Double.NaN
     @Volatile var travelAlong = 8.0
+    @Volatile var uploadMs = 0.0
+    @Volatile var peakFrameMs = 0.0
 
     @Volatile var followLongitude = Double.NaN
     @Volatile var followLatitude = Double.NaN
@@ -146,12 +153,8 @@ class RacePrototypeActivity : ComponentActivity() {
             val skyBytes = assets.open("models/noon-sky.hdr").use { it.readBytes() }
             val images = RaceGlb.roadImages { name -> assets.open("models/road/$name.ktx2").use { it.readBytes() } }
             roadImages = images
-            val shown = RaceTrack.window(samples, 0.0)
-            windowEnd = shown.lastOrNull()?.along ?: 0.0
-            val roadBytes = RaceGlb.encode(
-                RaceModel(emptyList(), RaceGeometry.worldModel(shown, terrain), RaceGeometry.materials()),
-                images
-            )
+            windowEnd = samples.lastOrNull()?.along ?: 0.0
+            val roadBytes = RaceGlb.encode(RaceGeometry.libraryModel(), images)
             val created = RaceRenderer.start(
                 carBytes, roadBytes, skyBytes, routeNow, samples, selected, night, surface, handler, this
             )
@@ -385,7 +388,9 @@ class RacePrototypeActivity : ComponentActivity() {
         offRouteSpoken = false
         voice.halt()
         voice.speak("reroute", "reroute", null, "ujratervezes")
-        publishRoad(0.0, keepMotion = false)
+        sceneryReady.clear()
+        sceneryGeneration++
+        rebuildCorridor(keepMotion = false)
         requestElevation(routeSeq)
         statusView.text = ""
         paintHud(guidance.refreshAge(fixAge()))
@@ -396,35 +401,135 @@ class RacePrototypeActivity : ComponentActivity() {
         samples = RaceTrack.samplesFor(route, roadKinds, elevations)
     }
 
-    private fun publishRoad(along: Double, keepMotion: Boolean) {
-        val shown = RaceTrack.window(samples, along)
-        windowEnd = shown.lastOrNull()?.along ?: 0.0
-        val field = terrain
-        val images = roadImages
-        val line = route
-        val guide = samples
+    private fun rebuildCorridor(keepMotion: Boolean) {
         val handler = renderHandler
-        if (handler == null || images.isEmpty()) {
+        if (handler == null) {
             buildingRoad = false
             return
         }
-        handler.post {
-            val bytes = RaceGlb.encode(
-                RaceModel(emptyList(), RaceGeometry.worldModel(shown, field), RaceGeometry.materials()),
-                images
-            )
-            renderer?.replaceRoad(bytes, line, guide, keepMotion)
-            buildingRoad = false
-        }
+        geometryGeneration++
+        val generation = geometryGeneration
+        val source = samples
+        val field = terrain
+        val along = travelAlong
+        val end = source.lastOrNull()?.along ?: 0.0
+        windowEnd = end
+        val needed = RaceGeometry.chunksCovering(along, end)
+        val center = if (source.size >= 2) RaceTrack.pointAt(source, along) else null
+        buildingRoad = true
+        Thread {
+            val built = needed.associateWith { index ->
+                RaceGeometry.worldModel(
+                    source,
+                    field,
+                    index * RaceGeometry.chunkMeters,
+                    (index + 1) * RaceGeometry.chunkMeters
+                )
+            }
+            val hills = if (field != null && center != null) RaceGeometry.horizon(source, field, center.east, center.north) else null
+            handler.post {
+                if (generation != geometryGeneration) return@post
+                val uploadStarted = System.nanoTime()
+                renderer?.syncRoad(source, route, built, hills, keepMotion)
+                uploadMs = (System.nanoTime() - uploadStarted) / 1_000_000.0
+                if (hills != null) horizonCenter = along
+                buildingRoad = false
+            }
+        }.start()
     }
 
     fun slideWindow(along: Double) {
+        val gpu = renderer?.roadGpu ?: return
+        if (samples.size < 2) return
+        val end = samples.last().along
+        val needed = RaceGeometry.chunksCovering(along, end)
+        gpu.dropChunksExcept(needed)
+        if (!buildingRoad) {
+            val missing = needed.filter { it !in gpu.chunkKeys }
+            if (missing.isNotEmpty()) {
+                buildingRoad = true
+                val generation = geometryGeneration
+                val source = samples
+                val field = terrain
+                val handler = renderHandler
+                Thread {
+                    val built = missing.associateWith { index ->
+                        RaceGeometry.worldModel(
+                            source,
+                            field,
+                            index * RaceGeometry.chunkMeters,
+                            (index + 1) * RaceGeometry.chunkMeters
+                        )
+                    }
+                    handler?.post {
+                        if (generation == geometryGeneration) {
+                            val started = System.nanoTime()
+                            gpu.uploadChunks(built)
+                            uploadMs = (System.nanoTime() - started) / 1_000_000.0
+                        }
+                        buildingRoad = false
+                    }
+                }.start()
+            } else {
+                refreshHorizon(along)
+            }
+        }
+        refreshScenery(along)
+    }
+
+    private fun refreshHorizon(along: Double) {
+        val field = terrain ?: return
         if (buildingRoad || samples.size < 2) return
-        val routeEnd = samples.last().along
-        if (windowEnd >= routeEnd - 1.0) return
-        if (along < windowEnd - 420.0 || along >= routeEnd - 30.0) return
+        if (!horizonCenter.isNaN() && kotlin.math.abs(along - horizonCenter) < 280.0) return
         buildingRoad = true
-        publishRoad(along, keepMotion = true)
+        val generation = geometryGeneration
+        val source = samples
+        val center = RaceTrack.pointAt(source, along)
+        val handler = renderHandler
+        Thread {
+            val hills = RaceGeometry.horizon(source, field, center.east, center.north)
+            handler?.post {
+                if (generation == geometryGeneration && hills != null) {
+                    renderer?.roadGpu?.replaceHorizon(hills)
+                    horizonCenter = along
+                }
+                buildingRoad = false
+            }
+        }.start()
+    }
+
+    private fun refreshScenery(along: Double) {
+        if (!usingLiveRoute || buildingScenery || route.size < 2) return
+        val end = samples.lastOrNull()?.along ?: return
+        val first = kotlin.math.floor(((along - 200.0).coerceAtLeast(0.0)) / Scenery.chunkMeters).toInt()
+        val lastAlong = (along + 1_200.0).coerceAtMost((end - 0.01).coerceAtLeast(0.0))
+        val last = kotlin.math.floor(lastAlong / Scenery.chunkMeters).toInt()
+        val needed = first..last
+        renderer?.roadGpu?.dropSceneryExcept(needed)
+        val missing = needed.filter { it >= 0 && it !in sceneryReady }
+        if (missing.isEmpty()) return
+        buildingScenery = true
+        val generation = sceneryGeneration
+        val origin = route.first()
+        val source = samples
+        val field = terrain
+        val handler = renderHandler
+        Thread {
+            val built = HashMap<Int, List<RaceMesh>>()
+            for (index in missing) {
+                val box = Scenery.bounds(origin, source, index * Scenery.chunkMeters, (index + 1) * Scenery.chunkMeters)
+                val json = if (box == null) null else Scenery.fetch(box[0], box[1], box[2], box[3])
+                val slice = source.filter { it.along in (index * Scenery.chunkMeters - 30.0)..((index + 1) * Scenery.chunkMeters + 30.0) }
+                built[index] = if (json == null) emptyList() else Scenery.parse(json, origin, slice, field)
+            }
+            handler?.post {
+                if (generation == sceneryGeneration) {
+                    sceneryReady.addAll(missing)
+                    renderer?.roadGpu?.uploadScenery(built)
+                }
+                buildingScenery = false
+            }
+        }.start()
     }
 
     private fun requestElevation(seq: Int) {
@@ -441,7 +546,9 @@ class RacePrototypeActivity : ComponentActivity() {
                     field(local.first, local.second)
                 }
                 prepareSamples()
-                publishRoad(travelAlong, keepMotion = true)
+                sceneryReady.clear()
+                sceneryGeneration++
+                rebuildCorridor(keepMotion = true)
             }
         }.start()
     }
@@ -474,16 +581,17 @@ class RacePrototypeActivity : ComponentActivity() {
         paintFrame()
     }
 
-    fun publishFrame(fps: Double, milliseconds: Double) {
+    fun publishFrame(fps: Double, milliseconds: Double, peak: Double) {
         frameFps = fps
         frameMs = milliseconds
+        peakFrameMs = peak
         runOnUiThread { if (!isDestroyed) paintFrame() }
     }
 
     private fun paintFrame() {
         if (!frameFps.isFinite()) return
         val base = statusView.text?.toString().orEmpty().lineSequence().firstOrNull { !it.contains("fps") }.orEmpty()
-        val fps = "${frameFps.roundToInt()} fps, ${"%.1f".format(frameMs)} ms"
+        val fps = "${frameFps.roundToInt()} fps, ${"%.1f".format(frameMs)} ms, peak ${"%.1f".format(peakFrameMs)}"
         statusView.text = if (base.isBlank()) fps else "$base\n$fps"
     }
 
@@ -530,6 +638,7 @@ private class RaceRenderer(
     private var samples: List<RoadSample>,
     private val host: RacePrototypeActivity
 ) {
+    val roadGpu = RoadGpu(engine, scene, roadAsset)
     var surfaceHelper: UiHelper? = null
     var swapChain: SwapChain? = null
     private var closed = false
@@ -537,6 +646,7 @@ private class RaceRenderer(
     private var height = 0
     private var lastFrame = 0L
     private var frameSum = 0.0
+    private var peakFrame = 0.0
     private var frameCount = 0
     private var posted = 0L
     private var heldEast = 0.0
@@ -612,9 +722,27 @@ private class RaceRenderer(
         }
     }
 
+    fun syncRoad(
+        nextSamples: List<RoadSample>,
+        nextRoute: List<OsrmPoint>,
+        built: Map<Int, List<RaceMesh>>,
+        hills: RaceMesh?,
+        keepMotion: Boolean
+    ) {
+        if (closed) return
+        roadGpu.replaceAll(built, hills)
+        route = nextRoute
+        samples = nextSamples
+        if (!keepMotion) {
+            held = false
+            bearingReady = false
+        }
+    }
+
     fun destroy() {
         closed = true
         choreographer.removeFrameCallback(callback)
+        roadGpu.destroy()
         loader.destroyAsset(carAsset)
         loader.destroyAsset(roadAsset)
         resources.destroy()
@@ -690,14 +818,17 @@ private class RaceRenderer(
             renderer.endFrame()
         }
         if (step > 0.0) {
-            frameSum += step * 1000.0
+            val frameMs = step * 1000.0
+            if (frameMs > peakFrame) peakFrame = frameMs
+            frameSum += frameMs
             frameCount += 1
             val now = android.os.SystemClock.uptimeMillis()
             if (frameCount >= 12 && now - posted > 250L) {
                 val average = frameSum / frameCount
-                host.publishFrame(1000.0 / average, average)
+                host.publishFrame(1000.0 / average, average, peakFrame)
                 frameSum = 0.0
                 frameCount = 0
+                peakFrame = 0.0
                 posted = now
             }
         }
@@ -773,11 +904,11 @@ private class RaceRenderer(
                 view.dynamicResolutionOptions = resolution
                 val fog = view.fogOptions
                 fog.enabled = true
-                fog.distance = 140f
-                fog.maximumOpacity = 0.62f
-                fog.density = 0.028f
-                fog.height = 6f
-                fog.heightFalloff = 2.5f
+                fog.distance = 40f
+                fog.maximumOpacity = 0.58f
+                fog.density = 0.0018f
+                fog.height = 80f
+                fog.heightFalloff = 0.02f
                 fog.color = floatArrayOf(0.62f, 0.72f, 0.86f)
                 view.fogOptions = fog
                 val probe = RaceLighting.create(engine, skyBytes)
@@ -793,11 +924,20 @@ private class RaceRenderer(
                 scene.skybox = sky
                 scene.indirectLight = indirect
                 val light = EntityManager.get().create()
+                val shadows = LightManager.ShadowOptions()
+                shadows.mapSize = 1024
+                shadows.shadowCascades = 1
+                shadows.shadowFar = 48f
+                shadows.screenSpaceContactShadows = true
+                shadows.maxShadowDistance = 8f
+                shadows.constantBias = 0.08f
+                shadows.normalBias = 0.6f
                 LightManager.Builder(LightManager.Type.SUN)
                     .color(1.0f, 0.97f, 0.92f)
                     .intensity(100_000f)
                     .direction(RaceLighting.sunX, RaceLighting.sunY, RaceLighting.sunZ)
                     .castShadows(true)
+                    .shadowOptions(shadows)
                     .sunAngularRadius(0.45f)
                     .build(engine, light)
                 scene.addEntity(light)
@@ -813,7 +953,25 @@ private class RaceRenderer(
                     loader, resources, provider, route, samples, host
                 )
                 scene.addEntities(created.carAsset.entities)
-                scene.addEntities(created.roadAsset.entities)
+                val routeEnd = samples.lastOrNull()?.along ?: 0.0
+                val needed = RaceGeometry.chunksCovering(0.0, routeEnd)
+                val built = needed.associateWith { index ->
+                    RaceGeometry.worldModel(
+                        samples,
+                        null,
+                        index * RaceGeometry.chunkMeters,
+                        (index + 1) * RaceGeometry.chunkMeters
+                    )
+                }
+                created.roadGpu.uploadChunks(built)
+                val renderables = engine.renderableManager
+                for (entity in created.carAsset.renderableEntities) {
+                    val instance = renderables.getInstance(entity)
+                    if (instance == 0) continue
+                    renderables.setCastShadows(instance, true)
+                    renderables.setReceiveShadows(instance, true)
+                    renderables.setScreenSpaceContactShadows(instance, true)
+                }
                 created.applyLivery(car)
                 if (night) created.setNight(true)
                 val helper = UiHelper(UiHelper.ContextErrorPolicy.DONT_CHECK)
