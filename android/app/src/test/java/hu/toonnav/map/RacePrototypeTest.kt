@@ -12,30 +12,40 @@ import kotlin.math.sqrt
 
 class RacePrototypeTest {
     @Test
-    fun theCarIsASolidMeshWithAWiderWingAndUnitNormals() {
-        val model = RaceTrack.model(RaceTrack.samplePreview(), 0xFF1F4E8C.toInt(), 0xFFF4F1EC.toInt())
-        val nose = model.car.first()
-        val wings = model.car.drop(1).take(3)
-        assertTrue(nose.triangleCount > 200)
-        val noseBounds = RaceGeometry.bounds(nose)
-        assertTrue(noseBounds[3] - noseBounds[0] > 0.02f)
-        assertTrue(noseBounds[4] - noseBounds[1] > 0.02f)
-        assertTrue(noseBounds[5] - noseBounds[2] > 1.0f)
-        val wingSpan = wings.maxOf { bounds ->
-            val box = RaceGeometry.bounds(bounds)
-            box[3] - box[0]
-        }
-        assertTrue(wingSpan > noseBounds[3] - noseBounds[0] + 0.8f)
-        for (mesh in model.car) {
-            for (index in mesh.normals.indices step 3) {
-                val length = sqrt(
-                    mesh.normals[index] * mesh.normals[index] +
-                        mesh.normals[index + 1] * mesh.normals[index + 1] +
-                        mesh.normals[index + 2] * mesh.normals[index + 2]
-                )
-                assertEquals(1.0, length.toDouble(), 0.02)
+    fun theFormulaAssetIsADetailedLicensedModelAndTheRoadHasThickness() {
+        val file = java.io.File("src/main/assets/models/formula-car.glb")
+        val bytes = file.readBytes()
+        assertTrue(bytes.size > 500_000)
+        assertEquals(0x46546C67, ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).int)
+        val json = RaceGlb.json(bytes)
+        assertTrue(json.optJSONArray("extensionsRequired") == null)
+        val names = List(json.getJSONArray("nodes").length()) { json.getJSONArray("nodes").getJSONObject(it).optString("name") }
+        assertTrue(names.contains("formula-car"))
+        assertTrue(names.contains("front_wing"))
+        val materials = List(json.getJSONArray("materials").length()) { json.getJSONArray("materials").getJSONObject(it).optString("name") }
+        assertTrue(materials.any { it.startsWith("paint_primary") })
+        assertTrue(materials.any { it.startsWith("carbon") })
+        val accessors = json.getJSONArray("accessors")
+        var triangles = 0
+        for (meshIndex in 0 until json.getJSONArray("meshes").length()) {
+            val primitives = json.getJSONArray("meshes").getJSONObject(meshIndex).getJSONArray("primitives")
+            for (primitive in 0 until primitives.length()) {
+                val indices = primitives.getJSONObject(primitive).optInt("indices", -1)
+                if (indices >= 0) triangles += accessors.getJSONObject(indices).getInt("count") / 3
             }
         }
+        assertTrue(triangles > 30_000)
+        val license = java.io.File("src/main/assets/models/formula-car-license.txt").readText()
+        assertTrue(license.contains("CC0"))
+        val road = RaceGeometry.worldModel(RaceGeometry.sampleRoute(line(0.0, 80.0), 2.0)).first { it.material == "asphalt" }
+        val box = RaceGeometry.bounds(road)
+        assertTrue(box[4] - box[1] > 0.1f)
+        val slots = GarageFleet.cars.map { car ->
+            RaceLivery.color("body", car) to RaceLivery.color("accent", car)
+        }
+        assertEquals(GarageFleet.cars.size, slots.toSet().size)
+        assertEquals("body", RaceLivery.slot("paint_primary_body"))
+        assertEquals(null, RaceLivery.slot("tire"))
     }
 
     @Test
@@ -66,8 +76,8 @@ class RacePrototypeTest {
 
     @Test
     fun glbContainsTheCarRoadAndBothLiveries() {
-        val first = encoded(GarageFleet.car("eben")!!)
-        val second = encoded(GarageFleet.car("marvany")!!)
+        val first = encoded()
+        val second = encoded()
         assertEquals(0x46546C67, ByteBuffer.wrap(first).order(ByteOrder.LITTLE_ENDIAN).int)
         assertTrue(first.size > 10_000)
         val json = RaceGlb.json(first)
@@ -83,16 +93,13 @@ class RacePrototypeTest {
             val end = view.getInt("byteOffset") + view.getInt("byteLength")
             assertTrue(end <= binLength)
         }
-        assertEquals("car", json.getJSONArray("nodes").getJSONObject(0).getString("name"))
-        assertEquals("road", json.getJSONArray("nodes").getJSONObject(1).getString("name"))
+        assertEquals("road", json.getJSONArray("nodes").getJSONObject(0).getString("name"))
         val names = materialNames(json)
-        assertTrue(names.containsAll(listOf("body", "accent", "asphalt", "marking")))
-        val eben = color(json, "body")
-        val marble = color(RaceGlb.json(second), "body")
-        assertTrue(abs(eben[0] - marble[0]) > 0.4)
-        val colors = GarageFleet.cars.map { car -> color(RaceGlb.json(encoded(car)), "body").joinToString(",") }.toSet()
-        assertEquals(GarageFleet.cars.size, colors.size)
-        val png = RaceGlb.carbonPng()
+        assertTrue(names.containsAll(listOf("asphalt", "verge", "marking")))
+        assertTrue(json.getJSONArray("meshes").getJSONObject(0).getJSONArray("primitives").getJSONObject(0)
+            .getJSONObject("attributes").has("TEXCOORD_0"))
+        assertTrue(second.size > 10_000)
+        val png = RaceGlb.asphaltPng()
         assertEquals(137.toByte(), png[0])
         assertEquals("PNG".toByteArray()[0], png[1])
     }
@@ -100,8 +107,10 @@ class RacePrototypeTest {
     @Test
     fun theDrivingCameraKeepsTheNoseLowAndAgreesWithRouteMotion() {
         val pose = RaceCamera.pose(0.0, 0.0, 0.0)
-        val offset = RaceCamera.verticalOffset(pose, 0f, 0.36f, 2.28f)
+        val nose = RaceCamera.nosePoint(0.0, 0.0, 0.0)
+        val offset = RaceCamera.verticalOffset(pose, nose[0], nose[1], nose[2])
         assertTrue(offset < -0.05f)
+        assertTrue(offset > -0.92f)
         val route = RaceTrack.samplePreview()
         val samples = RaceTrack.samplesFor(route)
         val bearing = RaceTrack.bearing(route, samples, 20.0)
@@ -115,8 +124,8 @@ class RacePrototypeTest {
         assertEquals(1f, transform[8], 0.02f)
     }
 
-    private fun encoded(car: GarageFleet.Car): ByteArray {
-        return RaceGlb.encode(RaceTrack.model(RaceTrack.samplePreview(), car.body, car.accent))
+    private fun encoded(): ByteArray {
+        return RaceGlb.encode(RaceTrack.model(RaceTrack.samplePreview()))
     }
 
     private fun materialNames(json: JSONObject): List<String> {

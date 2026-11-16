@@ -95,11 +95,13 @@
     <string name="status_arrived">Megérkeztél a célhoz.</string>
     <string name="status_gps_poor">A GPS pontatlan, ezért a célba érés és a letérés még nem számít.</string>
     <string name="garage_prototype">3D prototípus</string>
+    <string name="race_open">3D</string>
     <string name="race_back">Vissza</string>
     <string name="race_livery">Festés</string>
     <string name="race_play">Indítás</string>
     <string name="race_pause">Szünet</string>
-    <string name="race_preview_note">Előnézet: a kamera a vonalon halad. Ez nem élő GPS.</string>
+    <string name="race_preview_note">Mintaútvonal. Ez nem élő GPS.</string>
+    <string name="race_waiting_gps">Várakozás a GPS-jelre.</string>
     <string name="race_sample_route">Mintaútvonal</string>
     <string name="race_live_route">Aktuális útvonal</string>
     <string name="race_engine_failed">A 3D megjelenítés nem indult el ezen az eszközön.</string>

@@ -60,6 +60,8 @@ object DriveSessionMemory {
     var traveledMeters: Double = 0.0
     var origin: Place? = null
     var destination: Place? = null
+    var revision: Int = 0
+    var abandon: Boolean = false
 
     fun hold(
         plan: OsrmRoutePlan,
@@ -75,6 +77,7 @@ object DriveSessionMemory {
         this.traveledMeters = traveledMeters
         this.origin = origin
         this.destination = destination
+        revision += 1
     }
 
     fun clear() {
@@ -84,6 +87,7 @@ object DriveSessionMemory {
         traveledMeters = 0.0
         origin = null
         destination = null
+        revision += 1
     }
 }
 

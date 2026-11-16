@@ -22,30 +22,27 @@ object RaceGlb {
             materialIndex[material.name] = materials.length()
             materials.put(materialJson(material))
         }
-        val carPrimitives = JSONArray()
         val worldPrimitives = JSONArray()
-        for (mesh in model.car) primitive(mesh, bin, bufferViews, accessors, materialIndex, carPrimitives)
         for (mesh in model.world) primitive(mesh, bin, bufferViews, accessors, materialIndex, worldPrimitives)
         val meshLength = bin.position()
-        val png = carbonPng()
+        val png = asphaltPng()
         val paddedMesh = align(meshLength)
         val bytes = ByteArray(paddedMesh + align(png.size))
         bin.flip()
         bin.get(bytes, 0, meshLength)
         System.arraycopy(png, 0, bytes, paddedMesh, png.size)
         bufferViews.put(JSONObject().put("buffer", 0).put("byteOffset", paddedMesh).put("byteLength", png.size))
-        materials.getJSONObject(0).getJSONObject("pbrMetallicRoughness")
-            .put("baseColorTexture", JSONObject().put("index", 0))
+        val asphalt = materialIndex["asphalt"]
+        if (asphalt != null) {
+            materials.getJSONObject(asphalt).getJSONObject("pbrMetallicRoughness")
+                .put("baseColorTexture", JSONObject().put("index", 0))
+        }
         val root = JSONObject()
         root.put("asset", JSONObject().put("version", "2.0").put("generator", "ToonNav RacePrototype"))
         root.put("scene", 0)
-        root.put("scenes", JSONArray().put(JSONObject().put("nodes", JSONArray().put(0).put(1))))
-        root.put("nodes", JSONArray()
-            .put(JSONObject().put("name", "car").put("mesh", 0))
-            .put(JSONObject().put("name", "road").put("mesh", 1)))
-        root.put("meshes", JSONArray()
-            .put(JSONObject().put("name", "car").put("primitives", carPrimitives))
-            .put(JSONObject().put("name", "road").put("primitives", worldPrimitives)))
+        root.put("scenes", JSONArray().put(JSONObject().put("nodes", JSONArray().put(0))))
+        root.put("nodes", JSONArray().put(JSONObject().put("name", "road").put("mesh", 0)))
+        root.put("meshes", JSONArray().put(JSONObject().put("name", "road").put("primitives", worldPrimitives)))
         root.put("materials", materials)
         root.put("buffers", JSONArray().put(JSONObject().put("byteLength", bytes.size)))
         root.put("bufferViews", bufferViews)
@@ -86,6 +83,10 @@ object RaceGlb {
         for (value in mesh.normals) bin.putFloat(value)
         val normalLength = bin.position() - normalOffset
         pad(bin)
+        val uvOffset = bin.position()
+        for (value in mesh.uvs) bin.putFloat(value)
+        val uvLength = bin.position() - uvOffset
+        pad(bin)
         val indexOffset = bin.position()
         for (value in mesh.indices) bin.putInt(value)
         val indexLength = bin.position() - indexOffset
@@ -93,6 +94,8 @@ object RaceGlb {
         views.put(view(positionOffset, positionLength))
         val normalView = views.length()
         views.put(view(normalOffset, normalLength))
+        val uvView = views.length()
+        views.put(view(uvOffset, uvLength))
         val indexView = views.length()
         views.put(view(indexOffset, indexLength))
         val bounds = RaceGeometry.bounds(mesh)
@@ -100,10 +103,12 @@ object RaceGlb {
         accessors.put(accessor(positionView, mesh.vertexCount, bounds))
         val normalAccessor = accessors.length()
         accessors.put(JSONObject().put("bufferView", normalView).put("componentType", 5126).put("count", mesh.vertexCount).put("type", "VEC3"))
+        val uvAccessor = accessors.length()
+        accessors.put(JSONObject().put("bufferView", uvView).put("componentType", 5126).put("count", mesh.vertexCount).put("type", "VEC2"))
         val indexAccessor = accessors.length()
         accessors.put(JSONObject().put("bufferView", indexView).put("componentType", 5125).put("count", mesh.indices.size).put("type", "SCALAR"))
         primitives.put(JSONObject()
-            .put("attributes", JSONObject().put("POSITION", positionAccessor).put("NORMAL", normalAccessor))
+            .put("attributes", JSONObject().put("POSITION", positionAccessor).put("NORMAL", normalAccessor).put("TEXCOORD_0", uvAccessor))
             .put("indices", indexAccessor)
             .put("material", materials[mesh.material] ?: 0))
     }
@@ -154,7 +159,7 @@ object RaceGlb {
     private fun estimate(model: RaceModel): Int {
         var bytes = 256
         for (mesh in model.car + model.world) {
-            bytes += mesh.positions.size * 4 + mesh.normals.size * 4 + mesh.indices.size * 4 + 64
+            bytes += mesh.positions.size * 4 + mesh.normals.size * 4 + mesh.uvs.size * 4 + mesh.indices.size * 4 + 64
         }
         return bytes
     }
@@ -164,6 +169,39 @@ object RaceGlb {
     }
 
     private fun align(value: Int): Int = value + (4 - value % 4) % 4
+
+    fun asphaltPng(size: Int = 128): ByteArray {
+        val raw = ByteArray(size * (1 + size * 3))
+        var cursor = 0
+        var state = 0x1234567
+        for (y in 0 until size) {
+            raw[cursor++] = 0
+            for (x in 0 until size) {
+                state = state * 1103515245 + 12345
+                val grain = ((state ushr 16) and 31) - 12
+                val streak = if (y % 17 == 0 && x % 5 != 0) -18 else 0
+                val patch = if (((x / 9) + (y / 13)) % 7 == 0) -10 else 0
+                val value = (78 + grain + streak + patch).coerceIn(28, 120)
+                raw[cursor++] = value.toByte()
+                raw[cursor++] = (value + 1).coerceAtMost(125).toByte()
+                raw[cursor++] = (value - 2).coerceAtLeast(20).toByte()
+            }
+        }
+        return png(size, raw)
+    }
+
+    private fun png(size: Int, raw: ByteArray): ByteArray {
+        val deflater = Deflater()
+        deflater.setInput(raw)
+        deflater.finish()
+        val compressed = ByteArray(raw.size + 64)
+        val length = deflater.deflate(compressed)
+        deflater.end()
+        val signature = byteArrayOf(137.toByte(), 80, 78, 71, 13, 10, 26, 10)
+        val ihdr = ByteBuffer.allocate(13).order(ByteOrder.BIG_ENDIAN)
+            .putInt(size).putInt(size).put(8).put(2).put(0).put(0).put(0).array()
+        return signature + chunk("IHDR", ihdr) + chunk("IDAT", compressed.copyOf(length)) + chunk("IEND", ByteArray(0))
+    }
 
     fun carbonPng(size: Int = 64): ByteArray {
         val raw = ByteArray(size * (1 + size * 3))

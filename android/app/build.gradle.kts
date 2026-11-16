@@ -27,6 +27,10 @@ android {
         buildConfig = true
     }
 
+    androidResources {
+        noCompress += "glb"
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false

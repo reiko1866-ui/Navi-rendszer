@@ -19,7 +19,7 @@ object RaceTrack {
                 local[index].second - local[index - 1].second
             )
         }
-        val step = (length / 1600.0).coerceAtLeast(2.0)
+        val step = if (length > 14_000.0) length / 4_000.0 else 2.5
         return RaceGeometry.sampleRoute(local, step)
     }
 
@@ -34,20 +34,9 @@ object RaceTrack {
         return Math.toDegrees(kotlin.math.atan2(ahead.east - here.east, ahead.north - here.north))
     }
 
-    fun model(route: List<OsrmPoint>, body: Int, accent: Int): RaceModel {
-        val samples = samplesFor(route)
-        val materials = RaceGeometry.materials(
-            channel(body, 16), channel(body, 8), channel(body, 0),
-            channel(accent, 16), channel(accent, 8), channel(accent, 0)
-        )
-        return RaceModel(
-            RaceGeometry.carModel(materials[0], materials[1]),
-            RaceGeometry.worldModel(samples),
-            materials
-        )
+    fun model(route: List<OsrmPoint>): RaceModel {
+        return RaceModel(emptyList(), RaceGeometry.worldModel(samplesFor(route)), RaceGeometry.materials())
     }
-
-    private fun channel(color: Int, shift: Int): Float = ((color ushr shift) and 0xFF) / 255f
 
     fun localMeters(route: List<OsrmPoint>): List<Pair<Double, Double>> {
         if (route.size < 2) return emptyList()

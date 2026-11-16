@@ -116,6 +116,7 @@ class MainActivity : ComponentActivity() {
     private var cockpitGliding = false
     private val reroutes = RerouteSession()
     private var pilotMapOpen = false
+    private var appliedDriveRevision = 0
     private var finishDismissed = false
     private var offRouteSpoken = false
     private var pilotNoticeText = ""
@@ -226,6 +227,12 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         mapView?.onResume()
+        if (DriveSessionMemory.abandon) {
+            DriveSessionMemory.abandon = false
+            if (guiding) stopGuidance()
+        } else if (guiding) {
+            adoptMemoryIfNewer()
+        }
         presentDrive()
         if (driveView.followCamera && !overviewShown) followVehicle()
         val style = loadedStyle ?: return
@@ -318,6 +325,9 @@ class MainActivity : ComponentActivity() {
             startActivity(Intent(this, GarageActivity::class.java))
         }
         findViewById<Button>(R.id.pilotMap).setOnClickListener { togglePilotMap() }
+        findViewById<Button>(R.id.pilotDrive).setOnClickListener {
+            startActivity(Intent(this, RacePrototypeActivity::class.java).putExtra(RacePrototypeActivity.EXTRA_CAR, GarageStore(this).carId()))
+        }
         findViewById<Button>(R.id.pilotVoice).setOnClickListener { toggleVoice() }
         findViewById<Button>(R.id.pilotNight).setOnClickListener { toggleNight() }
         findViewById<Button>(R.id.finishMap).setOnClickListener {
@@ -1035,6 +1045,7 @@ class MainActivity : ComponentActivity() {
             DriveSessionMemory.clear()
             DriveTripFile.delete(this)
         }
+        appliedDriveRevision = DriveSessionMemory.revision
     }
 
     private fun restoreActiveDrive() {
@@ -1063,6 +1074,22 @@ class MainActivity : ComponentActivity() {
             DriveTripFile.delete(this)
             if (stored.guiding || stored.arrived) DriveSessionStore(this).write(driveView)
         }
+        appliedDriveRevision = DriveSessionMemory.revision
+    }
+
+    private fun adoptMemoryIfNewer() {
+        if (DriveSessionMemory.revision == appliedDriveRevision) return
+        val stored = DriveSessionMemory.plan ?: return
+        val changed = routePoints != DriveSessionMemory.routePoints
+        activePlan = stored
+        routeJson = DriveSessionMemory.routeJson
+        routePoints = DriveSessionMemory.routePoints
+        traveledMeters = DriveSessionMemory.traveledMeters
+        if (changed) {
+            guidance.setPlan(stored)
+            loadedStyle?.let { drawRoute(it) }
+        }
+        appliedDriveRevision = DriveSessionMemory.revision
     }
 
     private fun recenter() {
@@ -1368,6 +1395,7 @@ class MainActivity : ComponentActivity() {
         loadedStyle?.let { drawRoute(it) }
         if (driveView.guiding && activePlan != null) {
             DriveSessionMemory.hold(activePlan!!, routeJson, routePoints, traveledMeters, origin, destination)
+            appliedDriveRevision = DriveSessionMemory.revision
         }
     }
 

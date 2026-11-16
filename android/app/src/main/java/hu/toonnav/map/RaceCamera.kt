@@ -20,28 +20,31 @@ data class RaceCameraPose(
 )
 
 object RaceCamera {
-    const val eyeBackMeters = 0.55
-    const val eyeHeightMeters = 0.95
+    const val eyeLocalX = 0.0
+    const val eyeLocalY = 0.62
+    const val eyeLocalZ = 0.92
+    const val lookLocalY = 0.05
     const val lookAheadMeters = 22.0
+    const val noseLocalY = 0.16
+    const val noseLocalZ = 2.55
 
     fun pose(east: Double, north: Double, bearingDegrees: Double): RaceCameraPose {
-        val yaw = Math.toRadians(bearingDegrees)
-        val forwardX = sin(yaw)
-        val forwardZ = cos(yaw)
+        val eye = world(east, north, bearingDegrees, eyeLocalX, eyeLocalY, eyeLocalZ)
+        val look = world(east, north, bearingDegrees, 0.0, lookLocalY, eyeLocalZ + lookAheadMeters)
         return RaceCameraPose(
-            eyeX = (east - forwardX * eyeBackMeters).toFloat(),
-            eyeY = eyeHeightMeters.toFloat(),
-            eyeZ = (north - forwardZ * eyeBackMeters).toFloat(),
-            targetX = (east + forwardX * lookAheadMeters).toFloat(),
-            targetY = 0.55f,
-            targetZ = (north + forwardZ * lookAheadMeters).toFloat(),
+            eyeX = eye[0], eyeY = eye[1], eyeZ = eye[2],
+            targetX = look[0], targetY = look[1], targetZ = look[2],
             east = east.toFloat(),
             north = north.toFloat(),
             bearingDegrees = bearingDegrees
         )
     }
 
-    /** Column-major transform that puts the car on the route, nose along +Z locally. */
+    fun nosePoint(east: Double, north: Double, bearingDegrees: Double): FloatArray {
+        return world(east, north, bearingDegrees, 0.0, noseLocalY, noseLocalZ)
+    }
+
+    /** Column-major transform. The asset's nose points along local +Z. */
     fun carTransform(east: Double, north: Double, bearingDegrees: Double): FloatArray {
         val yaw = Math.toRadians(bearingDegrees)
         val cosine = cos(yaw).toFloat()
@@ -54,11 +57,22 @@ object RaceCamera {
         )
     }
 
+    fun world(east: Double, north: Double, bearingDegrees: Double, localX: Double, localY: Double, localZ: Double): FloatArray {
+        val yaw = Math.toRadians(bearingDegrees)
+        val cosine = cos(yaw)
+        val sine = sin(yaw)
+        return floatArrayOf(
+            (east + cosine * localX + sine * localZ).toFloat(),
+            (localY + 0.02).toFloat(),
+            (north - sine * localX + cosine * localZ).toFloat()
+        )
+    }
+
     /**
      * Vertical normalized position of a world point. Negative is below the
      * view center. This is the framing check used before a GPU is available.
      */
-    fun verticalOffset(pose: RaceCameraPose, x: Float, y: Float, z: Float, fovDegrees: Double = 48.0): Float {
+    fun verticalOffset(pose: RaceCameraPose, x: Float, y: Float, z: Float, fovDegrees: Double = 46.0): Float {
         val forwardX = pose.targetX - pose.eyeX
         val forwardY = pose.targetY - pose.eyeY
         val forwardZ = pose.targetZ - pose.eyeZ

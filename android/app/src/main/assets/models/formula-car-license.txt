@@ -1,0 +1,6 @@
+Open-wheel formula car
+Source: https://tevy.dev/models/formula-car/v1/lod0.glb
+Author credit in the file: tevy.dev
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+The meshopt and Basis payloads were decoded so Filament can load the same geometry.
