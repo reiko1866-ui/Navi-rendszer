@@ -128,26 +128,15 @@ class RoadGpu(
         if (mesh.vertexCount < 3 || mesh.indices.isEmpty()) return null
         val material = materialFor(mesh.material) ?: return null
         val quaternions = RoadFrame.quaternions(mesh)
-        val stride = 36
-        val vertices = ByteBuffer.allocateDirect(mesh.vertexCount * stride).order(ByteOrder.nativeOrder())
-        for (index in 0 until mesh.vertexCount) {
-            vertices.putFloat(mesh.positions[index * 3])
-            vertices.putFloat(mesh.positions[index * 3 + 1])
-            vertices.putFloat(mesh.positions[index * 3 + 2])
-            vertices.putFloat(quaternions[index * 4])
-            vertices.putFloat(quaternions[index * 4 + 1])
-            vertices.putFloat(quaternions[index * 4 + 2])
-            vertices.putFloat(quaternions[index * 4 + 3])
-            vertices.putFloat(mesh.uvs[index * 2])
-            vertices.putFloat(mesh.uvs[index * 2 + 1])
-        }
-        vertices.flip()
+        val vertices = RoadVertices.bytes(mesh, quaternions)
         val vertexBuffer = VertexBuffer.Builder()
             .bufferCount(1)
             .vertexCount(mesh.vertexCount)
-            .attribute(VertexBuffer.VertexAttribute.POSITION, 0, VertexBuffer.AttributeType.FLOAT3, 0, stride)
-            .attribute(VertexBuffer.VertexAttribute.TANGENTS, 0, VertexBuffer.AttributeType.FLOAT4, 12, stride)
-            .attribute(VertexBuffer.VertexAttribute.UV0, 0, VertexBuffer.AttributeType.FLOAT2, 28, stride)
+            .attribute(VertexBuffer.VertexAttribute.POSITION, 0, VertexBuffer.AttributeType.FLOAT3, 0, RoadVertices.stride)
+            .attribute(VertexBuffer.VertexAttribute.TANGENTS, 0, VertexBuffer.AttributeType.FLOAT4, 12, RoadVertices.stride)
+            .attribute(VertexBuffer.VertexAttribute.COLOR, 0, VertexBuffer.AttributeType.FLOAT4, 36, RoadVertices.stride)
+            .attribute(VertexBuffer.VertexAttribute.UV0, 0, VertexBuffer.AttributeType.FLOAT2, 28, RoadVertices.stride)
+            .attribute(VertexBuffer.VertexAttribute.UV1, 0, VertexBuffer.AttributeType.FLOAT2, 52, RoadVertices.stride)
             .build(engine)
         vertexBuffer.setBufferAt(engine, 0, vertices)
         val indexBytes = ByteBuffer.allocateDirect(mesh.indices.size * 4).order(ByteOrder.nativeOrder())
@@ -220,4 +209,37 @@ class RoadGpu(
     }
 
     private class Part(val entity: Int, val vertices: VertexBuffer, val indices: IndexBuffer)
+}
+
+/**
+ * The road materials are Filament ubershaders. Each one reads POSITION, TANGENTS,
+ * COLOR, UV0 and UV1. Leaving COLOR out makes the shader multiply the albedo by
+ * zero, so textured asphalt and grass draw black. The untextured edge and center
+ * lines do not, and they are the white stripes left on the screen.
+ */
+internal object RoadVertices {
+    const val stride = 60
+
+    fun bytes(mesh: RaceMesh, quaternions: FloatArray): ByteBuffer {
+        val vertices = ByteBuffer.allocateDirect(mesh.vertexCount * stride).order(ByteOrder.nativeOrder())
+        for (index in 0 until mesh.vertexCount) {
+            vertices.putFloat(mesh.positions[index * 3])
+            vertices.putFloat(mesh.positions[index * 3 + 1])
+            vertices.putFloat(mesh.positions[index * 3 + 2])
+            vertices.putFloat(quaternions[index * 4])
+            vertices.putFloat(quaternions[index * 4 + 1])
+            vertices.putFloat(quaternions[index * 4 + 2])
+            vertices.putFloat(quaternions[index * 4 + 3])
+            vertices.putFloat(mesh.uvs[index * 2])
+            vertices.putFloat(mesh.uvs[index * 2 + 1])
+            vertices.putFloat(1f)
+            vertices.putFloat(1f)
+            vertices.putFloat(1f)
+            vertices.putFloat(1f)
+            vertices.putFloat(mesh.uvs[index * 2])
+            vertices.putFloat(mesh.uvs[index * 2 + 1])
+        }
+        vertices.flip()
+        return vertices
+    }
 }

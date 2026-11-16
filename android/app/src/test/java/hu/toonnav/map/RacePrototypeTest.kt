@@ -335,6 +335,59 @@ class RacePrototypeTest {
     }
 
     @Test
+    fun theCarriagewayMeshIsWiderThanItsLaneMarkings() {
+        val straight = RaceGeometry.sampleRoute(line(0.0, 80.0), 2.0, List(2) { RoadKind.MAIN })
+        val bend = RaceGeometry.sampleRoute(listOf(0.0 to 0.0, 0.0 to 36.0, 28.0 to 36.0), 2.0, List(3) { RoadKind.MAIN })
+        val straightShot = paintDrive(straight, 0.0, 0.0, 0.0)
+        val bendShot = paintDrive(bend, 0.0, 8.0, 0.0)
+        assertTrue(straightShot.asphalt > straightShot.white * 4)
+        assertTrue(straightShot.ground > 20)
+        assertTrue(bendShot.asphalt > bendShot.white * 3)
+        assertTrue(bendShot.ground > 10)
+        val road = RaceGeometry.worldModel(straight).first { it.material.startsWith("asphalt") }
+        val frame = RoadFrame.quaternions(road)
+        var mixed = 0
+        var triangles = 0
+        val index = road.indices
+        var cursor = 0
+        while (cursor < index.size) {
+            val a = index[cursor]
+            val b = index[cursor + 1]
+            val c = index[cursor + 2]
+            if (road.normals[a * 3 + 1] > 0.5f) {
+                triangles++
+                val ab = quaternionDot(frame, a, b)
+                val ac = quaternionDot(frame, a, c)
+                val bc = quaternionDot(frame, b, c)
+                if (ab < 0f || ac < 0f || bc < 0f) mixed++
+            }
+            cursor += 3
+        }
+        assertEquals(0, mixed)
+        assertTrue(triangles > 0)
+    }
+
+    @Test
+    fun theShaderGetsAWhiteVertexColorAndASecondUv() {
+        val samples = RaceGeometry.sampleRoute(line(0.0, 40.0), 2.0, List(2) { RoadKind.MAIN })
+        val asphalt = RaceGeometry.worldModel(samples).first { it.material == "asphalt" }
+        val grass = RaceGeometry.worldModel(samples).first { it.material == "grass" }
+        for (mesh in listOf(asphalt, grass)) {
+            val packed = RoadVertices.bytes(mesh, RoadFrame.quaternions(mesh))
+            assertEquals(mesh.vertexCount * RoadVertices.stride, packed.remaining())
+            for (vertex in intArrayOf(0, mesh.vertexCount / 2, mesh.vertexCount - 1)) {
+                val base = vertex * RoadVertices.stride
+                assertEquals(1f, packed.getFloat(base + 36), 0f)
+                assertEquals(1f, packed.getFloat(base + 40), 0f)
+                assertEquals(1f, packed.getFloat(base + 44), 0f)
+                assertEquals(1f, packed.getFloat(base + 48), 0f)
+                assertEquals(packed.getFloat(base + 28), packed.getFloat(base + 52), 0f)
+                assertEquals(packed.getFloat(base + 32), packed.getFloat(base + 56), 0f)
+            }
+        }
+    }
+
+    @Test
     fun fogDoesNotCoverTheRoadAndTheFarPlaneIncludesTheCorridor() {
         assertTrue(RaceCamera.farMeters > RaceGeometry.corridorAhead + 500.0)
         assertTrue(RaceFog.height <= RaceGeometry.deckTop + 0.5f)
@@ -577,6 +630,123 @@ class RacePrototypeTest {
         val z = quaternion[vertex * 4 + 2]
         val ny = -2f * x * quaternion[vertex * 4 + 3] + 2f * y * z
         return ny
+    }
+
+    private class DriveShot(
+        val pixels: IntArray,
+        val width: Int,
+        val height: Int,
+        val asphalt: Int,
+        val white: Int,
+        val ground: Int
+    )
+
+    private fun paintDrive(samples: List<RoadSample>, east: Double, north: Double, bearing: Double): DriveShot {
+        val width = 320
+        val height = 180
+        val pixels = IntArray(width * height) { 0x8FB6DB }
+        val depth = FloatArray(width * height) { Float.POSITIVE_INFINITY }
+        val pose = RaceCamera.pose(east, north, bearing)
+        val model = RaceCamera.cameraModel(east, north, bearing)
+        val forwardX = -model[8]
+        val forwardY = -model[9]
+        val forwardZ = -model[10]
+        val meshes = RaceGeometry.worldModel(samples)
+        val order = listOf("grass", "shoulder", "asphalt", "asphaltWarm", "asphaltCool", "asphaltDark", "rubber", "vergeBlend", "kerbRed", "kerbWhite", "edge", "marking")
+        val sorted = meshes.sortedBy { mesh ->
+            val rank = order.indexOf(mesh.material)
+            if (rank < 0) 50 else rank
+        }
+        for (mesh in sorted) {
+            val color = when {
+                mesh.material.startsWith("asphalt") -> 0x9A9A96
+                mesh.material == "grass" -> 0x3E6B32
+                mesh.material == "shoulder" -> 0x8A8070
+                mesh.material == "edge" || mesh.material == "marking" || mesh.material == "kerbWhite" -> 0xF2F2F0
+                mesh.material == "kerbRed" -> 0xC4140A
+                mesh.material == "rubber" -> 0x2A2A28
+                else -> 0x666666
+            }
+            val index = mesh.indices
+            val position = mesh.positions
+            var cursor = 0
+            while (cursor < index.size) {
+                val screen = Array(3) { FloatArray(3) }
+                var visible = true
+                for (corner in 0 until 3) {
+                    val vertex = index[cursor + corner]
+                    val x = position[vertex * 3]
+                    val y = position[vertex * 3 + 1]
+                    val z = position[vertex * 3 + 2]
+                    val vx = x - pose.eyeX
+                    val vy = y - pose.eyeY
+                    val vz = z - pose.eyeZ
+                    val ahead = vx * forwardX + vy * forwardY + vz * forwardZ
+                    if (ahead < RaceCamera.nearMeters.toFloat() || ahead > RaceCamera.farMeters.toFloat()) visible = false
+                    val ndc = RaceCamera.ndc(pose, x, y, z)
+                    screen[corner][0] = (ndc[0] * 0.5f + 0.5f) * width
+                    screen[corner][1] = (0.5f - ndc[1] * 0.5f) * height
+                    screen[corner][2] = ahead
+                }
+                if (visible) fillTriangle(pixels, depth, width, height, screen, color)
+                cursor += 3
+            }
+        }
+        var asphalt = 0
+        var white = 0
+        var ground = 0
+        for (pixel in pixels) {
+            when (pixel) {
+                0x9A9A96 -> asphalt++
+                0xF2F2F0 -> white++
+                0x3E6B32, 0x8A8070 -> ground++
+            }
+        }
+        return DriveShot(pixels, width, height, asphalt, white, ground)
+    }
+
+    private fun fillTriangle(
+        pixels: IntArray,
+        depth: FloatArray,
+        width: Int,
+        height: Int,
+        screen: Array<FloatArray>,
+        color: Int
+    ) {
+        val minX = screen.minOf { it[0] }.toInt().coerceIn(0, width - 1)
+        val maxX = screen.maxOf { it[0] }.toInt().coerceIn(0, width - 1)
+        val minY = screen.minOf { it[1] }.toInt().coerceIn(0, height - 1)
+        val maxY = screen.maxOf { it[1] }.toInt().coerceIn(0, height - 1)
+        val ax = screen[0][0]
+        val ay = screen[0][1]
+        val bx = screen[1][0]
+        val by = screen[1][1]
+        val cx = screen[2][0]
+        val cy = screen[2][1]
+        val area = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay)
+        if (abs(area) < 0.5f) return
+        for (y in minY..maxY) {
+            for (x in minX..maxX) {
+                val px = x + 0.5f
+                val py = y + 0.5f
+                val w0 = ((bx - px) * (cy - py) - (cx - px) * (by - py)) / area
+                val w1 = ((cx - px) * (ay - py) - (ax - px) * (cy - py)) / area
+                val w2 = ((ax - px) * (by - py) - (bx - px) * (ay - py)) / area
+                if (w0 < 0f || w1 < 0f || w2 < 0f) continue
+                val z = w0 * screen[0][2] + w1 * screen[1][2] + w2 * screen[2][2]
+                val slot = y * width + x
+                if (z < depth[slot]) {
+                    depth[slot] = z
+                    pixels[slot] = color
+                }
+            }
+        }
+    }
+
+    private fun quaternionDot(quaternion: FloatArray, left: Int, right: Int): Float {
+        var dot = 0f
+        for (component in 0 until 4) dot += quaternion[left * 4 + component] * quaternion[right * 4 + component]
+        return dot
     }
 
     private fun line(northStart: Double, northEnd: Double): List<Pair<Double, Double>> {
