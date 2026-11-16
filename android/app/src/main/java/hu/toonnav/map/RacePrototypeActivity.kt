@@ -972,6 +972,11 @@ private class RaceRenderer(
         } else {
             scene.skybox = daySky
         }
+        val clear = renderer.clearOptions
+        val radiance = if (night) RaceLighting.nightRadiance else RaceLighting.dayRadiance
+        clear.clear = true
+        clear.clearColor = doubleArrayOf(radiance[0].toDouble(), radiance[1].toDouble(), radiance[2].toDouble(), 1.0)
+        renderer.clearOptions = clear
     }
 
     fun replaceRoad(bytes: ByteArray, nextRoute: List<OsrmPoint>, nextSamples: List<RoadSample>, keepMotion: Boolean = false) {
@@ -1227,8 +1232,18 @@ private class RaceRenderer(
                 val camera = engine.createCamera(cameraEntity)
                 camera.setExposure(16f, 1f / 125f, 100f)
                 view.camera = camera
+                val renderer = engine.createRenderer()
+                val clear = renderer.clearOptions
+                clear.clear = true
+                clear.clearColor = doubleArrayOf(
+                    RaceLighting.dayRadiance[0].toDouble(),
+                    RaceLighting.dayRadiance[1].toDouble(),
+                    RaceLighting.dayRadiance[2].toDouble(),
+                    1.0
+                )
+                renderer.clearOptions = clear
                 val created = RaceRenderer(
-                    engine, view, engine.createRenderer(), scene, sky, indirect, light, camera, cameraEntity,
+                    engine, view, renderer, scene, sky, indirect, light, camera, cameraEntity,
                     probe, sky,
                     load(loader, resources, carBytes) ?: throw IllegalStateException("car"),
                     load(loader, resources, roadBytes) ?: throw IllegalStateException("road"),

@@ -54,16 +54,46 @@ class WorldDiagnosticTest {
 
     @Test
     fun diagnosticGroundRoadAndAxesAreInsideEveryRequiredScreen() {
-        val profiles = listOf(
-            1280.0 / 720.0,
-            1920.0 / 1080.0,
-            2560.0 / 1440.0,
-            1080.0 / 2400.0,
-            2400.0 / 1080.0
-        )
-        for (aspect in profiles) {
+        for (aspect in profiles()) {
             val hidden = WorldDiagnostic.inFrontOfCamera(aspect)
             assertTrue("aspect $aspect hid $hidden", hidden.isEmpty())
+        }
+    }
+
+    @Test
+    fun fiveDiagnosticPiecesStaySeparateFromTheDrivingScreen() {
+        val ground = WorldDiagnostic.ground()
+        val road = WorldDiagnostic.road()
+        val grid = WorldDiagnostic.grid()
+        val axes = WorldDiagnostic.axes()
+        val world = WorldDiagnostic.drivingWorld()
+        assertEquals("grass", ground.material)
+        assertEquals("asphalt", road.material)
+        assertEquals("edge", grid.material)
+        assertEquals(listOf("kerbRed", "canopy", "marking"), axes.map { it.material })
+        assertTrue(world.any { it.material.startsWith("asphalt") && it.triangleCount > 0 })
+        assertTrue(world.any { it.material == "grass" && it.triangleCount > 0 })
+        assertTrue(world.any { it.material == "shoulder" && it.triangleCount > 0 })
+        assertTrue(world.any { it.material == "kerbRed" && it.triangleCount > 0 })
+        val grass = RaceGeometry.materials().first { it.name == "grass" }
+        val asphalt = RaceGeometry.materials().first { it.name == "asphalt" }
+        assertTrue(grass.green > grass.red && grass.green > grass.blue)
+        assertTrue(asphalt.red in 0.35f..0.7f)
+        assertTrue(kotlin.math.abs(asphalt.red - asphalt.green) < 0.08f)
+        assertFalse(isMagenta(grass.red, grass.green, grass.blue))
+        assertFalse(isMagenta(asphalt.red, asphalt.green, asphalt.blue))
+        for (material in RaceGeometry.materials()) {
+            assertEquals(material.name, 1f, material.alpha)
+            assertFalse(isMagenta(material.red, material.green, material.blue))
+            assertFalse(material.red < 0.02f && material.green < 0.02f && material.blue < 0.02f)
+        }
+        val activity = java.io.File("src/main/java/hu/toonnav/map/RacePrototypeActivity.kt").readText()
+        assertFalse(activity.contains("WorldDiagnostic"))
+        for (aspect in profiles()) {
+            assertTrue(WorldDiagnostic.visible(0f, 0f, 20f, aspect))
+            assertTrue(WorldDiagnostic.visible(0f, RaceGeometry.deckTop.toFloat(), 18f, aspect))
+            assertTrue(WorldDiagnostic.visible(0f, RaceGeometry.deckTop.toFloat(), 16f, aspect))
+            assertTrue(WorldDiagnostic.drivingCenterVisible(aspect))
         }
     }
 
@@ -81,6 +111,14 @@ class WorldDiagnosticTest {
         assertEquals(2, color.transfer)
         assertFalse(Ktx2Facts.isLinearUastc(color))
         assertNull(Ktx2Facts.inspect(RaceGlb.asphaltPng()))
+    }
+
+    private fun profiles(): List<Double> {
+        return listOf(1280.0 / 720.0, 1920.0 / 1080.0, 2560.0 / 1440.0, 1080.0 / 2400.0, 2400.0 / 1080.0)
+    }
+
+    private fun isMagenta(red: Float, green: Float, blue: Float): Boolean {
+        return red > 0.8f && blue > 0.8f && green < 0.25f
     }
 
     private fun material(json: JSONObject, name: String): JSONObject {

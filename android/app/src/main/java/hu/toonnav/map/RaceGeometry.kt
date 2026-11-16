@@ -209,17 +209,18 @@ object RaceGeometry {
 
     fun materials(): List<RaceMaterial> {
         return listOf(
-            // Solid factors, no textures. A KTX2 occlusion sampler that does not
-            // bind is black on OpenGL ES and multiplies the whole surface away.
+            // Solid, opaque factors. No texture slot exists, so a failed KTX2
+            // upload cannot sample black (Mali) or magenta (Adreno). Alpha stays
+            // 1 so these do not fall through to Filament's missing-variant material.
             RaceMaterial("asphalt", 0.52f, 0.52f, 0.50f, 0f, 0.86f),
             RaceMaterial("grass", 0.22f, 0.42f, 0.14f, 0f, 0.95f),
             RaceMaterial("shoulder", 0.45f, 0.38f, 0.28f, 0f, 0.92f),
-            RaceMaterial("rubber", 0.34f, 0.34f, 0.33f, 0f, 0.92f, 0.32f),
+            RaceMaterial("rubber", 0.20f, 0.20f, 0.19f, 0f, 0.92f),
             RaceMaterial("edge", 0.92f, 0.92f, 0.90f, 0f, 0.45f),
             RaceMaterial("marking", 0.95f, 0.95f, 0.93f, 0f, 0.42f),
             RaceMaterial("kerbRed", 0.78f, 0.07f, 0.04f, 0f, 0.42f),
             RaceMaterial("kerbWhite", 0.94f, 0.94f, 0.92f, 0f, 0.38f),
-            RaceMaterial("vergeBlend", 0.52f, 0.48f, 0.40f, 0f, 0.9f, 0.35f),
+            RaceMaterial("vergeBlend", 0.40f, 0.42f, 0.24f, 0f, 0.9f),
             RaceMaterial("canopy", 0.14f, 0.26f, 0.10f, 0f, 0.88f),
             RaceMaterial("canopyDark", 0.08f, 0.16f, 0.07f, 0f, 0.92f),
             RaceMaterial("trunk", 0.20f, 0.13f, 0.07f, 0f, 0.86f),
