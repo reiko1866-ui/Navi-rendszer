@@ -27,6 +27,10 @@ android {
         buildConfig = true
     }
 
+    androidResources {
+        noCompress += "glb"
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -58,6 +62,9 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("org.maplibre.gl:android-sdk-vulkan:11.13.5")
+    implementation("com.google.android.filament:filament-android:1.75.0")
+    implementation("com.google.android.filament:gltfio-android:1.75.0")
+    implementation("com.google.android.filament:filament-utils-android:1.75.0")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")
     testImplementation("org.robolectric:robolectric:4.14.1")

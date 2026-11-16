@@ -1,7 +1,11 @@
 package hu.toonnav.map
 
+import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.Process
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -22,6 +26,9 @@ class GarageActivity : ComponentActivity() {
     private lateinit var row: LinearLayout
     private var carId: String = GarageFleet.cars.first().id
     private var number: Int = GarageFleet.cars.first().defaultNumber
+    private var stageThread: HandlerThread? = null
+    private var stageHandler: Handler? = null
+    private var stage: RaceGarageStage? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,8 +50,69 @@ class GarageActivity : ComponentActivity() {
             store.write(carId, number)
             finish()
         }
+        findViewById<Button>(R.id.garagePrototype).setOnClickListener {
+            when (NavigationRoute.garageAction(
+                NavigationOwner.aliveRaces,
+                DriveSessionMemory.routePoints.size,
+                DriveSessionMemory.plan != null
+            )) {
+                NavigationRoute.GarageAction.RETURN -> finish()
+                NavigationRoute.GarageAction.OPEN_LIVE -> startActivity(
+                    Intent(this, RacePrototypeActivity::class.java)
+                        .putExtra(RacePrototypeActivity.EXTRA_CAR, carId)
+                        .putExtra(RacePrototypeActivity.EXTRA_NAVIGATION, true)
+                        .putExtra(RacePrototypeActivity.EXTRA_ANNOUNCE, false)
+                )
+                NavigationRoute.GarageAction.OPEN_SAMPLE -> startActivity(
+                    Intent(this, RacePrototypeActivity::class.java).putExtra(RacePrototypeActivity.EXTRA_CAR, carId)
+                )
+            }
+        }
         buildRow()
         render()
+        startStage()
+    }
+
+    override fun onDestroy() {
+        findViewById<android.view.SurfaceView>(R.id.garageSurface).let { view ->
+            stage?.surfaceHelper?.detach()
+        }
+        val handler = stageHandler
+        val thread = stageThread
+        if (handler != null && thread != null) {
+            handler.post {
+                stage?.destroy()
+                stage = null
+            }
+            thread.quitSafely()
+        }
+        super.onDestroy()
+    }
+
+    private fun startStage() {
+        try {
+            val thread = HandlerThread("toonnav-garage", Process.THREAD_PRIORITY_DISPLAY)
+            thread.start()
+            stageThread = thread
+            val handler = Handler(thread.looper)
+            stageHandler = handler
+            val surface = findViewById<android.view.SurfaceView>(R.id.garageSurface)
+            val car = GarageFleet.car(carId) ?: GarageFleet.cars.first()
+            handler.post {
+                try {
+                    val carBytes = assets.open("models/formula-car.glb").use { it.readBytes() }
+                    val skyBytes = assets.open("models/noon-sky.hdr").use { it.readBytes() }
+                    stage = RaceGarageStage.start(surface, carBytes, skyBytes, car, this, handler)
+                    if (stage == null) runOnUiThread { surface.visibility = android.view.View.GONE }
+                } catch (failed: Throwable) {
+                    stage = null
+                    runOnUiThread { surface.visibility = android.view.View.GONE }
+                }
+            }
+        } catch (failed: Throwable) {
+            stageThread?.quitSafely()
+            stageThread = null
+        }
     }
 
     private fun buildRow() {
@@ -97,6 +165,8 @@ class GarageActivity : ComponentActivity() {
         liveryView.text = car.livery
         numberView.text = number.toString()
         badge.text = number.toString()
+        val shown = car
+        stageHandler?.post { stage?.applyLivery(shown) }
         val density = resources.displayMetrics.density
         for (i in 0 until row.childCount) {
             val child = row.getChildAt(i)

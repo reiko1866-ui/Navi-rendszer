@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#101318">
+
+    <android.view.SurfaceView
+        android:id="@+id/raceSurface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/raceInfo"
+        android:layout_width="168dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="10dp"
+        android:background="@drawable/bg_pilot_panel"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/raceSpeed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="#F4F1EC"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/raceManeuver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#F4F1EC"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/raceRemaining"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="#C8C2B8"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/raceEta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#C8C2B8"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/raceStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#A8A297"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:padding="8dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/raceStop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#C8102E"
+                android:minHeight="48dp"
+                android:text="@string/stop_nav"
+                android:textColor="#FFF6F3EE" />
+
+            <Button
+                android:id="@+id/raceBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#3A2420"
+                android:minHeight="48dp"
+                android:text="@string/map_open"
+                android:textColor="#F4F1EC" />
+
+            <Button
+                android:id="@+id/raceGarage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#3A2420"
+                android:minHeight="48dp"
+                android:text="@string/garage_open"
+                android:textColor="#F4F1EC" />
+
+            <Button
+                android:id="@+id/raceVoice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#3A2420"
+                android:minHeight="48dp"
+                android:text="@string/voice_on"
+                android:textColor="#F4F1EC" />
+
+            <Button
+                android:id="@+id/raceNight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#3A2420"
+                android:minHeight="48dp"
+                android:text="@string/night_mode"
+                android:textColor="#F4F1EC" />
+
+            <Button
+                android:id="@+id/raceLivery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#3A2420"
+                android:minHeight="48dp"
+                android:text="@string/race_livery"
+                android:textColor="#F4F1EC" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <FrameLayout
+        android:id="@+id/raceFinish"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:visibility="gone">
+
+        <hu.toonnav.map.FinishPodiumView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/raceFinishMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="28dp"
+            android:backgroundTint="#F4F1EC"
+            android:minHeight="48dp"
+            android:text="@string/finish_map"
+            android:textColor="#101318" />
+    </FrameLayout>
+</FrameLayout>

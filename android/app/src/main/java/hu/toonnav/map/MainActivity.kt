@@ -116,6 +116,7 @@ class MainActivity : ComponentActivity() {
     private var cockpitGliding = false
     private val reroutes = RerouteSession()
     private var pilotMapOpen = false
+    private var appliedDriveRevision = 0
     private var finishDismissed = false
     private var offRouteSpoken = false
     private var pilotNoticeText = ""
@@ -139,6 +140,8 @@ class MainActivity : ComponentActivity() {
     private var lastTrust = GpsTrust.LOST
     private var readoutText = ""
     private var pilotVisible = false
+    private var raceLaunching = false
+    private var handingToRace = false
     private var pilotDistance: Double? = null
     private var pilotInstruction = ""
     private var pilotArrow = 0f
@@ -225,9 +228,24 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        raceLaunching = false
+        handingToRace = false
         mapView?.onResume()
+        voiceOn = hudPrefs.getBoolean("voice", voiceOn)
+        voice.enabled = voiceOn
+        if (DriveSessionMemory.abandon) {
+            DriveSessionMemory.abandon = false
+            DriveSessionMemory.arrivalHandoff = false
+            if (guiding) stopGuidance()
+        } else if (DriveSessionMemory.arrivalHandoff) {
+            DriveSessionMemory.arrivalHandoff = false
+            completeArrivalFromRace()
+        } else if (guiding) {
+            adoptMemoryIfNewer()
+        }
         presentDrive()
-        if (driveView.followCamera && !overviewShown) followVehicle()
+        if (NavigationOwner.consumeMapOverview() && guiding && routePoints.size >= 2) showOverview()
+        else if (driveView.followCamera && !driveView.guiding && !overviewShown) followVehicle()
         val style = loadedStyle ?: return
         val marker = GarageStore(this).markerRes()
         if (marker != appliedMarker) {
@@ -239,6 +257,7 @@ class MainActivity : ComponentActivity() {
     override fun onPause() {
         cockpitGliding = false
         mainHandler.removeCallbacks(cockpitGlide)
+        stopLocationUpdates()
         mapView?.onPause()
         super.onPause()
     }
@@ -299,6 +318,8 @@ class MainActivity : ComponentActivity() {
         wireSearch()
         findViewById<Button>(R.id.closeSearch).setOnClickListener { closeSearch() }
         findViewById<Button>(R.id.startButton).setOnClickListener { startGuidance() }
+        findViewById<Button>(R.id.resumeRaceButton).setOnClickListener { openRaceNavigation(announceStart = false) }
+        findViewById<Button>(R.id.resumeStopButton).setOnClickListener { confirmStop() }
         findViewById<Button>(R.id.stopButton).setOnClickListener { confirmStop() }
         findViewById<ImageButton>(R.id.searchButton).setOnClickListener { toggleSearch() }
         findViewById<TextView>(R.id.cockpitToggle).setOnClickListener { toggleCockpit() }
@@ -318,6 +339,9 @@ class MainActivity : ComponentActivity() {
             startActivity(Intent(this, GarageActivity::class.java))
         }
         findViewById<Button>(R.id.pilotMap).setOnClickListener { togglePilotMap() }
+        findViewById<Button>(R.id.pilotDrive).setOnClickListener {
+            if (driveView.guiding) openRaceNavigation(announceStart = false)
+        }
         findViewById<Button>(R.id.pilotVoice).setOnClickListener { toggleVoice() }
         findViewById<Button>(R.id.pilotNight).setOnClickListener { toggleNight() }
         findViewById<Button>(R.id.finishMap).setOnClickListener {
@@ -616,6 +640,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun rerouteFromHere() {
+        if (!NavigationOwner.mapMayGuide(tripActive = true)) return
         val goal = destination
         val now = SystemClock.elapsedRealtime()
         if (goal == null || !sawFix || !lastLatitude.isFinite() || !lastLongitude.isFinite() || !driveView.guiding) {
@@ -755,6 +780,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun clearRoute() {
+        NavigationVoice.clearRetained()
         val keepSearch = driveView.searchOpen
         routeSeq += 1
         activePlan = null
@@ -782,7 +808,7 @@ class MainActivity : ComponentActivity() {
 
     private fun startGuidance() {
         val plan = activePlan
-        if (plan == null) {
+        if (plan == null || routePoints.size < 2) {
             showStatus(getString(R.string.status_route))
             return
         }
@@ -807,20 +833,72 @@ class MainActivity : ComponentActivity() {
             startLocationUpdates()
             return
         }
-        guidance.setPlan(plan)
+        guidance.clear()
+        NavigationVoice.clearRetained()
         driveView = driveView.start()
         finishDismissed = false
         offRouteSpoken = false
         pilotMapOpen = false
         pilotNoticeText = ""
-        following = true
+        following = false
         overviewShown = false
         previewCard.visibility = View.GONE
+        voice.halt()
+        handingToRace = true
         presentDrive()
         rememberDrive()
         hideKeyboard()
-        publishFix(0L)
-        voice.speak("indulas", "indulas", null, "indulas")
+        openRaceNavigation(announceStart = true)
+    }
+
+    /**
+     * Hands the stored trip to the Filament screen. The map keeps the line and
+     * does not listen, guide, or speak while that screen owns the trip.
+     */
+    private fun openRaceNavigation(announceStart: Boolean) {
+        if (raceLaunching || !driveView.guiding) return
+        val plan = activePlan ?: DriveSessionMemory.plan
+        val points = if (routePoints.size >= 2) routePoints else DriveSessionMemory.routePoints
+        if (plan == null || points.size < 2) {
+            handingToRace = false
+            presentDrive()
+            showStatus(getString(R.string.race_route_missing))
+            return
+        }
+        if (DriveSessionMemory.plan == null) rememberDrive()
+        raceLaunching = true
+        NavigationOwner.claimRace()
+        stopLocationUpdates()
+        voice.halt()
+        try {
+            startActivity(Intent(this, RacePrototypeActivity::class.java)
+                .putExtra(RacePrototypeActivity.EXTRA_CAR, GarageStore(this).carId())
+                .putExtra(RacePrototypeActivity.EXTRA_NAVIGATION, true)
+                .putExtra(RacePrototypeActivity.EXTRA_ANNOUNCE, announceStart))
+        } catch (err: RuntimeException) {
+            raceLaunching = false
+            handingToRace = false
+            NavigationOwner.releaseRace(returningToMap = false)
+            presentDrive()
+            showStatus(getString(R.string.race_engine_failed))
+        }
+    }
+
+    private fun completeArrivalFromRace() {
+        finishDismissed = true
+        driveView = if (driveView.guiding) driveView.arrive() else DriveSession(arrived = true)
+        guidance.clear()
+        NavigationVoice.clearRetained()
+        voice.halt()
+        offRouteSpoken = false
+        pilotMapOpen = false
+        pilotNoticeText = ""
+        following = false
+        overviewShown = false
+        navigationHold = true
+        presentDrive()
+        rememberDrive()
+        showStatus(getString(R.string.status_arrived), error = false)
     }
 
     private fun confirmStop() {
@@ -835,6 +913,7 @@ class MainActivity : ComponentActivity() {
 
     private fun stopGuidance() {
         reroutes.reset()
+        NavigationVoice.clearRetained()
         voice.halt()
         offRouteSpoken = false
         pilotMapOpen = false
@@ -881,19 +960,19 @@ class MainActivity : ComponentActivity() {
         if (!hudReady) return
         searchOpen = driveView.searchOpen
         guiding = driveView.guiding
-        pilotVisible = driveView.instrumentsOpen
-        hud.showGuidance(false, driveView.guiding && !pilotVisible)
-        hud.showFold(driveView.canFold && !pilotVisible, driveView.collapsed)
-        findViewById<View>(R.id.topCluster).visibility = if (pilotVisible) View.GONE else View.VISIBLE
-        findViewById<View>(R.id.cameraTools).visibility = if (pilotVisible) View.GONE else View.VISIBLE
+        pilotVisible = false
+        hud.showGuidance(false, false)
+        hud.showFold(false, false)
+        findViewById<View>(R.id.topCluster).visibility = View.VISIBLE
+        findViewById<View>(R.id.cameraTools).visibility = View.VISIBLE
         if (::searchCard.isInitialized) {
             searchCard.visibility = if (driveView.searchOpen) View.VISIBLE else View.GONE
         }
-        if (pilotVisible && ::statusText.isInitialized) statusText.visibility = View.GONE
-        placePilotMap(pilotVisible)
-        if (::pilotLayer.isInitialized) {
-            pilotLayer.visibility = if (pilotVisible) View.VISIBLE else View.GONE
-        }
+        val resumeCard = findViewById<View>(R.id.resumeRaceCard)
+        val showResume = driveView.guiding && !handingToRace && NavigationOwner.mapMayListen()
+        resumeCard.visibility = if (showResume) View.VISIBLE else View.GONE
+        placePilotMap(false)
+        if (::pilotLayer.isInitialized) pilotLayer.visibility = View.GONE
         revealFinish()
         refreshPilot()
     }
@@ -1035,6 +1114,7 @@ class MainActivity : ComponentActivity() {
             DriveSessionMemory.clear()
             DriveTripFile.delete(this)
         }
+        appliedDriveRevision = DriveSessionMemory.revision
     }
 
     private fun restoreActiveDrive() {
@@ -1050,7 +1130,7 @@ class MainActivity : ComponentActivity() {
             traveledMeters = DriveSessionMemory.traveledMeters
             origin = DriveSessionMemory.origin
             destination = DriveSessionMemory.destination
-            guidance.setPlan(plan)
+            guidance.clear()
             guiding = true
             following = true
             overviewShown = false
@@ -1063,6 +1143,19 @@ class MainActivity : ComponentActivity() {
             DriveTripFile.delete(this)
             if (stored.guiding || stored.arrived) DriveSessionStore(this).write(driveView)
         }
+        appliedDriveRevision = DriveSessionMemory.revision
+    }
+
+    private fun adoptMemoryIfNewer() {
+        if (DriveSessionMemory.revision == appliedDriveRevision) return
+        val stored = DriveSessionMemory.plan ?: return
+        activePlan = stored
+        routeJson = DriveSessionMemory.routeJson
+        routePoints = DriveSessionMemory.routePoints
+        traveledMeters = DriveSessionMemory.traveledMeters
+        guidance.clear()
+        loadedStyle?.let { drawRoute(it) }
+        appliedDriveRevision = DriveSessionMemory.revision
     }
 
     private fun recenter() {
@@ -1190,6 +1283,7 @@ class MainActivity : ComponentActivity() {
 
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
+        if (!NavigationOwner.mapMayListen()) return
         if (updatesStarted) return
         val access = locationAccess()
         if (access != LocationAccess.READY && access != LocationAccess.PRECISE_REQUIRED) return
@@ -1283,6 +1377,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun refreshProgressAge() {
+        if (!NavigationOwner.mapMayGuide(driveView.guiding)) {
+            refreshReadout()
+            return
+        }
         val age = SystemClock.elapsedRealtime() - lastFixElapsed
         if (guiding && (fineGranted || coarseGranted) && locationEnabled()) {
             guidance.refreshAge(age)?.let { renderCue(it) }
@@ -1292,6 +1390,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun publishFix(ageMs: Long) {
+        if (!NavigationOwner.mapMayGuide(driveView.guiding)) {
+            refreshReadout()
+            return
+        }
         if (guiding) {
             guidance.onFix(lastLongitude, lastLatitude, SystemClock.elapsedRealtime(), ageMs, lastAccuracy)?.let { renderCue(it) }
             followVehicle()
@@ -1303,6 +1405,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun renderCue(cue: GuidanceCue) {
+        if (!NavigationVoice.mapMaySpeak(driveView.guiding) || driveView.guiding) return
         lastTrust = cue.trust
         hud.renderManeuver(
             ManeuverEvents.formatDistance(cue.maneuverDistanceMeters),
@@ -1368,10 +1471,12 @@ class MainActivity : ComponentActivity() {
         loadedStyle?.let { drawRoute(it) }
         if (driveView.guiding && activePlan != null) {
             DriveSessionMemory.hold(activePlan!!, routeJson, routePoints, traveledMeters, origin, destination)
+            appliedDriveRevision = DriveSessionMemory.revision
         }
     }
 
     private fun speakCue(cue: GuidanceCue) {
+        if (!NavigationVoice.mapMaySpeak(driveView.guiding)) return
         if (!driveView.guiding || cue.arrived || cue.progressHeld || cue.offRouteConfirmed) return
         val event = ManeuverEvents.eventId(cue.maneuverType, cue.maneuverModifier)
         if (event.isEmpty()) return

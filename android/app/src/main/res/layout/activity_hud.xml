@@ -463,6 +463,44 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/resumeRaceCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_pilot_panel"
+            android:elevation="8dp"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/resumeRaceText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/race_paused"
+                android:textColor="@color/cockpit_ink"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/resumeRaceButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/cockpit_accent"
+                android:text="@string/race_resume"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/resumeStopButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#3A2420"
+                android:text="@string/stop_nav"
+                android:textColor="@color/cockpit_ink" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/driveCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
