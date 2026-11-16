@@ -105,6 +105,8 @@
     <string name="race_sample_route">Mintaútvonal</string>
     <string name="race_live_route">Aktuális útvonal</string>
     <string name="race_engine_failed">A 3D megjelenítés nem indult el ezen az eszközön. A térkép gombbal visszatérhetsz, a régi műszerfal nem indul el helyette.</string>
+    <string name="race_location_denied">A helyhozzáférés nincs engedélyezve, ezért ennek az eszköznek a GPS-ét nem tudom követni.</string>
+    <string name="race_location_unavailable">Ezen az eszközön nincs bekapcsolt helymeghatározás. A navigáció a saját GPS-vevőt használja, telefonos tükrözés nélkül.</string>
     <string name="race_route_missing">Nincs élő útvonal a 3D navigációhoz. Térj vissza a térképre, és tervezd meg újra.</string>
     <string name="race_resume">3D navigáció folytatása</string>
     <string name="race_paused">A vezetés a 3D nézetben fut. Ez a térkép most nem navigál és nem beszél.</string>
