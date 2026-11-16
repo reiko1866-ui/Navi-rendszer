@@ -49,11 +49,9 @@ object DriveDisplay {
 }
 
 /**
- * Grass and the shoulder are stored with a metallic factor of 1 and expect the
- * ORM texture to multiply that back to zero. A phone that does not bind the
- * KTX2 map otherwise draws those surfaces as a mirror of the sky, so the
- * ground disappears beside the asphalt. Zeroing the factor leaves a loaded ORM
- * map unchanged, because its metallic channel is already zero.
+ * Second lock on the ground. The driving materials are already non-metallic.
+ * Keeping the runtime write means a future texture cannot turn the verge into
+ * a mirror if its metallic channel fails to load.
  */
 object RoadShade {
     fun groundMetallic(name: String): Float? {

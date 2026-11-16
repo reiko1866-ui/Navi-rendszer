@@ -105,8 +105,6 @@ class RacePrototypeActivity : ComponentActivity() {
     @Volatile var previewAlong = 8.0
     @Volatile var frameFps = Double.NaN
     @Volatile var frameMs = Double.NaN
-    @Volatile var roadImages: Map<String, ByteArray> = emptyMap()
-
     private val mainHandler = Handler(Looper.getMainLooper())
     private var navigationMode = false
     private var chromeWidth = 0
@@ -242,10 +240,9 @@ class RacePrototypeActivity : ComponentActivity() {
         handler.post {
             val carBytes = assets.open("models/formula-car.glb").use { it.readBytes() }
             val skyBytes = assets.open("models/noon-sky.hdr").use { it.readBytes() }
-            val images = RaceGlb.drivingImages { name -> assets.open("models/road/$name.ktx2").use { it.readBytes() } }
-            roadImages = images
             windowEnd = samples.lastOrNull()?.along ?: 0.0
-            val roadBytes = RaceGlb.encode(RaceGeometry.libraryModel(), images)
+            // No KTX2 images. Asphalt, grass, and shoulder are solid factors.
+            val roadBytes = RaceGlb.encode(RaceGeometry.libraryModel())
             val created = RaceRenderer.start(
                 carBytes, roadBytes, skyBytes, routeNow, samples, selected, night, driveQuality, surface, handler, this
             )
@@ -962,14 +959,15 @@ private class RaceRenderer(
 
     fun setNight(night: Boolean) {
         val fog = swapView.fogOptions
-        fog.color = floatArrayOf(if (night) 0.02f else 0.62f, if (night) 0.03f else 0.72f, if (night) 0.05f else 0.86f)
+        fog.fogColorFromIbl = false
+        fog.color = if (night) RaceLighting.nightRadiance.copyOf() else RaceLighting.dayRadiance.copyOf()
         swapView.fogOptions = fog
         val sun = engine.lightManager.getInstance(light)
         engine.lightManager.setIntensity(sun, if (night) 6_000f else 100_000f)
         probe?.indirect?.setIntensity(if (night) 0.08f else 1f)
         camera.setExposure(if (night) 8f else 16f, if (night) 1f / 30f else 1f / 125f, if (night) 800f else 100f)
         if (night) {
-            val dark = nightSky ?: Skybox.Builder().color(0.02f, 0.025f, 0.04f, 1f).build(engine).also { nightSky = it }
+            val dark = nightSky ?: Skybox.Builder().color(RaceLighting.skyColor(RaceLighting.nightRadiance)).build(engine).also { nightSky = it }
             scene.skybox = dark
         } else {
             scene.skybox = daySky
@@ -1189,10 +1187,14 @@ private class RaceRenderer(
                 fog.height = RaceFog.height
                 fog.heightFalloff = RaceFog.heightFalloff
                 fog.cutOffDistance = RaceFog.cutOffDistance
-                fog.color = floatArrayOf(0.62f, 0.72f, 0.86f)
+                fog.fogColorFromIbl = false
+                fog.color = RaceLighting.dayRadiance.copyOf()
                 view.fogOptions = fog
                 val probe = RaceLighting.create(engine, skyBytes)
-                val sky = probe?.sky ?: Skybox.Builder().color(0.62f, 0.72f, 0.86f, 1f).build(engine)
+                // The background is a solid radiance, not the HDR cubemap. A failed
+                // or unbound environment map used to leave the phone with no sky.
+                val sky = Skybox.Builder().color(RaceLighting.skyColor(RaceLighting.dayRadiance)).build(engine)
+                probe?.sky?.let { engine.destroySkybox(it) }
                 val fallback = FloatArray(27)
                 fallback[0] = 1.1f
                 fallback[1] = 1.15f

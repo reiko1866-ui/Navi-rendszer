@@ -209,9 +209,11 @@ object RaceGeometry {
 
     fun materials(): List<RaceMaterial> {
         return listOf(
-            RaceMaterial("asphalt", 1f, 1f, 1f, 0f, 0.86f),
-            RaceMaterial("grass", 1f, 1f, 1f, 1f, 1f),
-            RaceMaterial("shoulder", 1f, 1f, 1f, 1f, 1f),
+            // Solid factors, no textures. A KTX2 occlusion sampler that does not
+            // bind is black on OpenGL ES and multiplies the whole surface away.
+            RaceMaterial("asphalt", 0.52f, 0.52f, 0.50f, 0f, 0.86f),
+            RaceMaterial("grass", 0.22f, 0.42f, 0.14f, 0f, 0.95f),
+            RaceMaterial("shoulder", 0.45f, 0.38f, 0.28f, 0f, 0.92f),
             RaceMaterial("rubber", 0.34f, 0.34f, 0.33f, 0f, 0.92f, 0.32f),
             RaceMaterial("edge", 0.92f, 0.92f, 0.90f, 0f, 0.45f),
             RaceMaterial("marking", 0.95f, 0.95f, 0.93f, 0f, 0.42f),

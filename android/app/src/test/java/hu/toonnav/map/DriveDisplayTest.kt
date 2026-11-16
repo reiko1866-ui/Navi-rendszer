@@ -47,11 +47,12 @@ class DriveDisplayTest {
     }
 
     @Test
-    fun missingOrmCannotTurnTheGroundIntoASkyMirror() {
+    fun groundStaysDiffuseEvenIfATextureIsAddedLater() {
         val grass = RaceGeometry.materials().first { it.name == "grass" }
         val shoulder = RaceGeometry.materials().first { it.name == "shoulder" }
-        assertEquals(1f, grass.metallic)
-        assertEquals(1f, shoulder.metallic)
+        assertEquals(0f, grass.metallic)
+        assertEquals(0f, shoulder.metallic)
+        assertTrue(grass.green > grass.red)
         assertEquals(0f, RoadShade.groundMetallic("grass"))
         assertEquals(0f, RoadShade.groundMetallic("shoulder"))
         assertEquals(0f, RoadShade.groundMetallic("asphalt"))
