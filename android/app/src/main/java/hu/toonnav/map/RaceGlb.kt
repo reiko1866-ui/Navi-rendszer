@@ -51,12 +51,20 @@ object RaceGlb {
         val imageJson = JSONArray()
         val textures = JSONArray()
         val textureIndex = HashMap<String, Int>()
+        var usesBasis = false
         for (index in packedImages.indices) {
-            imageJson.put(JSONObject().put("mimeType", "image/ktx2").put("bufferView", imageViews[index]).put("name", packedImages[index].first))
-            textures.put(JSONObject()
-                .put("sampler", 0)
-                .put("source", index)
-                .put("extensions", JSONObject().put("KHR_texture_basisu", JSONObject().put("source", index))))
+            val image = packedImages[index].second
+            val png = image.size > 8 && image[0] == 137.toByte() && image[1] == 80.toByte()
+            imageJson.put(JSONObject()
+                .put("mimeType", if (png) "image/png" else "image/ktx2")
+                .put("bufferView", imageViews[index])
+                .put("name", packedImages[index].first))
+            val texture = JSONObject().put("sampler", 0).put("source", index)
+            if (!png) {
+                texture.put("extensions", JSONObject().put("KHR_texture_basisu", JSONObject().put("source", index)))
+                usesBasis = true
+            }
+            textures.put(texture)
             textureIndex[packedImages[index].first] = index
         }
         bind(materials, materialIndex, "asphalt", textureIndex, "asphalt")
@@ -76,7 +84,7 @@ object RaceGlb {
         if (imageJson.length() > 0) {
             root.put("images", imageJson)
             root.put("textures", textures)
-            root.put("extensionsUsed", JSONArray().put("KHR_texture_basisu"))
+            if (usesBasis) root.put("extensionsUsed", JSONArray().put("KHR_texture_basisu"))
         }
         return pack(root.toString().toByteArray(Charsets.UTF_8), bytes)
     }
@@ -146,6 +154,16 @@ object RaceGlb {
         return imageOrder.associateWith { read(it) }
     }
 
+    /**
+     * The packed race asphalt is a charcoal albedo (about sRGB 62). A factor cannot
+     * lighten it, so the driving view replaces that image with a light grey grain.
+     */
+    fun drivingImages(read: (String) -> ByteArray): Map<String, ByteArray> {
+        val images = roadImages(read).toMutableMap()
+        images["asphalt-color"] = asphaltPng(256)
+        return images
+    }
+
     private val imageOrder = listOf(
         "asphalt-color", "asphalt-normal", "asphalt-orm",
         "grass-color", "grass-normal", "grass-orm",
@@ -161,7 +179,8 @@ object RaceGlb {
         val pbr = material.getJSONObject("pbrMetallicRoughness")
         pbr.put("baseColorTexture", JSONObject().put("index", color))
         pbr.put("metallicRoughnessTexture", JSONObject().put("index", orm))
-        material.put("normalTexture", JSONObject().put("index", normal).put("scale", 1.0))
+        val normalScale = if (materialName == "asphalt") 1.6 else 1.0
+        material.put("normalTexture", JSONObject().put("index", normal).put("scale", normalScale))
         material.put("occlusionTexture", JSONObject().put("index", orm))
     }
 
@@ -224,21 +243,37 @@ object RaceGlb {
 
     private fun align(value: Int): Int = value + (4 - value % 4) % 4
 
-    fun asphaltPng(size: Int = 128): ByteArray {
+    fun asphaltPng(size: Int = 256): ByteArray {
+        val cells = 16
+        val cell = size / cells
+        fun hash(ix: Int, iy: Int): Int {
+            val x = Math.floorMod(ix, cells)
+            val y = Math.floorMod(iy, cells)
+            var n = x * 374761393 + y * 668265263
+            n = (n xor (n ushr 13)) * 1274126177
+            return (n xor (n ushr 16)) and 255
+        }
         val raw = ByteArray(size * (1 + size * 3))
         var cursor = 0
-        var state = 0x1234567
         for (y in 0 until size) {
             raw[cursor++] = 0
+            val y0 = y / cell
+            val fy = (y % cell) / cell.toFloat()
             for (x in 0 until size) {
-                state = state * 1103515245 + 12345
-                val grain = ((state ushr 16) and 31) - 12
-                val streak = if (y % 17 == 0 && x % 5 != 0) -18 else 0
-                val patch = if (((x / 9) + (y / 13)) % 7 == 0) -10 else 0
-                val value = (78 + grain + streak + patch).coerceIn(28, 120)
+                val x0 = x / cell
+                val fx = (x % cell) / cell.toFloat()
+                val n00 = hash(x0, y0)
+                val n10 = hash(x0 + 1, y0)
+                val n01 = hash(x0, y0 + 1)
+                val n11 = hash(x0 + 1, y0 + 1)
+                val nx0 = n00 + ((n10 - n00) * fx).toInt()
+                val nx1 = n01 + ((n11 - n01) * fx).toInt()
+                val blotch = nx0 + ((nx1 - nx0) * fy).toInt() - 128
+                val fine = hash(x, y) % 11 - 5
+                val value = (166 + blotch / 7 + fine).coerceIn(132, 202)
                 raw[cursor++] = value.toByte()
-                raw[cursor++] = (value + 1).coerceAtMost(125).toByte()
-                raw[cursor++] = (value - 2).coerceAtLeast(20).toByte()
+                raw[cursor++] = (value - 1).coerceAtLeast(128).toByte()
+                raw[cursor++] = (value - 3).coerceAtLeast(124).toByte()
             }
         }
         return png(size, raw)

@@ -50,8 +50,9 @@ data class RoadSample(
 
 object RaceGeometry {
     const val roadHalfWidth = 3.6
-    const val kerbTurn = 0.10
-    const val deckTop = 0.04
+    /** Sine of the heading change between samples. About 0.02 is an 80 m bend, not a hairpin. */
+    const val kerbTurn = 0.02
+    const val deckTop = 0.06
     const val deckDepth = 0.08
     const val shoulderWidth = 2.2
     const val asphaltTile = 2.5
@@ -107,8 +108,8 @@ object RaceGeometry {
             val shoulderB = profileB.shoulder
             ribbon(shoulder, a, b, rightA, rightB, -(halfA + shoulderA), -halfA, -(halfB + shoulderB), -halfB, 0.012, gravelTile)
             ribbon(shoulder, a, b, rightA, rightB, halfA, halfA + shoulderA, halfB, halfB + shoulderB, 0.012, gravelTile)
-            ribbon(blend, a, b, rightA, rightB, -(halfA + 0.42), -(halfA - 0.08), -(halfB + 0.42), -(halfB - 0.08), deckTop + 0.007, asphaltTile)
-            ribbon(blend, a, b, rightA, rightB, halfA - 0.08, halfA + 0.42, halfB - 0.08, halfB + 0.42, deckTop + 0.007, asphaltTile)
+            ribbon(blend, a, b, rightA, rightB, -(halfA + shoulderA * 0.55), -(halfA + 0.02), -(halfB + shoulderB * 0.55), -(halfB + 0.02), 0.018, gravelTile)
+            ribbon(blend, a, b, rightA, rightB, halfA + 0.02, halfA + shoulderA * 0.55, halfB + 0.02, halfB + shoulderB * 0.55, 0.018, gravelTile)
             verge(grass, a, b, rightA, rightB, -(halfA + shoulderA), -(halfA + shoulderA + 90.0), -(halfB + shoulderB), -(halfB + shoulderB + 90.0), heightAt)
             verge(grass, a, b, rightA, rightB, halfA + shoulderA, halfA + shoulderA + 90.0, halfB + shoulderB, halfB + shoulderB + 90.0, heightAt)
             val trackA = (halfA * 0.34).coerceAtMost(1.15)
@@ -122,16 +123,8 @@ object RaceGeometry {
             if (profileA.center == CenterMark.DASH && profileB.center == CenterMark.DASH && ((a.along / 6.0).toInt()) % 2 == 0) {
                 ribbon(dashes, a, b, rightA, rightB, 0.13, -0.13, 0.13, -0.13, deckTop + 0.016, 1.0)
             }
-            val corner = abs(a.turn) >= kerbTurn || abs(b.turn) >= kerbTurn
-            if (corner && profileA.kerbs && profileB.kerbs) {
-                val inside = if (a.turn + b.turn >= 0.0) 1.0 else -1.0
-                deck(
-                    if (((a.along / 2.4).toInt()) % 2 == 0) kerbRed else kerbWhite,
-                    a, b, rightA, rightB,
-                    inside * (halfA + 0.42), inside * halfA,
-                    inside * (halfB + 0.42), inside * halfB,
-                    deckTop + 0.045, 0.045, 1.2
-                )
+            if (kerbSafe(a, b, rightA, rightB)) {
+                layKerbs(kerbRed, kerbWhite, a, b, rightA, rightB, halfA, halfB)
             }
         }
         return listOf(
@@ -207,15 +200,15 @@ object RaceGeometry {
 
     fun materials(): List<RaceMaterial> {
         return listOf(
-            RaceMaterial("asphalt", 1f, 1f, 1f, 1f, 1f),
+            RaceMaterial("asphalt", 1f, 1f, 1f, 0f, 0.86f),
             RaceMaterial("grass", 1f, 1f, 1f, 1f, 1f),
             RaceMaterial("shoulder", 1f, 1f, 1f, 1f, 1f),
-            RaceMaterial("rubber", 0.015f, 0.015f, 0.016f, 0f, 0.96f, 0.72f),
+            RaceMaterial("rubber", 0.34f, 0.34f, 0.33f, 0f, 0.92f, 0.32f),
             RaceMaterial("edge", 0.92f, 0.92f, 0.90f, 0f, 0.45f),
             RaceMaterial("marking", 0.95f, 0.95f, 0.93f, 0f, 0.42f),
-            RaceMaterial("kerbRed", 0.82f, 0.08f, 0.05f, 0f, 0.4f),
-            RaceMaterial("kerbWhite", 0.93f, 0.93f, 0.91f, 0f, 0.4f),
-            RaceMaterial("vergeBlend", 0.18f, 0.16f, 0.13f, 0f, 0.94f, 0.58f),
+            RaceMaterial("kerbRed", 0.78f, 0.07f, 0.04f, 0f, 0.42f),
+            RaceMaterial("kerbWhite", 0.94f, 0.94f, 0.92f, 0f, 0.38f),
+            RaceMaterial("vergeBlend", 0.52f, 0.48f, 0.40f, 0f, 0.9f, 0.35f),
             RaceMaterial("canopy", 0.14f, 0.26f, 0.10f, 0f, 0.88f),
             RaceMaterial("canopyDark", 0.08f, 0.16f, 0.07f, 0f, 0.92f),
             RaceMaterial("trunk", 0.20f, 0.13f, 0.07f, 0f, 0.86f),
@@ -283,6 +276,82 @@ object RaceGeometry {
             if (z > maxZ) maxZ = z
         }
         return floatArrayOf(minX, minY, minZ, maxX, maxY, maxZ)
+    }
+
+    /**
+     * A bend is safe for the racing overlay when the samples actually turn and
+     * the two edges still point the same way. Straights and folded kinks are left bare.
+     * The stripes are a driving-view overlay, not a claim about real kerbs.
+     */
+    private fun kerbSafe(
+        a: RoadSample,
+        b: RoadSample,
+        rightA: Pair<Double, Double>,
+        rightB: Pair<Double, Double>
+    ): Boolean {
+        if (abs(a.turn) < kerbTurn && abs(b.turn) < kerbTurn) return false
+        val span = hypot(b.east - a.east, b.north - a.north)
+        if (span < 0.4) return false
+        val aligned = rightA.first * rightB.first + rightA.second * rightB.second
+        return aligned > 0.15
+    }
+
+    private fun layKerbs(
+        red: MeshBuilder,
+        white: MeshBuilder,
+        a: RoadSample,
+        b: RoadSample,
+        rightA: Pair<Double, Double>,
+        rightB: Pair<Double, Double>,
+        halfA: Double,
+        halfB: Double
+    ) {
+        val span = hypot(b.east - a.east, b.north - a.north)
+        val pieces = kotlin.math.ceil(span / 1.6).toInt().coerceAtLeast(1)
+        val width = 0.62
+        val overlap = 0.05
+        val height = 0.08
+        for (piece in 0 until pieces) {
+            val t0 = piece.toDouble() / pieces
+            val t1 = (piece + 1).toDouble() / pieces
+            val start = mixSample(a, b, t0)
+            val end = mixSample(a, b, t1)
+            val rightStart = mixRight(rightA, rightB, t0)
+            val rightEnd = mixRight(rightA, rightB, t1)
+            val halfStart = halfA + (halfB - halfA) * t0
+            val halfEnd = halfA + (halfB - halfA) * t1
+            val builder = if (((start.along / 1.6).toInt()) % 2 == 0) red else white
+            deck(
+                builder, start, end, rightStart, rightEnd,
+                halfStart - overlap, halfStart - overlap + width,
+                halfEnd - overlap, halfEnd - overlap + width,
+                deckTop + height, height, 1.6
+            )
+            deck(
+                builder, start, end, rightStart, rightEnd,
+                -(halfStart - overlap + width), -(halfStart - overlap),
+                -(halfEnd - overlap + width), -(halfEnd - overlap),
+                deckTop + height, height, 1.6
+            )
+        }
+    }
+
+    private fun mixSample(a: RoadSample, b: RoadSample, t: Double): RoadSample {
+        return RoadSample(
+            a.east + (b.east - a.east) * t,
+            a.north + (b.north - a.north) * t,
+            a.along + (b.along - a.along) * t,
+            a.turn + (b.turn - a.turn) * t,
+            a.kind,
+            (a.elevation + (b.elevation - a.elevation) * t).toFloat()
+        )
+    }
+
+    private fun mixRight(a: Pair<Double, Double>, b: Pair<Double, Double>, t: Double): Pair<Double, Double> {
+        val east = a.first + (b.first - a.first) * t
+        val north = a.second + (b.second - a.second) * t
+        val length = hypot(east, north).coerceAtLeast(0.001)
+        return (east / length) to (north / length)
     }
 
     private fun deck(

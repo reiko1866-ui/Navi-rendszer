@@ -96,6 +96,7 @@ class RacePrototypeActivity : ComponentActivity() {
     @Volatile var followHasSpeed = false
     @Volatile var followElapsed = 0L
     @Volatile var followLive = false
+    @Volatile var previewAlong = 8.0
     @Volatile var frameFps = Double.NaN
     @Volatile var frameMs = Double.NaN
     @Volatile var roadImages: Map<String, ByteArray> = emptyMap()
@@ -122,6 +123,7 @@ class RacePrototypeActivity : ComponentActivity() {
         night = hudPrefs.getBoolean("night", false)
         voice.enabled = voiceOn
         Thread { voice.load() }.start()
+        previewAlong = intent.getFloatExtra(EXTRA_PREVIEW_ALONG, 8f).toDouble().coerceIn(0.0, 5_000.0)
         val requested = intent.getStringExtra(EXTRA_CAR)
         val selected = GarageFleet.shown(requested ?: GarageStore(this).carId())
         carIndex = GarageFleet.cars.indexOfFirst { it.id == selected.id }.coerceAtLeast(0)
@@ -151,7 +153,7 @@ class RacePrototypeActivity : ComponentActivity() {
         handler.post {
             val carBytes = assets.open("models/formula-car.glb").use { it.readBytes() }
             val skyBytes = assets.open("models/noon-sky.hdr").use { it.readBytes() }
-            val images = RaceGlb.roadImages { name -> assets.open("models/road/$name.ktx2").use { it.readBytes() } }
+            val images = RaceGlb.drivingImages { name -> assets.open("models/road/$name.ktx2").use { it.readBytes() } }
             roadImages = images
             windowEnd = samples.lastOrNull()?.along ?: 0.0
             val roadBytes = RaceGlb.encode(RaceGeometry.libraryModel(), images)
@@ -610,6 +612,7 @@ class RacePrototypeActivity : ComponentActivity() {
 
     companion object {
         const val EXTRA_CAR = "car"
+        const val EXTRA_PREVIEW_ALONG = "previewAlong"
         init {
             Utils.init()
             Gltfio.init()
@@ -797,7 +800,7 @@ private class RaceRenderer(
             north = heldNorth
             bearing = heldBearing
         } else {
-            val here = RaceTrack.pointAt(samples, 8.0)
+            val here = RaceTrack.pointAt(samples, host.previewAlong)
             heldAlong = here.along
             east = here.east
             north = here.north

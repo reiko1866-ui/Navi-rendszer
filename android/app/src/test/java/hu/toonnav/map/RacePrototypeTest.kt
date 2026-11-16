@@ -41,10 +41,25 @@ class RacePrototypeTest {
         assertTrue(triangles > 30_000)
         val license = java.io.File("src/main/assets/models/formula-car-license.txt").readText()
         assertTrue(license.contains("CC0"))
-        val road = RaceGeometry.worldModel(RaceGeometry.sampleRoute(line(0.0, 80.0), 2.0)).first { it.material == "asphalt" }
+        val straightRoad = RaceGeometry.worldModel(RaceGeometry.sampleRoute(line(0.0, 80.0), 2.0))
+        val road = straightRoad.first { it.material == "asphalt" }
         val box = RaceGeometry.bounds(road)
         assertTrue(box[4] - box[1] > 0.05f)
-        assertTrue(RaceGeometry.worldModel(RaceGeometry.sampleRoute(line(0.0, 80.0), 2.0)).any { it.material == "grass" })
+        var facingUp = 0
+        var facingDown = 0
+        for (index in road.normals.indices step 3) {
+            val ny = road.normals[index + 1]
+            if (kotlin.math.abs(ny) > 0.5f) {
+                if (ny > 0f) facingUp++ else facingDown++
+            }
+        }
+        assertTrue(facingUp > 0 && facingDown == 0)
+        val blend = straightRoad.first { it.material == "vergeBlend" }
+        for (index in blend.positions.indices step 3) {
+            assertTrue(kotlin.math.abs(blend.positions[index]) > 2.4f)
+            assertTrue(blend.positions[index + 1] < RaceGeometry.deckTop)
+        }
+        assertTrue(straightRoad.any { it.material == "grass" })
         val slots = GarageFleet.cars.map { car ->
             RaceLivery.color("body", car) to RaceLivery.color("accent", car)
         }
@@ -63,7 +78,28 @@ class RacePrototypeTest {
         assertTrue(gentleWorld.none { it.material.startsWith("kerb") })
         val corner = listOf(0.0 to 0.0, 0.0 to 40.0, 40.0 to 40.0)
         val cornerWorld = RaceGeometry.worldModel(RaceGeometry.sampleRoute(corner, 2.0))
-        assertTrue(cornerWorld.any { it.material.startsWith("kerb") && it.triangleCount > 0 })
+        val red = cornerWorld.first { it.material == "kerbRed" }
+        val white = cornerWorld.first { it.material == "kerbWhite" }
+        assertTrue(red.triangleCount > 0 && white.triangleCount > 0)
+        var minEast = Float.POSITIVE_INFINITY
+        var maxEast = Float.NEGATIVE_INFINITY
+        var raised = 0f
+        for (mesh in listOf(red, white)) {
+            for (index in mesh.positions.indices step 3) {
+                raised = maxOf(raised, mesh.positions[index + 1])
+                val north = mesh.positions[index + 2]
+                if (north in 30f..42f) {
+                    minEast = minOf(minEast, mesh.positions[index])
+                    maxEast = maxOf(maxEast, mesh.positions[index])
+                }
+            }
+        }
+        assertTrue(minEast < -2f)
+        assertTrue(maxEast > 2f)
+        assertTrue(raised > RaceGeometry.deckTop + 0.05f)
+        val preview = RaceGeometry.worldModel(RaceTrack.samplesFor(RaceTrack.samplePreview()))
+        assertTrue(preview.any { it.material == "kerbRed" && it.triangleCount > 0 })
+        assertTrue(preview.any { it.material == "kerbWhite" && it.triangleCount > 0 })
     }
 
     @Test
@@ -101,18 +137,24 @@ class RacePrototypeTest {
         assertEquals("road", json.getJSONArray("nodes").getJSONObject(0).getString("name"))
         val names = materialNames(json)
         assertTrue(names.containsAll(listOf("asphalt", "grass", "shoulder", "marking")))
-        val textured = RaceGlb.json(RaceGlb.encode(RaceTrack.model(RaceTrack.samplePreview()), roadImages()))
+        val textured = RaceGlb.json(RaceGlb.encode(RaceTrack.model(RaceTrack.samplePreview()), drivingImages()))
         val asphalt = (0 until textured.getJSONArray("materials").length())
             .map { textured.getJSONArray("materials").getJSONObject(it) }
             .first { it.getString("name") == "asphalt" }
         assertTrue(asphalt.has("normalTexture"))
-        assertEquals("image/ktx2", textured.getJSONArray("images").getJSONObject(0).getString("mimeType"))
+        assertEquals(0.0, asphalt.getJSONObject("pbrMetallicRoughness").getDouble("metallicFactor"), 0.001)
+        assertEquals("image/png", textured.getJSONArray("images").getJSONObject(0).getString("mimeType"))
+        assertEquals("image/ktx2", textured.getJSONArray("images").getJSONObject(1).getString("mimeType"))
+        assertTrue(!textured.getJSONArray("textures").getJSONObject(0).has("extensions"))
+        assertTrue(textured.getJSONArray("textures").getJSONObject(1).getJSONObject("extensions").has("KHR_texture_basisu"))
         assertTrue(json.getJSONArray("meshes").getJSONObject(0).getJSONArray("primitives").getJSONObject(0)
             .getJSONObject("attributes").has("TEXCOORD_0"))
         assertTrue(second.size > 10_000)
         val png = RaceGlb.asphaltPng()
         assertEquals(137.toByte(), png[0])
         assertEquals("PNG".toByteArray()[0], png[1])
+        val mean = pngMeanRed(png)
+        assertTrue(mean in 150..185)
     }
 
     @Test
@@ -166,7 +208,8 @@ class RacePrototypeTest {
         assertTrue(unknown.none { it.material == "marking" })
         val corner = listOf(0.0 to 0.0, 0.0 to 40.0, 40.0 to 40.0)
         val motorwayCorner = RaceGeometry.worldModel(RaceGeometry.sampleRoute(corner, 2.0, List(corner.size) { RoadKind.MOTORWAY }))
-        assertTrue(motorwayCorner.none { it.material.startsWith("kerb") })
+        assertTrue(motorwayCorner.any { it.material == "kerbRed" })
+        assertTrue(motorwayCorner.any { it.material == "kerbWhite" })
         val mainCorner = RaceGeometry.worldModel(RaceGeometry.sampleRoute(corner, 2.0, List(corner.size) { RoadKind.MAIN }))
         assertTrue(mainCorner.any { it.material.startsWith("kerb") })
     }
@@ -332,8 +375,39 @@ class RacePrototypeTest {
         return max - min
     }
 
-    private fun roadImages(): Map<String, ByteArray> {
-        return RaceGlb.roadImages { name -> java.io.File("src/main/assets/models/road/$name.ktx2").readBytes() }
+    private fun drivingImages(): Map<String, ByteArray> {
+        return RaceGlb.drivingImages { name -> java.io.File("src/main/assets/models/road/$name.ktx2").readBytes() }
+    }
+
+    private fun pngMeanRed(png: ByteArray): Int {
+        val header = java.nio.ByteBuffer.wrap(png, 16, 4).order(java.nio.ByteOrder.BIG_ENDIAN).int
+        val data = java.io.ByteArrayOutputStream()
+        var cursor = 8
+        while (cursor + 8 <= png.size) {
+            val length = java.nio.ByteBuffer.wrap(png, cursor, 4).order(java.nio.ByteOrder.BIG_ENDIAN).int
+            val type = String(png, cursor + 4, 4, Charsets.US_ASCII)
+            if (type == "IDAT") data.write(png, cursor + 8, length)
+            cursor += 12 + length
+        }
+        val inflater = java.util.zip.Inflater()
+        inflater.setInput(data.toByteArray())
+        val raw = ByteArray(header * (1 + header * 3))
+        val inflated = inflater.inflate(raw)
+        inflater.end()
+        var sum = 0L
+        var count = 0
+        var index = 0
+        while (index < inflated) {
+            index++
+            var column = 0
+            while (column < header && index < inflated) {
+                sum += raw[index].toInt() and 0xff
+                count++
+                index += 3
+                column++
+            }
+        }
+        return (sum / count).toInt()
     }
 
     private fun materialNames(json: JSONObject): List<String> {

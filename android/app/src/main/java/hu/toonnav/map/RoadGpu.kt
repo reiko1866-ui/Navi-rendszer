@@ -5,6 +5,7 @@ import com.google.android.filament.Colors
 import com.google.android.filament.Engine
 import com.google.android.filament.EntityManager
 import com.google.android.filament.IndexBuffer
+import com.google.android.filament.Material
 import com.google.android.filament.MaterialInstance
 import com.google.android.filament.RenderableManager
 import com.google.android.filament.Scene
@@ -42,23 +43,30 @@ class RoadGpu(
             val names = arrayOf("asphalt", "asphaltWarm", "asphaltCool", "asphaltDark")
             val tint = arrayOf(
                 floatArrayOf(1f, 1f, 1f),
-                floatArrayOf(0.84f, 0.82f, 0.78f),
-                floatArrayOf(0.74f, 0.73f, 0.70f),
-                floatArrayOf(0.92f, 0.86f, 0.78f)
+                floatArrayOf(0.98f, 0.98f, 0.97f),
+                floatArrayOf(0.96f, 0.96f, 0.95f),
+                floatArrayOf(0.99f, 0.98f, 0.97f)
             )
             for (index in names.indices) {
                 val copy = MaterialInstance.duplicate(asphalt, names[index])
                 try {
                     copy.setParameter("baseColorFactor", Colors.RgbaType.LINEAR, tint[index][0], tint[index][1], tint[index][2], 1f)
+                    copy.setParameter("metallicFactor", 0f)
+                    copy.setParameter("roughnessFactor", 0.88f)
                 } catch (_: Throwable) {
-                    // The shared asphalt instance still has the texture if a tint parameter is rejected.
+                    // The shared asphalt instance still has the light texture if a parameter is rejected.
                 }
+                copy.setCullingMode(Material.CullingMode.NONE)
+                copy.setPolygonOffset(-0.6f, -1f)
                 materials[names[index]] = copy
                 owned.add(copy)
             }
         }
+        for (instance in materials.values) instance.setCullingMode(Material.CullingMode.NONE)
         materials["marking"]?.setPolygonOffset(-1.2f, -2f)
         materials["edge"]?.setPolygonOffset(-0.8f, -1.5f)
+        materials["kerbRed"]?.setPolygonOffset(-1.5f, -2f)
+        materials["kerbWhite"]?.setPolygonOffset(-1.5f, -2f)
     }
 
     fun uploadChunks(built: Map<Int, List<RaceMesh>>) {
@@ -118,7 +126,7 @@ class RoadGpu(
 
     private fun upload(mesh: RaceMesh, cast: Boolean, contact: Boolean): Part? {
         if (mesh.vertexCount < 3 || mesh.indices.isEmpty()) return null
-        val material = materials[mesh.material] ?: return null
+        val material = materialFor(mesh.material) ?: return null
         val quaternions = RoadFrame.quaternions(mesh)
         val stride = 36
         val vertices = ByteBuffer.allocateDirect(mesh.vertexCount * stride).order(ByteOrder.nativeOrder())
@@ -164,6 +172,12 @@ class RoadGpu(
             .build(engine, entity)
         scene.addEntity(entity)
         return Part(entity, vertexBuffer, indexBuffer)
+    }
+
+    private fun materialFor(name: String): MaterialInstance? {
+        materials[name]?.let { return it }
+        if (name.startsWith("asphalt")) return materials["asphalt"]
+        return null
     }
 
     private fun bounds(mesh: RaceMesh): Box {
