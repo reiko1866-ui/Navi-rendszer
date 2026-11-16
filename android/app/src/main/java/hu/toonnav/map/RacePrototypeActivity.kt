@@ -1,7 +1,9 @@
 package hu.toonnav.map
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.Intent
+import android.content.res.Configuration
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -13,9 +15,12 @@ import android.os.Looper
 import android.os.Process
 import android.os.SystemClock
 import android.view.Choreographer
+import android.util.TypedValue
 import android.view.Surface
 import android.view.SurfaceView
+import android.view.WindowManager
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -104,6 +109,11 @@ class RacePrototypeActivity : ComponentActivity() {
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private var navigationMode = false
+    private var chromeWidth = 0
+    private var chromeHeight = 0
+    private var driveQuality = DriveDisplay.Quality.FULL
+    private var qualityReduced = false
+    private var slowFrames = 0
     private var announceStart = false
     private var tripArrived = false
     private var watchPosted = false
@@ -125,6 +135,7 @@ class RacePrototypeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_race_prototype)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         speedView = findViewById(R.id.raceSpeed)
         maneuverView = findViewById(R.id.raceManeuver)
         remainingView = findViewById(R.id.raceRemaining)
@@ -132,6 +143,10 @@ class RacePrototypeActivity : ComponentActivity() {
         statusView = findViewById(R.id.raceStatus)
         voiceButton = findViewById(R.id.raceVoice)
         nightButton = findViewById(R.id.raceNight)
+        val content = findViewById<android.view.View>(android.R.id.content)
+        content.addOnLayoutChangeListener { _, left, top, right, bottom, _, _, _, _ ->
+            applyChrome(right - left, bottom - top)
+        }
         voiceOn = hudPrefs.getBoolean("voice", true)
         night = hudPrefs.getBoolean("night", false)
         voice.enabled = voiceOn
@@ -202,6 +217,21 @@ class RacePrototypeActivity : ComponentActivity() {
             remainingView.text = missing
             return
         }
+        val glMajor = glEsMajor()
+        if (glMajor in 1..2) {
+            showEngineFailed()
+            return
+        }
+        driveQuality = DriveDisplay.quality(
+            resources.displayMetrics.widthPixels,
+            resources.displayMetrics.heightPixels,
+            memoryClassMb(),
+            glMajor
+        )
+        if (driveQuality == DriveDisplay.Quality.REDUCED) {
+            qualityReduced = true
+            statusView.text = getString(R.string.race_quality_reduced)
+        }
         val thread = HandlerThread("toonnav-filament", Process.THREAD_PRIORITY_DISPLAY)
         thread.start()
         renderThread = thread
@@ -217,25 +247,23 @@ class RacePrototypeActivity : ComponentActivity() {
             windowEnd = samples.lastOrNull()?.along ?: 0.0
             val roadBytes = RaceGlb.encode(RaceGeometry.libraryModel(), images)
             val created = RaceRenderer.start(
-                carBytes, roadBytes, skyBytes, routeNow, samples, selected, night, surface, handler, this
+                carBytes, roadBytes, skyBytes, routeNow, samples, selected, night, driveQuality, surface, handler, this
             )
             renderer = created
-            if (created == null) runOnUiThread {
-                val failed = getString(R.string.race_engine_failed)
-                statusView.text = failed
-                maneuverView.text = failed
-            } else if (usingLiveRoute) requestElevation(routeSeq)
+            if (created == null) runOnUiThread { showEngineFailed() } else if (usingLiveRoute) requestElevation(routeSeq)
         }
     }
 
     override fun onResume() {
         super.onResume()
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         NavigationOwner.claimRace()
         if (usingLiveRoute) startLocationUpdates()
         startWatch()
     }
 
     override fun onPause() {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         stopLocationUpdates()
         stopWatch()
         voice.silence()
@@ -244,6 +272,14 @@ class RacePrototypeActivity : ComponentActivity() {
         if (usingLiveRoute && !ending) rememberProgress()
         NavigationOwner.releaseRace(returningToMap = usingLiveRoute && !ending)
         super.onPause()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        chromeWidth = 0
+        chromeHeight = 0
+        val content = findViewById<android.view.View>(android.R.id.content)
+        applyChrome(content.width, content.height)
     }
 
     override fun onStop() {
@@ -322,7 +358,10 @@ class RacePrototypeActivity : ComponentActivity() {
             android.content.pm.PackageManager.PERMISSION_GRANTED
         val coarse = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
             android.content.pm.PackageManager.PERMISSION_GRANTED
-        if (!fine && !coarse) return
+        if (!fine && !coarse) {
+            statusView.text = getString(R.string.race_location_denied)
+            return
+        }
         val manager = getSystemService(LOCATION_SERVICE) as LocationManager
         val providers = listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
         var registered = 0
@@ -347,6 +386,7 @@ class RacePrototypeActivity : ComponentActivity() {
             }
         }
         updatesStarted = registered > 0
+        if (!updatesStarted) statusView.text = getString(R.string.race_location_unavailable)
     }
 
     private fun stopLocationUpdates() {
@@ -411,7 +451,6 @@ class RacePrototypeActivity : ComponentActivity() {
             else -> {
                 offRouteSpoken = false
                 clearGpsStatus()
-                paintFrame()
             }
         }
         if (!cue.arrived && !cue.progressHeld && !cue.offRouteConfirmed) speakCue(cue)
@@ -674,6 +713,60 @@ class RacePrototypeActivity : ComponentActivity() {
         DriveTripFile.save(this)
     }
 
+    private fun showEngineFailed() {
+        val failed = getString(R.string.race_engine_failed)
+        statusView.text = failed
+        maneuverView.text = failed
+    }
+
+    private fun glEsMajor(): Int {
+        return try {
+            val info = (getSystemService(ACTIVITY_SERVICE) as ActivityManager).deviceConfigurationInfo
+            info.reqGlEsVersion shr 16
+        } catch (failed: Throwable) {
+            0
+        }
+    }
+
+    private fun memoryClassMb(): Int {
+        return try {
+            (getSystemService(ACTIVITY_SERVICE) as ActivityManager).memoryClass
+        } catch (failed: Throwable) {
+            0
+        }
+    }
+
+    private fun applyChrome(widthPx: Int, heightPx: Int) {
+        if (widthPx < 2 || heightPx < 2) return
+        if (widthPx == chromeWidth && heightPx == chromeHeight) return
+        chromeWidth = widthPx
+        chromeHeight = heightPx
+        val layout = DriveChrome.layout(widthPx, heightPx, resources.displayMetrics.density)
+        place(findViewById(R.id.raceInfo), layout.guidance)
+        place(findViewById(R.id.raceStop), layout.stop)
+        place(findViewById(R.id.raceVoice), layout.voice)
+        place(findViewById(R.id.raceBack), layout.map)
+        place(findViewById(R.id.raceGarage), layout.garage)
+        place(findViewById(R.id.raceNight), layout.night)
+        place(findViewById(R.id.raceLivery), layout.livery)
+        speedView.setTextSize(TypedValue.COMPLEX_UNIT_SP, layout.speedSp)
+        maneuverView.setTextSize(TypedValue.COMPLEX_UNIT_SP, layout.maneuverSp)
+        remainingView.setTextSize(TypedValue.COMPLEX_UNIT_SP, layout.detailSp)
+        etaView.setTextSize(TypedValue.COMPLEX_UNIT_SP, layout.detailSp)
+        statusView.setTextSize(TypedValue.COMPLEX_UNIT_SP, layout.detailSp)
+        val buttonSp = layout.buttonSp
+        for (id in intArrayOf(R.id.raceStop, R.id.raceVoice, R.id.raceBack, R.id.raceGarage, R.id.raceNight, R.id.raceLivery)) {
+            findViewById<Button>(id).setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonSp)
+        }
+    }
+
+    private fun place(view: android.view.View, box: DriveBox) {
+        val params = FrameLayout.LayoutParams(box.width, box.height)
+        params.leftMargin = box.left
+        params.topMargin = box.top
+        view.layoutParams = params
+    }
+
     private fun paintHud(cue: GuidanceCue?) {
         val speed = if (!followLive) null else GpsReadout.speedKmh(followSpeed.toFloat(), followHasSpeed, fixAge())
         speedView.text = if (speed == null) "— ${getString(R.string.speed_unit)}" else "$speed ${getString(R.string.speed_unit)}"
@@ -686,21 +779,22 @@ class RacePrototypeActivity : ComponentActivity() {
             remainingView.text = getString(R.string.remaining) + " " + ManeuverEvents.formatDistance(cue.remainingMeters)
             etaView.text = getString(R.string.arrival) + " " + etaText(cue)
         }
-        paintFrame()
     }
 
     fun publishFrame(fps: Double, milliseconds: Double, peak: Double) {
         frameFps = fps
         frameMs = milliseconds
         peakFrameMs = peak
-        runOnUiThread { if (!isDestroyed) paintFrame() }
-    }
-
-    private fun paintFrame() {
-        if (!frameFps.isFinite()) return
-        val base = statusView.text?.toString().orEmpty().lineSequence().firstOrNull { !it.contains("fps") }.orEmpty()
-        val fps = "${frameFps.roundToInt()} fps, ${"%.1f".format(frameMs)} ms, peak ${"%.1f".format(peakFrameMs)}"
-        statusView.text = if (base.isBlank()) fps else "$base\n$fps"
+        if (qualityReduced || driveQuality == DriveDisplay.Quality.REDUCED) return
+        if (milliseconds > 42.0) slowFrames += 1 else slowFrames = 0
+        if (slowFrames < 4) return
+        qualityReduced = true
+        renderHandler?.post { renderer?.reduceDetail() }
+        runOnUiThread {
+            if (!isDestroyed && statusView.text.isNullOrBlank()) {
+                statusView.text = getString(R.string.race_quality_reduced)
+            }
+        }
     }
 
     private fun etaText(cue: GuidanceCue): String {
@@ -835,6 +929,22 @@ private class RaceRenderer(
         height = nextHeight
     }
 
+    fun reduceDetail() {
+        if (closed) return
+        val ao = swapView.ambientOcclusionOptions
+        ao.enabled = false
+        ao.quality = View.QualityLevel.LOW
+        swapView.ambientOcclusionOptions = ao
+        val resolution = swapView.dynamicResolutionOptions
+        resolution.enabled = true
+        resolution.minScale = 0.45f
+        resolution.quality = View.QualityLevel.LOW
+        swapView.dynamicResolutionOptions = resolution
+        swapView.setShadowingEnabled(false)
+        val sun = engine.lightManager.getInstance(light)
+        if (sun != 0) engine.lightManager.setShadowCaster(sun, false)
+    }
+
     fun applyLivery(car: GarageFleet.Car) {
         for (instance in carAsset.instance.materialInstances) {
             val slot = RaceLivery.slot(instance.name) ?: continue
@@ -966,9 +1076,10 @@ private class RaceRenderer(
         host.travelAlong = heldAlong
         host.slideWindow(heldAlong)
         val turned = dampBearing(bearing, step)
+        val aspect = width.toDouble() / height.toDouble()
         camera.setProjection(
-            RaceCamera.fovDegrees,
-            width.toDouble() / height.toDouble(),
+            DriveDisplay.verticalFov(aspect),
+            aspect,
             RaceCamera.nearMeters,
             RaceCamera.farMeters,
             Camera.Fov.VERTICAL
@@ -1037,6 +1148,7 @@ private class RaceRenderer(
             samples: List<RoadSample>,
             car: GarageFleet.Car,
             night: Boolean,
+            quality: DriveDisplay.Quality,
             surface: SurfaceView,
             handler: Handler,
             host: RacePrototypeActivity
@@ -1053,19 +1165,20 @@ private class RaceRenderer(
                 val scene = engine.createScene()
                 val view = engine.createView()
                 view.scene = scene
+                val reduced = quality == DriveDisplay.Quality.REDUCED
                 view.blendMode = View.BlendMode.OPAQUE
                 view.antiAliasing = View.AntiAliasing.FXAA
-                view.setShadowingEnabled(true)
+                view.setShadowingEnabled(!reduced)
                 view.setPostProcessingEnabled(true)
                 val ao = view.ambientOcclusionOptions
-                ao.enabled = true
-                ao.quality = View.QualityLevel.MEDIUM
+                ao.enabled = !reduced
+                ao.quality = if (reduced) View.QualityLevel.LOW else View.QualityLevel.MEDIUM
                 view.ambientOcclusionOptions = ao
                 val resolution = view.dynamicResolutionOptions
                 resolution.enabled = true
-                resolution.minScale = 0.7f
+                resolution.minScale = if (reduced) 0.45f else 0.7f
                 resolution.maxScale = 1f
-                resolution.quality = View.QualityLevel.MEDIUM
+                resolution.quality = if (reduced) View.QualityLevel.LOW else View.QualityLevel.MEDIUM
                 view.dynamicResolutionOptions = resolution
                 val fog = view.fogOptions
                 fog.enabled = true
@@ -1092,10 +1205,10 @@ private class RaceRenderer(
                 scene.indirectLight = indirect
                 val light = EntityManager.get().create()
                 val shadows = LightManager.ShadowOptions()
-                shadows.mapSize = 1024
+                shadows.mapSize = if (reduced) 512 else 1024
                 shadows.shadowCascades = 1
-                shadows.shadowFar = 48f
-                shadows.screenSpaceContactShadows = true
+                shadows.shadowFar = if (reduced) 28f else 48f
+                shadows.screenSpaceContactShadows = !reduced
                 shadows.maxShadowDistance = 8f
                 shadows.constantBias = 0.08f
                 shadows.normalBias = 0.6f
@@ -1103,7 +1216,7 @@ private class RaceRenderer(
                     .color(1.0f, 0.97f, 0.92f)
                     .intensity(100_000f)
                     .direction(RaceLighting.sunX, RaceLighting.sunY, RaceLighting.sunZ)
-                    .castShadows(true)
+                    .castShadows(!reduced)
                     .shadowOptions(shadows)
                     .sunAngularRadius(0.45f)
                     .build(engine, light)

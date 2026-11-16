@@ -62,6 +62,15 @@ class RoadGpu(
                 owned.add(copy)
             }
         }
+        for (name in arrayOf("grass", "shoulder")) {
+            val instance = materials[name] ?: continue
+            val metallic = RoadShade.groundMetallic(name) ?: continue
+            try {
+                instance.setParameter("metallicFactor", metallic)
+            } catch (_: Throwable) {
+                // A rejected factor leaves the glTF value. The ORM map still zeroes metal when it loads.
+            }
+        }
         for (instance in materials.values) instance.setCullingMode(Material.CullingMode.NONE)
         materials["marking"]?.setPolygonOffset(-1.2f, -2f)
         materials["edge"]?.setPolygonOffset(-0.8f, -1.5f)
