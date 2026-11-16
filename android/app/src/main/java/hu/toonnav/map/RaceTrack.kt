@@ -9,7 +9,11 @@ import kotlin.math.sin
  * coordinates it is given.
  */
 object RaceTrack {
-    fun samplesFor(route: List<OsrmPoint>): List<RoadSample> {
+    fun samplesFor(
+        route: List<OsrmPoint>,
+        kinds: List<RoadKind> = emptyList(),
+        elevations: FloatArray = FloatArray(0)
+    ): List<RoadSample> {
         val local = localMeters(route)
         if (local.size < 2) return emptyList()
         var length = 0.0
@@ -19,8 +23,17 @@ object RaceTrack {
                 local[index].second - local[index - 1].second
             )
         }
-        val step = if (length > 14_000.0) length / 4_000.0 else 2.5
-        return RaceGeometry.sampleRoute(local, step)
+        val step = if (length > 40_000.0) 4.0 else 2.5
+        return RaceGeometry.sampleRoute(local, step, kinds, elevations)
+    }
+
+    /** The mesh covers the car and the road ahead. The rest of the route stays as samples only. */
+    fun window(samples: List<RoadSample>, alongMeters: Double, behindMeters: Double = 220.0, aheadMeters: Double = 1_700.0): List<RoadSample> {
+        if (samples.size < 2) return samples
+        val start = (alongMeters - behindMeters).coerceAtLeast(samples.first().along)
+        val end = (alongMeters + aheadMeters).coerceAtMost(samples.last().along)
+        val cut = samples.filter { it.along in start..end }
+        return if (cut.size >= 2) cut else samples
     }
 
     fun bearing(route: List<OsrmPoint>, samples: List<RoadSample>, alongMeters: Double): Double {
@@ -34,8 +47,9 @@ object RaceTrack {
         return Math.toDegrees(kotlin.math.atan2(ahead.east - here.east, ahead.north - here.north))
     }
 
-    fun model(route: List<OsrmPoint>): RaceModel {
-        return RaceModel(emptyList(), RaceGeometry.worldModel(samplesFor(route)), RaceGeometry.materials())
+    fun model(route: List<OsrmPoint>, kinds: List<RoadKind> = emptyList(), heightAt: ((Double, Double) -> Float)? = null): RaceModel {
+        val samples = window(samplesFor(route, kinds), 0.0)
+        return RaceModel(emptyList(), RaceGeometry.worldModel(samples, heightAt), RaceGeometry.materials())
     }
 
     fun localMeters(route: List<OsrmPoint>): List<Pair<Double, Double>> {
@@ -62,7 +76,9 @@ object RaceTrack {
                 start.east + (end.east - start.east) * blend,
                 start.north + (end.north - start.north) * blend,
                 alongMeters,
-                start.turn
+                start.turn,
+                start.kind,
+                start.elevation + (end.elevation - start.elevation) * blend.toFloat()
             )
         }
         return last

@@ -29,9 +29,9 @@ object RaceCamera {
     const val noseLocalY = 0.40
     const val noseLocalZ = 2.60
 
-    fun pose(east: Double, north: Double, bearingDegrees: Double): RaceCameraPose {
-        val eye = world(east, north, bearingDegrees, eyeLocalX, eyeLocalY, eyeLocalZ)
-        val look = world(east, north, bearingDegrees, 0.0, lookLocalY, eyeLocalZ + lookAheadMeters)
+    fun pose(east: Double, north: Double, bearingDegrees: Double, surface: Double = RaceGeometry.deckTop): RaceCameraPose {
+        val eye = world(east, north, bearingDegrees, eyeLocalX, eyeLocalY, eyeLocalZ, surface)
+        val look = world(east, north, bearingDegrees, 0.0, lookLocalY, eyeLocalZ + lookAheadMeters, surface)
         return RaceCameraPose(
             eyeX = eye[0], eyeY = eye[1], eyeZ = eye[2],
             targetX = look[0], targetY = look[1], targetZ = look[2],
@@ -41,16 +41,16 @@ object RaceCamera {
         )
     }
 
-    fun nosePoint(east: Double, north: Double, bearingDegrees: Double): FloatArray {
-        return world(east, north, bearingDegrees, 0.0, noseLocalY, noseLocalZ)
+    fun nosePoint(east: Double, north: Double, bearingDegrees: Double, surface: Double = RaceGeometry.deckTop): FloatArray {
+        return world(east, north, bearingDegrees, 0.0, noseLocalY, noseLocalZ, surface)
     }
 
-    fun wingPoint(east: Double, north: Double, bearingDegrees: Double, side: Double): FloatArray {
-        return world(east, north, bearingDegrees, side * 0.98, 0.26, 2.45)
+    fun wingPoint(east: Double, north: Double, bearingDegrees: Double, side: Double, surface: Double = RaceGeometry.deckTop): FloatArray {
+        return world(east, north, bearingDegrees, side * 0.98, 0.26, 2.45, surface)
     }
 
-    fun tirePoint(east: Double, north: Double, bearingDegrees: Double, side: Double): FloatArray {
-        return world(east, north, bearingDegrees, side * 0.98, 0.36, 1.80)
+    fun tirePoint(east: Double, north: Double, bearingDegrees: Double, side: Double, surface: Double = RaceGeometry.deckTop): FloatArray {
+        return world(east, north, bearingDegrees, side * 0.98, 0.36, 1.80, surface)
     }
 
     /**
@@ -58,8 +58,8 @@ object RaceCamera {
      * third column points backward. The first column points to the driver's right,
      * which is east when the car faces north.
      */
-    fun cameraModel(east: Double, north: Double, bearingDegrees: Double): FloatArray {
-        val pose = pose(east, north, bearingDegrees)
+    fun cameraModel(east: Double, north: Double, bearingDegrees: Double, surface: Double = RaceGeometry.deckTop): FloatArray {
+        val pose = pose(east, north, bearingDegrees, surface)
         return lookingModel(pose.eyeX, pose.eyeY, pose.eyeZ, pose.targetX, pose.targetY, pose.targetZ)
     }
 
@@ -95,7 +95,7 @@ object RaceCamera {
     }
 
     /** Column-major transform. The asset's nose points along local +Z. */
-    fun carTransform(east: Double, north: Double, bearingDegrees: Double): FloatArray {
+    fun carTransform(east: Double, north: Double, bearingDegrees: Double, surface: Double = RaceGeometry.deckTop): FloatArray {
         val yaw = Math.toRadians(bearingDegrees)
         val cosine = cos(yaw).toFloat()
         val sine = sin(yaw).toFloat()
@@ -103,17 +103,25 @@ object RaceCamera {
             cosine, 0f, -sine, 0f,
             0f, 1f, 0f, 0f,
             sine, 0f, cosine, 0f,
-            east.toFloat(), 0.02f, north.toFloat(), 1f
+            east.toFloat(), surface.toFloat(), north.toFloat(), 1f
         )
     }
 
-    fun world(east: Double, north: Double, bearingDegrees: Double, localX: Double, localY: Double, localZ: Double): FloatArray {
+    fun world(
+        east: Double,
+        north: Double,
+        bearingDegrees: Double,
+        localX: Double,
+        localY: Double,
+        localZ: Double,
+        surface: Double = RaceGeometry.deckTop
+    ): FloatArray {
         val yaw = Math.toRadians(bearingDegrees)
         val cosine = cos(yaw)
         val sine = sin(yaw)
         return floatArrayOf(
             (east + cosine * localX + sine * localZ).toFloat(),
-            (localY + 0.02).toFloat(),
+            (localY + surface).toFloat(),
             (north - sine * localX + cosine * localZ).toFloat()
         )
     }

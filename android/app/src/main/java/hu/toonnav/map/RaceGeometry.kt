@@ -39,7 +39,14 @@ data class RaceMesh(
 
 data class RaceModel(val car: List<RaceMesh>, val world: List<RaceMesh>, val materials: List<RaceMaterial>)
 
-data class RoadSample(val east: Double, val north: Double, val along: Double, val turn: Double)
+data class RoadSample(
+    val east: Double,
+    val north: Double,
+    val along: Double,
+    val turn: Double,
+    val kind: RoadKind = RoadKind.UNKNOWN,
+    val elevation: Float = 0f
+)
 
 object RaceGeometry {
     const val roadHalfWidth = 3.6
@@ -51,7 +58,7 @@ object RaceGeometry {
     const val grassTile = 4.0
     const val gravelTile = 2.0
 
-    fun worldModel(samples: List<RoadSample>): List<RaceMesh> {
+    fun worldModel(samples: List<RoadSample>, heightAt: ((Double, Double) -> Float)? = null): List<RaceMesh> {
         if (samples.size < 2) return emptyList()
         val grass = MeshBuilder()
         val asphalt = MeshBuilder()
@@ -61,27 +68,42 @@ object RaceGeometry {
         val edges = MeshBuilder()
         val kerbRed = MeshBuilder()
         val kerbWhite = MeshBuilder()
-        ground(grass, samples)
+        ground(grass, samples, heightAt)
         for (index in 0 until samples.size - 1) {
             val a = samples[index]
             val b = samples[index + 1]
             val rightA = rightAt(samples, index)
             val rightB = rightAt(samples, index + 1)
-            deck(asphalt, a, b, rightA, rightB, -roadHalfWidth, roadHalfWidth, deckTop, deckDepth, asphaltTile)
-            ribbon(shoulder, a, b, rightA, rightB, -(roadHalfWidth + shoulderWidth), -roadHalfWidth, 0.015, gravelTile)
-            ribbon(shoulder, a, b, rightA, rightB, roadHalfWidth, roadHalfWidth + shoulderWidth, 0.015, gravelTile)
-            ribbon(rubber, a, b, rightA, rightB, 0.62, 0.98, deckTop + 0.012, asphaltTile)
-            ribbon(rubber, a, b, rightA, rightB, -0.98, -0.62, deckTop + 0.012, asphaltTile)
-            ribbon(edges, a, b, rightA, rightB, roadHalfWidth - 0.28, roadHalfWidth - 0.14, deckTop + 0.014, 1.0)
-            ribbon(edges, a, b, rightA, rightB, -(roadHalfWidth - 0.14), -(roadHalfWidth - 0.28), deckTop + 0.014, 1.0)
-            val dash = ((a.along / 6.0).toInt()) % 2 == 0
-            if (dash) ribbon(dashes, a, b, rightA, rightB, 0.08, -0.08, deckTop + 0.018, 1.0)
-            if (abs(a.turn) >= kerbTurn || abs(b.turn) >= kerbTurn) {
+            val profileA = RoadProfile.of(a.kind)
+            val profileB = RoadProfile.of(b.kind)
+            val halfA = profileA.halfWidth
+            val halfB = profileB.halfWidth
+            deck(asphalt, a, b, rightA, rightB, -halfA, halfA, -halfB, halfB, deckTop, deckDepth, asphaltTile)
+            val shoulderA = profileA.shoulder
+            val shoulderB = profileB.shoulder
+            ribbon(shoulder, a, b, rightA, rightB, -(halfA + shoulderA), -halfA, -(halfB + shoulderB), -halfB, 0.012, gravelTile)
+            ribbon(shoulder, a, b, rightA, rightB, halfA, halfA + shoulderA, halfB, halfB + shoulderB, 0.012, gravelTile)
+            val trackA = (halfA * 0.34).coerceAtMost(1.15)
+            val trackB = (halfB * 0.34).coerceAtMost(1.15)
+            ribbon(rubber, a, b, rightA, rightB, trackA - 0.16, trackA + 0.16, trackB - 0.16, trackB + 0.16, deckTop + 0.008, asphaltTile)
+            ribbon(rubber, a, b, rightA, rightB, -(trackA + 0.16), -(trackA - 0.16), -(trackB + 0.16), -(trackB - 0.16), deckTop + 0.008, asphaltTile)
+            if (profileA.edgeLines && profileB.edgeLines) {
+                ribbon(edges, a, b, rightA, rightB, halfA - 0.28, halfA - 0.12, halfB - 0.28, halfB - 0.12, deckTop + 0.012, 1.0)
+                ribbon(edges, a, b, rightA, rightB, -(halfA - 0.12), -(halfA - 0.28), -(halfB - 0.12), -(halfB - 0.28), deckTop + 0.012, 1.0)
+            }
+            if (profileA.center == CenterMark.DASH && profileB.center == CenterMark.DASH && ((a.along / 6.0).toInt()) % 2 == 0) {
+                ribbon(dashes, a, b, rightA, rightB, 0.09, -0.09, 0.09, -0.09, deckTop + 0.014, 1.0)
+            }
+            val corner = abs(a.turn) >= kerbTurn || abs(b.turn) >= kerbTurn
+            if (corner && profileA.kerbs && profileB.kerbs) {
                 val inside = if (a.turn + b.turn >= 0.0) 1.0 else -1.0
-                val inner = inside * roadHalfWidth
-                val outer = inside * (roadHalfWidth + 0.48)
-                val target = if (((a.along / 2.4).toInt()) % 2 == 0) kerbRed else kerbWhite
-                deck(target, a, b, rightA, rightB, outer, inner, deckTop + 0.05, 0.05, 1.2)
+                deck(
+                    if (((a.along / 2.4).toInt()) % 2 == 0) kerbRed else kerbWhite,
+                    a, b, rightA, rightB,
+                    inside * (halfA + 0.42), inside * halfA,
+                    inside * (halfB + 0.42), inside * halfB,
+                    deckTop + 0.045, 0.045, 1.2
+                )
             }
         }
         return listOf(
@@ -109,7 +131,12 @@ object RaceGeometry {
         )
     }
 
-    fun sampleRoute(points: List<Pair<Double, Double>>, stepMeters: Double): List<RoadSample> {
+    fun sampleRoute(
+        points: List<Pair<Double, Double>>,
+        stepMeters: Double,
+        kinds: List<RoadKind> = emptyList(),
+        elevations: FloatArray = FloatArray(0)
+    ): List<RoadSample> {
         if (points.size < 2 || stepMeters <= 0.0) return emptyList()
         val along = DoubleArray(points.size)
         for (index in 1 until points.size) {
@@ -123,8 +150,8 @@ object RaceGeometry {
         val samples = ArrayList<RoadSample>()
         var cursor = 0.0
         while (cursor <= total + 0.01) {
-            val point = at(points, along, cursor.coerceAtMost(total))
-            samples.add(RoadSample(point.first, point.second, cursor.coerceAtMost(total), 0.0))
+            val placed = place(points, along, kinds, elevations, cursor.coerceAtMost(total))
+            samples.add(RoadSample(placed.east, placed.north, cursor.coerceAtMost(total), 0.0, placed.kind, placed.elevation))
             cursor += stepMeters
         }
         for (index in 1 until samples.size - 1) {
@@ -170,18 +197,20 @@ object RaceGeometry {
         b: RoadSample,
         rightA: Pair<Double, Double>,
         rightB: Pair<Double, Double>,
-        from: Double,
-        to: Double,
+        fromA: Double,
+        toA: Double,
+        fromB: Double,
+        toB: Double,
         top: Double,
         depth: Double,
         tile: Double
     ) {
-        ribbon(builder, a, b, rightA, rightB, from, to, top, tile)
-        wall(builder, a, b, rightA, rightB, from, top, top - depth, tile)
-        wall(builder, a, b, rightA, rightB, to, top, top - depth, tile)
+        ribbon(builder, a, b, rightA, rightB, fromA, toA, fromB, toB, top, tile)
+        wall(builder, a, b, rightA, rightB, fromA, fromB, top, top - depth, tile)
+        wall(builder, a, b, rightA, rightB, toA, toB, top, top - depth, tile)
     }
 
-    private fun ground(builder: MeshBuilder, samples: List<RoadSample>) {
+    private fun ground(builder: MeshBuilder, samples: List<RoadSample>, heightAt: ((Double, Double) -> Float)?) {
         var minEast = Double.POSITIVE_INFINITY
         var maxEast = Double.NEGATIVE_INFINITY
         var minNorth = Double.POSITIVE_INFINITY
@@ -192,7 +221,7 @@ object RaceGeometry {
             if (sample.north < minNorth) minNorth = sample.north
             if (sample.north > maxNorth) maxNorth = sample.north
         }
-        val pad = 160.0
+        val pad = 110.0
         minEast -= pad
         maxEast += pad
         minNorth -= pad
@@ -211,10 +240,14 @@ object RaceGeometry {
                 val u1 = (nextEast / grassTile).toFloat()
                 val v0 = (north / grassTile).toFloat()
                 val v1 = (nextNorth / grassTile).toFloat()
-                val a = builder.add(floatArrayOf(east.toFloat(), 0f, north.toFloat()), u0, v0)
-                val b = builder.add(floatArrayOf(nextEast.toFloat(), 0f, north.toFloat()), u1, v0)
-                val c = builder.add(floatArrayOf(nextEast.toFloat(), 0f, nextNorth.toFloat()), u1, v1)
-                val d = builder.add(floatArrayOf(east.toFloat(), 0f, nextNorth.toFloat()), u0, v1)
+                val y00 = groundHeight(samples, heightAt, east, north)
+                val y10 = groundHeight(samples, heightAt, nextEast, north)
+                val y11 = groundHeight(samples, heightAt, nextEast, nextNorth)
+                val y01 = groundHeight(samples, heightAt, east, nextNorth)
+                val a = builder.add(floatArrayOf(east.toFloat(), y00, north.toFloat()), u0, v0)
+                val b = builder.add(floatArrayOf(nextEast.toFloat(), y10, north.toFloat()), u1, v0)
+                val c = builder.add(floatArrayOf(nextEast.toFloat(), y11, nextNorth.toFloat()), u1, v1)
+                val d = builder.add(floatArrayOf(east.toFloat(), y01, nextNorth.toFloat()), u0, v1)
                 builder.quad(a, b, c, d)
                 north = nextNorth
             }
@@ -228,18 +261,20 @@ object RaceGeometry {
         b: RoadSample,
         rightA: Pair<Double, Double>,
         rightB: Pair<Double, Double>,
-        offset: Double,
+        offsetA: Double,
+        offsetB: Double,
         top: Double,
         bottom: Double,
         tile: Double
     ) {
         val v0 = (a.along / tile).toFloat()
         val v1 = (b.along / tile).toFloat()
-        val u = (offset / tile).toFloat()
-        val aTop = builder.add(edge(a, rightA, offset, top), u, v0)
-        val bTop = builder.add(edge(b, rightB, offset, top), u, v1)
-        val bBottom = builder.add(edge(b, rightB, offset, bottom), u, v1)
-        val aBottom = builder.add(edge(a, rightA, offset, bottom), u, v0)
+        val u0 = (offsetA / tile).toFloat()
+        val u1 = (offsetB / tile).toFloat()
+        val aTop = builder.add(edge(a, rightA, offsetA, top), u0, v0)
+        val bTop = builder.add(edge(b, rightB, offsetB, top), u1, v1)
+        val bBottom = builder.add(edge(b, rightB, offsetB, bottom), u1, v1)
+        val aBottom = builder.add(edge(a, rightA, offsetA, bottom), u0, v0)
         builder.quad(aTop, bTop, bBottom, aBottom)
     }
 
@@ -249,26 +284,26 @@ object RaceGeometry {
         b: RoadSample,
         rightA: Pair<Double, Double>,
         rightB: Pair<Double, Double>,
-        from: Double,
-        to: Double,
+        fromA: Double,
+        toA: Double,
+        fromB: Double,
+        toB: Double,
         lift: Double,
         tile: Double
     ) {
         val v0 = (a.along / tile).toFloat()
         val v1 = (b.along / tile).toFloat()
-        val u0 = (from / tile).toFloat()
-        val u1 = (to / tile).toFloat()
-        val a0 = builder.add(edge(a, rightA, from, lift), u0, v0)
-        val a1 = builder.add(edge(a, rightA, to, lift), u1, v0)
-        val b1 = builder.add(edge(b, rightB, to, lift), u1, v1)
-        val b0 = builder.add(edge(b, rightB, from, lift), u0, v1)
+        val a0 = builder.add(edge(a, rightA, fromA, lift), (fromA / tile).toFloat(), v0)
+        val a1 = builder.add(edge(a, rightA, toA, lift), (toA / tile).toFloat(), v0)
+        val b1 = builder.add(edge(b, rightB, toB, lift), (toB / tile).toFloat(), v1)
+        val b0 = builder.add(edge(b, rightB, fromB, lift), (fromB / tile).toFloat(), v1)
         builder.quad(a0, b0, b1, a1)
     }
 
     private fun edge(sample: RoadSample, right: Pair<Double, Double>, offset: Double, lift: Double): FloatArray {
         return floatArrayOf(
             (sample.east + right.first * offset).toFloat(),
-            lift.toFloat(),
+            lift.toFloat() + sample.elevation,
             (sample.north + right.second * offset).toFloat()
         )
     }
@@ -280,6 +315,66 @@ object RaceGeometry {
         val north = next.north - previous.north
         val length = hypot(east, north).coerceAtLeast(0.001)
         return (north / length) to (-east / length)
+    }
+
+    private data class Placed(val east: Double, val north: Double, val kind: RoadKind, val elevation: Float)
+
+    private fun place(
+        points: List<Pair<Double, Double>>,
+        along: DoubleArray,
+        kinds: List<RoadKind>,
+        elevations: FloatArray,
+        distance: Double
+    ): Placed {
+        if (distance <= 0.0) {
+            return Placed(points.first().first, points.first().second, kindAt(kinds, 0), elevAt(elevations, 0))
+        }
+        for (index in 0 until points.size - 1) {
+            if (distance > along[index + 1]) continue
+            val span = (along[index + 1] - along[index]).coerceAtLeast(0.001)
+            val blend = ((distance - along[index]) / span).coerceIn(0.0, 1.0)
+            val start = points[index]
+            val end = points[index + 1]
+            val elevation = elevAt(elevations, index) + (elevAt(elevations, index + 1) - elevAt(elevations, index)) * blend.toFloat()
+            return Placed(
+                start.first + (end.first - start.first) * blend,
+                start.second + (end.second - start.second) * blend,
+                kindAt(kinds, index),
+                elevation
+            )
+        }
+        val last = points.lastIndex
+        return Placed(points[last].first, points[last].second, kindAt(kinds, last), elevAt(elevations, last))
+    }
+
+    private fun kindAt(kinds: List<RoadKind>, index: Int): RoadKind {
+        if (index !in kinds.indices) return RoadKind.UNKNOWN
+        return kinds[index]
+    }
+
+    private fun elevAt(elevations: FloatArray, index: Int): Float {
+        if (index !in elevations.indices) return 0f
+        return elevations[index]
+    }
+
+    private fun groundHeight(
+        samples: List<RoadSample>,
+        heightAt: ((Double, Double) -> Float)?,
+        east: Double,
+        north: Double
+    ): Float {
+        var best = 0f
+        var bestDistance = Double.POSITIVE_INFINITY
+        for (sample in samples) {
+            val distance = hypot(sample.east - east, sample.north - north)
+            if (distance < bestDistance) {
+                bestDistance = distance
+                best = sample.elevation
+            }
+        }
+        val surveyed = heightAt?.invoke(east, north) ?: return best
+        val blend = (bestDistance / 18.0).coerceIn(0.0, 1.0).toFloat()
+        return best * (1f - blend) + surveyed * blend
     }
 
     private fun at(points: List<Pair<Double, Double>>, along: DoubleArray, distance: Double): Pair<Double, Double> {

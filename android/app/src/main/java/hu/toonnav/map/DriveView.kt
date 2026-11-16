@@ -118,7 +118,8 @@ object DriveTripFile {
                         .put("modifier", step.maneuver.modifier)
                         .put("exit", step.maneuver.exit ?: JSONObject.NULL)
                         .put("lon", step.maneuver.location.lon)
-                        .put("lat", step.maneuver.location.lat))
+                        .put("lat", step.maneuver.location.lat)
+                        .put("classes", JSONArray().also { tokens -> step.classes.forEach { tokens.put(it) } }))
                 }
             })
             json.put("waypoints", JSONArray().also { marks ->
@@ -190,6 +191,8 @@ object DriveTripFile {
         val steps = ArrayList<OsrmStep>(array.length())
         for (index in 0 until array.length()) {
             val step = array.getJSONObject(index)
+            val tokens = step.optJSONArray("classes")
+            val classes = if (tokens == null) emptyList() else List(tokens.length()) { tokens.getString(it) }
             steps.add(OsrmStep(
                 step.optString("name"),
                 step.getDouble("distance"),
@@ -199,7 +202,8 @@ object DriveTripFile {
                     step.optString("modifier"),
                     OsrmPoint(step.getDouble("lon"), step.getDouble("lat")),
                     if (step.isNull("exit")) null else step.getInt("exit")
-                )
+                ),
+                classes
             ))
         }
         return steps

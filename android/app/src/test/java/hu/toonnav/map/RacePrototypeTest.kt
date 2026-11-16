@@ -69,7 +69,7 @@ class RacePrototypeTest {
     @Test
     fun theRoadCenterStaysOnTheSuppliedRoute() {
         val line = line(0.0, 80.0)
-        val samples = RaceGeometry.sampleRoute(line, 2.0)
+        val samples = RaceGeometry.sampleRoute(line, 2.0, List(line.size) { RoadKind.MAIN })
         val dashes = RaceGeometry.worldModel(samples).first { it.material == "marking" }
         assertTrue(dashes.vertexCount > 8)
         for (index in dashes.positions.indices step 3) {
@@ -151,6 +151,85 @@ class RacePrototypeTest {
 
     private fun encoded(): ByteArray {
         return RaceGlb.encode(RaceTrack.model(RaceTrack.samplePreview()))
+    }
+
+    @Test
+    fun roadClassChangesWidthAndMarkings() {
+        val straight = line(0.0, 80.0)
+        val motorway = RaceGeometry.worldModel(RaceGeometry.sampleRoute(straight, 2.0, List(straight.size) { RoadKind.MOTORWAY }))
+        val residential = RaceGeometry.worldModel(RaceGeometry.sampleRoute(straight, 2.0, List(straight.size) { RoadKind.RESIDENTIAL }))
+        val unknown = RaceGeometry.worldModel(RaceGeometry.sampleRoute(straight, 2.0))
+        assertTrue(eastSpan(motorway.first { it.material == "asphalt" }) > eastSpan(residential.first { it.material == "asphalt" }) + 4.0)
+        assertTrue(motorway.any { it.material == "edge" })
+        assertTrue(motorway.none { it.material == "marking" })
+        assertTrue(residential.none { it.material == "marking" })
+        assertTrue(unknown.none { it.material == "marking" })
+        val corner = listOf(0.0 to 0.0, 0.0 to 40.0, 40.0 to 40.0)
+        val motorwayCorner = RaceGeometry.worldModel(RaceGeometry.sampleRoute(corner, 2.0, List(corner.size) { RoadKind.MOTORWAY }))
+        assertTrue(motorwayCorner.none { it.material.startsWith("kerb") })
+        val mainCorner = RaceGeometry.worldModel(RaceGeometry.sampleRoute(corner, 2.0, List(corner.size) { RoadKind.MAIN }))
+        assertTrue(mainCorner.any { it.material.startsWith("kerb") })
+    }
+
+    @Test
+    fun elevationRaisesTheRoadAndTheCarSitsOnIt() {
+        val straight = line(0.0, 40.0)
+        val heights = floatArrayOf(0f, 6f)
+        val samples = RaceGeometry.sampleRoute(straight, 2.0, emptyList(), heights)
+        assertTrue(samples.last().elevation > 5f)
+        val road = RaceGeometry.worldModel(samples).first { it.material == "asphalt" }
+        var highest = 0f
+        for (index in 1 until road.positions.size step 3) highest = maxOf(highest, road.positions[index])
+        assertTrue(highest > 5f)
+        val surface = samples.last().elevation.toDouble() + RaceGeometry.deckTop
+        val planted = RaceCamera.carTransform(0.0, 40.0, 0.0, surface)
+        assertEquals(surface.toFloat(), planted[13], 0.001f)
+    }
+
+    @Test
+    fun routeStepsPaintTheOverviewWithTheirClass() {
+        val route = listOf(OsrmPoint(19.0, 47.0), OsrmPoint(19.002, 47.0))
+        val step = OsrmStep("M1", 200.0, 10.0, OsrmManeuver("continue", "straight", route.first(), null), listOf("motorway"))
+        val kinds = RouteRoadClass.kinds(route, listOf(step))
+        assertEquals(RoadKind.MOTORWAY, kinds.first())
+        assertEquals(RoadKind.MOTORWAY, kinds.last())
+        val unknown = RouteRoadClass.kinds(route, listOf(step.copy(classes = emptyList(), maneuver = step.maneuver.copy(type = "turn"))))
+        assertEquals(RoadKind.UNKNOWN, unknown.first())
+    }
+
+    @Test
+    fun terrariumDecodeMatchesThePublishedFormula() {
+        assertEquals(140.1, TerrainTiles.decode(128, 140, 22), 0.05)
+        val tile = TerrainTiles.tileIndex(19.040, 47.497, 13)
+        assertEquals(4529, tile.first)
+        assertEquals(2864, tile.second)
+    }
+
+    @Test
+    fun theMeshWindowFollowsTheCarInsteadOfTheWholeRoute() {
+        val points = ArrayList<Pair<Double, Double>>()
+        var north = 0.0
+        while (north <= 4000.0) {
+            points.add(0.0 to north)
+            north += 20.0
+        }
+        val samples = RaceGeometry.sampleRoute(points, 2.5)
+        val near = RaceTrack.window(samples, 100.0)
+        val far = RaceTrack.window(samples, 2500.0)
+        assertTrue(near.last().along < 2000.0)
+        assertTrue(far.first().along > 2000.0)
+        assertTrue(far.last().along - far.first().along < 2100.0)
+    }
+
+    private fun eastSpan(mesh: RaceMesh): Double {
+        var min = Double.POSITIVE_INFINITY
+        var max = Double.NEGATIVE_INFINITY
+        for (index in mesh.positions.indices step 3) {
+            val east = mesh.positions[index].toDouble()
+            if (east < min) min = east
+            if (east > max) max = east
+        }
+        return max - min
     }
 
     private fun roadImages(): Map<String, ByteArray> {

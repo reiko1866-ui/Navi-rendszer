@@ -76,6 +76,12 @@ class RacePrototypeActivity : ComponentActivity() {
     private var plan: OsrmRoutePlan? = null
     private var route = emptyList<OsrmPoint>()
     private var samples = emptyList<RoadSample>()
+    private var roadKinds = emptyList<RoadKind>()
+    private var elevations = FloatArray(0)
+    private var terrain: ((Double, Double) -> Float)? = null
+    private var windowEnd = 0.0
+    private var buildingRoad = false
+    @Volatile var travelAlong = 8.0
 
     @Volatile var followLongitude = Double.NaN
     @Volatile var followLatitude = Double.NaN
@@ -116,7 +122,7 @@ class RacePrototypeActivity : ComponentActivity() {
         val live = DriveSessionMemory.routePoints
         usingLiveRoute = live.size >= 2 && plan != null
         route = if (usingLiveRoute) live.toList() else RaceTrack.samplePreview()
-        samples = RaceTrack.samplesFor(route)
+        prepareSamples()
         plan?.let { guidance.setPlan(it) }
         findViewById<Button>(R.id.raceStop).setOnClickListener { confirmStop() }
         findViewById<Button>(R.id.raceBack).setOnClickListener { finish() }
@@ -140,12 +146,18 @@ class RacePrototypeActivity : ComponentActivity() {
             val skyBytes = assets.open("models/noon-sky.hdr").use { it.readBytes() }
             val images = RaceGlb.roadImages { name -> assets.open("models/road/$name.ktx2").use { it.readBytes() } }
             roadImages = images
-            val roadBytes = RaceGlb.encode(RaceTrack.model(routeNow), images)
+            val shown = RaceTrack.window(samples, 0.0)
+            windowEnd = shown.lastOrNull()?.along ?: 0.0
+            val roadBytes = RaceGlb.encode(
+                RaceModel(emptyList(), RaceGeometry.worldModel(shown, terrain), RaceGeometry.materials()),
+                images
+            )
             val created = RaceRenderer.start(
                 carBytes, roadBytes, skyBytes, routeNow, samples, selected, night, surface, handler, this
             )
             renderer = created
             if (created == null) runOnUiThread { statusView.text = getString(R.string.race_engine_failed) }
+            else if (usingLiveRoute) requestElevation(routeSeq)
         }
     }
 
@@ -363,7 +375,9 @@ class RacePrototypeActivity : ComponentActivity() {
         }
         plan = next
         route = next.coordinates
-        samples = RaceTrack.samplesFor(route)
+        elevations = FloatArray(0)
+        terrain = null
+        prepareSamples()
         usingLiveRoute = route.size >= 2
         guidance.setPlan(next)
         DriveSessionMemory.hold(next, json, route, 0.0, DriveSessionMemory.origin, DriveSessionMemory.destination)
@@ -371,16 +385,65 @@ class RacePrototypeActivity : ComponentActivity() {
         offRouteSpoken = false
         voice.halt()
         voice.speak("reroute", "reroute", null, "ujratervezes")
-        val copy = samples
-        val line = route
-        val images = roadImages.ifEmpty { RaceGlb.roadImages { name -> assets.open("models/road/$name.ktx2").use { it.readBytes() } } }
-        roadImages = images
-        renderHandler?.post {
-            val bytes = RaceGlb.encode(RaceTrack.model(line), images)
-            renderer?.replaceRoad(bytes, line, copy)
-        }
+        publishRoad(0.0, keepMotion = false)
+        requestElevation(routeSeq)
         statusView.text = ""
         paintHud(guidance.refreshAge(fixAge()))
+    }
+
+    private fun prepareSamples() {
+        roadKinds = if (usingLiveRoute) RouteRoadClass.kinds(route, plan?.steps.orEmpty()) else emptyList()
+        samples = RaceTrack.samplesFor(route, roadKinds, elevations)
+    }
+
+    private fun publishRoad(along: Double, keepMotion: Boolean) {
+        val shown = RaceTrack.window(samples, along)
+        windowEnd = shown.lastOrNull()?.along ?: 0.0
+        val field = terrain
+        val images = roadImages
+        val line = route
+        val guide = samples
+        val handler = renderHandler
+        if (handler == null || images.isEmpty()) {
+            buildingRoad = false
+            return
+        }
+        handler.post {
+            val bytes = RaceGlb.encode(
+                RaceModel(emptyList(), RaceGeometry.worldModel(shown, field), RaceGeometry.materials()),
+                images
+            )
+            renderer?.replaceRoad(bytes, line, guide, keepMotion)
+            buildingRoad = false
+        }
+    }
+
+    fun slideWindow(along: Double) {
+        if (buildingRoad || samples.size < 2) return
+        val routeEnd = samples.last().along
+        if (windowEnd >= routeEnd - 1.0) return
+        if (along < windowEnd - 420.0 || along >= routeEnd - 30.0) return
+        buildingRoad = true
+        publishRoad(along, keepMotion = true)
+    }
+
+    private fun requestElevation(seq: Int) {
+        if (!usingLiveRoute || route.size < 2) return
+        val line = route.toList()
+        Thread {
+            val field = TerrainTiles.load(line) ?: return@Thread
+            runOnUiThread {
+                if (seq != routeSeq || isDestroyed || route.size != line.size) return@runOnUiThread
+                terrain = field
+                val origin = line.first()
+                elevations = FloatArray(line.size) { index ->
+                    val local = GeoMeters.local(origin, line[index])
+                    field(local.first, local.second)
+                }
+                prepareSamples()
+                publishRoad(travelAlong, keepMotion = true)
+            }
+        }.start()
     }
 
     private fun rememberProgress() {
@@ -479,6 +542,7 @@ private class RaceRenderer(
     private var heldEast = 0.0
     private var heldNorth = 0.0
     private var heldBearing = 0.0
+    private var heldAlong = 8.0
     private var held = false
     private var smoothBearing = 0.0
     private var bearingReady = false
@@ -533,7 +597,7 @@ private class RaceRenderer(
         }
     }
 
-    fun replaceRoad(bytes: ByteArray, nextRoute: List<OsrmPoint>, nextSamples: List<RoadSample>) {
+    fun replaceRoad(bytes: ByteArray, nextRoute: List<OsrmPoint>, nextSamples: List<RoadSample>, keepMotion: Boolean = false) {
         if (closed) return
         val asset = loadAsset(bytes) ?: return
         scene.removeEntities(roadAsset.entities)
@@ -542,8 +606,10 @@ private class RaceRenderer(
         scene.addEntities(asset.entities)
         route = nextRoute
         samples = nextSamples
-        held = false
-        bearingReady = false
+        if (!keepMotion) {
+            held = false
+            bearingReady = false
+        }
     }
 
     fun destroy() {
@@ -593,6 +659,7 @@ private class RaceRenderer(
             east = local.first
             north = local.second
             bearing = motion.bearingDegrees
+            heldAlong = motion.alongMeters
             heldEast = east
             heldNorth = north
             heldBearing = bearing
@@ -603,17 +670,20 @@ private class RaceRenderer(
             bearing = heldBearing
         } else {
             val here = RaceTrack.pointAt(samples, 8.0)
+            heldAlong = here.along
             east = here.east
             north = here.north
-            bearing = RaceTrack.bearing(route, samples, 8.0)
+            bearing = RaceTrack.bearing(route, samples, heldAlong)
         }
+        val surface = RaceTrack.pointAt(samples, heldAlong).elevation.toDouble() + RaceGeometry.deckTop
+        host.travelAlong = heldAlong
+        host.slideWindow(heldAlong)
         val turned = dampBearing(bearing, step)
-        val pose = RaceCamera.pose(east, north, turned)
         camera.setProjection(RaceCamera.fovDegrees, width.toDouble() / height.toDouble(), 0.08, 1200.0, Camera.Fov.VERTICAL)
-        camera.setModelMatrix(RaceCamera.cameraModel(east, north, turned))
+        camera.setModelMatrix(RaceCamera.cameraModel(east, north, turned, surface))
         val transform = engine.transformManager
         val car = transform.getInstance(carEntity())
-        if (car != 0) transform.setTransform(car, RaceCamera.carTransform(east, north, turned))
+        if (car != 0) transform.setTransform(car, RaceCamera.carTransform(east, north, turned, surface))
         swapView.viewport = Viewport(0, 0, width, height)
         if (renderer.beginFrame(chain, frameTimeNanos)) {
             renderer.render(swapView)
