@@ -26,6 +26,9 @@ object RaceCamera {
     const val lookLocalY = 0.30
     const val lookAheadMeters = 22.0
     const val fovDegrees = 48.0
+    /** Near plane stays in front of the nose. Far plane clears the streamed corridor. */
+    const val nearMeters = 0.08
+    const val farMeters = 2_800.0
     const val noseLocalY = 0.40
     const val noseLocalZ = 2.60
 

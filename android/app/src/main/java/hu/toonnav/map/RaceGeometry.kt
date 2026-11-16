@@ -59,6 +59,9 @@ object RaceGeometry {
     const val grassTile = 4.0
     const val gravelTile = 2.0
     const val chunkMeters = 250.0
+    /** Meters of road kept behind and ahead of the car. The camera far plane must clear the ahead distance. */
+    const val corridorBehind = 220.0
+    const val corridorAhead = 1_700.0
 
     /** Stable patches of asphalt tint. Nearby cells differ, and the run is not a fixed stripe. */
     fun wearLayer(along: Double): Int {
@@ -69,7 +72,12 @@ object RaceGeometry {
 
     fun chunkIndex(along: Double): Int = kotlin.math.floor(along / chunkMeters).toInt().coerceAtLeast(0)
 
-    fun chunksCovering(along: Double, routeEnd: Double, behind: Double = 220.0, ahead: Double = 1_700.0): IntRange {
+    fun chunksCovering(
+        along: Double,
+        routeEnd: Double,
+        behind: Double = corridorBehind,
+        ahead: Double = corridorAhead
+    ): IntRange {
         if (routeEnd <= 1.0) return 0..0
         val first = chunkIndex((along - behind).coerceAtLeast(0.0))
         val lastAlong = (along + ahead).coerceAtMost((routeEnd - 0.01).coerceAtLeast(0.0))
@@ -140,16 +148,17 @@ object RaceGeometry {
     }
 
     /**
-     * Coarse ground from the same elevation field, outside the road verge.
-     * An empty field produces nothing, so a missing survey does not invent hills.
+     * Coarse ground outside the road verge. A missing survey stays flat at the
+     * road's own height: the background is not an empty sky, and no hills are invented.
      */
     fun horizon(
         samples: List<RoadSample>,
-        heightAt: (Double, Double) -> Float,
+        heightAt: ((Double, Double) -> Float)?,
         centerEast: Double,
         centerNorth: Double
     ): RaceMesh? {
         if (samples.size < 2) return null
+        val flat = if (heightAt == null) nearestElevation(samples, centerEast, centerNorth) else 0f
         val builder = MeshBuilder()
         val radius = 760.0
         val step = 52.0
@@ -162,10 +171,10 @@ object RaceGeometry {
                 val midEast = (east + nextEast) * 0.5
                 val midNorth = (north + nextNorth) * 0.5
                 if (hypot(midEast - centerEast, midNorth - centerNorth) <= radius && roadDistance(samples, midEast, midNorth) > 70.0) {
-                    val y00 = heightAt(east, north) - 0.12f
-                    val y10 = heightAt(nextEast, north) - 0.12f
-                    val y11 = heightAt(nextEast, nextNorth) - 0.12f
-                    val y01 = heightAt(east, nextNorth) - 0.12f
+                    val y00 = (heightAt?.invoke(east, north) ?: flat) - 0.12f
+                    val y10 = (heightAt?.invoke(nextEast, north) ?: flat) - 0.12f
+                    val y11 = (heightAt?.invoke(nextEast, nextNorth) ?: flat) - 0.12f
+                    val y01 = (heightAt?.invoke(east, nextNorth) ?: flat) - 0.12f
                     val u0 = (east / grassTile).toFloat()
                     val u1 = (nextEast / grassTile).toFloat()
                     val v0 = (north / grassTile).toFloat()
@@ -460,6 +469,18 @@ object RaceGeometry {
         val blend = ((abs(offset) - edge) / 22.0).coerceIn(0.0, 1.0).toFloat()
         val y = sample.elevation * (1f - blend) + surveyed * blend
         return floatArrayOf(east.toFloat(), y, north.toFloat())
+    }
+
+    private fun nearestElevation(samples: List<RoadSample>, east: Double, north: Double): Float {
+        var best = 0f
+        var bestDistance = Double.POSITIVE_INFINITY
+        for (sample in samples) {
+            val distance = hypot(sample.east - east, sample.north - north)
+            if (distance >= bestDistance) continue
+            bestDistance = distance
+            best = sample.elevation
+        }
+        return best
     }
 
     private fun roadDistance(samples: List<RoadSample>, east: Double, north: Double): Double {

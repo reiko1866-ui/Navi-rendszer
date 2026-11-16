@@ -335,6 +335,87 @@ class RacePrototypeTest {
     }
 
     @Test
+    fun fogDoesNotCoverTheRoadAndTheFarPlaneIncludesTheCorridor() {
+        assertTrue(RaceCamera.farMeters > RaceGeometry.corridorAhead + 500.0)
+        assertTrue(RaceFog.height <= RaceGeometry.deckTop + 0.5f)
+        assertTrue(RaceFog.cutOffDistance > RaceCamera.farMeters)
+        assertEquals(0f, RaceFog.opacity(80f, -1f, 1.14f), 0.001f)
+        val bend = RaceFog.opacity(220f, -1f, 1.14f)
+        assertTrue(bend < 0.12f)
+        val distant = RaceFog.opacity(1_000f, -1f, 1.14f)
+        assertTrue(distant < 0.45f)
+        assertEquals(0f, RaceFog.opacity(1.0e19f, 0f, 1.14f), 0.001f)
+        val pose = RaceCamera.pose(0.0, 0.0, 0.0)
+        for (ahead in floatArrayOf(8f, 80f, 400f)) {
+            val screen = RaceCamera.ndc(pose, 0f, 0.06f, ahead)
+            assertTrue(abs(screen[0]) < 1f)
+            assertTrue(abs(screen[1]) < 1f)
+        }
+        val afterTheTurn = RaceCamera.ndc(pose, 18f, 0.06f, 40f)
+        assertTrue(abs(afterTheTurn[0]) < 1f)
+        assertTrue(abs(afterTheTurn[1]) < 1f)
+        assertTrue(400.0 < RaceCamera.farMeters)
+        assertTrue(RaceCamera.nearMeters < 0.2)
+    }
+
+    @Test
+    fun theWholeRouteReachesTheMeshAroundTheCarOnAStraightAndABend() {
+        val points = ArrayList<Pair<Double, Double>>()
+        var north = 0.0
+        while (north <= 900.0) {
+            points.add(0.0 to north)
+            north += 20.0
+        }
+        val straight = RaceGeometry.sampleRoute(points, 2.5)
+        val end = straight.last().along
+        val fromTheStart = RaceGeometry.chunksCovering(0.0, end)
+        assertEquals(0, missedCarriageway(straight, fromTheStart))
+        val along = 2_500.0
+        val longPoints = ArrayList<Pair<Double, Double>>()
+        var cursor = 0.0
+        while (cursor <= 4_000.0) {
+            longPoints.add(0.0 to cursor)
+            cursor += 20.0
+        }
+        val longRoute = RaceGeometry.sampleRoute(longPoints, 2.5)
+        val aroundTheCar = RaceGeometry.chunksCovering(along, longRoute.last().along)
+        assertTrue(RaceGeometry.chunkIndex(along) in aroundTheCar)
+        assertTrue(0 !in aroundTheCar)
+        assertEquals(0, missedCarriageway(longRoute, aroundTheCar))
+        val corner = RaceGeometry.sampleRoute(listOf(0.0 to 0.0, 0.0 to 40.0, 40.0 to 40.0), 2.0)
+        val bent = RaceGeometry.chunksCovering(0.0, corner.last().along)
+        assertEquals(0, missedCarriageway(corner, bent))
+        assertEquals(0, vergeCoveringCarriageway(corner, bent))
+        val tight = RaceGeometry.sampleRoute(arc(15.0, 40.0), 2.0)
+        assertEquals(0, missedCarriageway(tight, RaceGeometry.chunksCovering(0.0, tight.last().along)))
+        val road = RaceGeometry.worldModel(RaceGeometry.sampleRoute(line(0.0, 40.0), 2.0)).first { it.material.startsWith("asphalt") }
+        val frame = RoadFrame.quaternions(road)
+        var facingUp = 0
+        for (index in 0 until road.vertexCount) {
+            if (road.normals[index * 3 + 1] < 0.5f) continue
+            facingUp++
+            assertTrue(shadedNormalY(frame, index) > 0.5f)
+        }
+        assertTrue(facingUp > 0)
+    }
+
+    @Test
+    fun missingSurveyStillDrawsFlatGroundOffTheCarriageway() {
+        val samples = RaceGeometry.sampleRoute(line(0.0, 80.0), 2.0)
+        val ground = RaceGeometry.horizon(samples, null, 0.0, 40.0)
+        assertTrue(ground != null)
+        val mesh = ground!!
+        assertTrue(mesh.vertexCount >= 3)
+        for (index in mesh.positions.indices step 3) {
+            val east = mesh.positions[index]
+            val height = mesh.positions[index + 1]
+            val north = mesh.positions[index + 2]
+            assertTrue(height > -1f && height < 1f)
+            assertTrue(!(abs(east) < 12f && north in 0f..80f))
+        }
+    }
+
+    @Test
     fun theMeshWindowFollowsTheCarInsteadOfTheWholeRoute() {
         val points = ArrayList<Pair<Double, Double>>()
         var north = 0.0
@@ -424,6 +505,78 @@ class RacePrototypeTest {
             return listOf(factor.getDouble(0), factor.getDouble(1), factor.getDouble(2))
         }
         throw AssertionError(name)
+    }
+
+    private fun missedCarriageway(samples: List<RoadSample>, chunks: IntRange): Int {
+        val asphalt = chunks.flatMap { index ->
+            RaceGeometry.worldModel(
+                samples,
+                null,
+                index * RaceGeometry.chunkMeters,
+                (index + 1) * RaceGeometry.chunkMeters
+            )
+        }.filter { it.material.startsWith("asphalt") }
+        val end = samples.last().along
+        var missed = 0
+        for (sample in samples) {
+            if (sample.along < 2.0 || sample.along > end - 2.0) continue
+            if (RaceGeometry.chunkIndex(sample.along) !in chunks) continue
+            if (asphalt.none { coversPlan(it, sample.east.toFloat(), sample.north.toFloat()) }) missed++
+        }
+        return missed
+    }
+
+    private fun vergeCoveringCarriageway(samples: List<RoadSample>, chunks: IntRange): Int {
+        val grass = chunks.flatMap { index ->
+            RaceGeometry.worldModel(
+                samples,
+                null,
+                index * RaceGeometry.chunkMeters,
+                (index + 1) * RaceGeometry.chunkMeters
+            )
+        }.filter { it.material == "grass" }
+        val end = samples.last().along
+        var covered = 0
+        for (sample in samples) {
+            if (sample.along < 2.0 || sample.along > end - 2.0) continue
+            if (grass.any { coversPlan(it, sample.east.toFloat(), sample.north.toFloat()) }) covered++
+        }
+        return covered
+    }
+
+    private fun coversPlan(mesh: RaceMesh, x: Float, z: Float): Boolean {
+        val positions = mesh.positions
+        val indices = mesh.indices
+        var cursor = 0
+        while (cursor < indices.size) {
+            val a = indices[cursor]
+            val b = indices[cursor + 1]
+            val c = indices[cursor + 2]
+            val ax = positions[a * 3]
+            val az = positions[a * 3 + 2]
+            val bx = positions[b * 3]
+            val bz = positions[b * 3 + 2]
+            val cx = positions[c * 3]
+            val cz = positions[c * 3 + 2]
+            val area = (bx - ax) * (cz - az) - (cx - ax) * (bz - az)
+            if (abs(area) > 1e-4f) {
+                val w0 = ((bx - x) * (cz - z) - (cx - x) * (bz - z)) / area
+                val w1 = ((cx - x) * (az - z) - (ax - x) * (cz - z)) / area
+                val w2 = ((ax - x) * (bz - z) - (bx - x) * (az - z)) / area
+                if (w0 >= -0.02f && w1 >= -0.02f && w2 >= -0.02f) return true
+            }
+            cursor += 3
+        }
+        return false
+    }
+
+    /** Filament's toTangentFrame normal, Y component. */
+    private fun shadedNormalY(quaternion: FloatArray, vertex: Int): Float {
+        val x = quaternion[vertex * 4]
+        val y = quaternion[vertex * 4 + 1]
+        val z = quaternion[vertex * 4 + 2]
+        val ny = -2f * x * quaternion[vertex * 4 + 3] + 2f * y * z
+        return ny
     }
 
     private fun line(northStart: Double, northEnd: Double): List<Pair<Double, Double>> {

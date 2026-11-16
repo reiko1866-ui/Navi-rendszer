@@ -4,7 +4,7 @@ import kotlin.math.sqrt
 
 /**
  * Filament lit materials read a tangent frame as a quaternion, not a normal vector.
- * The frame follows the mesh normals so bends and slopes catch the light.
+ * The packing matches Filament's packTangentFrame so the lit normal stays the mesh normal.
  */
 object RoadFrame {
     fun quaternions(mesh: RaceMesh): FloatArray {
@@ -78,13 +78,50 @@ object RoadFrame {
                 by = -by
                 bz = -bz
             }
-            val q = quaternion(tx, ty, tz, bx, by, bz, nx, ny, nz)
+            val q = packTangentFrame(tx, ty, tz, bx, by, bz, nx, ny, nz)
             packed[index * 4] = q[0]
             packed[index * 4 + 1] = q[1]
             packed[index * 4 + 2] = q[2]
             packed[index * 4 + 3] = q[3]
         }
         return packed
+    }
+
+    /**
+     * Filament's mat3::packTangentFrame. The shader recovers the normal from the
+     * quaternion and the bitangent direction from the sign of w. Packing a mirrored
+     * frame as an ordinary rotation points the lit normal along the horizon, so the
+     * road is black under the sun.
+     */
+    fun packTangentFrame(
+        tx: Float, ty: Float, tz: Float,
+        bx: Float, by: Float, bz: Float,
+        nx: Float, ny: Float, nz: Float
+    ): FloatArray {
+        val cx = ny * tz - nz * ty
+        val cy = nz * tx - nx * tz
+        val cz = nx * ty - ny * tx
+        val rotation = quaternion(tx, ty, tz, cx, cy, cz, nx, ny, nz)
+        var x = rotation[0]
+        var y = rotation[1]
+        var z = rotation[2]
+        var w = rotation[3]
+        val bias = 1f / ((1 shl 15) - 1).toFloat()
+        if (w < bias) {
+            val factor = sqrt(1f - bias * bias)
+            x *= factor
+            y *= factor
+            z *= factor
+            w = bias
+        }
+        val reflected = (ty * nz - tz * ny) * bx + (tz * nx - tx * nz) * by + (tx * ny - ty * nx) * bz < 0f
+        if (reflected) {
+            x = -x
+            y = -y
+            z = -z
+            w = -w
+        }
+        return floatArrayOf(x, y, z, w)
     }
 
     fun quaternion(
