@@ -21,12 +21,13 @@ data class RaceCameraPose(
 
 object RaceCamera {
     const val eyeLocalX = 0.0
-    const val eyeLocalY = 0.62
-    const val eyeLocalZ = 0.92
-    const val lookLocalY = 0.05
+    const val eyeLocalY = 1.08
+    const val eyeLocalZ = 0.0
+    const val lookLocalY = 0.30
     const val lookAheadMeters = 22.0
-    const val noseLocalY = 0.16
-    const val noseLocalZ = 2.55
+    const val fovDegrees = 48.0
+    const val noseLocalY = 0.40
+    const val noseLocalZ = 2.60
 
     fun pose(east: Double, north: Double, bearingDegrees: Double): RaceCameraPose {
         val eye = world(east, north, bearingDegrees, eyeLocalX, eyeLocalY, eyeLocalZ)
@@ -42,6 +43,55 @@ object RaceCamera {
 
     fun nosePoint(east: Double, north: Double, bearingDegrees: Double): FloatArray {
         return world(east, north, bearingDegrees, 0.0, noseLocalY, noseLocalZ)
+    }
+
+    fun wingPoint(east: Double, north: Double, bearingDegrees: Double, side: Double): FloatArray {
+        return world(east, north, bearingDegrees, side * 0.98, 0.26, 2.45)
+    }
+
+    fun tirePoint(east: Double, north: Double, bearingDegrees: Double, side: Double): FloatArray {
+        return world(east, north, bearingDegrees, side * 0.98, 0.36, 1.80)
+    }
+
+    /**
+     * Camera-to-world matrix. Filament looks down the camera's local -Z, so the
+     * third column points backward. The first column points to the driver's right,
+     * which is east when the car faces north.
+     */
+    fun cameraModel(east: Double, north: Double, bearingDegrees: Double): FloatArray {
+        val pose = pose(east, north, bearingDegrees)
+        return lookingModel(pose.eyeX, pose.eyeY, pose.eyeZ, pose.targetX, pose.targetY, pose.targetZ)
+    }
+
+    fun lookingModel(eyeX: Float, eyeY: Float, eyeZ: Float, targetX: Float, targetY: Float, targetZ: Float): FloatArray {
+        val pose = RaceCameraPose(eyeX, eyeY, eyeZ, targetX, targetY, targetZ, eyeX, eyeZ, 0.0)
+        val basis = basis(pose)
+        return floatArrayOf(
+            basis.rightX, basis.rightY, basis.rightZ, 0f,
+            basis.upX, basis.upY, basis.upZ, 0f,
+            -basis.forwardX, -basis.forwardY, -basis.forwardZ, 0f,
+            eyeX, eyeY, eyeZ, 1f
+        )
+    }
+
+    fun ndc(
+        pose: RaceCameraPose,
+        x: Float,
+        y: Float,
+        z: Float,
+        fov: Double = fovDegrees,
+        aspect: Double = 16.0 / 9.0
+    ): FloatArray {
+        val basis = basis(pose)
+        val vx = x - pose.eyeX
+        val vy = y - pose.eyeY
+        val vz = z - pose.eyeZ
+        val depth = vx * basis.forwardX + vy * basis.forwardY + vz * basis.forwardZ
+        if (depth <= 0.05f) return floatArrayOf(2f, 0f)
+        val half = kotlin.math.tan(Math.toRadians(fov) * 0.5)
+        val screenX = (vx * basis.rightX + vy * basis.rightY + vz * basis.rightZ) / (depth * half * aspect)
+        val screenY = (vx * basis.upX + vy * basis.upY + vz * basis.upZ) / (depth * half)
+        return floatArrayOf(screenX.toFloat(), screenY.toFloat())
     }
 
     /** Column-major transform. The asset's nose points along local +Z. */
@@ -72,28 +122,41 @@ object RaceCamera {
      * Vertical normalized position of a world point. Negative is below the
      * view center. This is the framing check used before a GPU is available.
      */
-    fun verticalOffset(pose: RaceCameraPose, x: Float, y: Float, z: Float, fovDegrees: Double = 46.0): Float {
-        val forwardX = pose.targetX - pose.eyeX
-        val forwardY = pose.targetY - pose.eyeY
-        val forwardZ = pose.targetZ - pose.eyeZ
-        val forwardLength = kotlin.math.sqrt(forwardX * forwardX + forwardY * forwardY + forwardZ * forwardZ).coerceAtLeast(0.001f)
-        val fx = forwardX / forwardLength
-        val fy = forwardY / forwardLength
-        val fz = forwardZ / forwardLength
-        val rx = fy * 0f - fz * 1f
-        val ry = fz * 0f - fx * 0f
-        val rz = fx * 1f - fy * 0f
+    fun verticalOffset(pose: RaceCameraPose, x: Float, y: Float, z: Float, fov: Double = fovDegrees): Float {
+        return ndc(pose, x, y, z, fov, 1.0)[1]
+    }
+
+    private data class Basis(
+        val forwardX: Float,
+        val forwardY: Float,
+        val forwardZ: Float,
+        val rightX: Float,
+        val rightY: Float,
+        val rightZ: Float,
+        val upX: Float,
+        val upY: Float,
+        val upZ: Float
+    )
+
+    private fun basis(pose: RaceCameraPose): Basis {
+        var fx = pose.targetX - pose.eyeX
+        var fy = pose.targetY - pose.eyeY
+        var fz = pose.targetZ - pose.eyeZ
+        val length = kotlin.math.sqrt(fx * fx + fy * fy + fz * fz).coerceAtLeast(0.001f)
+        fx /= length
+        fy /= length
+        fz /= length
+        // right = world up × forward. Facing north, that right vector is east.
+        var rx = fz
+        var ry = 0f
+        var rz = -fx
         val rightLength = kotlin.math.sqrt(rx * rx + ry * ry + rz * rz).coerceAtLeast(0.001f)
-        val ux = (ry / rightLength) * fz - (rz / rightLength) * fy
-        val uy = (rz / rightLength) * fx - (rx / rightLength) * fz
-        val uz = (rx / rightLength) * fy - (ry / rightLength) * fx
-        val vx = x - pose.eyeX
-        val vy = y - pose.eyeY
-        val vz = z - pose.eyeZ
-        val depth = vx * fx + vy * fy + vz * fz
-        if (depth <= 0.05f) return 0f
-        val height = vx * ux + vy * uy + vz * uz
-        val half = kotlin.math.tan(Math.toRadians(fovDegrees) * 0.5).toFloat()
-        return (height / depth) / half
+        rx /= rightLength
+        ry /= rightLength
+        rz /= rightLength
+        val ux = fy * rz - fz * ry
+        val uy = fz * rx - fx * rz
+        val uz = fx * ry - fy * rx
+        return Basis(fx, fy, fz, rx, ry, rz, ux, uy, uz)
     }
 }

@@ -12,7 +12,7 @@ import java.util.zip.Deflater
  * geometry; it is not a picture of a car.
  */
 object RaceGlb {
-    fun encode(model: RaceModel): ByteArray {
+    fun encode(model: RaceModel, images: Map<String, ByteArray> = emptyMap()): ByteArray {
         val bin = ByteBuffer.allocate(estimate(model)).order(ByteOrder.LITTLE_ENDIAN)
         val bufferViews = JSONArray()
         val accessors = JSONArray()
@@ -25,18 +25,43 @@ object RaceGlb {
         val worldPrimitives = JSONArray()
         for (mesh in model.world) primitive(mesh, bin, bufferViews, accessors, materialIndex, worldPrimitives)
         val meshLength = bin.position()
-        val png = asphaltPng()
-        val paddedMesh = align(meshLength)
-        val bytes = ByteArray(paddedMesh + align(png.size))
-        bin.flip()
-        bin.get(bytes, 0, meshLength)
-        System.arraycopy(png, 0, bytes, paddedMesh, png.size)
-        bufferViews.put(JSONObject().put("buffer", 0).put("byteOffset", paddedMesh).put("byteLength", png.size))
-        val asphalt = materialIndex["asphalt"]
-        if (asphalt != null) {
-            materials.getJSONObject(asphalt).getJSONObject("pbrMetallicRoughness")
-                .put("baseColorTexture", JSONObject().put("index", 0))
+        val packedImages = ArrayList<Pair<String, ByteArray>>()
+        for (name in imageOrder) {
+            val bytes = images[name] ?: continue
+            packedImages.add(name to bytes)
         }
+        val imageOffsets = ArrayList<Int>()
+        var cursor = align(meshLength)
+        for (image in packedImages) {
+            cursor = align(cursor)
+            imageOffsets.add(cursor)
+            cursor += image.second.size
+        }
+        val bytes = ByteArray(cursor.coerceAtLeast(align(meshLength)))
+        bin.flip()
+        if (meshLength > 0) bin.get(bytes, 0, meshLength)
+        val imageViews = ArrayList<Int>()
+        for (index in packedImages.indices) {
+            val offset = imageOffsets[index]
+            val image = packedImages[index].second
+            System.arraycopy(image, 0, bytes, offset, image.size)
+            bufferViews.put(JSONObject().put("buffer", 0).put("byteOffset", offset).put("byteLength", image.size))
+            imageViews.add(bufferViews.length() - 1)
+        }
+        val imageJson = JSONArray()
+        val textures = JSONArray()
+        val textureIndex = HashMap<String, Int>()
+        for (index in packedImages.indices) {
+            imageJson.put(JSONObject().put("mimeType", "image/ktx2").put("bufferView", imageViews[index]).put("name", packedImages[index].first))
+            textures.put(JSONObject()
+                .put("sampler", 0)
+                .put("source", index)
+                .put("extensions", JSONObject().put("KHR_texture_basisu", JSONObject().put("source", index))))
+            textureIndex[packedImages[index].first] = index
+        }
+        bind(materials, materialIndex, "asphalt", textureIndex, "asphalt")
+        bind(materials, materialIndex, "grass", textureIndex, "grass")
+        bind(materials, materialIndex, "shoulder", textureIndex, "gravel")
         val root = JSONObject()
         root.put("asset", JSONObject().put("version", "2.0").put("generator", "ToonNav RacePrototype"))
         root.put("scene", 0)
@@ -47,8 +72,12 @@ object RaceGlb {
         root.put("buffers", JSONArray().put(JSONObject().put("byteLength", bytes.size)))
         root.put("bufferViews", bufferViews)
         root.put("accessors", accessors)
-        root.put("images", JSONArray().put(JSONObject().put("mimeType", "image/png").put("bufferView", bufferViews.length() - 1)))
-        root.put("textures", JSONArray().put(JSONObject().put("source", 0)))
+        root.put("samplers", JSONArray().put(JSONObject().put("wrapS", 10497).put("wrapT", 10497).put("magFilter", 9729).put("minFilter", 9987)))
+        if (imageJson.length() > 0) {
+            root.put("images", imageJson)
+            root.put("textures", textures)
+            root.put("extensionsUsed", JSONArray().put("KHR_texture_basisu"))
+        }
         return pack(root.toString().toByteArray(Charsets.UTF_8), bytes)
     }
 
@@ -113,14 +142,39 @@ object RaceGlb {
             .put("material", materials[mesh.material] ?: 0))
     }
 
+    fun roadImages(read: (String) -> ByteArray): Map<String, ByteArray> {
+        return imageOrder.associateWith { read(it) }
+    }
+
+    private val imageOrder = listOf(
+        "asphalt-color", "asphalt-normal", "asphalt-orm",
+        "grass-color", "grass-normal", "grass-orm",
+        "gravel-color", "gravel-normal", "gravel-orm"
+    )
+
+    private fun bind(materials: JSONArray, index: Map<String, Int>, materialName: String, textures: Map<String, Int>, prefix: String) {
+        val slot = index[materialName] ?: return
+        val color = textures["$prefix-color"] ?: return
+        val normal = textures["$prefix-normal"] ?: return
+        val orm = textures["$prefix-orm"] ?: return
+        val material = materials.getJSONObject(slot)
+        val pbr = material.getJSONObject("pbrMetallicRoughness")
+        pbr.put("baseColorTexture", JSONObject().put("index", color))
+        pbr.put("metallicRoughnessTexture", JSONObject().put("index", orm))
+        material.put("normalTexture", JSONObject().put("index", normal).put("scale", 1.0))
+        material.put("occlusionTexture", JSONObject().put("index", orm))
+    }
+
     private fun materialJson(material: RaceMaterial): JSONObject {
-        return JSONObject()
+        val json = JSONObject()
             .put("name", material.name)
             .put("doubleSided", true)
             .put("pbrMetallicRoughness", JSONObject()
-                .put("baseColorFactor", JSONArray().put(material.red.toDouble()).put(material.green.toDouble()).put(material.blue.toDouble()).put(1.0))
+                .put("baseColorFactor", JSONArray().put(material.red.toDouble()).put(material.green.toDouble()).put(material.blue.toDouble()).put(material.alpha.toDouble()))
                 .put("metallicFactor", material.metallic.toDouble())
                 .put("roughnessFactor", material.roughness.toDouble()))
+        if (material.alpha < 0.999f) json.put("alphaMode", "BLEND")
+        return json
     }
 
     private fun view(offset: Int, length: Int): JSONObject {

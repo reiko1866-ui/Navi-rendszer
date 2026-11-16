@@ -73,6 +73,12 @@
             android:contentDescription="@string/garage_hero"
             android:scaleType="fitCenter" />
 
+        <android.view.SurfaceView
+            android:id="@+id/garageSurface"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="72dp" />
+
         <TextView
             android:id="@+id/garageNumberBadge"
             android:layout_width="wrap_content"

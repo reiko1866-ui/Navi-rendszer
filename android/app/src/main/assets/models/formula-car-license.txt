@@ -4,3 +4,12 @@ Author credit in the file: tevy.dev
 License: CC0 1.0 Universal
 https://creativecommons.org/publicdomain/zero/1.0/
 The meshopt and Basis payloads were decoded so Filament can load the same geometry.
+Clearcoat on the paint materials was kept.
+
+Road and ground textures, also CC0 1.0 from tevy.dev:
+- Race Track Asphalt https://tevy.dev/materials/race-asphalt/v1/
+- Trackside Mown Grass https://tevy.dev/materials/track-grass/v1/
+- Gravel Shoulder https://tevy.dev/materials/gravel-shoulder/v1/
+
+The daylight probe in noon-sky.hdr is generated for this app so the sun highlight
+and the reflections point the same way. It is not a photographed sky.

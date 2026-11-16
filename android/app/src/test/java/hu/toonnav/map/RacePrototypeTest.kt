@@ -25,6 +25,10 @@ class RacePrototypeTest {
         val materials = List(json.getJSONArray("materials").length()) { json.getJSONArray("materials").getJSONObject(it).optString("name") }
         assertTrue(materials.any { it.startsWith("paint_primary") })
         assertTrue(materials.any { it.startsWith("carbon") })
+        val paint = (0 until json.getJSONArray("materials").length())
+            .map { json.getJSONArray("materials").getJSONObject(it) }
+            .first { it.optString("name") == "paint_primary_body" }
+        assertEquals(1.0, paint.getJSONObject("extensions").getJSONObject("KHR_materials_clearcoat").getDouble("clearcoatFactor"), 0.001)
         val accessors = json.getJSONArray("accessors")
         var triangles = 0
         for (meshIndex in 0 until json.getJSONArray("meshes").length()) {
@@ -39,7 +43,8 @@ class RacePrototypeTest {
         assertTrue(license.contains("CC0"))
         val road = RaceGeometry.worldModel(RaceGeometry.sampleRoute(line(0.0, 80.0), 2.0)).first { it.material == "asphalt" }
         val box = RaceGeometry.bounds(road)
-        assertTrue(box[4] - box[1] > 0.1f)
+        assertTrue(box[4] - box[1] > 0.05f)
+        assertTrue(RaceGeometry.worldModel(RaceGeometry.sampleRoute(line(0.0, 80.0), 2.0)).any { it.material == "grass" })
         val slots = GarageFleet.cars.map { car ->
             RaceLivery.color("body", car) to RaceLivery.color("accent", car)
         }
@@ -95,7 +100,13 @@ class RacePrototypeTest {
         }
         assertEquals("road", json.getJSONArray("nodes").getJSONObject(0).getString("name"))
         val names = materialNames(json)
-        assertTrue(names.containsAll(listOf("asphalt", "verge", "marking")))
+        assertTrue(names.containsAll(listOf("asphalt", "grass", "shoulder", "marking")))
+        val textured = RaceGlb.json(RaceGlb.encode(RaceTrack.model(RaceTrack.samplePreview()), roadImages()))
+        val asphalt = (0 until textured.getJSONArray("materials").length())
+            .map { textured.getJSONArray("materials").getJSONObject(it) }
+            .first { it.getString("name") == "asphalt" }
+        assertTrue(asphalt.has("normalTexture"))
+        assertEquals("image/ktx2", textured.getJSONArray("images").getJSONObject(0).getString("mimeType"))
         assertTrue(json.getJSONArray("meshes").getJSONObject(0).getJSONArray("primitives").getJSONObject(0)
             .getJSONObject("attributes").has("TEXCOORD_0"))
         assertTrue(second.size > 10_000)
@@ -109,8 +120,22 @@ class RacePrototypeTest {
         val pose = RaceCamera.pose(0.0, 0.0, 0.0)
         val nose = RaceCamera.nosePoint(0.0, 0.0, 0.0)
         val offset = RaceCamera.verticalOffset(pose, nose[0], nose[1], nose[2])
-        assertTrue(offset < -0.05f)
-        assertTrue(offset > -0.92f)
+        assertTrue(offset < -0.15f)
+        assertTrue(offset > -0.9f)
+        val wing = RaceCamera.wingPoint(0.0, 0.0, 0.0, 1.0)
+        val wingNdc = RaceCamera.ndc(pose, wing[0], wing[1], wing[2])
+        assertTrue(abs(wingNdc[0]) < 0.92f)
+        assertTrue(wingNdc[1] < -0.15f && wingNdc[1] > -0.98f)
+        val tire = RaceCamera.tirePoint(0.0, 0.0, 0.0, -1.0)
+        val tireNdc = RaceCamera.ndc(pose, tire[0], tire[1], tire[2])
+        assertTrue(abs(tireNdc[0]) < 0.95f)
+        assertTrue(tireNdc[1] > -0.98f && tireNdc[1] < -0.1f)
+        val ahead = RaceCamera.ndc(pose, 0f, 0.1f, 40f)
+        assertTrue(abs(ahead[0]) < 0.2f)
+        assertTrue(ahead[1] > offset)
+        val model = RaceCamera.cameraModel(0.0, 0.0, 0.0)
+        assertTrue(model[0] > 0.8f)
+        assertTrue(java.io.File("src/main/assets/models/noon-sky.hdr").readBytes().decodeToString(0, 10).startsWith("#?RADIANCE"))
         val route = RaceTrack.samplePreview()
         val samples = RaceTrack.samplesFor(route)
         val bearing = RaceTrack.bearing(route, samples, 20.0)
@@ -126,6 +151,10 @@ class RacePrototypeTest {
 
     private fun encoded(): ByteArray {
         return RaceGlb.encode(RaceTrack.model(RaceTrack.samplePreview()))
+    }
+
+    private fun roadImages(): Map<String, ByteArray> {
+        return RaceGlb.roadImages { name -> java.io.File("src/main/assets/models/road/$name.ktx2").readBytes() }
     }
 
     private fun materialNames(json: JSONObject): List<String> {

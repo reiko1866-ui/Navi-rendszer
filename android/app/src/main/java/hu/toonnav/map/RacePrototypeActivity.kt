@@ -85,6 +85,7 @@ class RacePrototypeActivity : ComponentActivity() {
     @Volatile var followLive = false
     @Volatile var frameFps = Double.NaN
     @Volatile var frameMs = Double.NaN
+    @Volatile var roadImages: Map<String, ByteArray> = emptyMap()
 
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
@@ -133,11 +134,15 @@ class RacePrototypeActivity : ComponentActivity() {
         val handler = Handler(thread.looper)
         renderHandler = handler
         val surface = findViewById<SurfaceView>(R.id.raceSurface)
-        val carBytes = assets.open("models/formula-car.glb").use { it.readBytes() }
-        val roadBytes = RaceGlb.encode(RaceTrack.model(route))
+        val routeNow = route
         handler.post {
+            val carBytes = assets.open("models/formula-car.glb").use { it.readBytes() }
+            val skyBytes = assets.open("models/noon-sky.hdr").use { it.readBytes() }
+            val images = RaceGlb.roadImages { name -> assets.open("models/road/$name.ktx2").use { it.readBytes() } }
+            roadImages = images
+            val roadBytes = RaceGlb.encode(RaceTrack.model(routeNow), images)
             val created = RaceRenderer.start(
-                carBytes, roadBytes, route, samples, selected, night, surface, handler, this
+                carBytes, roadBytes, skyBytes, routeNow, samples, selected, night, surface, handler, this
             )
             renderer = created
             if (created == null) runOnUiThread { statusView.text = getString(R.string.race_engine_failed) }
@@ -366,10 +371,14 @@ class RacePrototypeActivity : ComponentActivity() {
         offRouteSpoken = false
         voice.halt()
         voice.speak("reroute", "reroute", null, "ujratervezes")
-        val bytes = RaceGlb.encode(RaceTrack.model(route))
         val copy = samples
         val line = route
-        renderHandler?.post { renderer?.replaceRoad(bytes, line, copy) }
+        val images = roadImages.ifEmpty { RaceGlb.roadImages { name -> assets.open("models/road/$name.ktx2").use { it.readBytes() } } }
+        roadImages = images
+        renderHandler?.post {
+            val bytes = RaceGlb.encode(RaceTrack.model(line), images)
+            renderer?.replaceRoad(bytes, line, copy)
+        }
         statusView.text = ""
         paintHud(guidance.refreshAge(fixAge()))
     }
@@ -447,6 +456,8 @@ private class RaceRenderer(
     private val light: Int,
     private val camera: Camera,
     private val cameraEntity: Int,
+    private val probe: RaceLighting.Probe?,
+    private val daySky: Skybox,
     private val carAsset: FilamentAsset,
     private var roadAsset: FilamentAsset,
     private val loader: AssetLoader,
@@ -469,6 +480,9 @@ private class RaceRenderer(
     private var heldNorth = 0.0
     private var heldBearing = 0.0
     private var held = false
+    private var smoothBearing = 0.0
+    private var bearingReady = false
+    private var nightSky: Skybox? = null
     private val choreographer = Choreographer.getInstance()
     private val callback = object : Choreographer.FrameCallback {
         override fun doFrame(frameTimeNanos: Long) {
@@ -504,20 +518,19 @@ private class RaceRenderer(
     }
 
     fun setNight(night: Boolean) {
-        val next = Skybox.Builder().color(
-            if (night) 0.04f else 0.62f,
-            if (night) 0.05f else 0.66f,
-            if (night) 0.07f else 0.70f,
-            1f
-        ).build(engine)
-        scene.skybox = next
-        engine.destroySkybox(skybox)
-        skybox = next
         val fog = swapView.fogOptions
-        fog.color = floatArrayOf(if (night) 0.04f else 0.62f, if (night) 0.05f else 0.66f, if (night) 0.07f else 0.70f)
+        fog.color = floatArrayOf(if (night) 0.02f else 0.62f, if (night) 0.03f else 0.72f, if (night) 0.05f else 0.86f)
         swapView.fogOptions = fog
         val sun = engine.lightManager.getInstance(light)
-        engine.lightManager.setIntensity(sun, if (night) 8_000f else 110_000f)
+        engine.lightManager.setIntensity(sun, if (night) 6_000f else 100_000f)
+        probe?.indirect?.setIntensity(if (night) 0.08f else 1f)
+        camera.setExposure(if (night) 8f else 16f, if (night) 1f / 30f else 1f / 125f, if (night) 800f else 100f)
+        if (night) {
+            val dark = nightSky ?: Skybox.Builder().color(0.02f, 0.025f, 0.04f, 1f).build(engine).also { nightSky = it }
+            scene.skybox = dark
+        } else {
+            scene.skybox = daySky
+        }
     }
 
     fun replaceRoad(bytes: ByteArray, nextRoute: List<OsrmPoint>, nextSamples: List<RoadSample>) {
@@ -530,6 +543,7 @@ private class RaceRenderer(
         route = nextRoute
         samples = nextSamples
         held = false
+        bearingReady = false
     }
 
     fun destroy() {
@@ -543,8 +557,11 @@ private class RaceRenderer(
         materials.destroy()
         scene.skybox = null
         scene.indirectLight = null
-        engine.destroySkybox(skybox)
-        engine.destroyIndirectLight(indirect)
+        nightSky?.let { if (it !== daySky) engine.destroySkybox(it) }
+        engine.destroySkybox(daySky)
+        if (probe != null) engine.destroyIndirectLight(probe.indirect) else engine.destroyIndirectLight(indirect)
+        probe?.reflections?.let { engine.destroyTexture(it) }
+        probe?.environment?.let { engine.destroyTexture(it) }
         engine.destroyEntity(light)
         swapChain?.let { engine.destroySwapChain(it) }
         engine.destroyCameraComponent(cameraEntity)
@@ -590,16 +607,13 @@ private class RaceRenderer(
             north = here.north
             bearing = RaceTrack.bearing(route, samples, 8.0)
         }
-        val pose = RaceCamera.pose(east, north, bearing)
-        camera.setProjection(46.0, width.toDouble() / height.toDouble(), 0.06, 800.0, Camera.Fov.VERTICAL)
-        camera.lookAt(
-            pose.eyeX.toDouble(), pose.eyeY.toDouble(), pose.eyeZ.toDouble(),
-            pose.targetX.toDouble(), pose.targetY.toDouble(), pose.targetZ.toDouble(),
-            0.0, 1.0, 0.0
-        )
+        val turned = dampBearing(bearing, step)
+        val pose = RaceCamera.pose(east, north, turned)
+        camera.setProjection(RaceCamera.fovDegrees, width.toDouble() / height.toDouble(), 0.08, 1200.0, Camera.Fov.VERTICAL)
+        camera.setModelMatrix(RaceCamera.cameraModel(east, north, turned))
         val transform = engine.transformManager
         val car = transform.getInstance(carEntity())
-        if (car != 0) transform.setTransform(car, RaceCamera.carTransform(east, north, bearing))
+        if (car != 0) transform.setTransform(car, RaceCamera.carTransform(east, north, turned))
         swapView.viewport = Viewport(0, 0, width, height)
         if (renderer.beginFrame(chain, frameTimeNanos)) {
             renderer.render(swapView)
@@ -617,6 +631,20 @@ private class RaceRenderer(
                 posted = now
             }
         }
+    }
+
+    private fun dampBearing(target: Double, dt: Double): Double {
+        if (!bearingReady || dt <= 0.0) {
+            bearingReady = true
+            smoothBearing = target
+            return target
+        }
+        var delta = target - smoothBearing
+        delta = (delta + 540.0) % 360.0 - 180.0
+        val follow = 1.0 - kotlin.math.exp(-dt / 0.12)
+        val step = (delta * follow).coerceIn(-170.0 * dt, 170.0 * dt)
+        smoothBearing = (smoothBearing + step + 360.0) % 360.0
+        return smoothBearing
     }
 
     private fun carEntity(): Int {
@@ -638,6 +666,7 @@ private class RaceRenderer(
         fun start(
             carBytes: ByteArray,
             roadBytes: ByteArray,
+            skyBytes: ByteArray,
             route: List<OsrmPoint>,
             samples: List<RoadSample>,
             car: GarageFleet.Car,
@@ -674,35 +703,41 @@ private class RaceRenderer(
                 view.dynamicResolutionOptions = resolution
                 val fog = view.fogOptions
                 fog.enabled = true
-                fog.distance = 40f
-                fog.maximumOpacity = 0.85f
-                fog.density = 0.18f
-                fog.height = 1.2f
-                fog.heightFalloff = 8f
-                fog.color = floatArrayOf(0.62f, 0.66f, 0.70f)
+                fog.distance = 140f
+                fog.maximumOpacity = 0.62f
+                fog.density = 0.028f
+                fog.height = 6f
+                fog.heightFalloff = 2.5f
+                fog.color = floatArrayOf(0.62f, 0.72f, 0.86f)
                 view.fogOptions = fog
-                val sky = Skybox.Builder().color(0.62f, 0.66f, 0.70f, 1f).build(engine)
+                val probe = RaceLighting.create(engine, skyBytes)
+                val sky = probe?.sky ?: Skybox.Builder().color(0.62f, 0.72f, 0.86f, 1f).build(engine)
+                val fallback = FloatArray(27)
+                fallback[0] = 1.1f
+                fallback[1] = 1.15f
+                fallback[2] = 1.25f
+                val indirect = probe?.indirect ?: IndirectLight.Builder()
+                    .irradiance(3, fallback)
+                    .intensity(30_000f)
+                    .build(engine)
                 scene.skybox = sky
-                val sh = FloatArray(27)
-                sh[0] = 1.05f
-                sh[1] = 1.08f
-                sh[2] = 1.12f
-                val indirect = IndirectLight.Builder().irradiance(3, sh).intensity(42_000f).build(engine)
                 scene.indirectLight = indirect
                 val light = EntityManager.get().create()
                 LightManager.Builder(LightManager.Type.SUN)
                     .color(1.0f, 0.97f, 0.92f)
-                    .intensity(110_000f)
-                    .direction(0.25f, -0.86f, -0.35f)
+                    .intensity(100_000f)
+                    .direction(RaceLighting.sunX, RaceLighting.sunY, RaceLighting.sunZ)
                     .castShadows(true)
-                    .sunAngularRadius(1.1f)
+                    .sunAngularRadius(0.45f)
                     .build(engine, light)
                 scene.addEntity(light)
                 val cameraEntity = EntityManager.get().create()
                 val camera = engine.createCamera(cameraEntity)
+                camera.setExposure(16f, 1f / 125f, 100f)
                 view.camera = camera
                 val created = RaceRenderer(
                     engine, view, engine.createRenderer(), scene, sky, indirect, light, camera, cameraEntity,
+                    probe, sky,
                     load(loader, resources, carBytes) ?: throw IllegalStateException("car"),
                     load(loader, resources, roadBytes) ?: throw IllegalStateException("road"),
                     loader, resources, provider, route, samples, host

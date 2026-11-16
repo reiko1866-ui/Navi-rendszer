@@ -32,6 +32,7 @@
             android:name=".RacePrototypeActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|uiMode"
             android:exported="false"
-            android:hardwareAccelerated="true" />
+            android:hardwareAccelerated="true"
+            android:screenOrientation="sensorLandscape" />
     </application>
 </manifest>
