@@ -18,6 +18,7 @@ import android.view.SurfaceView
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import com.google.android.filament.Camera
 import com.google.android.filament.Colors
@@ -47,8 +48,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 /**
- * Separate driving preview. It follows a live fix on the active route when one
- * exists, and it does not replace the map screen.
+ * The driving screen. A navigation launch follows the stored trip. A garage
+ * preview without a trip keeps the labeled sample and does not guide.
  */
 class RacePrototypeActivity : ComponentActivity() {
     private val guidance = GuidanceSession()
@@ -101,6 +102,18 @@ class RacePrototypeActivity : ComponentActivity() {
     @Volatile var frameMs = Double.NaN
     @Volatile var roadImages: Map<String, ByteArray> = emptyMap()
 
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private var navigationMode = false
+    private var announceStart = false
+    private var tripArrived = false
+    private var watchPosted = false
+    private lateinit var finishLayer: android.widget.FrameLayout
+    private val guidanceWatch = object : Runnable {
+        override fun run() {
+            refreshGuidanceAge()
+            if (watchPosted) mainHandler.postDelayed(this, 1000L)
+        }
+    }
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
             acceptFix(location)
@@ -122,17 +135,40 @@ class RacePrototypeActivity : ComponentActivity() {
         voiceOn = hudPrefs.getBoolean("voice", true)
         night = hudPrefs.getBoolean("night", false)
         voice.enabled = voiceOn
-        Thread { voice.load() }.start()
+        navigationMode = intent.getBooleanExtra(EXTRA_NAVIGATION, false)
+        announceStart = intent.getBooleanExtra(EXTRA_ANNOUNCE, false)
+        if (!announceStart) voice.restoreKey(NavigationVoice.retainedKey)
+        NavigationOwner.raceCreated()
+        Thread {
+            voice.load()
+            if (!NavigationVoice.announceStart(navigationMode, announceStart, true)) return@Thread
+            runOnUiThread {
+                if (isDestroyed || !announceStart || !usingLiveRoute) return@runOnUiThread
+                announceStart = false
+                intent.putExtra(EXTRA_ANNOUNCE, false)
+                voice.speak("indulas", "indulas", null, "indulas")
+            }
+        }.start()
         previewAlong = intent.getFloatExtra(EXTRA_PREVIEW_ALONG, 8f).toDouble().coerceIn(0.0, 5_000.0)
         val requested = intent.getStringExtra(EXTRA_CAR)
         val selected = GarageFleet.shown(requested ?: GarageStore(this).carId())
         carIndex = GarageFleet.cars.indexOfFirst { it.id == selected.id }.coerceAtLeast(0)
         plan = DriveSessionMemory.plan
         val live = DriveSessionMemory.routePoints
-        usingLiveRoute = live.size >= 2 && plan != null
-        route = if (usingLiveRoute) live.toList() else RaceTrack.samplePreview()
+        val choice = NavigationRoute.choose(navigationMode, live.size, plan != null)
+        usingLiveRoute = choice == RaceRouteSource.LIVE
+        route = when (choice) {
+            RaceRouteSource.LIVE -> live.toList()
+            RaceRouteSource.SAMPLE -> RaceTrack.samplePreview()
+            RaceRouteSource.MISSING -> emptyList()
+        }
         prepareSamples()
-        plan?.let { guidance.setPlan(it) }
+        if (usingLiveRoute) plan?.let { guidance.setPlan(it) }
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
         findViewById<Button>(R.id.raceStop).setOnClickListener { confirmStop() }
         findViewById<Button>(R.id.raceBack).setOnClickListener { finish() }
         findViewById<Button>(R.id.raceGarage).setOnClickListener {
@@ -141,8 +177,22 @@ class RacePrototypeActivity : ComponentActivity() {
         voiceButton.setOnClickListener { toggleVoice() }
         nightButton.setOnClickListener { toggleNight() }
         findViewById<Button>(R.id.raceLivery).setOnClickListener { cycleLivery() }
+        finishLayer = findViewById(R.id.raceFinish)
+        findViewById<Button>(R.id.raceFinishMap).setOnClickListener {
+            voice.halt()
+            DriveSessionMemory.arrivalHandoff = true
+            finish()
+        }
+        if (navigationMode) findViewById<Button>(R.id.raceBack).setText(R.string.race_back_map)
         refreshControls()
         paintHud(null)
+        if (choice == RaceRouteSource.MISSING) {
+            val missing = getString(R.string.race_route_missing)
+            statusView.text = missing
+            maneuverView.text = missing
+            remainingView.text = missing
+            return
+        }
         val thread = HandlerThread("toonnav-filament", Process.THREAD_PRIORITY_DISPLAY)
         thread.start()
         renderThread = thread
@@ -161,23 +211,42 @@ class RacePrototypeActivity : ComponentActivity() {
                 carBytes, roadBytes, skyBytes, routeNow, samples, selected, night, surface, handler, this
             )
             renderer = created
-            if (created == null) runOnUiThread { statusView.text = getString(R.string.race_engine_failed) }
-            else if (usingLiveRoute) requestElevation(routeSeq)
+            if (created == null) runOnUiThread {
+                val failed = getString(R.string.race_engine_failed)
+                statusView.text = failed
+                maneuverView.text = failed
+            } else if (usingLiveRoute) requestElevation(routeSeq)
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        startLocationUpdates()
+    override fun onResume() {
+        super.onResume()
+        NavigationOwner.claimRace()
+        if (usingLiveRoute) startLocationUpdates()
+        startWatch()
+    }
+
+    override fun onPause() {
+        stopLocationUpdates()
+        stopWatch()
+        voice.silence()
+        NavigationVoice.retain(voice.currentKey())
+        val ending = DriveSessionMemory.abandon || DriveSessionMemory.arrivalHandoff
+        if (usingLiveRoute && !ending) rememberProgress()
+        NavigationOwner.releaseRace(returningToMap = usingLiveRoute && !ending)
+        super.onPause()
     }
 
     override fun onStop() {
         stopLocationUpdates()
-        rememberProgress()
         super.onStop()
     }
 
     override fun onDestroy() {
+        stopWatch()
+        mainHandler.removeCallbacksAndMessages(null)
+        NavigationOwner.raceDestroyed()
+        voice.release()
         renderer?.surfaceHelper?.detach()
         val handler = renderHandler
         val thread = renderThread
@@ -314,7 +383,12 @@ class RacePrototypeActivity : ComponentActivity() {
             DriveSessionMemory.traveledMeters = along.coerceIn(0.0, cue.totalMeters.coerceAtLeast(0.0))
         }
         when {
-            cue.arrived -> statusView.text = getString(R.string.status_arrived)
+            cue.arrived -> {
+                tripArrived = true
+                statusView.text = getString(R.string.status_arrived)
+                voice.halt()
+                revealPodium()
+            }
             cue.offRouteConfirmed -> {
                 if (!offRouteSpoken) {
                     voice.halt()
@@ -327,6 +401,7 @@ class RacePrototypeActivity : ComponentActivity() {
             cue.trust == GpsTrust.UNUSABLE || cue.trust == GpsTrust.INACCURATE -> statusView.text = getString(R.string.status_gps_poor)
             else -> {
                 offRouteSpoken = false
+                clearGpsStatus()
                 paintFrame()
             }
         }
@@ -386,6 +461,7 @@ class RacePrototypeActivity : ComponentActivity() {
         usingLiveRoute = route.size >= 2
         guidance.setPlan(next)
         DriveSessionMemory.hold(next, json, route, 0.0, DriveSessionMemory.origin, DriveSessionMemory.destination)
+        DriveTripFile.save(this)
         reroutes.succeeded(SystemClock.elapsedRealtime())
         offRouteSpoken = false
         voice.halt()
@@ -566,6 +642,7 @@ class RacePrototypeActivity : ComponentActivity() {
             DriveSessionMemory.origin,
             DriveSessionMemory.destination
         )
+        DriveTripFile.save(this)
     }
 
     private fun paintHud(cue: GuidanceCue?) {
@@ -610,9 +687,59 @@ class RacePrototypeActivity : ComponentActivity() {
         return SystemClock.elapsedRealtime() - followElapsed
     }
 
+    private fun startWatch() {
+        if (watchPosted || !usingLiveRoute) return
+        watchPosted = true
+        mainHandler.postDelayed(guidanceWatch, 1000L)
+    }
+
+    private fun stopWatch() {
+        watchPosted = false
+        mainHandler.removeCallbacks(guidanceWatch)
+    }
+
+    private fun refreshGuidanceAge() {
+        if (!usingLiveRoute) return
+        if (tripArrived) {
+            revealPodium()
+            return
+        }
+        if (!followLive) return
+        val cue = guidance.refreshAge(fixAge()) ?: return
+        paintHud(cue)
+        if (reroutes.inFlight) return
+        when (cue.trust) {
+            GpsTrust.LOST -> statusView.text = getString(R.string.status_gps)
+            GpsTrust.UNUSABLE, GpsTrust.INACCURATE -> statusView.text = getString(R.string.status_gps_poor)
+            GpsTrust.USABLE -> clearGpsStatus()
+        }
+    }
+
+    private fun clearGpsStatus() {
+        val current = statusView.text?.toString().orEmpty().lineSequence().firstOrNull().orEmpty()
+        if (current == getString(R.string.status_gps) || current == getString(R.string.status_gps_poor)) {
+            statusView.text = ""
+        }
+    }
+
+    private fun revealPodium() {
+        if (!::finishLayer.isInitialized) return
+        val age = fixAge()
+        val show = FinishCeremony.ready(
+            tripArrived,
+            if (followHasSpeed) followSpeed else null,
+            followHasSpeed,
+            followLive && age in 0..GpsTrustGate.lostAfterMs
+        )
+        finishLayer.visibility = if (show) android.view.View.VISIBLE else android.view.View.GONE
+        if (show) finishLayer.bringToFront()
+    }
+
     companion object {
         const val EXTRA_CAR = "car"
         const val EXTRA_PREVIEW_ALONG = "previewAlong"
+        const val EXTRA_NAVIGATION = "navigation"
+        const val EXTRA_ANNOUNCE = "announce"
         init {
             Utils.init()
             Gltfio.init()

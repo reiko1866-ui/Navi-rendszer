@@ -62,6 +62,8 @@ object DriveSessionMemory {
     var destination: Place? = null
     var revision: Int = 0
     var abandon: Boolean = false
+    /** The Filament screen reached the destination and the map should close the trip. */
+    var arrivalHandoff: Boolean = false
 
     fun hold(
         plan: OsrmRoutePlan,

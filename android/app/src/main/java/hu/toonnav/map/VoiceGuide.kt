@@ -86,6 +86,12 @@ class VoiceGuide(private val assets: AssetManager) {
         }
     }
 
+    fun currentKey(): String = lastKey
+
+    fun restoreKey(key: String) {
+        lastKey = key
+    }
+
     /** Stops the current clip and forgets the last phrase, so a new route can speak. */
     fun halt() {
         lastKey = ""

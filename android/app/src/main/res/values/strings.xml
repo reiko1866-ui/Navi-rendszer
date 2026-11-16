@@ -104,6 +104,10 @@
     <string name="race_waiting_gps">Várakozás a GPS-jelre.</string>
     <string name="race_sample_route">Mintaútvonal</string>
     <string name="race_live_route">Aktuális útvonal</string>
-    <string name="race_engine_failed">A 3D megjelenítés nem indult el ezen az eszközön.</string>
+    <string name="race_engine_failed">A 3D megjelenítés nem indult el ezen az eszközön. A térkép gombbal visszatérhetsz, a régi műszerfal nem indul el helyette.</string>
+    <string name="race_route_missing">Nincs élő útvonal a 3D navigációhoz. Térj vissza a térképre, és tervezd meg újra.</string>
+    <string name="race_resume">3D navigáció folytatása</string>
+    <string name="race_paused">A vezetés a 3D nézetben fut. Ez a térkép most nem navigál és nem beszél.</string>
+    <string name="race_back_map">Vissza a térképre</string>
     <string name="race_quality_reduced">A képminőség csökkent, hogy a megjelenítés folyamatos maradjon.</string>
 </resources>

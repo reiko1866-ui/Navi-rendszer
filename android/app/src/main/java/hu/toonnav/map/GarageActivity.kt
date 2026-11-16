@@ -51,7 +51,22 @@ class GarageActivity : ComponentActivity() {
             finish()
         }
         findViewById<Button>(R.id.garagePrototype).setOnClickListener {
-            startActivity(Intent(this, RacePrototypeActivity::class.java).putExtra(RacePrototypeActivity.EXTRA_CAR, carId))
+            when (NavigationRoute.garageAction(
+                NavigationOwner.aliveRaces,
+                DriveSessionMemory.routePoints.size,
+                DriveSessionMemory.plan != null
+            )) {
+                NavigationRoute.GarageAction.RETURN -> finish()
+                NavigationRoute.GarageAction.OPEN_LIVE -> startActivity(
+                    Intent(this, RacePrototypeActivity::class.java)
+                        .putExtra(RacePrototypeActivity.EXTRA_CAR, carId)
+                        .putExtra(RacePrototypeActivity.EXTRA_NAVIGATION, true)
+                        .putExtra(RacePrototypeActivity.EXTRA_ANNOUNCE, false)
+                )
+                NavigationRoute.GarageAction.OPEN_SAMPLE -> startActivity(
+                    Intent(this, RacePrototypeActivity::class.java).putExtra(RacePrototypeActivity.EXTRA_CAR, carId)
+                )
+            }
         }
         buildRow()
         render()

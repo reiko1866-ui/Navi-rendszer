@@ -132,4 +132,27 @@
                 android:textColor="#F4F1EC" />
         </LinearLayout>
     </HorizontalScrollView>
+
+    <FrameLayout
+        android:id="@+id/raceFinish"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:visibility="gone">
+
+        <hu.toonnav.map.FinishPodiumView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/raceFinishMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="28dp"
+            android:backgroundTint="#F4F1EC"
+            android:minHeight="48dp"
+            android:text="@string/finish_map"
+            android:textColor="#101318" />
+    </FrameLayout>
 </FrameLayout>
