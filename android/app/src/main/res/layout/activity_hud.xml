@@ -2,53 +2,156 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
-        android:id="@+id/maneuverCard"
+        android:id="@+id/topCluster"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:background="@color/nav_blue"
-        android:gravity="center_vertical"
-        android:minHeight="@dimen/maneuver_min"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/gutter"
+        android:orientation="vertical"
+        android:paddingStart="10dp"
         android:paddingTop="8dp"
-        android:paddingEnd="@dimen/gutter"
-        android:paddingBottom="10dp"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/maneuverArrow"
-            android:layout_width="@dimen/arrow_size"
-            android:layout_height="@dimen/arrow_size"
-            android:contentDescription="@string/maneuver_arrow"
-            android:src="@drawable/ic_maneuver_arrow" />
+        android:paddingEnd="10dp">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/cockpitBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:elevation="8dp"
+            android:gravity="center_vertical"
+            android:minHeight="40dp"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="8dp">
+
+            <ImageView
+                android:id="@+id/racingFlag"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:clickable="true"
+                android:contentDescription="@string/garage_open"
+                android:focusable="true"
+                android:src="@drawable/ic_checkered" />
 
             <TextView
-                android:id="@+id/stepDistance"
-                android:layout_width="match_parent"
+                android:id="@+id/racingMark"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/maneuver_distance"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="10dp"
+                android:clickable="true"
+                android:contentDescription="@string/garage_open"
+                android:focusable="true"
+                android:fontFamily="sans-serif-condensed"
+                android:letterSpacing="0.14"
+                android:text="@string/racing_mark"
+                android:textColor="@color/cockpit_ink"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/gpsLamp"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:contentDescription="@string/hud_gps_unknown" />
+
+            <TextView
+                android:id="@+id/gpsCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/hud_gps_unknown"
+                android:textColor="@color/cockpit_ink"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/navState"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="end"
+                android:letterSpacing="0.02"
+                android:text="@string/hud_nav_idle"
+                android:textColor="@color/cockpit_accent_soft"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/maneuverText"
-                android:layout_width="match_parent"
+                android:id="@+id/cockpitToggle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/maneuver_road"
-                android:textStyle="bold" />
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:contentDescription="@string/cockpit_fold"
+                android:focusable="true"
+                android:fontFamily="sans-serif-medium"
+                android:minHeight="32dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="2dp"
+                android:text="@string/cockpit_fold"
+                android:textColor="@color/cockpit_accent"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/maneuverCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:elevation="10dp"
+            android:gravity="center_vertical"
+            android:minHeight="@dimen/maneuver_min"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="10dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/maneuverArrow"
+                android:layout_width="@dimen/arrow_size"
+                android:layout_height="@dimen/arrow_size"
+                android:background="@drawable/bg_arrow_badge"
+                android:contentDescription="@string/maneuver_arrow"
+                android:padding="12dp"
+                android:src="@drawable/ic_maneuver_arrow" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/stepDistance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-condensed"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:textColor="@color/cockpit_ink"
+                    android:textSize="@dimen/maneuver_distance"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/maneuverText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="2"
+                    android:textColor="@color/cockpit_accent_soft"
+                    android:textSize="@dimen/maneuver_road"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
@@ -58,7 +161,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:layout_marginStart="@dimen/gutter"
-        android:layout_marginTop="@dimen/tools_top"
+        android:layout_marginTop="@dimen/tools_top_idle"
         android:layout_marginBottom="@dimen/tools_bottom"
         android:scrollbars="none"
         android:visibility="gone">
@@ -68,52 +171,56 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/speedPill"
-            android:elevation="4dp"
-            android:layout_width="@dimen/speed_size"
-            android:layout_height="@dimen/speed_size"
-            android:background="@drawable/bg_speed"
-            android:gravity="center"
-            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/speedPill"
+                android:layout_width="@dimen/speed_size"
+                android:layout_height="@dimen/speed_size"
+                android:elevation="8dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/speedValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:includeFontPadding="false"
+                    android:text="—"
+                    android:textColor="@color/cockpit_ink"
+                    android:textSize="@dimen/speed_text"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/speedUnit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/speed_unit"
+                    android:textColor="@color/cockpit_accent_soft"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/speedValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="—"
+                android:id="@+id/speedLimitSign"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_limit"
+                android:gravity="center"
                 android:textColor="@color/nav_ink"
-                android:textSize="@dimen/speed_text"
-                android:textStyle="bold" />
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/noticeStrip"
+                android:layout_width="176dp"
                 android:layout_height="wrap_content"
-                android:text="@string/speed_unit"
-                android:textColor="@color/nav_ink"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/speedLimitSign"
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_limit"
-            android:gravity="center"
-            android:textColor="@color/nav_ink"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <LinearLayout
-            android:id="@+id/noticeStrip"
-            android:layout_width="168dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical" />
+                android:layout_marginTop="8dp"
+                android:orientation="vertical" />
         </LinearLayout>
     </ScrollView>
 
@@ -122,9 +229,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:layout_marginTop="@dimen/tools_top"
+        android:layout_marginTop="@dimen/tools_top_idle"
         android:layout_marginEnd="@dimen/gutter"
-        android:layout_marginBottom="@dimen/tools_bottom"
+        android:layout_marginBottom="@dimen/tools_rail_bottom"
         android:scrollbars="none"
         android:visibility="gone">
 
@@ -142,7 +249,8 @@
                 android:contentDescription="@string/search_reopen"
                 android:padding="12dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_search" />
+                android:src="@drawable/ic_search"
+                android:tint="@color/cockpit_ink" />
 
             <ImageButton
                 android:id="@+id/voiceButton"
@@ -161,11 +269,12 @@
                 android:layout_height="@dimen/tool_size"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_tool"
+                android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:text="É"
-                android:textColor="@color/nav_blue"
+                android:textColor="@color/cockpit_tool_text"
                 android:textSize="@dimen/tool_text"
                 android:textStyle="bold" />
 
@@ -177,7 +286,7 @@
                 android:background="@drawable/bg_tool"
                 android:gravity="center"
                 android:text="☀"
-                android:textColor="#E0A020"
+                android:textColor="@color/cockpit_accent_soft"
                 android:textSize="18sp" />
 
             <ImageButton
@@ -189,7 +298,8 @@
                 android:contentDescription="@string/overview"
                 android:padding="12dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_map" />
+                android:src="@drawable/ic_map"
+                android:tint="@color/cockpit_ink" />
 
             <ImageButton
                 android:id="@+id/recenterButton"
@@ -200,7 +310,8 @@
                 android:contentDescription="@string/recenter"
                 android:padding="12dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_recenter" />
+                android:src="@drawable/ic_recenter"
+                android:tint="@color/cockpit_ink" />
         </LinearLayout>
     </ScrollView>
 
@@ -209,25 +320,28 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:orientation="vertical"
+        android:layout_marginEnd="@dimen/tools_clearance"
         android:paddingStart="@dimen/gutter"
-        android:paddingEnd="@dimen/gutter"
+        android:paddingEnd="4dp"
         android:paddingBottom="@dimen/gutter">
 
         <TextView
             android:id="@+id/statusText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_card"
+            android:fontFamily="sans-serif-medium"
             android:padding="12dp"
-            android:textColor="@color/nav_error"
-            android:textSize="14sp"
+            android:textColor="@color/cockpit_ink"
+            android:textSize="15sp"
             android:visibility="gone" />
 
         <Button
             android:id="@+id/settingsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#3A2420"
             android:text="@string/open_settings"
+            android:textColor="@color/cockpit_ink"
             android:visibility="gone" />
 
         <LinearLayout
@@ -235,36 +349,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_card"
+            android:elevation="8dp"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="12dp"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/fromField"
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="@string/from_hint"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:minHeight="48dp"
-                    android:textColor="@color/nav_ink" />
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/destination_title"
+                    android:textColor="@color/cockpit_ink"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <Button
-                    android:id="@+id/fromSearch"
+                    android:id="@+id/closeSearch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/search" />
+                    android:backgroundTint="#3A2420"
+                    android:minHeight="40dp"
+                    android:text="@string/search_close"
+                    android:textColor="@color/cockpit_ink" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal">
 
                 <EditText
@@ -272,22 +391,30 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="@string/to_hint"
+                    android:background="@drawable/bg_field"
+                    android:hint="@string/destination_hint"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:minHeight="48dp"
-                    android:textColor="@color/nav_ink" />
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textColor="@color/cockpit_ink"
+                    android:textColorHint="@color/cockpit_muted" />
 
                 <Button
                     android:id="@+id/toSearch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/search" />
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/cockpit_accent"
+                    android:text="@string/search"
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="160dp">
+                android:layout_height="148dp"
+                android:layout_marginTop="8dp">
 
                 <LinearLayout
                     android:id="@+id/results"
@@ -302,7 +429,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_card"
+            android:elevation="8dp"
             android:orientation="vertical"
             android:padding="12dp"
             android:visibility="gone">
@@ -311,8 +438,9 @@
                 android:id="@+id/previewTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
                 android:text="@string/preview"
-                android:textColor="@color/nav_ink"
+                android:textColor="@color/cockpit_ink"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -321,7 +449,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textColor="@color/nav_ink"
+                android:textColor="@color/cockpit_muted"
                 android:textSize="15sp" />
 
             <Button
@@ -329,7 +457,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/start_nav" />
+                android:backgroundTint="@color/cockpit_accent"
+                android:text="@string/start_nav"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/resumeRaceCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_pilot_panel"
+            android:elevation="8dp"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/resumeRaceText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/race_paused"
+                android:textColor="@color/cockpit_ink"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/resumeRaceButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/cockpit_accent"
+                android:text="@string/race_resume"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/resumeStopButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#3A2420"
+                android:text="@string/stop_nav"
+                android:textColor="@color/cockpit_ink" />
         </LinearLayout>
 
         <LinearLayout
@@ -337,72 +505,100 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_card"
-            android:elevation="6dp"
-            android:gravity="center_vertical"
-            android:minHeight="72dp"
-            android:orientation="horizontal"
-            android:padding="12dp"
+            android:elevation="10dp"
+            android:orientation="vertical"
+            android:paddingStart="14dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="10dp"
             android:visibility="gone">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/roadNow"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:textColor="@color/cockpit_ink"
+                android:textSize="@dimen/road_title"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/roadNow"
-                    android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="@color/nav_ink"
-                    android:textSize="@dimen/road_title"
-                    android:textStyle="bold" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/remainText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="#3D4440"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.06"
+                        android:text="@string/hud_remain_caption"
+                        android:textAllCaps="true"
+                        android:textColor="@color/cockpit_muted"
+                        android:textSize="12sp" />
 
-                <Button
-                    android:id="@+id/stopButton"
+                    <TextView
+                        android:id="@+id/remainText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-condensed"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="@color/cockpit_ink"
+                        android:textSize="@dimen/remain_text"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:minHeight="40dp"
-                    android:text="@string/stop_nav" />
+                    android:gravity="end"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.06"
+                        android:text="@string/arrival"
+                        android:textAllCaps="true"
+                        android:textColor="@color/cockpit_muted"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/etaText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:fontFamily="sans-serif-condensed"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/cockpit_accent_soft"
+                        android:textSize="@dimen/eta_text"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
+            <Button
+                android:id="@+id/stopButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/etaText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/nav_ink"
-                    android:textSize="@dimen/eta_text"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/planned"
-                    android:textColor="#4A524C"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                android:layout_marginTop="6dp"
+                android:backgroundTint="#3A2420"
+                android:minHeight="40dp"
+                android:text="@string/stop_nav"
+                android:textColor="@color/cockpit_ink" />
         </LinearLayout>
     </LinearLayout>
 </merge>

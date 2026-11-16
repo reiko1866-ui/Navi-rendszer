@@ -46,10 +46,10 @@ class VoiceGuide(private val assets: AssetManager) {
         }
     }
 
-    fun speak(kind: String, eventId: String, meters: Double?, cue: String) {
+    fun speak(kind: String, eventId: String, meters: Double?, cue: String, maxMeters: Double = 400.0) {
         if (!enabled) return
         val key = kind + "@" + eventId + "@" + cue
-        if (!ManeuverEvents.shouldSpeak(kind, meters, lastKey, key)) return
+        if (!ManeuverEvents.shouldSpeak(kind, meters, lastKey, key, maxMeters)) return
         val paths = queues[eventId] ?: return
         if (paths.isEmpty()) return
         val index = cursor[eventId] ?: 0
@@ -86,8 +86,25 @@ class VoiceGuide(private val assets: AssetManager) {
         }
     }
 
-    fun release() {
+    fun currentKey(): String = lastKey
+
+    fun restoreKey(key: String) {
+        lastKey = key
+    }
+
+    /** Stops the current clip and forgets the last phrase, so a new route can speak. */
+    fun halt() {
+        lastKey = ""
+        silence()
+    }
+
+    /** Stops audio without forgetting which phrase already played. */
+    fun silence() {
         player?.release()
         player = null
+    }
+
+    fun release() {
+        silence()
     }
 }

@@ -10,6 +10,210 @@
         android:layout_height="match_parent" />
 
     <FrameLayout
+        android:id="@+id/pilotLayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <hu.toonnav.map.PilotCockpitView
+            android:id="@+id/pilotCockpit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/pilotInfo"
+            android:layout_width="132dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/bg_pilot_panel"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/pilotSpeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:text="—"
+                android:textColor="#FFFF2A14"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/pilotSpeedUnit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/speed_unit"
+                android:textColor="#FFFFB08A"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/pilotRoadKind"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="#FFF6F3EE"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/pilotManeuver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="#FFF6F3EE"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/pilotManeuverDistance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFB08A"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/pilotRemaining"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="#FFF6F3EE"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/pilotEta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFF6F3EE"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/pilotNotice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="#FFFFB08A"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:id="@+id/pilotControls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:fillViewport="true"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="12dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/pilotStop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="#C8102E"
+                    android:minWidth="88dp"
+                    android:minHeight="56dp"
+                    android:text="@string/stop_nav"
+                    android:textColor="#FFF6F3EE" />
+
+                <Button
+                    android:id="@+id/pilotDrive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="#243044"
+                    android:minHeight="48dp"
+                    android:text="@string/race_open"
+                    android:textColor="@color/cockpit_ink" />
+
+                <Button
+                    android:id="@+id/pilotMap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="#3A2420"
+                    android:minHeight="48dp"
+                    android:text="@string/map_open"
+                    android:textColor="@color/cockpit_ink" />
+
+                <Button
+                    android:id="@+id/pilotGarage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="#3A2420"
+                    android:minHeight="48dp"
+                    android:text="@string/garage_open"
+                    android:textColor="@color/cockpit_ink" />
+
+                <Button
+                    android:id="@+id/pilotVoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="#3A2420"
+                    android:minHeight="48dp"
+                    android:text="@string/voice_on"
+                    android:textColor="@color/cockpit_ink" />
+
+                <Button
+                    android:id="@+id/pilotNight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="#3A2420"
+                    android:minHeight="48dp"
+                    android:text="@string/night_mode"
+                    android:textColor="@color/cockpit_ink" />
+
+                <Button
+                    android:id="@+id/pilotSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#3A2420"
+                    android:minHeight="48dp"
+                    android:text="@string/search_reopen"
+                    android:textColor="@color/cockpit_ink" />
+            </LinearLayout>
+        </HorizontalScrollView>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/finishLayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:visibility="gone">
+
+        <hu.toonnav.map.FinishPodiumView
+            android:id="@+id/finishPodium"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/finishMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="28dp"
+            android:backgroundTint="#F4F1EC"
+            android:minHeight="48dp"
+            android:text="@string/finish_map"
+            android:textColor="#101318" />
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/hudHost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
