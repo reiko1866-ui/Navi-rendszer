@@ -66,6 +66,8 @@ class RacePrototypeTest {
         }
         assertEquals(GarageFleet.cars.size, slots.toSet().size)
         assertEquals("body", RaceLivery.slot("paint_primary_body"))
+        assertEquals("front", RaceLivery.part("front_wing_shell", "paint_primary"))
+        assertEquals("rear", RaceLivery.part("rear_wing_shell", "paint_primary"))
         assertEquals(null, RaceLivery.slot("tire"))
     }
 

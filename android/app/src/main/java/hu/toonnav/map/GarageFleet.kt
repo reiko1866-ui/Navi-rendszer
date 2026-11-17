@@ -1,8 +1,8 @@
 package hu.toonnav.map
 
 /**
- * Original ToonNav liveries. The drawable nose points up, the same way as the
- * existing map marker, so the current bearing rotation still applies.
+ * One formula mesh, eight saved liveries. The drawable nose points up, the
+ * same way as the map marker, so the current bearing rotation still applies.
  */
 object GarageFleet {
     const val numberMin = 1
@@ -15,22 +15,101 @@ object GarageFleet {
         val marker: Int,
         val defaultNumber: Int,
         val body: Int,
+        val side: Int,
         val accent: Int,
-        val wing: Int
-    )
+        val frontWing: Int,
+        val frontDetail: Int,
+        val rearWing: Int,
+        val rearDetail: Int,
+        val rim: Int,
+        val nut: Int
+    ) {
+        /** The 2D nose uses the front wing as its wing color. */
+        val wing: Int get() = frontWing
+    }
 
     val cars = listOf(
-        Car("eben", "Ében", "Grafit karosszéria, piros orr", R.drawable.ic_garage_eben, 8, 0xFF2A2E33.toInt(), 0xFFE10600.toInt(), 0xFF141618.toInt()),
-        Car("parazs", "Parázs", "Mélyvörös karosszéria, narancs szárny", R.drawable.ic_garage_parazs, 14, 0xFF8E1B1B.toInt(), 0xFFFF6A1A.toInt(), 0xFF3A1210.toInt()),
-        Car("marvany", "Márvány", "Elefántcsont karosszéria, fekete szárny", R.drawable.ic_garage_marvany, 21, 0xFFF3EDE2.toInt(), 0xFF161616.toInt(), 0xFF2C2C2C.toInt()),
-        Car("lang", "Láng", "Narancs karosszéria, fekete orr", R.drawable.ic_garage_lang, 36, 0xFFE85D04.toInt(), 0xFF111111.toInt(), 0xFF1A1A1A.toInt()),
-        Car("alap", "Alap", "Az eredeti ToonNav versenyautó", R.drawable.ic_race_car, 1, 0xFF1F4E8C.toInt(), 0xFFF4F1EC.toInt(), 0xFF0E2A4A.toInt())
+        Car(
+            "piros", "Versenypiros", "Piros karosszéria, fekete oldal, fehér szárny",
+            R.drawable.ic_garage_piros, 1,
+            body = 0xFFE10600.toInt(), side = 0xFF1A1A1A.toInt(), accent = 0xFFF7F7F7.toInt(),
+            frontWing = 0xFF161616.toInt(), frontDetail = 0xFFF7F7F7.toInt(),
+            rearWing = 0xFFF4F4F4.toInt(), rearDetail = 0xFFE10600.toInt(),
+            rim = 0xFFF2F2F2.toInt(), nut = 0xFFE10600.toInt()
+        ),
+        Car(
+            "kek", "Elektromos kék", "Kék karosszéria, fehér oldal, sötétkék szárny",
+            R.drawable.ic_garage_kek, 11,
+            body = 0xFF1B6CFF.toInt(), side = 0xFFF5F7FA.toInt(), accent = 0xFF0B1E4A.toInt(),
+            frontWing = 0xFF0B1E4A.toInt(), frontDetail = 0xFFF7F9FC.toInt(),
+            rearWing = 0xFF4C8DFF.toInt(), rearDetail = 0xFFF7F9FC.toInt(),
+            rim = 0xFFE8EEF8.toInt(), nut = 0xFF1B6CFF.toInt()
+        ),
+        Car(
+            "zold", "Versenyzöld", "Zöld karosszéria, arany szárny és csík",
+            R.drawable.ic_garage_zold, 27,
+            body = 0xFF0E7A3D.toInt(), side = 0xFF08351C.toInt(), accent = 0xFFD4AF37.toInt(),
+            frontWing = 0xFFC9A227.toInt(), frontDetail = 0xFF0E7A3D.toInt(),
+            rearWing = 0xFF0B3D22.toInt(), rearDetail = 0xFFE6C35C.toInt(),
+            rim = 0xFFE0C36A.toInt(), nut = 0xFF0E7A3D.toInt()
+        ),
+        Car(
+            "lila", "Lila", "Lila karosszéria, cián csík, fekete első szárny",
+            R.drawable.ic_garage_lila, 44,
+            body = 0xFF6A2BD6.toInt(), side = 0xFF14081F.toInt(), accent = 0xFF2EE6FF.toInt(),
+            frontWing = 0xFF111111.toInt(), frontDetail = 0xFF2EE6FF.toInt(),
+            rearWing = 0xFF2EE6FF.toInt(), rearDetail = 0xFF6A2BD6.toInt(),
+            rim = 0xFF1A1A1A.toInt(), nut = 0xFF2EE6FF.toInt()
+        ),
+        Car(
+            "ezust", "Ezüst", "Ezüst karosszéria, fehér oldal, piros hátsó szárny",
+            R.drawable.ic_garage_ezust, 5,
+            body = 0xFFD5D8DE.toInt(), side = 0xFFF7F7F8.toInt(), accent = 0xFFE10600.toInt(),
+            frontWing = 0xFFC0C4CC.toInt(), frontDetail = 0xFFE10600.toInt(),
+            rearWing = 0xFFE10600.toInt(), rearDetail = 0xFFF4F4F4.toInt(),
+            rim = 0xFFE6E8EC.toInt(), nut = 0xFFE10600.toInt()
+        ),
+        Car(
+            "fekete", "Fekete neon", "Grafit karosszéria, neonsárga szárny és csík",
+            R.drawable.ic_garage_fekete, 63,
+            body = 0xFF2A2A2A.toInt(), side = 0xFF141414.toInt(), accent = 0xFFD6FF00.toInt(),
+            frontWing = 0xFFD6FF00.toInt(), frontDetail = 0xFF111111.toInt(),
+            rearWing = 0xFF111111.toInt(), rearDetail = 0xFFD6FF00.toInt(),
+            rim = 0xFF1A1A1A.toInt(), nut = 0xFFD6FF00.toInt()
+        ),
+        Car(
+            "narancs", "Narancs", "Narancs karosszéria, grafitszürke szárny",
+            R.drawable.ic_garage_narancs, 81,
+            body = 0xFFFF6A00.toInt(), side = 0xFF3A3F46.toInt(), accent = 0xFF1C1F24.toInt(),
+            frontWing = 0xFF2E3238.toInt(), frontDetail = 0xFFFF6A00.toInt(),
+            rearWing = 0xFFFF8A1F.toInt(), rearDetail = 0xFF2E3238.toInt(),
+            rim = 0xFF4A5058.toInt(), nut = 0xFFFF6A00.toInt()
+        ),
+        Car(
+            "turkiz", "Türkiz", "Türkiz karosszéria, sötétkék oldal és első szárny",
+            R.drawable.ic_garage_turkiz, 16,
+            body = 0xFF1AD1C4.toInt(), side = 0xFF0C3A6E.toInt(), accent = 0xFFE8FFFC.toInt(),
+            frontWing = 0xFF0C3A6E.toInt(), frontDetail = 0xFF1AD1C4.toInt(),
+            rearWing = 0xFF1AD1C4.toInt(), rearDetail = 0xFF08284A.toInt(),
+            rim = 0xFFD8F7F4.toInt(), nut = 0xFF0C3A6E.toInt()
+        )
     )
 
-    fun car(id: String?): Car? = cars.firstOrNull { it.id == id }
+    private val legacy = mapOf(
+        "alap" to "kek",
+        "eben" to "fekete",
+        "parazs" to "piros",
+        "marvany" to "ezust",
+        "lang" to "narancs"
+    )
 
-    /** The selected livery, or the original base car when nothing is stored. */
-    fun shown(id: String?): Car = car(id) ?: car("alap") ?: cars.first()
+    fun car(id: String?): Car? {
+        val key = legacy[id] ?: id
+        return cars.firstOrNull { it.id == key }
+    }
+
+    /** The selected livery, or electric blue when nothing is stored. */
+    fun shown(id: String?): Car = car(id) ?: car("kek") ?: cars.first()
 
     fun clamp(number: Int): Int = number.coerceIn(numberMin, numberMax)
 

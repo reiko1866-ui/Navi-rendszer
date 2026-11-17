@@ -26,6 +26,7 @@ class PilotCockpitView @JvmOverloads constructor(
     private var travelMeters = 0.0
     private var night = true
     private var body = 0xFF1F4E8C.toInt()
+    private var side = 0xFF0B1E4A.toInt()
     private var accent = 0xFFF4F1EC.toInt()
     private var wing = 0xFF0E2A4A.toInt()
     private var numberText = ""
@@ -63,6 +64,7 @@ class PilotCockpitView @JvmOverloads constructor(
         this.night = night
         val car = GarageFleet.shown(carId)
         body = car.body
+        side = car.side
         accent = car.accent
         wing = car.wing
         numberText = startNumber?.toString().orEmpty()
@@ -233,6 +235,9 @@ class PilotCockpitView @JvmOverloads constructor(
         paint.style = Paint.Style.FILL
         canvas.drawPath(path, paint)
         paint.shader = null
+        paint.color = side
+        canvas.drawRect(mid - width * 0.095f, wingTop, mid - width * 0.055f, bottom - 8f, paint)
+        canvas.drawRect(mid + width * 0.055f, wingTop, mid + width * 0.095f, bottom - 8f, paint)
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = 2.5f
         paint.color = 0x66FFFFFF

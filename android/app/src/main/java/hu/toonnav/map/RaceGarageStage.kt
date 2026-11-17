@@ -7,9 +7,11 @@ import android.view.SurfaceView
 import com.google.android.filament.Camera
 import com.google.android.filament.Engine
 import com.google.android.filament.EntityManager
+import com.google.android.filament.IndirectLight
 import com.google.android.filament.LightManager
 import com.google.android.filament.Renderer
 import com.google.android.filament.Scene
+import com.google.android.filament.Skybox
 import com.google.android.filament.View
 import com.google.android.filament.Viewport
 import com.google.android.filament.android.UiHelper
@@ -38,7 +40,9 @@ class RaceGarageStage(
     private val resources: ResourceLoader,
     private val materials: UbershaderProvider,
     private val asset: FilamentAsset,
-    private val probe: RaceLighting.Probe?
+    private val sky: Skybox,
+    private val indirect: IndirectLight,
+    private val painter: LiveryPainter
 ) {
     var surfaceHelper: UiHelper? = null
     private var swapChain: com.google.android.filament.SwapChain? = null
@@ -56,34 +60,22 @@ class RaceGarageStage(
     }
 
     fun applyLivery(car: GarageFleet.Car) {
-        for (instance in asset.instance.materialInstances) {
-            val slot = RaceLivery.slot(instance.name) ?: continue
-            val color = RaceLivery.color(slot, car)
-            instance.setParameter(
-                "baseColorFactor",
-                com.google.android.filament.Colors.RgbaType.SRGB,
-                ((color ushr 16) and 0xFF) / 255f,
-                ((color ushr 8) and 0xFF) / 255f,
-                (color and 0xFF) / 255f,
-                1f
-            )
-        }
+        painter.apply(asset, car)
     }
 
     fun destroy() {
         closed = true
         choreographer.removeFrameCallback(callback)
+        painter.destroy()
         loader.destroyAsset(asset)
         resources.destroy()
         loader.destroy()
         materials.destroyMaterials()
         materials.destroy()
-        probe?.reflections?.let { engine.destroyTexture(it) }
-        probe?.environment?.let { engine.destroyTexture(it) }
-        probe?.let {
-            engine.destroyIndirectLight(it.indirect)
-            engine.destroySkybox(it.sky)
-        }
+        scene.skybox = null
+        scene.indirectLight = null
+        engine.destroySkybox(sky)
+        engine.destroyIndirectLight(indirect)
         swapChain?.let { engine.destroySwapChain(it) }
         engine.destroyRenderer(renderer)
         engine.destroyView(swapView)
@@ -100,7 +92,7 @@ class RaceGarageStage(
         val eyeX = (sin(yaw) * 7.6).toFloat()
         val eyeZ = (cos(yaw) * 7.6).toFloat()
         camera.setProjection(28.0, width.toDouble() / height.toDouble(), 0.08, 80.0, Camera.Fov.VERTICAL)
-        camera.setExposure(16f, 1f / 125f, 100f)
+        camera.setExposure(PlainWorld.aperture, PlainWorld.shutter, PlainWorld.sensitivity)
         camera.setModelMatrix(RaceCamera.lookingModel(eyeX, 1.9f, eyeZ, 0f, 0.42f, 0.2f))
         swapView.viewport = Viewport(0, 0, width, height)
         if (renderer.beginFrame(chain, frameTimeNanos)) {
@@ -116,7 +108,7 @@ class RaceGarageStage(
     }
 
     companion object {
-        fun start(surface: SurfaceView, carBytes: ByteArray, skyBytes: ByteArray, car: GarageFleet.Car, host: android.app.Activity, handler: Handler): RaceGarageStage? {
+        fun start(surface: SurfaceView, carBytes: ByteArray, car: GarageFleet.Car, host: android.app.Activity, handler: Handler): RaceGarageStage? {
             Utils.init()
             Gltfio.init()
             val engine = Engine.Builder().backend(Engine.Backend.OPENGL).build()
@@ -136,29 +128,34 @@ class RaceGarageStage(
                 view.blendMode = View.BlendMode.OPAQUE
                 view.antiAliasing = View.AntiAliasing.FXAA
                 view.setPostProcessingEnabled(true)
-                view.setShadowingEnabled(true)
+                view.setShadowingEnabled(false)
                 val ao = view.ambientOcclusionOptions
-                ao.enabled = true
-                ao.quality = View.QualityLevel.MEDIUM
+                ao.enabled = false
                 view.ambientOcclusionOptions = ao
-                val probe = RaceLighting.create(engine, skyBytes)
-                if (probe != null) {
-                    scene.skybox = probe.sky
-                    scene.indirectLight = probe.indirect
-                }
+                val sky = Skybox.Builder().color(0.62f, 0.72f, 0.82f, 1f).build(engine)
+                scene.skybox = sky
+                val fill = FloatArray(27)
+                fill[0] = 0.55f
+                fill[1] = 0.55f
+                fill[2] = 0.58f
+                val indirect = IndirectLight.Builder().irradiance(3, fill).intensity(1f).build(engine)
+                scene.indirectLight = indirect
                 val light = EntityManager.get().create()
                 LightManager.Builder(LightManager.Type.SUN)
                     .color(1f, 0.97f, 0.92f)
-                    .intensity(100_000f)
-                    .direction(RaceLighting.sunX, RaceLighting.sunY, RaceLighting.sunZ)
-                    .castShadows(true)
-                    .sunAngularRadius(1.0f)
+                    .intensity(PlainWorld.sunLux)
+                    .direction(0.35f, -0.86f, 0.28f)
+                    .castShadows(false)
                     .build(engine, light)
                 scene.addEntity(light)
                 scene.addEntities(asset.entities)
                 val camera = engine.createCamera(EntityManager.get().create())
+                camera.setExposure(PlainWorld.aperture, PlainWorld.shutter, PlainWorld.sensitivity)
                 view.camera = camera
-                val stage = RaceGarageStage(engine, view, engine.createRenderer(), scene, camera, loader, resources, provider, asset, probe)
+                val painter = LiveryPainter(engine)
+                val stage = RaceGarageStage(
+                    engine, view, engine.createRenderer(), scene, camera, loader, resources, provider, asset, sky, indirect, painter
+                )
                 stage.applyLivery(car)
                 val helper = UiHelper(UiHelper.ContextErrorPolicy.DONT_CHECK)
                 stage.surfaceHelper = helper

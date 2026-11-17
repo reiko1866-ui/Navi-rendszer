@@ -101,8 +101,7 @@ class GarageActivity : ComponentActivity() {
             handler.post {
                 try {
                     val carBytes = assets.open("models/formula-car.glb").use { it.readBytes() }
-                    val skyBytes = assets.open("models/noon-sky.hdr").use { it.readBytes() }
-                    stage = RaceGarageStage.start(surface, carBytes, skyBytes, car, this, handler)
+                    stage = RaceGarageStage.start(surface, carBytes, car, this, handler)
                     if (stage == null) runOnUiThread { surface.visibility = android.view.View.GONE }
                 } catch (failed: Throwable) {
                     stage = null
@@ -118,7 +117,7 @@ class GarageActivity : ComponentActivity() {
     private fun buildRow() {
         val density = resources.displayMetrics.density
         val gap = (8 * density).toInt()
-        val width = (76 * density).toInt()
+        val width = (132 * density).toInt()
         for (car in GarageFleet.cars) {
             val plate = LinearLayout(this)
             plate.orientation = LinearLayout.VERTICAL
@@ -140,6 +139,7 @@ class GarageActivity : ComponentActivity() {
             label.gravity = android.view.Gravity.CENTER
             label.setTextColor(0xFFF6F3EE.toInt())
             label.textSize = 12f
+            label.maxLines = 2
             plate.addView(label)
             row.addView(plate)
         }
@@ -174,7 +174,7 @@ class GarageActivity : ComponentActivity() {
             val plate = GradientDrawable()
             plate.cornerRadius = 12f * density
             plate.setColor(0xF0101216.toInt())
-            plate.setStroke(((if (chosen) 2.5f else 1f) * density).toInt().coerceAtLeast(1), if (chosen) 0xFFFF4A1A.toInt() else 0x33FFFFFF)
+            plate.setStroke(((if (chosen) 2.5f else 1f) * density).toInt().coerceAtLeast(1), if (chosen) car.accent else 0x33FFFFFF)
             child.background = plate
         }
         findViewById<Button>(R.id.garageMinus).isEnabled = number > GarageFleet.numberMin
