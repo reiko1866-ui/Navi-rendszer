@@ -8,10 +8,10 @@
     <string name="podium_title">PÓDIUM</string>
     <string name="podium_arrived">Célba értél</string>
     <string name="garage_back">Vissza</string>
-    <string name="garage_use">Ezt az autót használom</string>
+    <string name="garage_use">Ezt a festést használom</string>
     <string name="garage_number">Rajtszám</string>
     <string name="garage_hero">Kiválasztott versenyautó</string>
-    <string name="garage_note">A festés a vezetési nézetben és a térkép jelölőjén látszik. Az irány számítása nem változik.</string>
+    <string name="garage_note">A kiválasztott festés megmarad. A vezetési nézet és a térkép jelölője ezt használja. Az irány számítása nem változik.</string>
     <string name="from_hint">Indulás</string>
     <string name="to_hint">Cél</string>
     <string name="destination_title">Célállomás</string>

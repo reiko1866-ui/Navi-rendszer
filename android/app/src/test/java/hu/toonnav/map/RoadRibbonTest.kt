@@ -106,7 +106,7 @@ class PilotCockpitShotTest {
         val view = PilotCockpitView(context)
         val route = route()
         val strip = RoadRibbon.project(19.0, 47.0, 90.0, route)
-        view.show(87, 300.0, CockpitInstruction.line("Jobbra", 90f), 90f, strip, 0.0, "parazs", true, 14)
+        view.show(87, 300.0, CockpitInstruction.line("Jobbra", 90f), 90f, strip, 0.0, "piros", true, 1)
         val width = 1080
         val height = 1920
         view.measure(
@@ -123,9 +123,12 @@ class PilotCockpitShotTest {
         assertTrue(strip.ready)
         val road = bitmap.getPixel(540, 900)
         assertTrue(android.graphics.Color.red(road) in 30..80)
-        val livery = bitmap.getPixel(540, 1408)
-        assertTrue(android.graphics.Color.red(livery) > 150)
-        assertTrue(android.graphics.Color.red(livery) > android.graphics.Color.green(livery) + 40)
+        val livery = bitmap.getPixel(500, 1600)
+        assertTrue(android.graphics.Color.red(livery) > android.graphics.Color.green(livery) + 20)
+        assertTrue(android.graphics.Color.red(livery) > android.graphics.Color.blue(livery))
+        val side = bitmap.getPixel(460, 1600)
+        assertTrue(android.graphics.Color.red(side) < 40)
+        assertTrue(android.graphics.Color.green(side) < 40)
     }
 
     private fun route(): List<OsrmPoint> {

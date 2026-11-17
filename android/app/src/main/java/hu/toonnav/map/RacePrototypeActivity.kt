@@ -26,7 +26,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import com.google.android.filament.Camera
-import com.google.android.filament.Colors
 import com.google.android.filament.Engine
 import com.google.android.filament.EntityManager
 import com.google.android.filament.IndirectLight
@@ -982,6 +981,7 @@ private class RaceRenderer(
     private val host: RacePrototypeActivity,
     val plainGpu: PlainGpu? = null
 ) {
+    private val painter = LiveryPainter(engine)
     val roadGpu: RoadGpu? = roadAsset?.let { RoadGpu(engine, scene, it) }
     var surfaceHelper: UiHelper? = null
     var swapChain: SwapChain? = null
@@ -1037,18 +1037,7 @@ private class RaceRenderer(
     }
 
     fun applyLivery(car: GarageFleet.Car) {
-        for (instance in carAsset.instance.materialInstances) {
-            val slot = RaceLivery.slot(instance.name) ?: continue
-            val color = RaceLivery.color(slot, car)
-            instance.setParameter(
-                "baseColorFactor",
-                Colors.RgbaType.SRGB,
-                ((color ushr 16) and 0xFF) / 255f,
-                ((color ushr 8) and 0xFF) / 255f,
-                (color and 0xFF) / 255f,
-                1f
-            )
-        }
+        painter.apply(carAsset, car)
     }
 
     fun setNight(night: Boolean) {
@@ -1152,6 +1141,7 @@ private class RaceRenderer(
         choreographer.removeFrameCallback(callback)
         roadGpu?.destroy()
         plainGpu?.destroy()
+        painter.destroy()
         loader.destroyAsset(carAsset)
         roadAsset?.let { loader.destroyAsset(it) }
         resources.destroy()
