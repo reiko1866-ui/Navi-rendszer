@@ -239,13 +239,19 @@ class RacePrototypeActivity : ComponentActivity() {
         val routeNow = route
         handler.post {
             val carBytes = assets.open("models/formula-car.glb").use { it.readBytes() }
-            val skyBytes = assets.open("models/noon-sky.hdr").use { it.readBytes() }
             windowEnd = samples.lastOrNull()?.along ?: 0.0
-            // No KTX2 images. Asphalt, grass, and shoulder are solid factors.
-            val roadBytes = RaceGlb.encode(RaceGeometry.libraryModel())
-            val created = RaceRenderer.start(
-                carBytes, roadBytes, skyBytes, routeNow, samples, selected, night, driveQuality, surface, handler, this
-            )
+            val created = if (LegacyBackdrop.enabled) {
+                val skyBytes = assets.open("models/noon-sky.hdr").use { it.readBytes() }
+                val roadBytes = RaceGlb.encode(RaceGeometry.libraryModel())
+                RaceRenderer.start(
+                    carBytes, roadBytes, skyBytes, routeNow, samples, selected, night, driveQuality, surface, handler, this
+                )
+            } else {
+                val material = assets.open("materials/plain_solid.filamat").use { it.readBytes() }
+                RaceRenderer.startPlain(
+                    carBytes, material, routeNow, samples, selected, night, surface, handler, this
+                )
+            }
             renderer = created
             if (created == null) runOnUiThread { showEngineFailed() } else if (usingLiveRoute) requestElevation(routeSeq)
         }
@@ -525,6 +531,10 @@ class RacePrototypeActivity : ComponentActivity() {
     }
 
     private fun rebuildCorridor(keepMotion: Boolean) {
+        if (!LegacyBackdrop.enabled) {
+            rebuildPlain(keepMotion)
+            return
+        }
         val handler = renderHandler
         if (handler == null) {
             buildingRoad = false
@@ -566,6 +576,10 @@ class RacePrototypeActivity : ComponentActivity() {
     }
 
     fun slideWindow(along: Double) {
+        if (!LegacyBackdrop.enabled) {
+            slidePlain(along)
+            return
+        }
         val gpu = renderer?.roadGpu ?: return
         if (samples.size < 2) return
         val end = samples.last().along
@@ -641,7 +655,60 @@ class RacePrototypeActivity : ComponentActivity() {
         renderer?.roadGpu?.dropSceneryExcept(keep)
     }
 
+    private fun rebuildPlain(keepMotion: Boolean) {
+        val handler = renderHandler
+        if (handler == null) {
+            buildingRoad = false
+            return
+        }
+        geometryGeneration++
+        val generation = geometryGeneration
+        val source = samples
+        val along = travelAlong
+        val end = source.lastOrNull()?.along ?: 0.0
+        windowEnd = end
+        val needed = RaceGeometry.chunksCovering(along, end)
+        buildingRoad = true
+        Thread {
+            val built = PlainWorld.chunks(source, needed)
+            handler.post {
+                if (generation != geometryGeneration) return@post
+                renderer?.syncPlain(source, route, built, keepMotion)
+                buildingRoad = false
+            }
+        }.start()
+    }
+
+    private fun slidePlain(along: Double) {
+        val gpu = renderer?.plainGpu ?: return
+        if (samples.size < 2) return
+        val end = samples.last().along
+        val needed = RaceGeometry.chunksCovering(along, end)
+        if (buildingRoad) return
+        val missing = needed.filter { it !in gpu.chunkKeys }
+        if (missing.isEmpty()) {
+            gpu.dropChunksExcept(needed)
+            return
+        }
+        buildingRoad = true
+        val generation = geometryGeneration
+        val source = samples
+        val handler = renderHandler
+        Thread {
+            val built = PlainWorld.chunks(source, missing.first()..missing.last())
+            handler?.post {
+                if (generation == geometryGeneration) {
+                    gpu.uploadChunks(built.filterKeys { it in missing })
+                    val endNow = samples.lastOrNull()?.along ?: 0.0
+                    gpu.dropChunksExcept(RaceGeometry.chunksCovering(travelAlong, endNow))
+                }
+                buildingRoad = false
+            }
+        }.start()
+    }
+
     private fun refreshScenery(along: Double) {
+        if (!LegacyBackdrop.enabled) return
         if (!usingLiveRoute || buildingScenery || route.size < 2) return
         val needed = sceneryRange(along) ?: return
         val missing = needed.filter { it >= 0 && it !in sceneryReady }
@@ -880,15 +947,16 @@ private class RaceRenderer(
     private val probe: RaceLighting.Probe?,
     private val daySky: Skybox,
     private val carAsset: FilamentAsset,
-    private var roadAsset: FilamentAsset,
+    private var roadAsset: FilamentAsset?,
     private val loader: AssetLoader,
     private val resources: ResourceLoader,
     private val materials: UbershaderProvider,
     private var route: List<OsrmPoint>,
     private var samples: List<RoadSample>,
-    private val host: RacePrototypeActivity
+    private val host: RacePrototypeActivity,
+    val plainGpu: PlainGpu? = null
 ) {
-    val roadGpu = RoadGpu(engine, scene, roadAsset)
+    val roadGpu: RoadGpu? = roadAsset?.let { RoadGpu(engine, scene, it) }
     var surfaceHelper: UiHelper? = null
     var swapChain: SwapChain? = null
     private var closed = false
@@ -958,6 +1026,24 @@ private class RaceRenderer(
     }
 
     fun setNight(night: Boolean) {
+        if (plainGpu != null) {
+            val color = if (night) PlainWorld.nightSky else PlainWorld.sky
+            if (night) {
+                val dark = nightSky ?: Skybox.Builder().color(color.red, color.green, color.blue, 1f).build(engine).also { nightSky = it }
+                scene.skybox = dark
+            } else {
+                scene.skybox = daySky
+            }
+            val sun = engine.lightManager.getInstance(light)
+            engine.lightManager.setIntensity(sun, if (night) 0.2f else PlainWorld.sunLux)
+            indirect.setIntensity(if (night) 0.08f else 1f)
+            camera.setExposure(PlainWorld.aperture, PlainWorld.shutter, PlainWorld.sensitivity)
+            val clear = renderer.clearOptions
+            clear.clear = true
+            clear.clearColor = doubleArrayOf(color.red.toDouble(), color.green.toDouble(), color.blue.toDouble(), 1.0)
+            renderer.clearOptions = clear
+            return
+        }
         val fog = swapView.fogOptions
         fog.fogColorFromIbl = false
         fog.color = if (night) RaceLighting.nightRadiance.copyOf() else RaceLighting.dayRadiance.copyOf()
@@ -980,12 +1066,29 @@ private class RaceRenderer(
     }
 
     fun replaceRoad(bytes: ByteArray, nextRoute: List<OsrmPoint>, nextSamples: List<RoadSample>, keepMotion: Boolean = false) {
-        if (closed) return
+        if (closed || plainGpu != null) return
         val asset = loadAsset(bytes) ?: return
-        scene.removeEntities(roadAsset.entities)
-        loader.destroyAsset(roadAsset)
+        val current = roadAsset ?: return
+        scene.removeEntities(current.entities)
+        loader.destroyAsset(current)
         roadAsset = asset
         scene.addEntities(asset.entities)
+        route = nextRoute
+        samples = nextSamples
+        if (!keepMotion) {
+            held = false
+            bearingReady = false
+        }
+    }
+
+    fun syncPlain(
+        nextSamples: List<RoadSample>,
+        nextRoute: List<OsrmPoint>,
+        built: Map<Int, List<RaceMesh>>,
+        keepMotion: Boolean
+    ) {
+        if (closed) return
+        plainGpu?.replaceAll(built)
         route = nextRoute
         samples = nextSamples
         if (!keepMotion) {
@@ -1002,7 +1105,7 @@ private class RaceRenderer(
         keepMotion: Boolean
     ) {
         if (closed) return
-        roadGpu.replaceAll(built, hills)
+        roadGpu?.replaceAll(built, hills)
         route = nextRoute
         samples = nextSamples
         if (!keepMotion) {
@@ -1014,9 +1117,10 @@ private class RaceRenderer(
     fun destroy() {
         closed = true
         choreographer.removeFrameCallback(callback)
-        roadGpu.destroy()
+        roadGpu?.destroy()
+        plainGpu?.destroy()
         loader.destroyAsset(carAsset)
-        loader.destroyAsset(roadAsset)
+        roadAsset?.let { loader.destroyAsset(it) }
         resources.destroy()
         loader.destroy()
         materials.destroyMaterials()
@@ -1143,6 +1247,122 @@ private class RaceRenderer(
     }
 
     companion object {
+        fun startPlain(
+            carBytes: ByteArray,
+            materialBytes: ByteArray,
+            route: List<OsrmPoint>,
+            samples: List<RoadSample>,
+            car: GarageFleet.Car,
+            night: Boolean,
+            surface: SurfaceView,
+            handler: Handler,
+            host: RacePrototypeActivity
+        ): RaceRenderer? {
+            val engine = try {
+                Engine.Builder().backend(Engine.Backend.OPENGL).build()
+            } catch (failed: Throwable) {
+                return null
+            }
+            return try {
+                val provider = UbershaderProvider(engine)
+                val loader = AssetLoader(engine, provider, EntityManager.get())
+                val resources = ResourceLoader(engine)
+                val scene = engine.createScene()
+                val view = engine.createView()
+                view.scene = scene
+                view.blendMode = View.BlendMode.OPAQUE
+                view.antiAliasing = View.AntiAliasing.FXAA
+                view.setShadowingEnabled(false)
+                view.setPostProcessingEnabled(true)
+                val ao = view.ambientOcclusionOptions
+                ao.enabled = false
+                view.ambientOcclusionOptions = ao
+                val fog = view.fogOptions
+                fog.enabled = false
+                view.fogOptions = fog
+                val sky = Skybox.Builder()
+                    .color(PlainWorld.sky.red, PlainWorld.sky.green, PlainWorld.sky.blue, 1f)
+                    .build(engine)
+                scene.skybox = sky
+                val fill = FloatArray(27)
+                fill[0] = 0.45f
+                fill[1] = 0.45f
+                fill[2] = 0.48f
+                val indirect = IndirectLight.Builder().irradiance(3, fill).intensity(1f).build(engine)
+                scene.indirectLight = indirect
+                val light = EntityManager.get().create()
+                LightManager.Builder(LightManager.Type.SUN)
+                    .color(1.0f, 0.98f, 0.94f)
+                    .intensity(PlainWorld.sunLux)
+                    .direction(0.25f, -0.92f, 0.30f)
+                    .castShadows(false)
+                    .build(engine, light)
+                scene.addEntity(light)
+                val cameraEntity = EntityManager.get().create()
+                val camera = engine.createCamera(cameraEntity)
+                camera.setExposure(PlainWorld.aperture, PlainWorld.shutter, PlainWorld.sensitivity)
+                view.camera = camera
+                val renderer = engine.createRenderer()
+                val clear = renderer.clearOptions
+                clear.clear = true
+                clear.clearColor = doubleArrayOf(
+                    PlainWorld.sky.red.toDouble(),
+                    PlainWorld.sky.green.toDouble(),
+                    PlainWorld.sky.blue.toDouble(),
+                    1.0
+                )
+                renderer.clearOptions = clear
+                val plain = PlainGpu(engine, scene, materialBytes)
+                val created = RaceRenderer(
+                    engine, view, renderer, scene, sky, indirect, light, camera, cameraEntity,
+                    null, sky,
+                    load(loader, resources, carBytes) ?: throw IllegalStateException("car"),
+                    null,
+                    loader, resources, provider, route, samples, host,
+                    plain
+                )
+                scene.addEntities(created.carAsset.entities)
+                val routeEnd = samples.lastOrNull()?.along ?: 0.0
+                val along = host.travelAlong.coerceIn(0.0, routeEnd.coerceAtLeast(0.0))
+                val needed = RaceGeometry.chunksCovering(along, routeEnd)
+                plain.uploadChunks(PlainWorld.chunks(samples, needed))
+                val renderables = engine.renderableManager
+                for (entity in created.carAsset.renderableEntities) {
+                    val instance = renderables.getInstance(entity)
+                    if (instance == 0) continue
+                    renderables.setCastShadows(instance, false)
+                    renderables.setReceiveShadows(instance, false)
+                }
+                created.applyLivery(car)
+                if (night) created.setNight(true)
+                val helper = UiHelper(UiHelper.ContextErrorPolicy.DONT_CHECK)
+                created.surfaceHelper = helper
+                helper.renderCallback = object : UiHelper.RendererCallback {
+                    override fun onNativeWindowChanged(nativeWindow: Surface) {
+                        handler.post { created.attach(nativeWindow) }
+                    }
+
+                    override fun onDetachedFromSurface() {
+                        handler.post {
+                            if (created.closed) return@post
+                            created.swapChain?.let { engine.destroySwapChain(it) }
+                            created.swapChain = null
+                        }
+                    }
+
+                    override fun onResized(width: Int, height: Int) {
+                        handler.post { created.resize(width, height) }
+                    }
+                }
+                host.runOnUiThread { helper.attachTo(surface) }
+                created.choreographer.postFrameCallback(created.callback)
+                created
+            } catch (failed: Throwable) {
+                engine.destroy()
+                null
+            }
+        }
+
         fun start(
             carBytes: ByteArray,
             roadBytes: ByteArray,
@@ -1261,12 +1481,12 @@ private class RaceRenderer(
                         (index + 1) * RaceGeometry.chunkMeters
                     )
                 }
-                created.roadGpu.uploadChunks(built)
+                created.roadGpu?.uploadChunks(built)
                 if (samples.size >= 2) {
                     val center = RaceTrack.pointAt(samples, along)
                     val ground = RaceGeometry.horizon(samples, null, center.east, center.north)
                     if (ground != null) {
-                        created.roadGpu.replaceHorizon(ground)
+                        created.roadGpu?.replaceHorizon(ground)
                         host.noteHorizon(along)
                     }
                 }

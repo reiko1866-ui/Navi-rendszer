@@ -1,0 +1,19 @@
+material {
+    name : PlainSolid,
+    shadingModel : unlit,
+    culling : none,
+    featureLevel : 1,
+    parameters : [
+        {
+            type : float4,
+            name : baseColor
+        }
+    ]
+}
+
+fragment {
+    void material(inout MaterialInputs material) {
+        prepareMaterial(material);
+        material.baseColor = materialParams.baseColor;
+    }
+}
