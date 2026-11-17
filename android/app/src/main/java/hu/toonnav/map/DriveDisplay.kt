@@ -49,11 +49,9 @@ object DriveDisplay {
 }
 
 /**
- * Grass and the shoulder are stored with a metallic factor of 1 and expect the
- * ORM texture to multiply that back to zero. A phone that does not bind the
- * KTX2 map otherwise draws those surfaces as a mirror of the sky, so the
- * ground disappears beside the asphalt. Zeroing the factor leaves a loaded ORM
- * map unchanged, because its metallic channel is already zero.
+ * Second lock on the ground. The driving materials are already non-metallic.
+ * Keeping the runtime write means a future texture cannot turn the verge into
+ * a mirror if its metallic channel fails to load.
  */
 object RoadShade {
     fun groundMetallic(name: String): Float? {
@@ -93,13 +91,21 @@ object DriveChrome {
         fun controls(): List<DriveBox> = listOf(stop, voice, map, garage, night, livery)
     }
 
-    fun layout(widthPx: Int, heightPx: Int, density: Float): Layout {
+    fun layout(
+        widthPx: Int,
+        heightPx: Int,
+        density: Float,
+        topInsetPx: Int = 0,
+        bottomInsetPx: Int = 0
+    ): Layout {
         val scale = density.coerceAtLeast(0.75f)
         fun px(dp: Int): Int = (dp * scale).roundToInt().coerceAtLeast(1)
         val margin = px(12)
         val gap = px(8)
+        val marginTop = margin + topInsetPx.coerceAtLeast(0)
+        val marginBottom = margin + bottomInsetPx.coerceAtLeast(0)
         val shortestDp = minOf(widthPx, heightPx) / scale
-        val touch = px(if (shortestDp >= 600f || widthPx / scale >= 1000f) 64 else 56)
+        val touch = px(if (shortestDp >= 600f || widthPx / scale >= 1000f) 64 else 52)
         val portrait = heightPx >= widthPx
         val speedSp = when {
             shortestDp >= 700f -> 44f
@@ -108,11 +114,11 @@ object DriveChrome {
         }
         val maneuverSp = if (shortestDp >= 600f) 22f else 18f
         val detailSp = if (shortestDp >= 600f) 18f else 16f
-        val buttonSp = if (shortestDp >= 600f) 16f else 15f
+        val buttonSp = if (shortestDp >= 600f) 16f else 14f
         val labels = listOf(
             "Leállítás",
             "Hang kikapcsolva",
-            "Vissza a térképre",
+            "Térkép",
             "Garázs",
             "Éjszakai térkép",
             "Festés"
@@ -122,19 +128,26 @@ object DriveChrome {
         val stack = touch * labels.size + gap * (labels.size - 1)
         val sideLeft = widthPx - margin - columnWidth
         val useSide = !portrait &&
-            stack + margin * 2 <= heightPx &&
+            stack + marginTop + marginBottom <= heightPx &&
             columnWidth < widthPx * 0.34f &&
             sideLeft - margin > px(280)
-        val controls = if (useSide) {
-            List(labels.size) { index ->
-                val top = margin + index * (touch + gap)
+        val splitWidth = ((widthPx * 0.28f).roundToInt()).coerceAtLeast(touch)
+        val nameWidth = maxOf(
+            buttonWidth("Festés", buttonSp, scale, touch),
+            buttonWidth("Garázs", buttonSp, scale, touch)
+        )
+        val splitColumn = nameWidth.coerceAtMost(splitWidth).coerceAtLeast(touch)
+        val split = portrait && !useSide && splitColumn * 2 + gap + margin * 2 < widthPx
+        val controls = when {
+            useSide -> List(labels.size) { index ->
+                val top = marginTop + index * (touch + gap)
                 DriveBox(sideLeft, top, sideLeft + columnWidth, top + touch)
             }
-        } else {
-            packBottom(widths, widthPx, heightPx, margin, gap, touch)
+            split -> splitSides(splitColumn, widthPx, heightPx, margin, marginBottom, gap, touch)
+            else -> packBottom(widths, widthPx, heightPx, margin, marginBottom, gap, touch)
         }
         val controlTop = controls.minOf { it.top }
-        val guideCeiling = if (useSide) heightPx - margin else controlTop - gap
+        val guideCeiling = if (useSide || split) heightPx - marginBottom else controlTop - gap
         val readout = (speedSp * scale).roundToInt() +
             (maneuverSp * scale).roundToInt() * 2 +
             (detailSp * scale).roundToInt() * 2 +
@@ -146,11 +159,16 @@ object DriveChrome {
             useSide -> (sideLeft - gap - margin).coerceAtMost(px(460))
             else -> minOf(px(460), (widthPx * 0.42f).toInt())
         }
-        val guidance = DriveBox(margin, margin, margin + guideWidth, margin + guideHeight)
+        val guidance = DriveBox(margin, marginTop, margin + guideWidth, marginTop + guideHeight)
         val roadTop = guidance.bottom + gap
-        val roadRight = if (useSide) sideLeft - gap else widthPx - margin
-        val roadBottom = if (useSide) heightPx - margin else controlTop - gap
-        val road = DriveBox(margin, roadTop, roadRight, roadBottom)
+        val roadLeft = if (split) margin + splitColumn + gap else margin
+        val roadRight = when {
+            useSide -> sideLeft - gap
+            split -> widthPx - margin - splitColumn - gap
+            else -> widthPx - margin
+        }
+        val roadBottom = if (useSide || split) heightPx - marginBottom else controlTop - gap
+        val road = DriveBox(roadLeft, roadTop, roadRight, roadBottom)
         return Layout(
             guidance,
             controls[0],
@@ -169,9 +187,31 @@ object DriveChrome {
     }
 
     private fun buttonWidth(label: String, textSp: Float, density: Float, touch: Int): Int {
-        val text = (label.length * textSp * 0.62f * density).roundToInt()
-        val padding = (20f * density).roundToInt()
+        // Uppercase Material buttons are wider than the raw glyph count.
+        val text = (label.length * textSp * 0.70f * density).roundToInt()
+        val padding = (24f * density).roundToInt()
         return maxOf(touch, text + padding)
+    }
+
+    private fun splitSides(
+        column: Int,
+        widthPx: Int,
+        heightPx: Int,
+        margin: Int,
+        marginBottom: Int,
+        gap: Int,
+        touch: Int
+    ): List<DriveBox> {
+        val boxes = arrayOfNulls<DriveBox>(6)
+        val stack = touch * 3 + gap * 2
+        val top = heightPx - marginBottom - stack
+        val right = widthPx - margin - column
+        for (row in 0 until 3) {
+            val y = top + row * (touch + gap)
+            boxes[row] = DriveBox(margin, y, margin + column, y + touch)
+            boxes[row + 3] = DriveBox(right, y, right + column, y + touch)
+        }
+        return boxes.map { it ?: DriveBox(0, 0, touch, touch) }
     }
 
     private fun packBottom(
@@ -179,6 +219,7 @@ object DriveChrome {
         widthPx: Int,
         heightPx: Int,
         margin: Int,
+        marginBottom: Int,
         gap: Int,
         touch: Int
     ): List<DriveBox> {
@@ -201,7 +242,7 @@ object DriveChrome {
         if (current.isNotEmpty()) rows.add(current)
         val boxes = arrayOfNulls<DriveBox>(widths.size)
         for (rowFromBottom in rows.indices) {
-            val top = heightPx - margin - touch - rowFromBottom * (touch + gap)
+            val top = heightPx - marginBottom - touch - rowFromBottom * (touch + gap)
             var left = margin
             for (index in rows[rowFromBottom]) {
                 val width = widths[index].coerceAtMost(limit)

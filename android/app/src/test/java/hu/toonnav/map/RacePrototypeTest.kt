@@ -2,6 +2,7 @@ package hu.toonnav.map
 
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.nio.ByteBuffer
@@ -137,16 +138,17 @@ class RacePrototypeTest {
         assertEquals("road", json.getJSONArray("nodes").getJSONObject(0).getString("name"))
         val names = materialNames(json)
         assertTrue(names.containsAll(listOf("asphalt", "grass", "shoulder", "marking")))
-        val textured = RaceGlb.json(RaceGlb.encode(RaceTrack.model(RaceTrack.samplePreview()), drivingImages()))
-        val asphalt = (0 until textured.getJSONArray("materials").length())
-            .map { textured.getJSONArray("materials").getJSONObject(it) }
+        val driving = RaceGlb.json(RaceGlb.encode(RaceGeometry.libraryModel()))
+        assertFalse(driving.has("images"))
+        assertFalse(driving.has("textures"))
+        val asphalt = (0 until driving.getJSONArray("materials").length())
+            .map { driving.getJSONArray("materials").getJSONObject(it) }
             .first { it.getString("name") == "asphalt" }
-        assertTrue(asphalt.has("normalTexture"))
+        assertFalse(asphalt.has("normalTexture"))
+        assertFalse(asphalt.has("occlusionTexture"))
         assertEquals(0.0, asphalt.getJSONObject("pbrMetallicRoughness").getDouble("metallicFactor"), 0.001)
-        assertEquals("image/png", textured.getJSONArray("images").getJSONObject(0).getString("mimeType"))
-        assertEquals("image/ktx2", textured.getJSONArray("images").getJSONObject(1).getString("mimeType"))
-        assertTrue(!textured.getJSONArray("textures").getJSONObject(0).has("extensions"))
-        assertTrue(textured.getJSONArray("textures").getJSONObject(1).getJSONObject("extensions").has("KHR_texture_basisu"))
+        val factor = asphalt.getJSONObject("pbrMetallicRoughness").getJSONArray("baseColorFactor")
+        assertTrue(factor.getDouble(0) in 0.35..0.7)
         assertTrue(json.getJSONArray("meshes").getJSONObject(0).getJSONArray("primitives").getJSONObject(0)
             .getJSONObject("attributes").has("TEXCOORD_0"))
         assertTrue(second.size > 10_000)
@@ -507,10 +509,6 @@ class RacePrototypeTest {
             if (east > max) max = east
         }
         return max - min
-    }
-
-    private fun drivingImages(): Map<String, ByteArray> {
-        return RaceGlb.drivingImages { name -> java.io.File("src/main/assets/models/road/$name.ktx2").readBytes() }
     }
 
     private fun pngMeanRed(png: ByteArray): Int {

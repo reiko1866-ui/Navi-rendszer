@@ -50,6 +50,7 @@ class DriveHud(private val activity: android.content.Context) {
 
     private var guidanceShown = false
     private var routeActive = false
+    private var routePrepared = false
     private var night = false
     private var latestNotices: List<Notice> = emptyList()
     private var lastManeuver = ""
@@ -134,6 +135,16 @@ class DriveHud(private val activity: android.content.Context) {
             maneuverCard.alpha = 0.86f
             maneuverCard.animate().alpha(1f).setDuration(180).start()
         }
+        paintStatus()
+    }
+
+    /** `guiding` is an active trip. `prepared` is a calculated plan that has not started. */
+    fun noteRoute(guiding: Boolean, prepared: Boolean) {
+        val active = guiding && prepared
+        val planned = prepared && !guiding
+        if (routeActive == active && routePrepared == planned) return
+        routeActive = active
+        routePrepared = planned
         paintStatus()
     }
 
@@ -262,7 +273,14 @@ class DriveHud(private val activity: android.content.Context) {
         if (!::statusText.isInitialized || !::phrases.isInitialized) return
         val message = statusText.text?.toString().orEmpty()
         val shown = statusText.visibility == View.VISIBLE && message.isNotBlank()
-        val state = CockpitStatus.classify(message, shown, routeActive, searchCard.visibility == View.VISIBLE, phrases)
+        val state = CockpitStatus.classify(
+            message,
+            shown,
+            routeActive,
+            searchCard.visibility == View.VISIBLE,
+            phrases,
+            routePrepared
+        )
         val lampColor = when (state.lamp) {
             GpsLamp.OK -> R.color.cockpit_ok
             GpsLamp.SEARCH -> R.color.cockpit_caution
@@ -282,6 +300,7 @@ class DriveHud(private val activity: android.content.Context) {
         val nav = when (state.nav) {
             NavFlag.IDLE -> R.string.hud_nav_idle
             NavFlag.SEARCH -> R.string.hud_nav_search
+            NavFlag.READY -> R.string.hud_nav_ready
             NavFlag.ACTIVE -> R.string.hud_nav_active
             NavFlag.PLANNING -> R.string.hud_nav_plan
             NavFlag.ARRIVED -> R.string.hud_nav_arrived
@@ -294,7 +313,7 @@ class DriveHud(private val activity: android.content.Context) {
         gpsLamp.contentDescription = activity.getString(gps)
         navState.contentDescription = activity.getString(nav)
         val navColor = when (state.nav) {
-            NavFlag.ACTIVE, NavFlag.ARRIVED -> R.color.cockpit_accent_soft
+            NavFlag.ACTIVE, NavFlag.ARRIVED, NavFlag.READY -> R.color.cockpit_accent_soft
             NavFlag.PLANNING, NavFlag.GPS_SEARCH -> R.color.cockpit_caution
             NavFlag.OFF_ROUTE, NavFlag.GPS_BAD -> R.color.cockpit_alert
             else -> R.color.cockpit_ink

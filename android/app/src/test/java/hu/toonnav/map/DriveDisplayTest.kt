@@ -33,6 +33,39 @@ class DriveDisplayTest {
     }
 
     @Test
+    fun phoneButtonsKeepFestesAndGarazsOnOneLine() {
+        val layout = DriveChrome.layout(1080, 2400, 2.75f)
+        fun needed(label: String): Int {
+            val text = (label.length * layout.buttonSp * 0.62f * 2.75f).toInt()
+            val padding = (16f * 2.75f).toInt()
+            return text + padding
+        }
+        assertTrue("festés ${layout.livery.width}", layout.livery.width >= needed("FESTÉS"))
+        assertTrue("garázs ${layout.garage.width}", layout.garage.width >= needed("GARÁZS"))
+        assertTrue(layout.livery.height <= layout.touchPx + 1)
+        assertTrue(layout.roadWindow.overlaps(layout.livery).not())
+        val nose = DriveBox(1080 / 2 - 70, 2400 - 160, 1080 / 2 + 70, 2400 - 24)
+        for (box in layout.controls()) assertTrue("$box covers the car", !box.overlaps(nose))
+    }
+
+    @Test
+    fun controlsStayAboveTheAndroidNavigationBar() {
+        val density = 2.75f
+        val inset = (48f * density).toInt()
+        val width = 1080
+        val height = 2400
+        val layout = DriveChrome.layout(width, height, density, topInsetPx = inset, bottomInsetPx = inset)
+        assertTrue(layout.guidance.top >= inset)
+        val car = DriveBox(width / 2 - 80, height - inset - 120, width / 2 + 80, height - inset - 8)
+        for (box in layout.controls()) {
+            assertTrue("$box under the navigation bar", box.bottom <= height - inset + 1)
+            assertTrue("$box covers the car", !box.overlaps(car))
+            assertTrue(box.inside(width, height))
+        }
+        assertTrue(layout.roadWindow.overlaps(car))
+    }
+
+    @Test
     fun ultraWideCarDisplayStillShowsTheCarriageway() {
         assertProfile(1920, 720, 1f)
     }
@@ -47,11 +80,12 @@ class DriveDisplayTest {
     }
 
     @Test
-    fun missingOrmCannotTurnTheGroundIntoASkyMirror() {
+    fun groundStaysDiffuseEvenIfATextureIsAddedLater() {
         val grass = RaceGeometry.materials().first { it.name == "grass" }
         val shoulder = RaceGeometry.materials().first { it.name == "shoulder" }
-        assertEquals(1f, grass.metallic)
-        assertEquals(1f, shoulder.metallic)
+        assertEquals(0f, grass.metallic)
+        assertEquals(0f, shoulder.metallic)
+        assertTrue(grass.green > grass.red)
         assertEquals(0f, RoadShade.groundMetallic("grass"))
         assertEquals(0f, RoadShade.groundMetallic("shoulder"))
         assertEquals(0f, RoadShade.groundMetallic("asphalt"))

@@ -2,6 +2,7 @@ package hu.toonnav.map
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CockpitStatusTest {
@@ -21,19 +22,19 @@ class CockpitStatusTest {
     @Test
     fun readsTheRealStatusSentences() {
         assertEquals(
-            CockpitState(GpsLamp.SEARCH, NavFlag.GPS_SEARCH, StatusPlate.CAUTION),
+            CockpitState(GpsLamp.SEARCH, NavFlag.SEARCH, StatusPlate.CAUTION),
             CockpitStatus.classify(phrases.gpsSearch, true, false, true, phrases)
         )
         assertEquals(
-            CockpitState(GpsLamp.BAD, NavFlag.GPS_BAD, StatusPlate.ALERT),
+            CockpitState(GpsLamp.BAD, NavFlag.ACTIVE, StatusPlate.ALERT),
             CockpitStatus.classify(phrases.gpsLost, true, true, false, phrases)
         )
         assertEquals(
-            CockpitState(GpsLamp.BAD, NavFlag.GPS_BAD, StatusPlate.ALERT),
+            CockpitState(GpsLamp.BAD, NavFlag.SEARCH, StatusPlate.ALERT),
             CockpitStatus.classify(phrases.gpsOff, true, false, true, phrases)
         )
         assertEquals(
-            CockpitState(GpsLamp.SEARCH, NavFlag.GPS_BAD, StatusPlate.CAUTION),
+            CockpitState(GpsLamp.SEARCH, NavFlag.ACTIVE, StatusPlate.CAUTION),
             CockpitStatus.classify(phrases.gpsPoor, true, true, false, phrases)
         )
         assertEquals(
@@ -62,6 +63,30 @@ class CockpitStatusTest {
         assertEquals(NavFlag.SEARCH, CockpitStatus.classify("", false, false, true, phrases).nav)
         assertEquals(NavFlag.IDLE, CockpitStatus.classify("", false, false, false, phrases).nav)
         assertEquals(NavFlag.SEARCH, CockpitStatus.classify("Nincs találat a megadott címre.", true, false, true, phrases).nav)
+    }
+
+    @Test
+    fun aCalculatedRouteIsNotReportedAsMissing() {
+        val readout = "47.49700, 19.04000 · 24 km/h"
+        val planned = CockpitStatus.classify(readout, true, false, false, phrases, planned = true)
+        assertEquals(NavFlag.READY, planned.nav)
+        assertEquals(GpsLamp.OK, planned.lamp)
+        val idle = CockpitStatus.classify(readout, true, false, false, phrases, planned = false)
+        assertEquals(NavFlag.IDLE, idle.nav)
+        assertEquals(GpsLamp.OK, idle.lamp)
+        val guiding = CockpitStatus.classify(readout, true, true, false, phrases, planned = true)
+        assertEquals(NavFlag.ACTIVE, guiding.nav)
+        val lost = CockpitStatus.classify(phrases.gpsLost, true, false, false, phrases, planned = true)
+        assertEquals(GpsLamp.BAD, lost.lamp)
+        assertEquals(NavFlag.READY, lost.nav)
+        assertEquals(NavFlag.READY, CockpitStatus.classify("", false, false, false, phrases, planned = true).nav)
+        assertEquals(NavFlag.IDLE, CockpitStatus.classify("", false, false, false, phrases, planned = false).nav)
+        assertFalse(RouteCaption.previewVisible(0, false, false))
+        assertFalse(RouteCaption.previewVisible(1, false, false))
+        assertFalse(RouteCaption.previewVisible(4, true, false))
+        assertFalse(RouteCaption.previewVisible(4, false, true))
+        assertTrue(RouteCaption.previewVisible(4, false, false))
+        assertEquals("24,7 km · 18 perc", RouteCaption.preview(24_700.0, 18.0 * 60.0))
     }
 
     @Test

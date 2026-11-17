@@ -2,7 +2,7 @@ package hu.toonnav.map
 
 enum class GpsLamp { UNKNOWN, OK, SEARCH, BAD }
 
-enum class NavFlag { IDLE, SEARCH, ACTIVE, PLANNING, ARRIVED, OFF_ROUTE, GPS_SEARCH, GPS_BAD }
+enum class NavFlag { IDLE, SEARCH, READY, ACTIVE, PLANNING, ARRIVED, OFF_ROUTE, GPS_SEARCH, GPS_BAD }
 
 enum class StatusPlate { HIDDEN, CALM, LIVE, CAUTION, ALERT }
 
@@ -37,33 +37,58 @@ object CockpitGauge {
 object CockpitStatus {
     private val fixLine = Regex("^(-?\\d+\\.\\d+), (-?\\d+\\.\\d+)( · \\d+ km/h)?$")
 
-    fun classify(message: String, shown: Boolean, guiding: Boolean, searchOpen: Boolean, phrases: StatusPhrases): CockpitState {
+    fun classify(
+        message: String,
+        shown: Boolean,
+        guiding: Boolean,
+        searchOpen: Boolean,
+        phrases: StatusPhrases,
+        planned: Boolean = false
+    ): CockpitState {
         val text = message.trim()
+        val route = routeNav(guiding, searchOpen, planned)
         if (!shown || text.isEmpty()) {
-            return CockpitState(GpsLamp.UNKNOWN, idleNav(guiding, searchOpen), StatusPlate.HIDDEN)
+            return CockpitState(GpsLamp.UNKNOWN, route, StatusPlate.HIDDEN)
         }
         return when (text) {
-            phrases.gpsSearch -> CockpitState(GpsLamp.SEARCH, NavFlag.GPS_SEARCH, StatusPlate.CAUTION)
+            phrases.gpsSearch -> CockpitState(GpsLamp.SEARCH, route, StatusPlate.CAUTION)
             phrases.gpsLost, phrases.gpsOff, phrases.permission, phrases.precise ->
-                CockpitState(GpsLamp.BAD, NavFlag.GPS_BAD, StatusPlate.ALERT)
-            phrases.gpsPoor -> CockpitState(GpsLamp.SEARCH, NavFlag.GPS_BAD, StatusPlate.CAUTION)
+                CockpitState(GpsLamp.BAD, route, StatusPlate.ALERT)
+            phrases.gpsPoor -> CockpitState(GpsLamp.SEARCH, route, StatusPlate.CAUTION)
             phrases.offRoute -> CockpitState(GpsLamp.OK, NavFlag.OFF_ROUTE, StatusPlate.ALERT)
             phrases.arrived -> CockpitState(GpsLamp.OK, NavFlag.ARRIVED, StatusPlate.LIVE)
             phrases.planning -> CockpitState(GpsLamp.UNKNOWN, NavFlag.PLANNING, StatusPlate.CAUTION)
             phrases.follow -> CockpitState(GpsLamp.OK, NavFlag.ACTIVE, StatusPlate.LIVE)
             else -> if (fixLine.matches(text)) {
-                CockpitState(GpsLamp.OK, idleNav(guiding, searchOpen), StatusPlate.CALM)
+                CockpitState(GpsLamp.OK, route, StatusPlate.CALM)
             } else {
-                CockpitState(GpsLamp.UNKNOWN, if (guiding) NavFlag.ACTIVE else NavFlag.SEARCH, StatusPlate.CAUTION)
+                CockpitState(GpsLamp.UNKNOWN, route, StatusPlate.CAUTION)
             }
         }
     }
 
-    private fun idleNav(guiding: Boolean, searchOpen: Boolean): NavFlag {
+    /** GPS lamp and route caption are separate. A fix does not invent a route, and a route does not invent a fix. */
+    private fun routeNav(guiding: Boolean, searchOpen: Boolean, planned: Boolean): NavFlag {
         return when {
             guiding -> NavFlag.ACTIVE
+            planned -> NavFlag.READY
             searchOpen -> NavFlag.SEARCH
             else -> NavFlag.IDLE
         }
+    }
+}
+
+/**
+ * The map preview is drawn only from the current plan. Length and time are the
+ * values the router returned, and the card disappears when that plan is gone.
+ */
+object RouteCaption {
+    fun preview(distanceMeters: Double, durationSeconds: Double?): String {
+        val duration = durationSeconds?.let { " · " + ManeuverEvents.formatDuration(it) }.orEmpty()
+        return ManeuverEvents.formatDistance(distanceMeters) + duration
+    }
+
+    fun previewVisible(pointCount: Int, guiding: Boolean, arrived: Boolean): Boolean {
+        return pointCount >= 2 && !guiding && !arrived
     }
 }

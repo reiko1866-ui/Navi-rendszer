@@ -155,8 +155,10 @@ object RaceGlb {
     }
 
     /**
-     * The packed race asphalt is a charcoal albedo (about sRGB 62). A factor cannot
-     * lighten it, so the driving view replaces that image with a light grey grain.
+     * Kept for the grain generator. The driving screen does not pack these images:
+     * the normal and ORM files are UASTC, and Filament 1.75's only linear
+     * compressed target is DXT5, which OpenGL ES does not provide. An unbound
+     * occlusion sampler is black on the phone and erases the lit color.
      */
     fun drivingImages(read: (String) -> ByteArray): Map<String, ByteArray> {
         val images = roadImages(read).toMutableMap()

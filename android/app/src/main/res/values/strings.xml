@@ -42,6 +42,7 @@
     <string name="hud_gps_bad">GPS hiba</string>
     <string name="hud_gps_unknown">GPS</string>
     <string name="hud_nav_idle">Nincs útvonal</string>
+    <string name="hud_nav_ready">Útvonal kész</string>
     <string name="hud_nav_search">Keresés</string>
     <string name="hud_nav_active">Útvonal aktív</string>
     <string name="hud_nav_plan">Újratervezés</string>

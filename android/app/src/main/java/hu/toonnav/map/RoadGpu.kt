@@ -42,10 +42,10 @@ class RoadGpu(
         if (asphalt != null) {
             val names = arrayOf("asphalt", "asphaltWarm", "asphaltCool", "asphaltDark")
             val tint = arrayOf(
-                floatArrayOf(1f, 1f, 1f),
-                floatArrayOf(0.98f, 0.98f, 0.97f),
-                floatArrayOf(0.96f, 0.96f, 0.95f),
-                floatArrayOf(0.99f, 0.98f, 0.97f)
+                floatArrayOf(0.52f, 0.52f, 0.50f),
+                floatArrayOf(0.56f, 0.53f, 0.48f),
+                floatArrayOf(0.48f, 0.50f, 0.52f),
+                floatArrayOf(0.40f, 0.40f, 0.39f)
             )
             for (index in names.indices) {
                 val copy = MaterialInstance.duplicate(asphalt, names[index])
@@ -221,10 +221,13 @@ class RoadGpu(
 }
 
 /**
- * The road materials are Filament ubershaders. Each one reads POSITION, TANGENTS,
- * COLOR, UV0 and UV1. Leaving COLOR out makes the shader multiply the albedo by
- * zero, so textured asphalt and grass draw black. The untextured edge and center
- * lines do not, and they are the white stripes left on the screen.
+ * Filament's ubershader vertex layout always carries COLOR and UV1
+ * (UbershaderProvider.needsDummyData), even when the glTF primitive does not
+ * declare them. This buffer supplies white so the draw stays valid.
+ * White vertex color does not paint the road. The asphalt, grass, and shoulder
+ * disappeared because their occlusion sampler is black on OpenGL ES when the
+ * KTX2 texture does not bind, and that zero multiplies the lit color away.
+ * The driving materials therefore have no textures.
  */
 internal object RoadVertices {
     const val stride = 60
