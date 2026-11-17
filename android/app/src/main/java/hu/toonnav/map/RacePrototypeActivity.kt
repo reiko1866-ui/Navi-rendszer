@@ -1042,6 +1042,11 @@ private class RaceRenderer(
             clear.clear = true
             clear.clearColor = doubleArrayOf(color.red.toDouble(), color.green.toDouble(), color.blue.toDouble(), 1.0)
             renderer.clearOptions = clear
+            val haze = swapView.fogOptions
+            haze.enabled = true
+            haze.fogColorFromIbl = false
+            haze.color = floatArrayOf(color.red, color.green, color.blue)
+            swapView.fogOptions = haze
             return
         }
         val fog = swapView.fogOptions
@@ -1278,7 +1283,15 @@ private class RaceRenderer(
                 ao.enabled = false
                 view.ambientOcclusionOptions = ao
                 val fog = view.fogOptions
-                fog.enabled = false
+                fog.enabled = true
+                fog.distance = PlainWorld.fogDistance
+                fog.maximumOpacity = PlainWorld.fogMaximumOpacity
+                fog.density = PlainWorld.fogDensity
+                fog.height = 0f
+                fog.heightFalloff = 0.01f
+                fog.cutOffDistance = 8_000f
+                fog.fogColorFromIbl = false
+                fog.color = floatArrayOf(PlainWorld.sky.red, PlainWorld.sky.green, PlainWorld.sky.blue)
                 view.fogOptions = fog
                 val sky = Skybox.Builder()
                     .color(PlainWorld.sky.red, PlainWorld.sky.green, PlainWorld.sky.blue, 1f)

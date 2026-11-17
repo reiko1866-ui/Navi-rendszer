@@ -21,10 +21,11 @@ data class RaceCameraPose(
 
 object RaceCamera {
     const val eyeLocalX = 0.0
-    const val eyeLocalY = 1.08
-    const val eyeLocalZ = 0.0
-    const val lookLocalY = 0.30
-    const val lookAheadMeters = 22.0
+    /** Just above the halo and a metre behind it, so the cockpit does not fill the lens. */
+    const val eyeLocalY = 1.55
+    const val eyeLocalZ = -1.05
+    const val lookLocalY = 0.78
+    const val lookAheadMeters = 26.0
     const val fovDegrees = 48.0
     /** Near plane stays in front of the nose. Far plane clears the streamed corridor. */
     const val nearMeters = 0.08

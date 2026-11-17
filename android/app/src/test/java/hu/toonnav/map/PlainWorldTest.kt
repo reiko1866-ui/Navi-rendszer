@@ -35,6 +35,16 @@ class PlainWorldTest {
         assertTrue(PlainWorld.sky.blue > PlainWorld.sky.green && PlainWorld.sky.green > PlainWorld.sky.red)
         assertTrue(PlainWorld.center.red > 0.9f && PlainWorld.edge.red > 0.85f)
         assertTrue(PlainWorld.farBand.blue > PlainWorld.farBand.red)
+        for (index in 0 until PlainWorld.haze.size - 1) {
+            val left = PlainWorld.haze[index]
+            val right = PlainWorld.haze[index + 1]
+            assertTrue(abs(left.red - right.red) < 0.12f)
+            assertTrue(abs(left.green - right.green) < 0.12f)
+            assertTrue(abs(left.blue - right.blue) < 0.12f)
+        }
+        assertTrue(abs(PlainWorld.haze.last().blue - PlainWorld.sky.blue) < 0.12f)
+        assertTrue(PlainWorld.fogDistance > 40f)
+        assertTrue(PlainWorld.fogDensity < 0.05f)
         val shown = PlainWorld.sky.blue * RaceLighting.exposure(PlainWorld.aperture, PlainWorld.shutter, PlainWorld.sensitivity)
         assertTrue(shown > 0.35f)
         assertTrue(RaceLighting.exposure(16f, 1f / 125f, 100f) < 0.0001f)
@@ -45,17 +55,17 @@ class PlainWorldTest {
         val meshes = PlainWorld.meshes(PlainWorld.previewSamples(160.0, 8.0))
         val names = meshes.map { it.material }.toSet()
         assertEquals(
-            setOf(
+            (setOf(
                 PlainWorld.ground.name,
-                PlainWorld.farBand.name,
-                PlainWorld.horizonBand.name,
+                PlainWorld.verge.name,
                 PlainWorld.shoulder.name,
                 PlainWorld.road.name,
                 PlainWorld.edge.name,
                 PlainWorld.center.name
-            ),
+            ) + PlainWorld.haze.map { it.name }).toSet(),
             names
         )
+        assertFalse(names.contains(PlainWorld.kerbRed.name))
         val center = meshes.first { it.material == PlainWorld.center.name }
         var gaps = 0
         var dashes = 0
@@ -98,6 +108,17 @@ class PlainWorldTest {
         val end = points.last()
         assertTrue(end.first > 40.0)
         assertTrue(covers(road, end.first, end.second))
+        assertTrue(meshes.any { it.material == PlainWorld.kerbRed.name })
+        assertTrue(meshes.any { it.material == PlainWorld.kerbWhite.name })
+        val grass = meshes.first { it.material == PlainWorld.ground.name }
+        var low = Float.POSITIVE_INFINITY
+        var high = Float.NEGATIVE_INFINITY
+        for (vertex in 0 until grass.vertexCount) {
+            val y = grass.positions[vertex * 3 + 1]
+            if (y < low) low = y
+            if (y > high) high = y
+        }
+        assertTrue("relief $low..$high", high - low > 0.15f)
     }
 
     @Test
@@ -291,12 +312,13 @@ class PlainWorldTest {
         val forwardY = -model[9]
         val forwardZ = -model[10]
         val fov = DriveDisplay.verticalFov(aspect)
-        val order = listOf(
-            PlainWorld.horizonBand.name,
-            PlainWorld.farBand.name,
+        val order = PlainWorld.haze.map { it.name } + listOf(
             PlainWorld.ground.name,
+            PlainWorld.verge.name,
             PlainWorld.shoulder.name,
             PlainWorld.road.name,
+            PlainWorld.kerbRed.name,
+            PlainWorld.kerbWhite.name,
             PlainWorld.edge.name,
             PlainWorld.center.name
         )
@@ -345,8 +367,7 @@ class PlainWorldTest {
         val shoulderColor = PlainWorld.shoulder.packed() and 0xFFFFFF
         val centerColor = PlainWorld.center.packed() and 0xFFFFFF
         val edgeColor = PlainWorld.edge.packed() and 0xFFFFFF
-        val farColor = PlainWorld.farBand.packed() and 0xFFFFFF
-        val horizonColor = PlainWorld.horizonBand.packed() and 0xFFFFFF
+        val hazeColors = PlainWorld.haze.map { it.packed() and 0xFFFFFF }.toSet()
         for (pixel in pixels) {
             when (pixel) {
                 sky -> skyCount++
@@ -354,7 +375,7 @@ class PlainWorldTest {
                 roadColor -> road++
                 shoulderColor -> shoulder++
                 centerColor, edgeColor -> white++
-                farColor, horizonColor -> far++
+                in hazeColors -> far++
             }
         }
         return Shot(pixels, width, height, skyCount, ground, road, shoulder, white, far)

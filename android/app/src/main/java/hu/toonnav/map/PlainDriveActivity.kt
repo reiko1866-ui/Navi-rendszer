@@ -146,7 +146,15 @@ class PlainDriveActivity : AppCompatActivity() {
                 view.setShadowingEnabled(false)
                 view.antiAliasing = View.AntiAliasing.FXAA
                 val fog = view.fogOptions
-                fog.enabled = false
+                fog.enabled = true
+                fog.distance = PlainWorld.fogDistance
+                fog.maximumOpacity = PlainWorld.fogMaximumOpacity
+                fog.density = PlainWorld.fogDensity
+                fog.height = 0f
+                fog.heightFalloff = 0.01f
+                fog.cutOffDistance = 8_000f
+                fog.fogColorFromIbl = false
+                fog.color = floatArrayOf(PlainWorld.sky.red, PlainWorld.sky.green, PlainWorld.sky.blue)
                 view.fogOptions = fog
                 val ao = view.ambientOcclusionOptions
                 ao.enabled = false

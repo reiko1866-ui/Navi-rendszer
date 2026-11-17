@@ -97,7 +97,7 @@ class PlainGpu(
             .castShadows(false)
             .receiveShadows(false)
             .culling(true)
-            .fog(false)
+            .fog(true)
             .build(engine, entity)
         scene.addEntity(entity)
         return Part(entity, vertexBuffer, indexBuffer)

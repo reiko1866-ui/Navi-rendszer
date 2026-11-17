@@ -33,6 +33,20 @@ class DriveDisplayTest {
     }
 
     @Test
+    fun phoneButtonsKeepFestesAndGarazsOnOneLine() {
+        val layout = DriveChrome.layout(1080, 2400, 2.75f)
+        fun needed(label: String): Int {
+            val text = (label.length * layout.buttonSp * 0.62f * 2.75f).toInt()
+            val padding = (16f * 2.75f).toInt()
+            return text + padding
+        }
+        assertTrue("festés ${layout.livery.width}", layout.livery.width >= needed("FESTÉS"))
+        assertTrue("garázs ${layout.garage.width}", layout.garage.width >= needed("GARÁZS"))
+        assertTrue(layout.livery.height <= layout.touchPx + 1)
+        assertTrue(layout.roadWindow.overlaps(layout.livery).not())
+    }
+
+    @Test
     fun ultraWideCarDisplayStillShowsTheCarriageway() {
         assertProfile(1920, 720, 1f)
     }

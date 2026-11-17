@@ -97,7 +97,7 @@ object DriveChrome {
         val margin = px(12)
         val gap = px(8)
         val shortestDp = minOf(widthPx, heightPx) / scale
-        val touch = px(if (shortestDp >= 600f || widthPx / scale >= 1000f) 64 else 56)
+        val touch = px(if (shortestDp >= 600f || widthPx / scale >= 1000f) 64 else 52)
         val portrait = heightPx >= widthPx
         val speedSp = when {
             shortestDp >= 700f -> 44f
@@ -106,11 +106,11 @@ object DriveChrome {
         }
         val maneuverSp = if (shortestDp >= 600f) 22f else 18f
         val detailSp = if (shortestDp >= 600f) 18f else 16f
-        val buttonSp = if (shortestDp >= 600f) 16f else 15f
+        val buttonSp = if (shortestDp >= 600f) 16f else 14f
         val labels = listOf(
             "Leállítás",
             "Hang kikapcsolva",
-            "Vissza a térképre",
+            "Térkép",
             "Garázs",
             "Éjszakai térkép",
             "Festés"
@@ -167,8 +167,9 @@ object DriveChrome {
     }
 
     private fun buttonWidth(label: String, textSp: Float, density: Float, touch: Int): Int {
-        val text = (label.length * textSp * 0.62f * density).roundToInt()
-        val padding = (20f * density).roundToInt()
+        // Uppercase Material buttons are wider than the raw glyph count.
+        val text = (label.length * textSp * 0.70f * density).roundToInt()
+        val padding = (24f * density).roundToInt()
         return maxOf(touch, text + padding)
     }
 
