@@ -153,7 +153,30 @@ class PlainWorldTest {
             assertTrue(abs(roadNear[1]) < 1f && abs(horizon[1]) < 1f && sky[1] < 1.2f)
             assertTrue(abs(grass[0]) < 1.15f)
             assertTrue(grass[1] < horizon[1])
+            val nose = RaceCamera.ndc(pose, 0f, 0.42f, 32.5f, fov, aspect)
+            val further = RaceCamera.ndc(pose, 0f, 0.06f, 70f, fov, aspect)
+            assertTrue("nose ${nose.toList()}", abs(nose[0]) < 0.4f && abs(nose[1]) < 1f)
+            assertTrue("road beyond the nose", nose[1] < further[1])
         }
+    }
+
+    @Test
+    fun distantGroundRisesBeforeTheHorizon() {
+        val meshes = PlainWorld.meshes(PlainWorld.previewSamples(120.0, 8.0))
+        val ridge = meshes.first { it.material == PlainWorld.haze[2].name }
+        var high = Float.NEGATIVE_INFINITY
+        for (vertex in 0 until ridge.vertexCount) {
+            val y = ridge.positions[vertex * 3 + 1]
+            if (y > high) high = y
+        }
+        assertTrue("hill $high", high > 2.5f)
+        val road = meshes.first { it.material == PlainWorld.road.name }
+        var roadHigh = Float.NEGATIVE_INFINITY
+        for (vertex in 0 until road.vertexCount) {
+            val y = road.positions[vertex * 3 + 1]
+            if (y > roadHigh) roadHigh = y
+        }
+        assertTrue("asphalt stays flat $roadHigh", roadHigh < 0.4f)
     }
 
     @Test
@@ -290,6 +313,16 @@ class PlainWorldTest {
         return (x - pose.eyeX) * forwardX + (y - pose.eyeY) * forwardY + (z - pose.eyeZ) * forwardZ
     }
 
+    private fun mixChannel(from: Int, to: Int, amount: Float): Int {
+        val blend = amount.coerceIn(0f, 1f)
+        fun channel(shift: Int): Int {
+            val start = (from shr shift) and 0xFF
+            val end = (to shr shift) and 0xFF
+            return (start + (end - start) * blend).toInt().coerceIn(0, 255)
+        }
+        return (channel(16) shl 16) or (channel(8) shl 8) or channel(0)
+    }
+
     private class Shot(
         val pixels: IntArray,
         val width: Int,
@@ -304,7 +337,13 @@ class PlainWorldTest {
 
     private fun paint(samples: List<RoadSample>, width: Int, height: Int, aspect: Double): Shot {
         val sky = PlainWorld.sky.packed() and 0xFFFFFF
-        val pixels = IntArray(width * height) { sky }
+        val horizon = PlainWorld.horizon.packed() and 0xFFFFFF
+        val pixels = IntArray(width * height)
+        for (y in 0 until height) {
+            val down = (y.toFloat() / height.toFloat()).coerceIn(0f, 1f)
+            val color = mixChannel(sky, horizon, down * down)
+            for (x in 0 until width) pixels[y * width + x] = color
+        }
         val depth = FloatArray(width * height) { Float.POSITIVE_INFINITY }
         val pose = RaceCamera.pose(0.0, 30.0, 0.0, 0.06)
         val model = RaceCamera.cameraModel(0.0, 30.0, 0.0, 0.06)
@@ -376,6 +415,7 @@ class PlainWorldTest {
                 shoulderColor -> shoulder++
                 centerColor, edgeColor -> white++
                 in hazeColors -> far++
+                else -> if ((pixel and 0xFF) > ((pixel ushr 16) and 0xFF)) skyCount++
             }
         }
         return Shot(pixels, width, height, skyCount, ground, road, shoulder, white, far)

@@ -45,17 +45,29 @@ object PlainWorld {
     val edge = Swatch("plain-edge", 0.93f, 0.93f, 0.90f)
     val kerbRed = Swatch("plain-kerb-red", 0.78f, 0.08f, 0.05f)
     val kerbWhite = Swatch("plain-kerb-white", 0.94f, 0.94f, 0.92f)
-    val sky = Swatch("plain-sky", 0.58f, 0.80f, 0.96f)
-    val nightSky = Swatch("plain-night", 0.06f, 0.09f, 0.18f)
+    /** Zenith, mid sky, and a pale horizon. Drawn as untextured rings, not an HDR image. */
+    val dayGradient = listOf(
+        Swatch("plain-sky-band-0", 0.74f, 0.86f, 0.93f),
+        Swatch("plain-sky-band-1", 0.52f, 0.72f, 0.92f),
+        Swatch("plain-sky-band-2", 0.36f, 0.60f, 0.90f)
+    )
+    val nightGradient = listOf(
+        Swatch("plain-night-band-0", 0.12f, 0.16f, 0.26f),
+        Swatch("plain-night-band-1", 0.07f, 0.10f, 0.20f),
+        Swatch("plain-night-band-2", 0.05f, 0.08f, 0.16f)
+    )
+    val horizon = dayGradient[0]
+    val sky = dayGradient[2]
+    val nightSky = nightGradient[2]
 
-    /** Five steps from the grass toward the sky, so the horizon is not one hard stripe. */
+    /** Steps from the grass toward the pale horizon, so the distance is not one hard stripe. */
     val haze: List<Swatch> = (0 until 7).map { step ->
         val blend = (step + 1) / 7f * 0.92f
         Swatch(
             "plain-haze-$step",
-            ground.red + (sky.red - ground.red) * blend,
-            ground.green + (sky.green - ground.green) * blend,
-            ground.blue + (sky.blue - ground.blue) * blend
+            ground.red + (horizon.red - ground.red) * blend,
+            ground.green + (horizon.green - ground.green) * blend,
+            ground.blue + (horizon.blue - ground.blue) * blend
         )
     }
     val farBand = haze[haze.lastIndex - 1]
@@ -71,16 +83,15 @@ object PlainWorld {
      * by the same amount and the unlit colors stay in the 0–1 range.
      */
     const val sunLux = 3.2f
-    /** Depth haze in the sky color. The near road stays clear; the horizon blends. */
-    const val fogDistance = 110f
-    const val fogDensity = 0.006f
-    const val fogMaximumOpacity = 0.82f
+    /** Depth haze in the horizon color. The near road stays clear; distant ground fades. */
+    const val fogDistance = 150f
+    const val fogDensity = 0.0032f
+    const val fogMaximumOpacity = 0.70f
 
     const val roadHalf = 5.0
     const val shoulderWidth = 3.2
     const val grassWidth = 28.0
     const val hazeBandWidth = 36.0
-    private const val curveStep = 1.35
 
     fun swatch(name: String): Swatch? {
         return all.firstOrNull { it.name == name }
@@ -123,16 +134,6 @@ object PlainWorld {
             if (b.along < from || a.along > until) continue
             val rightA = right(curve, index)
             val rightB = right(curve, index + 1)
-            for (band in 0 until grassEdges.size - 1) {
-                band(groundStrip, a, b, rightA, rightB, grassEdges[band], grassEdges[band + 1], 0.0)
-            }
-            var lateral = outerGrass
-            for (strip in hazeStrips) {
-                val next = lateral + hazeBandWidth
-                band(strip, a, b, rightA, rightB, lateral, next, 0.0)
-                lateral = next
-            }
-            band(vergeStrip, a, b, rightA, rightB, outerShoulder - 0.15, outerShoulder + 2.4, 0.0)
             band(shoulderStrip, a, b, rightA, rightB, roadHalf, outerShoulder, 0.015)
             band(roadStrip, a, b, rightA, rightB, -roadHalf, roadHalf, 0.06)
             band(edgeStrip, a, b, rightA, rightB, roadHalf - 0.55, roadHalf - 0.22, 0.09)
@@ -143,6 +144,29 @@ object PlainWorld {
                 val kerb = if ((a.along / 1.7).toInt() % 2 == 0) redStrip else whiteStrip
                 band(kerb, a, b, rightA, rightB, roadHalf - 0.08, roadHalf + 0.62, 0.10)
             }
+        }
+        val stride = 4
+        var terrain = 0
+        while (terrain < curve.size - 1) {
+            val next = (terrain + stride).coerceAtMost(curve.lastIndex)
+            if (next == terrain) break
+            val a = curve[terrain]
+            val b = curve[next]
+            if (b.along >= from && a.along <= until) {
+                val rightA = right(curve, terrain)
+                val rightB = right(curve, next)
+                for (band in 0 until grassEdges.size - 1) {
+                    band(groundStrip, a, b, rightA, rightB, grassEdges[band], grassEdges[band + 1], 0.0)
+                }
+                var lateral = outerGrass
+                for (strip in hazeStrips) {
+                    val outer = lateral + hazeBandWidth
+                    band(strip, a, b, rightA, rightB, lateral, outer, 0.0)
+                    lateral = outer
+                }
+                band(vergeStrip, a, b, rightA, rightB, outerShoulder - 0.15, outerShoulder + 2.4, 0.0)
+            }
+            terrain += stride
         }
         return (listOf(groundStrip, vergeStrip, shoulderStrip, roadStrip, edgeStrip, centerStrip, redStrip, whiteStrip) + hazeStrips)
             .mapNotNull { it.build() }
@@ -168,7 +192,9 @@ object PlainWorld {
             val p2 = samples[index + 1]
             val p3 = samples[(index + 2).coerceAtMost(samples.lastIndex)]
             val span = hypot(p2.east - p1.east, p2.north - p1.north).coerceAtLeast(0.001)
-            val steps = (span / curveStep).toInt().coerceIn(1, 10)
+            val corner = corner(p0, p1, p2)
+            val tight = corner > 0.12
+            val steps = (span / if (tight) 0.65 else 1.7).toInt().coerceIn(1, if (tight) 18 else 5)
             for (step in 0 until steps) {
                 val t = step.toDouble() / steps
                 curved.add(
@@ -200,6 +226,16 @@ object PlainWorld {
         return curved
     }
 
+    private fun corner(before: RoadSample, at: RoadSample, after: RoadSample): Double {
+        val inX = at.east - before.east
+        val inZ = at.north - before.north
+        val outX = after.east - at.east
+        val outZ = after.north - at.north
+        val inLength = hypot(inX, inZ).coerceAtLeast(0.001)
+        val outLength = hypot(outX, outZ).coerceAtLeast(0.001)
+        return abs((inX / inLength) * (outZ / outLength) - (inZ / inLength) * (outX / outLength))
+    }
+
     private fun catmull(p0: Double, p1: Double, p2: Double, p3: Double, t: Double): Double {
         val t2 = t * t
         val t3 = t2 * t
@@ -220,6 +256,19 @@ object PlainWorld {
         val roll = sin(east * 0.021) * cos(north * 0.017) * 0.38
         val broad = sin(east * 0.006 + north * 0.005) * 0.72
         return (roll + broad) * smooth * settle
+    }
+
+    /** Low ridges beyond the verge. Flat on the asphalt and gone again at the far haze. */
+    private fun hill(east: Double, north: Double, lateral: Double): Double {
+        val inner = roadHalf + shoulderWidth + grassWidth * 0.45
+        val outer = roadHalf + shoulderWidth + grassWidth + hazeBandWidth * 4.0
+        val distance = abs(lateral)
+        if (distance <= inner || distance >= outer) return 0.0
+        val span = (outer - inner).coerceAtLeast(1.0)
+        val t = ((distance - inner) / span).coerceIn(0.0, 1.0)
+        val dome = sin(t * Math.PI)
+        val vary = 0.42 + 0.58 * (0.5 + 0.5 * sin(east * 0.018 + north * 0.013))
+        return dome * vary * 16.0
     }
 
     private fun band(
@@ -279,7 +328,7 @@ object PlainWorld {
             val east = sample.east + right.first * lateral
             val north = sample.north + right.second * lateral
             positions.add(east.toFloat())
-            positions.add((sample.elevation + lift + relief(east, north, lateral)).toFloat())
+            positions.add((sample.elevation + lift + relief(east, north, lateral) + hill(east, north, lateral)).toFloat())
             positions.add(north.toFloat())
             normals.add(0f)
             normals.add(1f)

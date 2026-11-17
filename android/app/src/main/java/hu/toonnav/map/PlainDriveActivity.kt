@@ -128,6 +128,7 @@ class PlainDriveActivity : AppCompatActivity() {
             val aspect = width.toDouble() / height.toDouble()
             camera.setProjection(DriveDisplay.verticalFov(aspect), aspect, RaceCamera.nearMeters, RaceCamera.farMeters, Camera.Fov.VERTICAL)
             camera.setModelMatrix(RaceCamera.cameraModel(0.0, 30.0, 0.0, 0.06))
+            plain.placeSky(0.0, 30.0)
             view.viewport = Viewport(0, 0, width, height)
             if (renderer.beginFrame(chain, frameTimeNanos)) {
                 renderer.render(view)
@@ -154,7 +155,7 @@ class PlainDriveActivity : AppCompatActivity() {
                 fog.heightFalloff = 0.01f
                 fog.cutOffDistance = 8_000f
                 fog.fogColorFromIbl = false
-                fog.color = floatArrayOf(PlainWorld.sky.red, PlainWorld.sky.green, PlainWorld.sky.blue)
+                fog.color = floatArrayOf(PlainWorld.horizon.red, PlainWorld.horizon.green, PlainWorld.horizon.blue)
                 view.fogOptions = fog
                 val ao = view.ambientOcclusionOptions
                 ao.enabled = false

@@ -69,8 +69,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#C8102E"
-        android:minHeight="56dp"
-        android:minWidth="56dp"
         android:text="@string/stop_nav"
         android:textColor="#FFF6F3EE" />
 
@@ -80,8 +78,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#3A2420"
-        android:minHeight="56dp"
-        android:minWidth="56dp"
         android:text="@string/voice_on"
         android:textColor="#F4F1EC" />
 
@@ -91,8 +87,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#3A2420"
-        android:minHeight="56dp"
-        android:minWidth="56dp"
         android:text="@string/map_open"
         android:textColor="#F4F1EC" />
 
@@ -102,8 +96,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#3A2420"
-        android:minHeight="56dp"
-        android:minWidth="56dp"
         android:text="@string/garage_open"
         android:textColor="#F4F1EC" />
 
@@ -113,8 +105,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#3A2420"
-        android:minHeight="56dp"
-        android:minWidth="56dp"
         android:text="@string/night_mode"
         android:textColor="#F4F1EC" />
 
@@ -124,8 +114,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#3A2420"
-        android:minHeight="56dp"
-        android:minWidth="56dp"
         android:text="@string/race_livery"
         android:textColor="#F4F1EC" />
 

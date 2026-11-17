@@ -11,6 +11,8 @@ import com.google.android.filament.Scene
 import com.google.android.filament.VertexBuffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * Draws [PlainWorld] with one unlit material and a color parameter.
@@ -25,6 +27,7 @@ class PlainGpu(
     private val material: Material
     private val instances = HashMap<String, MaterialInstance>()
     private val chunks = HashMap<Int, List<Part>>()
+    private val skyParts = ArrayList<Part>()
     val chunkKeys: Set<Int> get() = chunks.keys
 
     init {
@@ -39,6 +42,33 @@ class PlainGpu(
             instance.setCullingMode(Material.CullingMode.NONE)
             instances[swatch.name] = instance
         }
+        buildSky()
+    }
+
+    /** Moves the sky rings with the car. The mesh is not rebuilt. */
+    fun placeSky(east: Double, north: Double) {
+        if (skyParts.isEmpty()) return
+        val matrix = floatArrayOf(
+            1f, 0f, 0f, 0f,
+            0f, 1f, 0f, 0f,
+            0f, 0f, 1f, 0f,
+            east.toFloat(), 0f, north.toFloat(), 1f
+        )
+        val transforms = engine.transformManager
+        for (part in skyParts) {
+            var instance = transforms.getInstance(part.entity)
+            if (instance == 0) instance = transforms.create(part.entity)
+            transforms.setTransform(instance, matrix)
+        }
+    }
+
+    fun applySky(night: Boolean) {
+        val gradient = if (night) PlainWorld.nightGradient else PlainWorld.dayGradient
+        for (index in gradient.indices) {
+            val color = gradient[index]
+            val name = PlainWorld.dayGradient[index].name
+            instances[name]?.setParameter("baseColor", color.red, color.green, color.blue, 1f)
+        }
     }
 
     fun replaceAll(built: Map<Int, List<RaceMesh>>) {
@@ -50,7 +80,7 @@ class PlainGpu(
     fun uploadChunks(built: Map<Int, List<RaceMesh>>) {
         for ((index, meshes) in built) {
             remove(chunks.remove(index))
-            val parts = meshes.mapNotNull { upload(it) }
+            val parts = meshes.mapNotNull { upload(it, fog = true) }
             if (parts.isNotEmpty()) chunks[index] = parts
         }
     }
@@ -64,12 +94,14 @@ class PlainGpu(
     fun destroy() {
         val stale = chunks.keys.toList()
         for (key in stale) remove(chunks.remove(key))
+        remove(skyParts)
+        skyParts.clear()
         for (instance in instances.values) engine.destroyMaterialInstance(instance)
         instances.clear()
         engine.destroyMaterial(material)
     }
 
-    private fun upload(mesh: RaceMesh): Part? {
+    private fun upload(mesh: RaceMesh, fog: Boolean): Part? {
         if (mesh.vertexCount < 3 || mesh.indices.isEmpty()) return null
         val instance = instances[mesh.material] ?: return null
         val vertices = ByteBuffer.allocateDirect(mesh.vertexCount * 12).order(ByteOrder.nativeOrder())
@@ -97,7 +129,7 @@ class PlainGpu(
             .castShadows(false)
             .receiveShadows(false)
             .culling(true)
-            .fog(true)
+            .fog(fog)
             .build(engine, entity)
         scene.addEntity(entity)
         return Part(entity, vertexBuffer, indexBuffer)
@@ -140,6 +172,59 @@ class PlainGpu(
             engine.destroyIndexBuffer(part.indices)
             engine.destroyEntity(part.entity)
         }
+    }
+
+    private fun buildSky() {
+        val radius = 340.0
+        val segments = 24
+        val heights = listOf(0f to 28f, 28f to 74f, 74f to 170f)
+        for ((index, range) in heights.withIndex()) {
+            val swatch = PlainWorld.dayGradient[index]
+            val instance = material.createInstance()
+            instance.setParameter("baseColor", swatch.red, swatch.green, swatch.blue, 1f)
+            instance.setCullingMode(Material.CullingMode.NONE)
+            instances[swatch.name] = instance
+            val mesh = cylinder(swatch.name, radius, range.first, range.second, segments)
+            val part = upload(mesh, fog = false) ?: continue
+            skyParts.add(part)
+        }
+    }
+
+    private fun cylinder(name: String, radius: Double, y0: Float, y1: Float, segments: Int): RaceMesh {
+        val rings = segments + 1
+        val positions = FloatArray(rings * 2 * 3)
+        val normals = FloatArray(positions.size)
+        val uvs = FloatArray(rings * 2 * 2)
+        val indices = IntArray(segments * 6)
+        for (step in 0 until rings) {
+            val angle = step.toDouble() / segments * Math.PI * 2.0
+            val x = (cos(angle) * radius).toFloat()
+            val z = (sin(angle) * radius).toFloat()
+            val bottom = step * 2
+            val top = bottom + 1
+            positions[bottom * 3] = x
+            positions[bottom * 3 + 1] = y0
+            positions[bottom * 3 + 2] = z
+            positions[top * 3] = x
+            positions[top * 3 + 1] = y1
+            positions[top * 3 + 2] = z
+            normals[bottom * 3 + 1] = 1f
+            normals[top * 3 + 1] = 1f
+        }
+        for (step in 0 until segments) {
+            val a = step * 2
+            val b = a + 1
+            val c = a + 3
+            val d = a + 2
+            val offset = step * 6
+            indices[offset] = a
+            indices[offset + 1] = b
+            indices[offset + 2] = c
+            indices[offset + 3] = a
+            indices[offset + 4] = c
+            indices[offset + 5] = d
+        }
+        return RaceMesh(name, positions, normals, uvs, indices)
     }
 
     private class Part(val entity: Int, val vertices: VertexBuffer, val indices: IndexBuffer)

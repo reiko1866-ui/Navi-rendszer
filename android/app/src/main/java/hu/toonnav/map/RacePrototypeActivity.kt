@@ -108,6 +108,10 @@ class RacePrototypeActivity : ComponentActivity() {
     private val mainHandler = Handler(Looper.getMainLooper())
     private var navigationMode = false
     private var chromeWidth = 0
+    private var chromeTopInset = 0
+    private var chromeBottomInset = 0
+    private var appliedTopInset = -1
+    private var appliedBottomInset = -1
     private var chromeHeight = 0
     private var driveQuality = DriveDisplay.Quality.FULL
     private var qualityReduced = false
@@ -145,6 +149,18 @@ class RacePrototypeActivity : ComponentActivity() {
         content.addOnLayoutChangeListener { _, left, top, right, bottom, _, _, _, _ ->
             applyChrome(right - left, bottom - top)
         }
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(content) { view, insets ->
+            val bars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            if (bars.top != chromeTopInset || bars.bottom != chromeBottomInset) {
+                chromeTopInset = bars.top
+                chromeBottomInset = bars.bottom
+                chromeWidth = 0
+                chromeHeight = 0
+                applyChrome(view.width, view.height)
+            }
+            insets
+        }
+        androidx.core.view.ViewCompat.requestApplyInsets(content)
         voiceOn = hudPrefs.getBoolean("voice", true)
         night = hudPrefs.getBoolean("night", false)
         voice.enabled = voiceOn
@@ -802,10 +818,20 @@ class RacePrototypeActivity : ComponentActivity() {
 
     private fun applyChrome(widthPx: Int, heightPx: Int) {
         if (widthPx < 2 || heightPx < 2) return
-        if (widthPx == chromeWidth && heightPx == chromeHeight) return
+        if (widthPx == chromeWidth && heightPx == chromeHeight &&
+            chromeTopInset == appliedTopInset && chromeBottomInset == appliedBottomInset
+        ) return
         chromeWidth = widthPx
         chromeHeight = heightPx
-        val layout = DriveChrome.layout(widthPx, heightPx, resources.displayMetrics.density)
+        appliedTopInset = chromeTopInset
+        appliedBottomInset = chromeBottomInset
+        val layout = DriveChrome.layout(
+            widthPx,
+            heightPx,
+            resources.displayMetrics.density,
+            chromeTopInset,
+            chromeBottomInset
+        )
         place(findViewById(R.id.raceInfo), layout.guidance)
         place(findViewById(R.id.raceStop), layout.stop)
         place(findViewById(R.id.raceVoice), layout.voice)
@@ -1038,6 +1064,7 @@ private class RaceRenderer(
             engine.lightManager.setIntensity(sun, if (night) 0.2f else PlainWorld.sunLux)
             indirect.setIntensity(if (night) 0.08f else 1f)
             camera.setExposure(PlainWorld.aperture, PlainWorld.shutter, PlainWorld.sensitivity)
+            plainGpu?.applySky(night)
             val clear = renderer.clearOptions
             clear.clear = true
             clear.clearColor = doubleArrayOf(color.red.toDouble(), color.green.toDouble(), color.blue.toDouble(), 1.0)
@@ -1045,7 +1072,8 @@ private class RaceRenderer(
             val haze = swapView.fogOptions
             haze.enabled = true
             haze.fogColorFromIbl = false
-            haze.color = floatArrayOf(color.red, color.green, color.blue)
+            val hazeColor = if (night) PlainWorld.nightGradient[0] else PlainWorld.horizon
+            haze.color = floatArrayOf(hazeColor.red, hazeColor.green, hazeColor.blue)
             swapView.fogOptions = haze
             return
         }
@@ -1197,6 +1225,7 @@ private class RaceRenderer(
             Camera.Fov.VERTICAL
         )
         camera.setModelMatrix(RaceCamera.cameraModel(east, north, turned, surface))
+        plainGpu?.placeSky(east, north)
         val transform = engine.transformManager
         val car = transform.getInstance(carEntity())
         if (car != 0) transform.setTransform(car, RaceCamera.carTransform(east, north, turned, surface))
@@ -1291,7 +1320,7 @@ private class RaceRenderer(
                 fog.heightFalloff = 0.01f
                 fog.cutOffDistance = 8_000f
                 fog.fogColorFromIbl = false
-                fog.color = floatArrayOf(PlainWorld.sky.red, PlainWorld.sky.green, PlainWorld.sky.blue)
+                fog.color = floatArrayOf(PlainWorld.horizon.red, PlainWorld.horizon.green, PlainWorld.horizon.blue)
                 view.fogOptions = fog
                 val sky = Skybox.Builder()
                     .color(PlainWorld.sky.red, PlainWorld.sky.green, PlainWorld.sky.blue, 1f)

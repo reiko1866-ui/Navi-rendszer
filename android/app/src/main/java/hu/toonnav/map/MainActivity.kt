@@ -699,6 +699,7 @@ class MainActivity : ComponentActivity() {
         navigationHold = false
         offRouteSpoken = false
         pilotNoticeText = ""
+        syncRouteChrome()
         clearStatus()
         rememberDrive()
         voice.halt()
@@ -717,10 +718,8 @@ class MainActivity : ComponentActivity() {
         routePoints = plan.coordinates
         traveledMeters = 0.0
         loadedStyle?.let { drawRoute(it) }
-        val duration = plan.durationSeconds?.let { " · " + ManeuverEvents.formatDuration(it) }.orEmpty()
-        previewMeta.text = ManeuverEvents.formatDistance(plan.distanceMeters) + duration
-        previewCard.visibility = View.VISIBLE
         navigationHold = false
+        syncRouteChrome()
         clearStatus()
         showOverview()
         voice.speak("utvonal_kesz", "utvonal_kesz", null, "kesz")
@@ -796,8 +795,6 @@ class MainActivity : ComponentActivity() {
         following = false
         overviewShown = false
         navigationHold = false
-        previewCard.visibility = View.GONE
-        if (::previewMeta.isInitialized) previewMeta.text = ""
         presentDrive()
         rememberDrive()
         hud.renderManeuver("—", "", 0f)
@@ -931,7 +928,6 @@ class MainActivity : ComponentActivity() {
         rememberDrive()
         hud.renderManeuver("—", "", 0f)
         hud.renderTrip("", "", "--:--")
-        if (::previewMeta.isInitialized && previewMeta.text.isNotBlank()) previewCard.visibility = View.VISIBLE
         refreshReadout()
     }
 
@@ -975,6 +971,22 @@ class MainActivity : ComponentActivity() {
         if (::pilotLayer.isInitialized) pilotLayer.visibility = View.GONE
         revealFinish()
         refreshPilot()
+        syncRouteChrome()
+    }
+
+    private fun syncRouteChrome() {
+        if (!hudReady || !::previewCard.isInitialized || !::previewMeta.isInitialized) return
+        val prepared = activePlan != null && routePoints.size >= 2 && !driveView.arrived
+        hud.noteRoute(driveView.guiding && !driveView.arrived, prepared)
+        val show = RouteCaption.previewVisible(if (prepared) routePoints.size else 0, driveView.guiding, driveView.arrived)
+        if (show) {
+            val plan = activePlan ?: return
+            previewMeta.text = RouteCaption.preview(plan.distanceMeters, plan.durationSeconds)
+            previewCard.visibility = View.VISIBLE
+        } else {
+            previewMeta.text = ""
+            previewCard.visibility = View.GONE
+        }
     }
 
     private fun revealFinish() {
@@ -1591,7 +1603,6 @@ class MainActivity : ComponentActivity() {
 
     private fun restoreHud(status: String, statusVisible: Boolean) {
         presentDrive()
-        previewCard.visibility = if (!driveView.guiding && !driveView.arrived && previewMeta.text.isNotBlank()) View.VISIBLE else View.GONE
         if (lastPlaces.isNotEmpty() && searchOpen) showPlaces(lastPlaces)
         else if (statusVisible && status.isNotEmpty()) showStatus(status, statusError)
         else clearStatus()
