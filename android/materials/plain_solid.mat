@@ -7,13 +7,28 @@ material {
         {
             type : float4,
             name : baseColor
+        },
+        {
+            type : sampler2d,
+            name : albedo
+        },
+        {
+            type : float,
+            name : detail,
+            default : 0.0
         }
+    ],
+    requires : [
+        uv0
     ]
 }
 
 fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
-        material.baseColor = materialParams.baseColor;
+        vec4 texel = texture(materialParams_albedo, getUV0());
+        vec3 tinted = materialParams.baseColor.rgb * texel.rgb;
+        material.baseColor.rgb = mix(materialParams.baseColor.rgb, tinted, materialParams.detail);
+        material.baseColor.a = materialParams.baseColor.a;
     }
 }

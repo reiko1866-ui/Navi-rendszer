@@ -8,6 +8,8 @@ import com.google.android.filament.Material
 import com.google.android.filament.MaterialInstance
 import com.google.android.filament.RenderableManager
 import com.google.android.filament.Scene
+import com.google.android.filament.Texture
+import com.google.android.filament.TextureSampler
 import com.google.android.filament.VertexBuffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -15,9 +17,10 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 /**
- * Draws [PlainWorld] with one unlit material and a color parameter.
- * The vertex buffer is position only, so it does not depend on the glTF
- * ubershader layout, tangents, or any texture unit.
+ * Draws [PlainWorld] with one unlit material. A runtime RGBA grain multiplies
+ * the color on roads, shoulders and ground. Markings stay flat. The grain is
+ * an RGBA image built in memory, not a compressed map and not a normal map.
+ * A white texture is bound first, so a failed grain still leaves the flat color.
  */
 class PlainGpu(
     private val engine: Engine,
@@ -28,6 +31,9 @@ class PlainGpu(
     private val instances = HashMap<String, MaterialInstance>()
     private val chunks = HashMap<Int, List<Part>>()
     private val skyParts = ArrayList<Part>()
+    private val retained = ArrayList<ByteBuffer>()
+    private var white: Texture? = null
+    private var grain: Texture? = null
     val chunkKeys: Set<Int> get() = chunks.keys
 
     init {
@@ -35,14 +41,26 @@ class PlainGpu(
         buffer.put(materialBytes)
         buffer.flip()
         material = Material.Builder().payload(buffer, buffer.remaining()).build(engine)
+        val sampler = TextureSampler(
+            TextureSampler.MinFilter.LINEAR,
+            TextureSampler.MagFilter.LINEAR,
+            TextureSampler.WrapMode.REPEAT
+        )
+        white = solidTexture(255)
+        grain = try {
+            grainTexture(128)
+        } catch (_: Throwable) {
+            null
+        }
         for (swatch in PlainWorld.all) {
             if (swatch === PlainWorld.sky || swatch === PlainWorld.nightSky) continue
             val instance = material.createInstance()
             instance.setParameter("baseColor", swatch.red, swatch.green, swatch.blue, 1f)
             instance.setCullingMode(Material.CullingMode.NONE)
+            bind(instance, swatch.name, sampler)
             instances[swatch.name] = instance
         }
-        buildSky()
+        buildSky(sampler)
     }
 
     /** Moves the sky rings with the car. The mesh is not rebuilt. */
@@ -98,19 +116,32 @@ class PlainGpu(
         skyParts.clear()
         for (instance in instances.values) engine.destroyMaterialInstance(instance)
         instances.clear()
+        white?.let { engine.destroyTexture(it) }
+        grain?.let { engine.destroyTexture(it) }
+        white = null
+        grain = null
+        retained.clear()
         engine.destroyMaterial(material)
     }
 
     private fun upload(mesh: RaceMesh, fog: Boolean): Part? {
         if (mesh.vertexCount < 3 || mesh.indices.isEmpty()) return null
         val instance = instances[mesh.material] ?: return null
-        val vertices = ByteBuffer.allocateDirect(mesh.vertexCount * 12).order(ByteOrder.nativeOrder())
-        for (index in mesh.positions.indices) vertices.putFloat(mesh.positions[index])
+        val stride = 20
+        val vertices = ByteBuffer.allocateDirect(mesh.vertexCount * stride).order(ByteOrder.nativeOrder())
+        for (index in 0 until mesh.vertexCount) {
+            vertices.putFloat(mesh.positions[index * 3])
+            vertices.putFloat(mesh.positions[index * 3 + 1])
+            vertices.putFloat(mesh.positions[index * 3 + 2])
+            vertices.putFloat(mesh.uvs[index * 2])
+            vertices.putFloat(mesh.uvs[index * 2 + 1])
+        }
         vertices.flip()
         val vertexBuffer = VertexBuffer.Builder()
             .bufferCount(1)
             .vertexCount(mesh.vertexCount)
-            .attribute(VertexBuffer.VertexAttribute.POSITION, 0, VertexBuffer.AttributeType.FLOAT3, 0, 12)
+            .attribute(VertexBuffer.VertexAttribute.POSITION, 0, VertexBuffer.AttributeType.FLOAT3, 0, stride)
+            .attribute(VertexBuffer.VertexAttribute.UV0, 0, VertexBuffer.AttributeType.FLOAT2, 12, stride)
             .build(engine)
         vertexBuffer.setBufferAt(engine, 0, vertices)
         val indexBytes = ByteBuffer.allocateDirect(mesh.indices.size * 4).order(ByteOrder.nativeOrder())
@@ -174,7 +205,84 @@ class PlainGpu(
         }
     }
 
-    private fun buildSky() {
+    private fun bind(instance: MaterialInstance, name: String, sampler: TextureSampler) {
+        val fallback = white
+        if (fallback != null) {
+            try {
+                instance.setParameter("albedo", fallback, sampler)
+                instance.setParameter("detail", 0f)
+            } catch (_: Throwable) {
+                return
+            }
+        }
+        val detailed = grain
+        if (detailed != null && PlainWorld.takesDetail(name)) {
+            try {
+                instance.setParameter("albedo", detailed, sampler)
+                instance.setParameter("detail", 1f)
+            } catch (_: Throwable) {
+                try {
+                    instance.setParameter("detail", 0f)
+                } catch (_: Throwable) {
+                    // The flat color remains. A rejected grain must not leave a missing texture.
+                }
+            }
+        }
+    }
+
+    private fun solidTexture(value: Int): Texture {
+        val pixels = ByteBuffer.allocateDirect(4).order(ByteOrder.nativeOrder())
+        retained.add(pixels)
+        val byte = value.coerceIn(0, 255).toByte()
+        pixels.put(byte)
+        pixels.put(byte)
+        pixels.put(byte)
+        pixels.put(255.toByte())
+        pixels.flip()
+        return uploadTexture(1, pixels)
+    }
+
+    private fun grainTexture(size: Int): Texture {
+        val pixels = ByteBuffer.allocateDirect(size * size * 4).order(ByteOrder.nativeOrder())
+        retained.add(pixels)
+        for (y in 0 until size) {
+            for (x in 0 until size) {
+                val fine = hash(x, y)
+                val coarse = hash(x / 4, y / 4)
+                val stone = 168 + ((fine * 3 + coarse) / 4) * 70 / 255
+                pixels.put(stone.coerceIn(150, 245).toByte())
+                pixels.put(stone.coerceIn(150, 245).toByte())
+                pixels.put(stone.coerceIn(150, 245).toByte())
+                pixels.put(255.toByte())
+            }
+        }
+        pixels.flip()
+        return uploadTexture(size, pixels)
+    }
+
+    private fun uploadTexture(size: Int, pixels: ByteBuffer): Texture {
+        val texture = Texture.Builder()
+            .width(size)
+            .height(size)
+            .levels(1)
+            .sampler(Texture.Sampler.SAMPLER_2D)
+            .format(Texture.InternalFormat.RGBA8)
+            .build(engine)
+        texture.setImage(
+            engine,
+            0,
+            Texture.PixelBufferDescriptor(pixels, Texture.Format.RGBA, Texture.Type.UBYTE)
+        )
+        return texture
+    }
+
+    private fun hash(x: Int, y: Int): Int {
+        var n = x * 374761393 + y * 668265263
+        n = (n xor (n ushr 13)) * 1274126177
+        return (n ushr 16) and 255
+    }
+
+    private fun buildSky(sampler: TextureSampler) {
         val radius = 340.0
         val segments = 24
         val splits = floatArrayOf(0f, 24f, 52f, 88f, 136f, 210f)
@@ -185,6 +293,7 @@ class PlainGpu(
             val instance = material.createInstance()
             instance.setParameter("baseColor", swatch.red, swatch.green, swatch.blue, 1f)
             instance.setCullingMode(Material.CullingMode.NONE)
+            bind(instance, swatch.name, sampler)
             instances[swatch.name] = instance
             val mesh = cylinder(swatch.name, radius, range.first, range.second, segments)
             val part = upload(mesh, fog = false) ?: continue
