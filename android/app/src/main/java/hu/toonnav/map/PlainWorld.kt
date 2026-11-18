@@ -55,20 +55,26 @@ object PlainWorld {
     val shoulderLight = Swatch("plain-shoulder-light", 0.68f, 0.54f, 0.38f)
     val rock = Swatch("plain-rock", 0.48f, 0.46f, 0.42f)
     val trunk = Swatch("plain-trunk", 0.36f, 0.24f, 0.14f)
-    val canopy = Swatch("plain-canopy", 0.13f, 0.36f, 0.13f)
-    val verge = Swatch("plain-verge", 0.34f, 0.46f, 0.22f)
+    val canopy = Swatch("plain-canopy", 0.12f, 0.34f, 0.12f)
+    val canopyLight = Swatch("plain-canopy-light", 0.28f, 0.50f, 0.18f)
+    val bush = Swatch("plain-bush", 0.22f, 0.42f, 0.16f)
+    val verge = Swatch("plain-verge", 0.40f, 0.50f, 0.24f)
+    /** Soft patch under the car. Unlit, so a failed shadow map cannot black the world. */
+    val contact = Swatch("plain-contact", 0.07f, 0.08f, 0.07f)
     val center = Swatch("plain-center", 0.94f, 0.94f, 0.92f)
     val edge = Swatch("plain-edge", 0.90f, 0.90f, 0.88f)
     val kerbRed = Swatch("plain-kerb-red", 0.78f, 0.08f, 0.05f)
     val kerbWhite = Swatch("plain-kerb-white", 0.94f, 0.94f, 0.92f)
     /** Horizon first, zenith last. Drawn as untextured rings, not an HDR image. */
     val dayGradient = listOf(
-        Swatch("plain-sky-band-0", 0.78f, 0.88f, 0.95f),
-        Swatch("plain-sky-band-1", 0.62f, 0.78f, 0.94f),
-        Swatch("plain-sky-band-2", 0.46f, 0.66f, 0.92f),
-        Swatch("plain-sky-band-3", 0.32f, 0.56f, 0.88f),
-        Swatch("plain-sky-band-4", 0.22f, 0.46f, 0.84f)
+        Swatch("plain-sky-band-0", 0.80f, 0.88f, 0.95f),
+        Swatch("plain-sky-band-1", 0.90f, 0.94f, 0.97f),
+        Swatch("plain-sky-band-2", 0.50f, 0.72f, 0.94f),
+        Swatch("plain-sky-band-3", 0.28f, 0.54f, 0.90f),
+        Swatch("plain-sky-band-4", 0.16f, 0.40f, 0.82f)
     )
+    val cloud = Swatch("plain-sky-cloud", 0.95f, 0.96f, 0.98f)
+    val nightCloud = Swatch("plain-night-cloud", 0.16f, 0.20f, 0.30f)
     val nightGradient = listOf(
         Swatch("plain-night-band-0", 0.16f, 0.20f, 0.30f),
         Swatch("plain-night-band-1", 0.12f, 0.15f, 0.24f),
@@ -103,6 +109,13 @@ object PlainWorld {
      * by the same amount and the unlit colors stay in the 0–1 range.
      */
     const val sunLux = 3.2f
+    /**
+     * Fill for the lit car only. The unlit road ignores it. The chase camera
+     * looks at the rear face, which the overhead sun barely reaches, so the
+     * fill has to be strong enough for a silver base color to stay silver.
+     */
+    const val carFillIntensity = 5.5f
+    const val carFillNight = 0.45f
     /** Depth haze in the horizon color. The near road stays clear; distant ground fades. */
     const val fogDistance = 150f
     const val fogDensity = 0.0032f
@@ -132,14 +145,18 @@ object PlainWorld {
     fun takesDetail(name: String): Boolean {
         return isAsphalt(name) || isGravel(name) || name == ground.name || name == grassDeep.name ||
             name == grassLight.name || name == earth.name || name == rock.name || name == verge.name ||
-            name == trunk.name || name == canopy.name
+            name == trunk.name || name == canopy.name || name == canopyLight.name || name == bush.name
+    }
+
+    fun isPlant(name: String): Boolean {
+        return name == trunk.name || name == canopy.name || name == canopyLight.name || name == bush.name
     }
 
     val all = listOf(
         ground, grassDeep, grassLight, earth, rock,
         road, roadShade, roadWarm, roadCool, roadSpeck,
         shoulder, shoulderDark, shoulderLight, verge,
-        trunk, canopy,
+        trunk, canopy, canopyLight, bush, contact, cloud,
         center, edge, kerbRed, kerbWhite, sky, nightSky
     ) + haze
 
@@ -172,6 +189,7 @@ object PlainWorld {
             kerbWhite.name to Strip(kerbWhite.name)
         )
         for (swatch in gravel + asphalt) strips.getOrPut(swatch.name) { Strip(swatch.name) }
+        val sharp = BooleanArray(curve.size) { realCorner(curve, it) }
         for (index in 0 until curve.size - 1) {
             val a = curve[index]
             val b = curve[index + 1]
@@ -182,9 +200,11 @@ object PlainWorld {
             val profileB = RoadProfile.of(b.kind)
             val halfA = profileA.halfWidth
             val halfB = profileB.halfWidth
-            val gravelName = gravelName(a.along, a.east)
-            band(strips.getValue(gravelName), a, b, rightA, rightB, halfA, halfA + profileA.shoulder, halfB, halfB + profileB.shoulder, 0.02)
-            band(strips.getValue(gravelName), a, b, rightA, rightB, -(halfA + profileA.shoulder), -halfA, -(halfB + profileB.shoulder), -halfB, 0.02)
+            val lip = 0.42
+            band(strips.getValue(shoulderDark.name), a, b, rightA, rightB, halfA, halfA + lip, halfB, halfB + lip, 0.025)
+            band(strips.getValue(shoulder.name), a, b, rightA, rightB, halfA + lip, halfA + profileA.shoulder, halfB + lip, halfB + profileB.shoulder, 0.02)
+            band(strips.getValue(shoulderDark.name), a, b, rightA, rightB, -(halfA + lip), -halfA, -(halfB + lip), -halfB, 0.025)
+            band(strips.getValue(shoulder.name), a, b, rightA, rightB, -(halfA + profileA.shoulder), -(halfA + lip), -(halfB + profileB.shoulder), -(halfB + lip), 0.02)
             val asphaltName = asphaltName(a.along, a.east, a.north)
             band(strips.getValue(asphaltName), a, b, rightA, rightB, -halfA, halfA, -halfB, halfB, 0.06)
             if (profileA.edgeLines || profileB.edgeLines) {
@@ -194,7 +214,7 @@ object PlainWorld {
             if (profileA.center == CenterMark.DASH && (a.along / 8.0).toInt() % 2 == 0) {
                 band(strips.getValue(center.name), a, b, rightA, rightB, -0.13, 0.13, -0.13, 0.13, 0.11)
             }
-            if ((profileA.kerbs || profileB.kerbs) && (abs(a.turn) > 0.02 || abs(b.turn) > 0.02)) {
+            if ((profileA.kerbs || profileB.kerbs) && (sharp[index] || sharp[index + 1])) {
                 val kerb = if ((a.along / 1.6).toInt() % 2 == 0) kerbRed.name else kerbWhite.name
                 band(strips.getValue(kerb), a, b, rightA, rightB, halfA - 0.04, halfA + 0.58, halfB - 0.04, halfB + 0.58, 0.10)
                 band(strips.getValue(kerb), a, b, rightA, rightB, -(halfA + 0.58), -(halfA - 0.04), -(halfB + 0.58), -(halfB - 0.04), 0.10)
@@ -313,8 +333,8 @@ object PlainWorld {
         }
         if (rise > 8.0) return rock.name
         if (rise > 2.4) return earth.name
-        if (distance < 8.0) return gravel[Math.floorMod((east * 3.0 + north * 5.0).toInt(), gravel.size)].name
-        if (distance < 14.0) return verge.name
+        if (distance < 7.4) return shoulder.name
+        if (distance < 16.0) return verge.name
         val patch = sin(east * 0.011) * cos(north * 0.008)
         return when {
             patch < -0.45 -> earth.name
@@ -326,15 +346,10 @@ object PlainWorld {
 
     /** Stable asphalt patches. The fine grain is the runtime texture, not a second stripe. */
     private fun asphaltName(along: Double, east: Double, north: Double): String {
-        val cell = (along / 6.5).toInt()
+        val cell = (along / 12.0).toInt()
         val salt = (east * 0.41 + north * 0.27).toInt()
         val mixed = (cell * 1103515245 + salt * 12345).ushr(16)
         return asphalt[Math.floorMod(mixed, asphalt.size)].name
-    }
-
-    private fun gravelName(along: Double, east: Double): String {
-        val mixed = (along / 4.5).toInt() * 19 + (east * 0.2).toInt() * 7
-        return gravel[Math.floorMod(mixed, gravel.size)].name
     }
 
     private fun heightAt(
@@ -480,38 +495,174 @@ object PlainWorld {
         strip.quad(a0, a1, b1, b0)
     }
 
-    /** Crossed cards beside the carriageway. They stay off the asphalt. */
+    /**
+     * Red-white kerbs only where the heading changes by several degrees across
+     * about fourteen meters. A gentle bend stays a plain shoulder.
+     */
+    private fun realCorner(curve: List<RoadSample>, index: Int): Boolean {
+        val here = curve[index]
+        var before = here
+        var after = here
+        for (sample in curve) {
+            if (sample.along <= here.along - 7.0) before = sample
+            if (after === here && sample.along >= here.along + 7.0) after = sample
+        }
+        if (before === here || after === here) return abs(here.turn) > 0.08
+        return corner(before, here, after) > 0.07
+    }
+
+    /** Rounded crowns and low bushes beside the carriageway. They stay off the asphalt. */
     private fun sceneryStrips(curve: List<RoadSample>, from: Double, until: Double): Map<String, Strip> {
         val trunkStrip = Strip(trunk.name)
         val canopyStrip = Strip(canopy.name)
+        val lightStrip = Strip(canopyLight.name)
+        val bushStrip = Strip(bush.name)
         for (index in curve.indices) {
             val sample = curve[index]
             if (sample.along < from || sample.along >= until) continue
-            val slot = (sample.along / 32.0).toInt()
-            if (abs(sample.along - slot * 32.0) > 1.5) continue
-            val side = if (slot and 1 == 0) 1.0 else -1.0
-            val lateral = side * (16.0 + (slot % 3) * 2.6)
-            val axis = right(curve, index)
-            val east = sample.east + axis.first * lateral
-            val north = sample.north + axis.second * lateral
-            val groundY = sample.elevation.toDouble()
-            val height = 4.2 + (slot % 4) * 0.7
-            pyramid(trunkStrip, east, north, groundY, groundY + height * 0.42, 0.22)
-            pyramid(canopyStrip, east, north, groundY + height * 0.32, groundY + height, 1.35)
+            val treeSlot = (sample.along / 28.0).toInt()
+            if (abs(sample.along - treeSlot * 28.0) <= 1.4) {
+                plantTree(trunkStrip, canopyStrip, lightStrip, curve, index, sample, treeSlot)
+            }
+            val bushSlot = (sample.along / 15.0).toInt()
+            if (bushSlot % 2 == 1 && abs(sample.along - bushSlot * 15.0) <= 1.2) {
+                plantBush(bushStrip, curve, index, sample, bushSlot)
+            }
         }
-        return linkedMapOf(trunk.name to trunkStrip, canopy.name to canopyStrip)
+        return linkedMapOf(
+            trunk.name to trunkStrip,
+            canopy.name to canopyStrip,
+            canopyLight.name to lightStrip,
+            bush.name to bushStrip
+        )
     }
 
-    private fun pyramid(strip: Strip, east: Double, north: Double, y0: Double, y1: Double, half: Double) {
-        val apex = strip.addPoint(east, north, y1)
-        val a = strip.addPoint(east - half, north - half, y0)
-        val b = strip.addPoint(east + half, north - half, y0)
-        val c = strip.addPoint(east + half, north + half, y0)
-        val d = strip.addPoint(east - half, north + half, y0)
-        strip.tri(apex, a, b)
-        strip.tri(apex, b, c)
-        strip.tri(apex, c, d)
-        strip.tri(apex, d, a)
+    private fun plantTree(
+        trunkStrip: Strip,
+        canopyStrip: Strip,
+        lightStrip: Strip,
+        curve: List<RoadSample>,
+        index: Int,
+        sample: RoadSample,
+        slot: Int
+    ) {
+        val side = if (slot and 1 == 0) 1.0 else -1.0
+        val lateral = side * (16.0 + (slot % 4) * 2.4)
+        val placed = beside(curve, index, sample, lateral)
+        val groundY = sample.elevation.toDouble()
+        val kind = Math.floorMod(slot, 3)
+        val height = if (kind == 1) 6.4 else 4.6
+        crown(trunkStrip, placed.first, placed.second, groundY, groundY + height * 0.38, 0.18, 6)
+        when (kind) {
+            1 -> {
+                crown(canopyStrip, placed.first, placed.second, groundY + height * 0.30, groundY + height * 0.68, 0.85, 6)
+                crown(lightStrip, placed.first, placed.second, groundY + height * 0.58, groundY + height, 0.55, 6)
+            }
+            2 -> {
+                crown(canopyStrip, placed.first - 0.45, placed.second, groundY + height * 0.28, groundY + height * 0.74, 1.25, 6)
+                crown(lightStrip, placed.first + 0.5, placed.second + 0.15, groundY + height * 0.46, groundY + height, 0.95, 6)
+            }
+            else -> {
+                crown(canopyStrip, placed.first, placed.second, groundY + height * 0.26, groundY + height * 0.72, 1.45, 7)
+                crown(lightStrip, placed.first + 0.15, placed.second - 0.1, groundY + height * 0.55, groundY + height, 0.9, 6)
+            }
+        }
+    }
+
+    private fun plantBush(strip: Strip, curve: List<RoadSample>, index: Int, sample: RoadSample, slot: Int) {
+        val side = if (slot and 1 == 0) -1.0 else 1.0
+        val placed = beside(curve, index, sample, side * (10.5 + (slot % 3) * 1.2))
+        val groundY = sample.elevation.toDouble()
+        crown(strip, placed.first, placed.second, groundY + 0.05, groundY + 0.9, 0.8, 6)
+    }
+
+    private fun beside(
+        curve: List<RoadSample>,
+        index: Int,
+        sample: RoadSample,
+        lateral: Double
+    ): Pair<Double, Double> {
+        val axis = right(curve, index)
+        return (sample.east + axis.first * lateral) to (sample.north + axis.second * lateral)
+    }
+
+    /** A faceted ball, used for crowns and bushes. Not a single triangle. */
+    private fun crown(
+        strip: Strip,
+        east: Double,
+        north: Double,
+        y0: Double,
+        y1: Double,
+        radius: Double,
+        sides: Int
+    ) {
+        val mid = (y0 + y1) * 0.5
+        val top = strip.addPoint(east, north, y1)
+        val bottom = strip.addPoint(east, north, y0)
+        val ring = ArrayList<Int>(sides)
+        for (step in 0 until sides) {
+            val angle = step.toDouble() / sides * Math.PI * 2.0
+            ring.add(strip.addPoint(east + cos(angle) * radius, north + sin(angle) * radius, mid))
+        }
+        for (step in 0 until sides) {
+            val next = (step + 1) % sides
+            strip.tri(top, ring[step], ring[next])
+            strip.tri(bottom, ring[next], ring[step])
+        }
+    }
+
+    /** Soft cloud puffs around the origin. The sky moves them with the car. */
+    fun skyClouds(): List<RaceMesh> {
+        val strip = Strip(cloud.name)
+        val puffs = arrayOf(
+            doubleArrayOf(-62.0, 42.0, 78.0, 20.0, 5.0, 11.0),
+            doubleArrayOf(54.0, 50.0, 120.0, 16.0, 4.2, 9.0),
+            doubleArrayOf(8.0, 64.0, 168.0, 24.0, 5.4, 13.0),
+            doubleArrayOf(-96.0, 36.0, 140.0, 14.0, 3.6, 8.0),
+            doubleArrayOf(92.0, 46.0, 64.0, 13.0, 3.4, 7.5),
+            doubleArrayOf(-16.0, 72.0, 210.0, 28.0, 6.0, 15.0)
+        )
+        for (puff in puffs) cloud(strip, puff[0], puff[1], puff[2], puff[3], puff[4], puff[5])
+        return listOfNotNull(strip.build())
+    }
+
+    private fun cloud(
+        strip: Strip,
+        east: Double,
+        y: Double,
+        north: Double,
+        rx: Double,
+        ry: Double,
+        rz: Double
+    ) {
+        val sides = 8
+        val bands = 3
+        val rings = ArrayList<List<Int>>(bands + 1)
+        for (band in 0..bands) {
+            val lat = (band.toDouble() / bands - 0.5) * Math.PI
+            val ringRadius = cos(lat)
+            val ring = ArrayList<Int>(sides)
+            for (step in 0 until sides) {
+                val angle = step.toDouble() / sides * Math.PI * 2.0
+                ring.add(
+                    strip.addPoint(
+                        east + cos(angle) * ringRadius * rx,
+                        north + sin(angle) * ringRadius * rz,
+                        y + sin(lat) * ry
+                    )
+                )
+            }
+            rings.add(ring)
+        }
+        for (band in 0 until bands) {
+            val lower = rings[band]
+            val upper = rings[band + 1]
+            for (step in 0 until sides) {
+                val next = (step + 1) % sides
+                strip.tri(lower[step], upper[step], upper[next])
+                strip.tri(lower[step], upper[next], lower[next])
+            }
+        }
     }
 
     private fun right(samples: List<RoadSample>, index: Int): Pair<Double, Double> {

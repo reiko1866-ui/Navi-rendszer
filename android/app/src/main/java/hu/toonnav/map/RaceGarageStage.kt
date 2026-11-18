@@ -135,10 +135,10 @@ class RaceGarageStage(
                 val sky = Skybox.Builder().color(0.62f, 0.72f, 0.82f, 1f).build(engine)
                 scene.skybox = sky
                 val fill = FloatArray(27)
-                fill[0] = 0.55f
-                fill[1] = 0.55f
-                fill[2] = 0.58f
-                val indirect = IndirectLight.Builder().irradiance(3, fill).intensity(1f).build(engine)
+                fill[0] = 0.66f
+                fill[1] = 0.70f
+                fill[2] = 0.78f
+                val indirect = IndirectLight.Builder().irradiance(3, fill).intensity(PlainWorld.carFillIntensity).build(engine)
                 scene.indirectLight = indirect
                 val light = EntityManager.get().create()
                 LightManager.Builder(LightManager.Type.SUN)

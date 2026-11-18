@@ -115,6 +115,15 @@ class PlainWorldTest {
         assertTrue(meshes.any { PlainWorld.isAsphalt(it.material) && covers(it, end.first, end.second) })
         assertTrue(meshes.any { it.material == PlainWorld.kerbRed.name })
         assertTrue(meshes.any { it.material == PlainWorld.kerbWhite.name })
+        val gentle = ArrayList<Pair<Double, Double>>()
+        var gentleCursor = 0.0
+        while (gentleCursor <= 160.0) {
+            val angle = gentleCursor / 500.0
+            gentle.add((500.0 * kotlin.math.sin(angle)) to (500.0 * (1.0 - kotlin.math.cos(angle))))
+            gentleCursor += 8.0
+        }
+        val gentleMeshes = PlainWorld.meshes(samples(gentle))
+        assertFalse(gentleMeshes.any { it.material == PlainWorld.kerbRed.name })
         val grass = meshes.first { it.material == PlainWorld.ground.name }
         var low = Float.POSITIVE_INFINITY
         var high = Float.NEGATIVE_INFINITY
@@ -177,7 +186,7 @@ class PlainWorldTest {
         assertTrue("asphalt stays flat $roadHigh", roadHigh < 0.2f)
         for (mesh in meshes) {
             if (PlainWorld.isAsphalt(mesh.material) || mesh.material == PlainWorld.center.name || mesh.material == PlainWorld.edge.name) continue
-            if (mesh.material == PlainWorld.trunk.name || mesh.material == PlainWorld.canopy.name) continue
+            if (PlainWorld.isPlant(mesh.material)) continue
             for (vertex in 0 until mesh.vertexCount) {
                 val east = mesh.positions[vertex * 3]
                 val y = mesh.positions[vertex * 3 + 1]
@@ -596,7 +605,9 @@ class PlainWorldTest {
             PlainWorld.edge.name,
             PlainWorld.center.name
         )
-        val meshes = PlainWorld.meshes(samples, field = field).sortedBy { order.indexOf(it.material) }
+        val meshes = (PlainWorld.meshes(samples, field = field) + PlainWorld.skyClouds().map {
+            shifted(it, east, surface, north)
+        }).sortedBy { order.indexOf(it.material) }
         for (mesh in meshes) {
             val category = categoryOf(mesh.material)
             val base = PlainWorld.swatch(mesh.material)!!.packed() and 0xFFFFFF
@@ -658,6 +669,18 @@ class PlainWorldTest {
             }
         }
         return Shot(pixels, categories, width, height, skyCount, ground, road, shoulder, white, far)
+    }
+
+    private fun shifted(mesh: RaceMesh, east: Double, y: Double, north: Double): RaceMesh {
+        val positions = mesh.positions.copyOf()
+        var index = 0
+        while (index < positions.size) {
+            positions[index] += east.toFloat()
+            positions[index + 1] += y.toFloat()
+            positions[index + 2] += north.toFloat()
+            index += 3
+        }
+        return mesh.copy(positions = positions)
     }
 
     private fun categoryOf(name: String): Int {

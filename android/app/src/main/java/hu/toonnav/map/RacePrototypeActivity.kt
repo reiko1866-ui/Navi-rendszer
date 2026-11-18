@@ -1095,7 +1095,7 @@ private class RaceRenderer(
             }
             val sun = engine.lightManager.getInstance(light)
             engine.lightManager.setIntensity(sun, if (night) 0.2f else PlainWorld.sunLux)
-            indirect.setIntensity(if (night) 0.08f else 1f)
+            indirect.setIntensity(if (night) PlainWorld.carFillNight else PlainWorld.carFillIntensity)
             camera.setExposure(PlainWorld.aperture, PlainWorld.shutter, PlainWorld.sensitivity)
             plainGpu?.applySky(night)
             val clear = renderer.clearOptions
@@ -1287,6 +1287,7 @@ private class RaceRenderer(
                 swapView.fogOptions = haze
             }
             plainGpu.placeSky(east, north, surface)
+            plainGpu.placeContact(east, north, turned, surface)
         }
         val transform = engine.transformManager
         val car = transform.getInstance(carEntity())
@@ -1400,16 +1401,16 @@ private class RaceRenderer(
                     .build(engine)
                 scene.skybox = sky
                 val fill = FloatArray(27)
-                fill[0] = 0.45f
-                fill[1] = 0.45f
-                fill[2] = 0.48f
-                val indirect = IndirectLight.Builder().irradiance(3, fill).intensity(1f).build(engine)
+                fill[0] = 0.66f
+                fill[1] = 0.70f
+                fill[2] = 0.78f
+                val indirect = IndirectLight.Builder().irradiance(3, fill).intensity(PlainWorld.carFillIntensity).build(engine)
                 scene.indirectLight = indirect
                 val light = EntityManager.get().create()
                 LightManager.Builder(LightManager.Type.SUN)
                     .color(1.0f, 0.98f, 0.94f)
                     .intensity(PlainWorld.sunLux)
-                    .direction(0.25f, -0.92f, 0.30f)
+                    .direction(0.18f, -0.58f, 0.78f)
                     .castShadows(false)
                     .build(engine, light)
                 scene.addEntity(light)

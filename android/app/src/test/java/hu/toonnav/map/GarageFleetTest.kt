@@ -17,18 +17,18 @@ import java.util.concurrent.TimeUnit
 
 class GarageFleetTest {
     @Test
-    fun offersEightLiveriesAndKeepsTheCurrentMarkerUntilOneIsChosen() {
-        assertEquals(8, GarageFleet.cars.size)
-        assertEquals(8, GarageFleet.cars.map { it.id }.toSet().size)
-        assertEquals(8, GarageFleet.cars.map { it.marker }.toSet().size)
-        assertEquals(8, GarageFleet.cars.map { it.name }.toSet().size)
+    fun offersTwelveLiveriesAndKeepsTheCurrentMarkerUntilOneIsChosen() {
+        assertEquals(12, GarageFleet.cars.size)
+        assertEquals(12, GarageFleet.cars.map { it.id }.toSet().size)
+        assertEquals(12, GarageFleet.cars.map { it.marker }.toSet().size)
+        assertEquals(12, GarageFleet.cars.map { it.name }.toSet().size)
         assertEquals("kek", GarageFleet.shown(null).id)
         assertEquals("kek", GarageFleet.shown("alap").id)
         assertEquals("piros", GarageFleet.shown("parazs").id)
         assertEquals("narancs", GarageFleet.shown("lang").id)
         assertTrue(GarageFleet.cars.all { it.defaultNumber in GarageFleet.numberMin..GarageFleet.numberMax })
         assertTrue(GarageFleet.cars.all { it.frontWing != it.rearWing })
-        assertEquals(8, GarageFleet.cars.map { it.body to it.frontWing to it.rearWing }.toSet().size)
+        assertEquals(12, GarageFleet.cars.map { it.body to it.frontWing to it.rearWing }.toSet().size)
         assertEquals(R.drawable.ic_race_car, GarageFleet.markerRes(null))
         assertEquals(R.drawable.ic_race_car, GarageFleet.markerRes("ismeretlen"))
         assertEquals(R.drawable.ic_garage_piros, GarageFleet.markerRes("parazs"))
@@ -43,7 +43,17 @@ class GarageFleetTest {
         assertEquals("rear", RaceLivery.part("drs_flap_shell", "paint_primary@drs_flap_shell"))
         assertEquals("rim", RaceLivery.part("wheel_FL_mesh", "rim"))
         assertEquals(null, RaceLivery.part("wheel_FL_mesh", "tire"))
-        assertEquals(null, RaceLivery.part("body", "carbon_body"))
+        assertEquals("side", RaceLivery.part("body", "carbon_body"))
+        assertEquals("front", RaceLivery.part("front_wing_shell", "carbon"))
+        assertEquals("front", RaceLivery.part("front_wing_shell", "carbon@shell"))
+        assertEquals("rear", RaceLivery.part("rear_wing_shell", "carbon"))
+        assertEquals(null, RaceLivery.part("body", "dark_body"))
+        assertEquals(null, RaceLivery.part("body", "rain_light_body"))
+        assertEquals(null, RaceLivery.part("wheel_FL_mesh", "wheel_cover"))
+        val silver = GarageFleet.car("ezust")!!
+        assertTrue(channel(silver.body) > 180)
+        assertTrue((silver.side and 0xFF) > ((silver.side ushr 16) and 0xFF))
+        assertTrue(silver.frontWing != silver.rearWing)
         val red = GarageFleet.car("piros")!!
         assertEquals(red.frontWing, RaceLivery.color("front", red))
         assertEquals(red.rearWing, RaceLivery.color("rear", red))

@@ -31,6 +31,7 @@ class PlainGpu(
     private val instances = HashMap<String, MaterialInstance>()
     private val chunks = HashMap<Int, List<Part>>()
     private val skyParts = ArrayList<Part>()
+    private var contact: Part? = null
     private val retained = ArrayList<ByteBuffer>()
     private var white: Texture? = null
     private var grain: Texture? = null
@@ -61,6 +62,7 @@ class PlainGpu(
             instances[swatch.name] = instance
         }
         buildSky(sampler)
+        buildContact()
     }
 
     /** Moves the sky rings with the car. The mesh is not rebuilt. */
@@ -87,6 +89,26 @@ class PlainGpu(
             val name = PlainWorld.dayGradient[index].name
             instances[name]?.setParameter("baseColor", color.red, color.green, color.blue, 1f)
         }
+        val puff = if (night) PlainWorld.nightCloud else PlainWorld.cloud
+        instances[PlainWorld.cloud.name]?.setParameter("baseColor", puff.red, puff.green, puff.blue, 1f)
+    }
+
+    /** Moves the dark patch with the car. It is ordinary geometry, not a shadow map. */
+    fun placeContact(east: Double, north: Double, bearingDegrees: Double, altitude: Double) {
+        val part = contact ?: return
+        val yaw = Math.toRadians(bearingDegrees)
+        val cosine = cos(yaw).toFloat()
+        val sine = sin(yaw).toFloat()
+        val matrix = floatArrayOf(
+            cosine, 0f, -sine, 0f,
+            0f, 1f, 0f, 0f,
+            sine, 0f, cosine, 0f,
+            east.toFloat(), (altitude + 0.03).toFloat(), north.toFloat(), 1f
+        )
+        val transforms = engine.transformManager
+        var instance = transforms.getInstance(part.entity)
+        if (instance == 0) instance = transforms.create(part.entity)
+        transforms.setTransform(instance, matrix)
     }
 
     fun replaceAll(built: Map<Int, List<RaceMesh>>) {
@@ -114,6 +136,8 @@ class PlainGpu(
         for (key in stale) remove(chunks.remove(key))
         remove(skyParts)
         skyParts.clear()
+        contact?.let { remove(listOf(it)) }
+        contact = null
         for (instance in instances.values) engine.destroyMaterialInstance(instance)
         instances.clear()
         white?.let { engine.destroyTexture(it) }
@@ -299,6 +323,32 @@ class PlainGpu(
             val part = upload(mesh, fog = false) ?: continue
             skyParts.add(part)
         }
+        for (mesh in PlainWorld.skyClouds()) {
+            val part = upload(mesh, fog = false) ?: continue
+            skyParts.add(part)
+        }
+    }
+
+    private fun buildContact() {
+        val instance = instances[PlainWorld.contact.name] ?: return
+        val sides = 10
+        val positions = FloatArray((sides + 1) * 3)
+        val uvs = FloatArray((sides + 1) * 2)
+        val indices = IntArray(sides * 3)
+        positions[1] = 0.02f
+        for (step in 0 until sides) {
+            val angle = step.toDouble() / sides * Math.PI * 2.0
+            val vertex = step + 1
+            positions[vertex * 3] = (cos(angle) * 1.15).toFloat()
+            positions[vertex * 3 + 1] = 0.02f
+            positions[vertex * 3 + 2] = (sin(angle) * 2.15).toFloat()
+            val offset = step * 3
+            indices[offset] = 0
+            indices[offset + 1] = vertex
+            indices[offset + 2] = if (step + 1 == sides) 1 else vertex + 1
+        }
+        val mesh = RaceMesh(PlainWorld.contact.name, positions, FloatArray(positions.size), uvs, indices)
+        contact = upload(mesh, fog = false)
     }
 
     private fun cylinder(name: String, radius: Double, y0: Float, y1: Float, segments: Int): RaceMesh {
