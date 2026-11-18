@@ -57,6 +57,8 @@ class MainActivity : ComponentActivity() {
     private val localAddresses = HungaryAddresses(this)
     private val addressSearch = Executors.newSingleThreadExecutor()
     private val routes = OsrmClient()
+    private val gpsFilter = GpsTrackFilter()
+    private val roadFollow = RoadFollow()
     private val guidance = GuidanceSession()
     private val voice by lazy { VoiceGuide(assets) }
     private val hud = DriveHud(this)
@@ -112,6 +114,7 @@ class MainActivity : ComponentActivity() {
     private var lastHasSpeed = false
     private var lastAccuracy: Double? = null
     private var lastBearing: Double? = null
+    private var lastEstimate: GpsEstimate? = null
     private var displayedBearing: Double? = null
     private var cockpitGliding = false
     private val reroutes = RerouteSession()
@@ -647,21 +650,35 @@ class MainActivity : ComponentActivity() {
             reportReroute(getString(R.string.status_off_route), true)
             return
         }
-        if (reroutes.inFlight) {
+        val replace = reroutes.shouldReplace(now, lastLongitude, lastLatitude)
+        if (reroutes.inFlight && !replace) {
             reportReroute(getString(R.string.status_reroute_working), false)
             return
         }
-        if (!reroutes.allow(now, confirmed = true, guiding = true)) {
+        if (!replace && !reroutes.allow(now, confirmed = true, guiding = true)) {
             if (reroutes.cooling(now)) reportReroute(getString(R.string.status_reroute_unavailable), true)
             else reportReroute(getString(R.string.status_off_route), true)
             return
         }
+        val ticket = if (replace) {
+            reroutes.replace(lastLongitude, lastLatitude, now)
+        } else {
+            reroutes.started(lastLongitude, lastLatitude, now)
+        }
         val seq = ++routeSeq
-        reroutes.started()
         reportReroute(getString(R.string.status_reroute_working), false)
-        routes.requestRoute(lastLongitude, lastLatitude, goal.lon, goal.lat) { result ->
+        routes.requestRoute(
+            lastLongitude,
+            lastLatitude,
+            goal.lon,
+            goal.lat,
+            startRadiusMeters = ReroutePolicy.startRadius(lastAccuracy),
+            connectTimeoutMs = ReroutePolicy.connectTimeoutMs,
+            readTimeoutMs = ReroutePolicy.readTimeoutMs,
+            replaceActive = true
+        ) { result ->
             mainHandler.post {
-                if (seq != routeSeq) return@post
+                if (reroutes.stale(ticket) || seq != routeSeq) return@post
                 if (!driveView.guiding) {
                     reroutes.reset()
                     return@post
@@ -694,6 +711,7 @@ class MainActivity : ComponentActivity() {
         routePoints = plan.coordinates
         traveledMeters = 0.0
         guidance.setPlan(plan)
+        roadFollow.reset()
         loadedStyle?.let { drawRoute(it) }
         reroutes.succeeded(SystemClock.elapsedRealtime())
         navigationHold = false
@@ -717,6 +735,7 @@ class MainActivity : ComponentActivity() {
         routeJson = json
         routePoints = plan.coordinates
         traveledMeters = 0.0
+        roadFollow.reset()
         loadedStyle?.let { drawRoute(it) }
         navigationHold = false
         syncRouteChrome()
@@ -910,6 +929,7 @@ class MainActivity : ComponentActivity() {
 
     private fun stopGuidance() {
         reroutes.reset()
+        roadFollow.reset()
         NavigationVoice.clearRetained()
         voice.halt()
         offRouteSpoken = false
@@ -1076,21 +1096,28 @@ class MainActivity : ComponentActivity() {
 
     private fun refreshPilot() {
         if (!::pilotCockpit.isInitialized || !pilotVisible) return
-        val age = if (sawFix) SystemClock.elapsedRealtime() - lastFixElapsed else -1L
-        val pose = RouteMotion.pose(
-            routePoints,
-            lastLongitude,
-            lastLatitude,
-            if (lastHasSpeed) lastSpeedMps.toDouble() else null,
-            lastHasSpeed,
-            age,
-            sawFix
-        )
+        val now = SystemClock.elapsedRealtime()
+        val pose = if (!sawFix) {
+            null
+        } else {
+            roadFollow.advance(
+                routePoints,
+                lastLongitude,
+                lastLatitude,
+                lastSpeedMps.toDouble(),
+                lastHasSpeed,
+                lastAccuracy,
+                lastFixElapsed,
+                now,
+                lastBearing
+            )
+        }
         val strip = if (pose == null) {
             RoadStrip.EMPTY
         } else {
             RoadRibbon.project(pose.lon, pose.lat, pose.bearingDegrees, routePoints)
         }
+        val age = if (sawFix) now - lastFixElapsed else -1L
         val speed = if (!sawFix) null else GpsReadout.speedKmh(lastSpeedMps, lastHasSpeed, age)
         val garage = GarageStore(this)
         pilotCockpit.show(
@@ -1370,15 +1397,28 @@ class MainActivity : ComponentActivity() {
         )
         val mock = if (Build.VERSION.SDK_INT >= 31) location.isMock else location.isFromMockProvider
         if (GpsFixGate.verdict(location.latitude, location.longitude, age, mock) != GpsSampleVerdict.LIVE) return
+        val accuracy = if (location.hasAccuracy()) location.accuracy.toDouble() else null
+        val filtered = gpsFilter.accept(
+            GpsSample(
+                location.longitude,
+                location.latitude,
+                SystemClock.elapsedRealtime(),
+                accuracy,
+                if (location.hasSpeed()) location.speed.toDouble() else null,
+                if (location.hasBearing()) location.bearing.toDouble() else null
+            )
+        )
+        if (filtered.rejected) return
         sawFix = true
         lastFixElapsed = SystemClock.elapsedRealtime()
-        lastLatitude = location.latitude
-        lastLongitude = location.longitude
-        lastHasSpeed = location.hasSpeed()
-        lastSpeedMps = if (location.hasSpeed()) location.speed else 0f
-        lastAccuracy = if (location.hasAccuracy()) location.accuracy.toDouble() else null
-        lastBearing = if (location.hasBearing()) location.bearing.toDouble() else null
+        lastLatitude = filtered.lat
+        lastLongitude = filtered.lon
+        lastHasSpeed = filtered.speedMetersPerSecond >= GpsTrackFilter.stoppedMetersPerSecond
+        lastSpeedMps = filtered.speedMetersPerSecond.toFloat()
+        lastAccuracy = filtered.accuracyMeters
+        lastBearing = filtered.bearingDegrees
         lastLocation = location
+        lastEstimate = filtered
         pushLocation(location)
         if (!centeredOnce && !guiding) {
             centeredOnce = true
@@ -1407,7 +1447,15 @@ class MainActivity : ComponentActivity() {
             return
         }
         if (guiding) {
-            guidance.onFix(lastLongitude, lastLatitude, SystemClock.elapsedRealtime(), ageMs, lastAccuracy)?.let { renderCue(it) }
+            guidance.onFix(
+                lastLongitude,
+                lastLatitude,
+                SystemClock.elapsedRealtime(),
+                ageMs,
+                lastAccuracy,
+                lastSpeedMps.toDouble(),
+                lastBearing
+            )?.let { renderCue(it) }
             followVehicle()
         } else if (blockingStatus()) {
             navigationHold = false
@@ -1552,11 +1600,16 @@ class MainActivity : ComponentActivity() {
     private fun pushLocation(location: Location) {
         if (!locationReady) return
         val component = map?.locationComponent ?: return
+        val filtered = lastEstimate
         val shown = Location(location)
-        val speed = if (location.hasSpeed()) location.speed.toDouble() else null
+        if (filtered != null) {
+            shown.latitude = filtered.lat
+            shown.longitude = filtered.lon
+        }
+        val speed = filtered?.speedMetersPerSecond ?: if (location.hasSpeed()) location.speed.toDouble() else null
         val route = routeBearing()
         val chosen = VehicleHeading.choose(
-            if (location.hasBearing()) location.bearing.toDouble() else null,
+            filtered?.bearingDegrees ?: if (location.hasBearing()) location.bearing.toDouble() else null,
             speed,
             route
         )

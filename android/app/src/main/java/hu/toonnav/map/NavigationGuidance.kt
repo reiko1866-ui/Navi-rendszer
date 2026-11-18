@@ -154,7 +154,15 @@ class GuidanceSession {
         tracker.clear()
     }
 
-    fun onFix(lon: Double, lat: Double, timeMs: Long, ageMs: Long, accuracyMeters: Double?): GuidanceCue? {
+    fun onFix(
+        lon: Double,
+        lat: Double,
+        timeMs: Long,
+        ageMs: Long,
+        accuracyMeters: Double?,
+        speedMetersPerSecond: Double? = null,
+        bearingDegrees: Double? = null
+    ): GuidanceCue? {
         if (plan == null) return null
         if (!lon.isFinite() || !lat.isFinite()) return refreshAge(ageMs)
         val trust = GpsTrustGate.assess(ageMs, accuracyMeters)
@@ -164,7 +172,7 @@ class GuidanceSession {
             tracker.resetHold()
             return hold(trust)
         }
-        val tracked = tracker.update(lon, lat, timeMs, accuracyMeters) ?: return null
+        val tracked = tracker.update(lon, lat, timeMs, accuracyMeters, speedMetersPerSecond, bearingDegrees) ?: return null
         val update = tracked.update
         val reached = trust == GpsTrust.USABLE &&
             !update.offRoute &&
