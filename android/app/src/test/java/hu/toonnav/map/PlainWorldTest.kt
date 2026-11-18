@@ -18,6 +18,12 @@ import kotlin.math.hypot
  * Filament frame and it is not a phone frame.
  */
 class PlainWorldTest {
+    private val groundCat = 1
+    private val ROAD = 2
+    private val SHOULDER = 3
+    private val WHITE = 4
+    private val FAR = 5
+    private val GROUND = groundCat
     @Test
     fun colorsArePlainAndNotMagenta() {
         assertFalse(LegacyBackdrop.enabled)
@@ -106,7 +112,7 @@ class PlainWorldTest {
         assertTrue(maxRoad < PlainWorld.roadHalf + 0.2)
         val end = points.last()
         assertTrue(end.first > 40.0)
-        assertTrue(covers(road, end.first, end.second))
+        assertTrue(meshes.any { PlainWorld.isAsphalt(it.material) && covers(it, end.first, end.second) })
         assertTrue(meshes.any { it.material == PlainWorld.kerbRed.name })
         assertTrue(meshes.any { it.material == PlainWorld.kerbWhite.name })
         val grass = meshes.first { it.material == PlainWorld.ground.name }
@@ -170,7 +176,8 @@ class PlainWorldTest {
         }
         assertTrue("asphalt stays flat $roadHigh", roadHigh < 0.2f)
         for (mesh in meshes) {
-            if (mesh.material == PlainWorld.road.name || mesh.material == PlainWorld.center.name || mesh.material == PlainWorld.edge.name) continue
+            if (PlainWorld.isAsphalt(mesh.material) || mesh.material == PlainWorld.center.name || mesh.material == PlainWorld.edge.name) continue
+            if (mesh.material == PlainWorld.trunk.name || mesh.material == PlainWorld.canopy.name) continue
             for (vertex in 0 until mesh.vertexCount) {
                 val east = mesh.positions[vertex * 3]
                 val y = mesh.positions[vertex * 3 + 1]
@@ -316,12 +323,35 @@ class PlainWorldTest {
         assertEquals("SREV_TAM", magic)
         val text = String(bytes, Charsets.ISO_8859_1)
         assertTrue(text.contains("baseColor"))
+        assertTrue(text.contains("albedo"))
         assertFalse(text.contains("ktx2"))
         assertFalse(text.contains("image/png"))
         assertFalse(bytes.containsPng())
         val mat = File("/workspace/android/materials/plain_solid.mat").readText()
         assertTrue(mat.contains("unlit"))
-        assertFalse(mat.contains("sampler"))
+        assertTrue(mat.contains("albedo"))
+        assertTrue(mat.contains("detail"))
+        assertFalse(mat.contains("normal"))
+        assertFalse(mat.contains("occlusion"))
+        assertFalse(mat.contains("ktx"))
+    }
+
+    @Test
+    fun straightRoadUsesSeveralAsphaltColorsAndCoordinates() {
+        val meshes = PlainWorld.meshes(PlainWorld.previewSamples(220.0, 8.0))
+        val asphalt = meshes.filter { PlainWorld.isAsphalt(it.material) }
+        assertTrue(asphalt.map { it.material }.toSet().size >= 3)
+        val road = asphalt.first()
+        var spread = 0f
+        for (index in 1 until road.vertexCount) {
+            spread = maxOf(spread, abs(road.uvs[index * 2] - road.uvs[0]))
+        }
+        assertTrue(spread > 1f)
+        assertTrue(meshes.any { it.material == PlainWorld.trunk.name })
+        assertTrue(meshes.any { it.material == PlainWorld.canopy.name })
+        val activity = source("RacePrototypeActivity.kt").readText()
+        assertTrue(activity.contains("steering_wheel_shell"))
+        assertTrue(activity.contains("removeEntity"))
     }
 
     @Test
@@ -357,11 +387,11 @@ class PlainWorldTest {
         assertTrue("wide road ${wide.road}", wide.road > 1500)
         assertTrue("wide shoulder ${wide.shoulder}", wide.shoulder > 400)
         assertTrue("wide white ${wide.white}", wide.white > 40)
-        assertTrue("wide far ${wide.far}", wide.far > 200)
+        assertTrue("wide far ${wide.far}", wide.far > 100)
         assertTrue("tall sky ${tall.sky}", tall.sky > 4000)
         assertTrue("tall ground ${tall.ground}", tall.ground > 2000)
         assertTrue("tall road ${tall.road}", tall.road > 800)
-        val wideRoad = rowSpan(wide, PlainWorld.road.packed() and 0xFFFFFF)
+        val wideRoad = rowSpan(wide, ROAD)
         assertTrue(wideRoad.nearWidth > wideRoad.farWidth)
         writePng(File("/tmp/plain-world-wide.png"), wide)
         writePng(File("/tmp/plain-world-tall.png"), tall)
@@ -513,6 +543,7 @@ class PlainWorldTest {
 
     private class Shot(
         val pixels: IntArray,
+        val surface: IntArray,
         val width: Int,
         val height: Int,
         val sky: Int,
@@ -538,6 +569,7 @@ class PlainWorldTest {
         val sky = PlainWorld.sky.packed() and 0xFFFFFF
         val horizon = PlainWorld.horizon.packed() and 0xFFFFFF
         val pixels = IntArray(width * height)
+        val categories = IntArray(width * height)
         for (y in 0 until height) {
             val down = (y.toFloat() / height.toFloat()).coerceIn(0f, 1f)
             val color = mixChannel(sky, horizon, down * down)
@@ -566,20 +598,31 @@ class PlainWorldTest {
         )
         val meshes = PlainWorld.meshes(samples, field = field).sortedBy { order.indexOf(it.material) }
         for (mesh in meshes) {
-            val color = PlainWorld.swatch(mesh.material)!!.packed() and 0xFFFFFF
+            val category = categoryOf(mesh.material)
+            val base = PlainWorld.swatch(mesh.material)!!.packed() and 0xFFFFFF
             val index = mesh.indices
             val position = mesh.positions
             var cursor = 0
             while (cursor < index.size) {
                 val polygon = ArrayList<ClipVertex>(3)
+                var eastSum = 0f
+                var northSum = 0f
                 for (corner in 0 until 3) {
                     val vertex = index[cursor + corner]
                     val x = position[vertex * 3]
                     val y = position[vertex * 3 + 1]
                     val z = position[vertex * 3 + 2]
+                    eastSum += x
+                    northSum += z
                     val ahead = (x - pose.eyeX) * forwardX + (y - pose.eyeY) * forwardY + (z - pose.eyeZ) * forwardZ
                     polygon.add(ClipVertex(x, y, z, ahead))
                 }
+                val shade = if (category == ROAD || category == SHOULDER || category == GROUND) {
+                    grain(eastSum / 3f, northSum / 3f)
+                } else {
+                    1f
+                }
+                val color = scaleColor(base, shade)
                 val clipped = clipNear(polygon, RaceCamera.nearMeters.toFloat())
                 if (clipped.size >= 3) {
                     val screen = Array(clipped.size) { corner ->
@@ -592,7 +635,7 @@ class PlainWorldTest {
                         )
                     }
                     for (corner in 1 until clipped.size - 1) {
-                        fill(pixels, depth, width, height, arrayOf(screen[0], screen[corner], screen[corner + 1]), color)
+                        fill(pixels, categories, depth, width, height, arrayOf(screen[0], screen[corner], screen[corner + 1]), color, category)
                     }
                 }
                 cursor += 3
@@ -604,33 +647,48 @@ class PlainWorldTest {
         var shoulder = 0
         var white = 0
         var far = 0
-        val groundColor = PlainWorld.ground.packed() and 0xFFFFFF
-        val roadColor = PlainWorld.road.packed() and 0xFFFFFF
-        val shoulderColor = PlainWorld.shoulder.packed() and 0xFFFFFF
-        val centerColor = PlainWorld.center.packed() and 0xFFFFFF
-        val edgeColor = PlainWorld.edge.packed() and 0xFFFFFF
-        val hazeColors = PlainWorld.haze.map { it.packed() and 0xFFFFFF }.toSet()
-        for (pixel in pixels) {
-            when (pixel) {
-                sky -> skyCount++
-                groundColor -> ground++
-                roadColor -> road++
-                shoulderColor -> shoulder++
-                centerColor, edgeColor -> white++
-                in hazeColors -> far++
-                else -> if ((pixel and 0xFF) > ((pixel ushr 16) and 0xFF)) skyCount++
+        for (category in categories) {
+            when (category) {
+                GROUND -> ground++
+                ROAD -> road++
+                SHOULDER -> shoulder++
+                WHITE -> white++
+                FAR -> far++
+                else -> skyCount++
             }
         }
-        return Shot(pixels, width, height, skyCount, ground, road, shoulder, white, far)
+        return Shot(pixels, categories, width, height, skyCount, ground, road, shoulder, white, far)
+    }
+
+    private fun categoryOf(name: String): Int {
+        return when {
+            PlainWorld.isAsphalt(name) -> ROAD
+            PlainWorld.isGravel(name) -> SHOULDER
+            name == PlainWorld.center.name || name == PlainWorld.edge.name ||
+                name == PlainWorld.kerbRed.name || name == PlainWorld.kerbWhite.name -> WHITE
+            name.startsWith("plain-haze") || name.startsWith("plain-sky") -> FAR
+            else -> GROUND
+        }
+    }
+
+    private fun grain(east: Float, north: Float): Float {
+        val n = (east * 13.1f).toInt() * 374761393 xor (north * 9.7f).toInt() * 668265263
+        val value = (n ushr 16) and 255
+        return 0.76f + value / 255f * 0.36f
+    }
+
+    private fun scaleColor(packed: Int, scale: Float): Int {
+        fun channel(shift: Int): Int = (((packed ushr shift) and 0xFF) * scale).toInt().coerceIn(0, 255)
+        return (channel(16) shl 16) or (channel(8) shl 8) or channel(0)
     }
 
     private data class Span(val nearWidth: Int, val farWidth: Int)
 
-    private fun rowSpan(shot: Shot, color: Int): Span {
+    private fun rowSpan(shot: Shot, category: Int): Span {
         fun widthAt(row: Int): Int {
             var count = 0
             val start = row * shot.width
-            for (x in 0 until shot.width) if (shot.pixels[start + x] == color) count++
+            for (x in 0 until shot.width) if (shot.surface[start + x] == category) count++
             return count
         }
         return Span(widthAt((shot.height * 0.82f).toInt()), widthAt((shot.height * 0.48f).toInt()))
@@ -669,11 +727,13 @@ class PlainWorldTest {
 
     private fun fill(
         pixels: IntArray,
+        surface: IntArray,
         depth: FloatArray,
         width: Int,
         height: Int,
         screen: Array<FloatArray>,
-        color: Int
+        color: Int,
+        category: Int
     ) {
         val minX = screen.minOf { it[0] }.toInt().coerceIn(0, width - 1)
         val maxX = screen.maxOf { it[0] }.toInt().coerceIn(0, width - 1)
@@ -701,6 +761,7 @@ class PlainWorldTest {
                 if (z < depth[slot]) {
                     depth[slot] = z
                     pixels[slot] = color
+                    surface[slot] = category
                 }
             }
         }

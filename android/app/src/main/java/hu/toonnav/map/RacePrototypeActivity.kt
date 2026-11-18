@@ -1386,6 +1386,10 @@ private class RaceRenderer(
                     plain
                 )
                 scene.addEntities(created.carAsset.entities)
+                for (name in arrayOf("steering_wheel", "steering_wheel_shell")) {
+                    val interior = created.carAsset.getFirstEntityByName(name)
+                    if (interior != 0) scene.removeEntity(interior)
+                }
                 val routeEnd = samples.lastOrNull()?.along ?: 0.0
                 val along = host.travelAlong.coerceIn(0.0, routeEnd.coerceAtLeast(0.0))
                 val needed = RaceGeometry.chunksCovering(along, routeEnd)
@@ -1534,6 +1538,10 @@ private class RaceRenderer(
                     loader, resources, provider, route, samples, host
                 )
                 scene.addEntities(created.carAsset.entities)
+                for (name in arrayOf("steering_wheel", "steering_wheel_shell")) {
+                    val interior = created.carAsset.getFirstEntityByName(name)
+                    if (interior != 0) scene.removeEntity(interior)
+                }
                 val routeEnd = samples.lastOrNull()?.along ?: 0.0
                 val along = host.travelAlong.coerceIn(0.0, routeEnd.coerceAtLeast(0.0))
                 val needed = RaceGeometry.chunksCovering(along, routeEnd)
