@@ -5,6 +5,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.Locale
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 
 data class OsrmPoint(val lon: Double, val lat: Double)
 
@@ -47,7 +49,9 @@ sealed class OsrmResult {
 }
 
 class OsrmClient {
-    private val pool = Executors.newSingleThreadExecutor()
+    private val pool = Executors.newCachedThreadPool()
+    private val token = AtomicInteger()
+    private val active = AtomicReference<HttpURLConnection?>()
 
     fun requestRoute(
         startLon: Double,
@@ -55,26 +59,44 @@ class OsrmClient {
         goalLon: Double,
         goalLat: Double,
         startRadiusMeters: Double = snapMeters,
+        connectTimeoutMs: Int = 12_000,
+        readTimeoutMs: Int = 12_000,
+        replaceActive: Boolean = false,
         onResult: (OsrmResult) -> Unit
-    ) {
+    ): Int {
+        val mine = token.incrementAndGet()
+        if (replaceActive) active.getAndSet(null)?.disconnect()
         pool.execute {
+            var connection: HttpURLConnection? = null
             try {
-                val connection = (URL(routeUrl(startLon, startLat, goalLon, goalLat, startRadiusMeters)).openConnection() as HttpURLConnection)
-                connection.connectTimeout = 12000
-                connection.readTimeout = 12000
+                if (replaceActive && mine != token.get()) return@execute
+                connection = (URL(routeUrl(startLon, startLat, goalLon, goalLat, startRadiusMeters)).openConnection() as HttpURLConnection)
+                connection.connectTimeout = connectTimeoutMs
+                connection.readTimeout = readTimeoutMs
                 connection.setRequestProperty("Accept", "application/json")
                 connection.setRequestProperty("User-Agent", "ToonNav")
+                if (replaceActive) {
+                    active.getAndSet(connection)?.disconnect()
+                    if (mine != token.get()) {
+                        connection.disconnect()
+                        return@execute
+                    }
+                }
                 val code = connection.responseCode
                 val body = (if (code in 200..299) connection.inputStream else connection.errorStream)
                     ?.bufferedReader()
                     ?.use { it.readText() }
                     .orEmpty()
                 connection.disconnect()
+                if (replaceActive && mine != token.get()) return@execute
                 onResult(interpret(code, body))
             } catch (err: Exception) {
-                onResult(OsrmResult.Network)
+                if (!replaceActive || mine == token.get()) onResult(OsrmResult.Network)
+            } finally {
+                if (connection != null && active.get() === connection) active.compareAndSet(connection, null)
             }
         }
+        return mine
     }
 
     companion object {

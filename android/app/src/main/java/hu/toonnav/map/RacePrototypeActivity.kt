@@ -59,6 +59,7 @@ class RacePrototypeActivity : ComponentActivity() {
     private val guidance = GuidanceSession()
     private val routes = OsrmClient()
     private val reroutes = RerouteSession()
+    private val gpsFilter = GpsTrackFilter()
     private val voice by lazy { VoiceGuide(assets) }
     private val hudPrefs by lazy { getSharedPreferences("toonnav-hud", MODE_PRIVATE) }
     private lateinit var speedView: TextView
@@ -99,6 +100,8 @@ class RacePrototypeActivity : ComponentActivity() {
     @Volatile var followLatitude = Double.NaN
     @Volatile var followSpeed = 0.0
     @Volatile var followHasSpeed = false
+    @Volatile var followAccuracy = Double.NaN
+    @Volatile var followBearing = Double.NaN
     @Volatile var followElapsed = 0L
     @Volatile var followLive = false
     @Volatile var previewAlong = 8.0
@@ -423,19 +426,35 @@ class RacePrototypeActivity : ComponentActivity() {
         )
         val mock = if (Build.VERSION.SDK_INT >= 31) location.isMock else location.isFromMockProvider
         if (GpsFixGate.verdict(location.latitude, location.longitude, age, mock) != GpsSampleVerdict.LIVE) return
-        followLongitude = location.longitude
-        followLatitude = location.latitude
-        followHasSpeed = location.hasSpeed()
-        followSpeed = if (location.hasSpeed()) location.speed.toDouble() else 0.0
+        val accuracy = if (location.hasAccuracy()) location.accuracy.toDouble() else null
+        val filtered = gpsFilter.accept(
+            GpsSample(
+                location.longitude,
+                location.latitude,
+                SystemClock.elapsedRealtime(),
+                accuracy,
+                if (location.hasSpeed()) location.speed.toDouble() else null,
+                if (location.hasBearing()) location.bearing.toDouble() else null
+            )
+        )
+        if (filtered.rejected) return
+        followLongitude = filtered.lon
+        followLatitude = filtered.lat
+        followHasSpeed = filtered.speedMetersPerSecond >= GpsTrackFilter.stoppedMetersPerSecond
+        followSpeed = filtered.speedMetersPerSecond
+        followAccuracy = filtered.accuracyMeters ?: Double.NaN
+        followBearing = filtered.bearingDegrees ?: Double.NaN
         followElapsed = SystemClock.elapsedRealtime()
         followLive = true
         val cue = if (usingLiveRoute) {
             guidance.onFix(
-                location.longitude,
-                location.latitude,
+                filtered.lon,
+                filtered.lat,
                 SystemClock.elapsedRealtime(),
                 age,
-                if (location.hasAccuracy()) location.accuracy.toDouble() else null
+                filtered.accuracyMeters,
+                filtered.speedMetersPerSecond,
+                filtered.bearingDegrees
             )
         } else {
             null
@@ -484,7 +503,16 @@ class RacePrototypeActivity : ComponentActivity() {
     private fun rerouteFromHere() {
         val goal = DriveSessionMemory.destination ?: return
         val now = SystemClock.elapsedRealtime()
-        if (!followLive || !reroutes.allow(now, confirmed = true, guiding = true)) {
+        if (!followLive || !followLongitude.isFinite() || !followLatitude.isFinite()) {
+            statusView.text = getString(R.string.status_off_route)
+            return
+        }
+        val replace = reroutes.shouldReplace(now, followLongitude, followLatitude)
+        if (reroutes.inFlight && !replace) {
+            statusView.text = getString(R.string.status_reroute_working)
+            return
+        }
+        if (!replace && !reroutes.allow(now, confirmed = true, guiding = true)) {
             statusView.text = if (reroutes.cooling(now)) {
                 getString(R.string.status_reroute_unavailable)
             } else {
@@ -492,16 +520,25 @@ class RacePrototypeActivity : ComponentActivity() {
             }
             return
         }
-        if (reroutes.inFlight) {
-            statusView.text = getString(R.string.status_reroute_working)
-            return
+        val ticket = if (replace) {
+            reroutes.replace(followLongitude, followLatitude, now)
+        } else {
+            reroutes.started(followLongitude, followLatitude, now)
         }
         val seq = ++routeSeq
-        reroutes.started()
         statusView.text = getString(R.string.status_reroute_working)
-        routes.requestRoute(followLongitude, followLatitude, goal.lon, goal.lat) { result ->
+        routes.requestRoute(
+            followLongitude,
+            followLatitude,
+            goal.lon,
+            goal.lat,
+            startRadiusMeters = ReroutePolicy.startRadius(followAccuracy),
+            connectTimeoutMs = ReroutePolicy.connectTimeoutMs,
+            readTimeoutMs = ReroutePolicy.readTimeoutMs,
+            replaceActive = true
+        ) { result ->
             runOnUiThread {
-                if (seq != routeSeq || isDestroyed) return@runOnUiThread
+                if (reroutes.stale(ticket) || seq != routeSeq || isDestroyed) return@runOnUiThread
                 when (result) {
                     is OsrmResult.Ready -> adoptRoute(result.plan)
                     else -> {
@@ -1001,6 +1038,7 @@ private class RaceRenderer(
     private var heldBearing = 0.0
     private var heldAlong = 8.0
     private var held = false
+    private val roadFollow = RoadFollow()
     private var smoothBearing = 0.0
     private var bearingReady = false
     private var smoothPitch = 0.0
@@ -1106,6 +1144,7 @@ private class RaceRenderer(
         if (!keepMotion) {
             held = false
             bearingReady = false
+            roadFollow.reset()
         }
     }
 
@@ -1124,6 +1163,7 @@ private class RaceRenderer(
             bearingReady = false
             pitchReady = false
             smoothLookY = Double.NaN
+            roadFollow.reset()
         }
     }
 
@@ -1141,6 +1181,7 @@ private class RaceRenderer(
         if (!keepMotion) {
             held = false
             bearingReady = false
+            roadFollow.reset()
         }
     }
 
@@ -1180,9 +1221,19 @@ private class RaceRenderer(
         val elapsed = if (lastFrame == 0L) 0.0 else (frameTimeNanos - lastFrame) / 1_000_000_000.0
         lastFrame = frameTimeNanos
         val step = elapsed.coerceIn(0.0, 0.05)
-        val age = if (host.followLive) android.os.SystemClock.elapsedRealtime() - host.followElapsed else -1L
+        val now = android.os.SystemClock.elapsedRealtime()
         val motion = if (host.followLive && route.size >= 2) {
-            RouteMotion.pose(route, host.followLongitude, host.followLatitude, host.followSpeed, host.followHasSpeed, age, true)
+            roadFollow.advance(
+                route,
+                host.followLongitude,
+                host.followLatitude,
+                host.followSpeed,
+                host.followHasSpeed,
+                host.followAccuracy.takeIf { it.isFinite() },
+                host.followElapsed,
+                now,
+                host.followBearing.takeIf { it.isFinite() }
+            )
         } else {
             null
         }

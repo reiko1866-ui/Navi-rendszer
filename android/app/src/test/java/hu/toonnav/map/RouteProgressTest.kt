@@ -100,11 +100,11 @@ class RouteProgressTest {
     }
 
     @Test
-    fun confirmsOffRouteOnlyAfterTwoSamplesAndEightSeconds() {
+    fun confirmsAnAmbiguousDepartureOnlyAfterTwoSamplesAndTheLongerHold() {
         val hold = OffRouteHold()
         assertFalse(hold.observe(true, 1_000L, 10.0))
-        assertFalse(hold.observe(true, 8_999L, 10.0))
-        assertTrue(hold.observe(true, 9_000L, 10.0))
+        assertFalse(hold.observe(true, 5_499L, 10.0))
+        assertTrue(hold.observe(true, 5_500L, 10.0))
     }
 
     @Test
@@ -121,12 +121,11 @@ class RouteProgressTest {
     }
 
     @Test
-    fun dropsTheHoldWhenAccuracyIsWorseThanFortyMeters() {
+    fun aPoorSampleDoesNotEraseAClearDepartureTimer() {
         val hold = OffRouteHold()
-        assertFalse(hold.observe(true, 0L, 10.0))
-        assertFalse(hold.observe(true, 1_000L, 40.01))
-        assertFalse(hold.observe(true, 9_000L, 10.0))
-        assertTrue(hold.observe(true, 17_000L, 10.0))
+        assertFalse(hold.observe(true, 0L, 10.0, 100.0))
+        assertFalse(hold.observe(true, 400L, 90.0, 100.0))
+        assertTrue(hold.observe(true, 1_000L, 10.0, 100.0))
     }
 
     @Test
@@ -145,11 +144,11 @@ class RouteProgressTest {
     fun aClearDepartureConfirmsSoonerThanASmallOne() {
         val clear = OffRouteHold()
         assertFalse(clear.observe(true, 0L, 10.0, 200.0))
-        assertTrue(clear.observe(true, 4_000L, 10.0, 200.0))
+        assertTrue(clear.observe(true, 1_000L, 10.0, 200.0))
         val small = OffRouteHold()
-        assertFalse(small.observe(true, 0L, 10.0, 90.0))
-        assertFalse(small.observe(true, 4_000L, 10.0, 90.0))
-        assertTrue(small.observe(true, 8_000L, 10.0, 90.0))
+        assertFalse(small.observe(true, 0L, 8.0, 30.0))
+        assertFalse(small.observe(true, 1_000L, 8.0, 30.0))
+        assertTrue(small.observe(true, 2_800L, 8.0, 30.0))
     }
 
     @Test
