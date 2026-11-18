@@ -137,6 +137,7 @@ class OsrmClient {
                 if (pair.length() < 2) return null
                 val lon = number(pair.opt(0)) ?: return null
                 val lat = number(pair.opt(1)) ?: return null
+                // A third component, when a server sends one, is not elevation. This geometry is lon/lat only.
                 points.add(OsrmPoint(lon, lat))
             }
             return points

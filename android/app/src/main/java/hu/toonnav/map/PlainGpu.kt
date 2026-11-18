@@ -46,13 +46,13 @@ class PlainGpu(
     }
 
     /** Moves the sky rings with the car. The mesh is not rebuilt. */
-    fun placeSky(east: Double, north: Double) {
+    fun placeSky(east: Double, north: Double, altitude: Double = 0.0) {
         if (skyParts.isEmpty()) return
         val matrix = floatArrayOf(
             1f, 0f, 0f, 0f,
             0f, 1f, 0f, 0f,
             0f, 0f, 1f, 0f,
-            east.toFloat(), 0f, north.toFloat(), 1f
+            east.toFloat(), altitude.toFloat(), north.toFloat(), 1f
         )
         val transforms = engine.transformManager
         for (part in skyParts) {
@@ -177,8 +177,10 @@ class PlainGpu(
     private fun buildSky() {
         val radius = 340.0
         val segments = 24
-        val heights = listOf(0f to 28f, 28f to 74f, 74f to 170f)
-        for ((index, range) in heights.withIndex()) {
+        val splits = floatArrayOf(0f, 24f, 52f, 88f, 136f, 210f)
+        val count = minOf(PlainWorld.dayGradient.size, splits.size - 1)
+        for (index in 0 until count) {
+            val range = splits[index] to splits[index + 1]
             val swatch = PlainWorld.dayGradient[index]
             val instance = material.createInstance()
             instance.setParameter("baseColor", swatch.red, swatch.green, swatch.blue, 1f)

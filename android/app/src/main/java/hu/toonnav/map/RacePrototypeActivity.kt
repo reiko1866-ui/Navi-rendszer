@@ -679,13 +679,14 @@ class RacePrototypeActivity : ComponentActivity() {
         geometryGeneration++
         val generation = geometryGeneration
         val source = samples
+        val field = terrain
         val along = travelAlong
         val end = source.lastOrNull()?.along ?: 0.0
         windowEnd = end
         val needed = RaceGeometry.chunksCovering(along, end)
         buildingRoad = true
         Thread {
-            val built = PlainWorld.chunks(source, needed)
+            val built = PlainWorld.chunks(source, needed, field)
             handler.post {
                 if (generation != geometryGeneration) return@post
                 renderer?.syncPlain(source, route, built, keepMotion)
@@ -708,9 +709,10 @@ class RacePrototypeActivity : ComponentActivity() {
         buildingRoad = true
         val generation = geometryGeneration
         val source = samples
+        val field = terrain
         val handler = renderHandler
         Thread {
-            val built = PlainWorld.chunks(source, missing.first()..missing.last())
+            val built = PlainWorld.chunks(source, missing.first()..missing.last(), field)
             handler?.post {
                 if (generation == geometryGeneration) {
                     gpu.uploadChunks(built.filterKeys { it in missing })
@@ -766,10 +768,11 @@ class RacePrototypeActivity : ComponentActivity() {
                 if (seq != routeSeq || isDestroyed || route.size != line.size) return@runOnUiThread
                 terrain = field
                 val origin = line.first()
-                elevations = FloatArray(line.size) { index ->
+                val raw = FloatArray(line.size) { index ->
                     val local = GeoMeters.local(origin, line[index])
                     field(local.first, local.second)
                 }
+                elevations = RouteElevation.smooth(line, raw)
                 prepareSamples()
                 sceneryReady.clear()
                 sceneryGeneration++
@@ -1000,6 +1003,9 @@ private class RaceRenderer(
     private var held = false
     private var smoothBearing = 0.0
     private var bearingReady = false
+    private var smoothPitch = 0.0
+    private var pitchReady = false
+    private var smoothLookY = Double.NaN
     private var nightSky: Skybox? = null
     private val choreographer = Choreographer.getInstance()
     private val callback = object : Choreographer.FrameCallback {
@@ -1116,6 +1122,8 @@ private class RaceRenderer(
         if (!keepMotion) {
             held = false
             bearingReady = false
+            pitchReady = false
+            smoothLookY = Double.NaN
         }
     }
 
@@ -1202,10 +1210,16 @@ private class RaceRenderer(
             north = here.north
             bearing = RaceTrack.bearing(route, samples, heldAlong)
         }
-        val surface = RaceTrack.pointAt(samples, heldAlong).elevation.toDouble() + RaceGeometry.deckTop
+        val here = RaceTrack.pointAt(samples, heldAlong)
+        val ahead = RaceTrack.pointAt(samples, heldAlong + RaceCamera.lookAheadMeters)
+        val surface = here.elevation.toDouble() + RaceGeometry.deckTop
+        val lookSurface = ahead.elevation.toDouble() + RaceGeometry.deckTop
         host.travelAlong = heldAlong
         host.slideWindow(heldAlong)
         val turned = dampBearing(bearing, step)
+        val pitched = dampPitch(RaceTrack.gradeRadians(samples, heldAlong), step)
+        if (smoothLookY.isNaN() || step <= 0.0) smoothLookY = lookSurface
+        else smoothLookY += (lookSurface - smoothLookY) * (1.0 - kotlin.math.exp(-step / 0.22))
         val aspect = width.toDouble() / height.toDouble()
         camera.setProjection(
             DriveDisplay.verticalFov(aspect),
@@ -1214,11 +1228,18 @@ private class RaceRenderer(
             RaceCamera.farMeters,
             Camera.Fov.VERTICAL
         )
-        camera.setModelMatrix(RaceCamera.cameraModel(east, north, turned, surface))
-        plainGpu?.placeSky(east, north)
+        camera.setModelMatrix(RaceCamera.cameraModel(east, north, turned, surface, smoothLookY))
+        if (plainGpu != null) {
+            val haze = swapView.fogOptions
+            if (kotlin.math.abs(haze.height - surface.toFloat()) > 0.25f) {
+                haze.height = surface.toFloat()
+                swapView.fogOptions = haze
+            }
+            plainGpu.placeSky(east, north, surface)
+        }
         val transform = engine.transformManager
         val car = transform.getInstance(carEntity())
-        if (car != 0) transform.setTransform(car, RaceCamera.carTransform(east, north, turned, surface))
+        if (car != 0) transform.setTransform(car, RaceCamera.carTransform(east, north, turned, surface, pitched))
         swapView.viewport = Viewport(0, 0, width, height)
         if (renderer.beginFrame(chain, frameTimeNanos)) {
             renderer.render(swapView)
@@ -1253,6 +1274,17 @@ private class RaceRenderer(
         val step = (delta * follow).coerceIn(-170.0 * dt, 170.0 * dt)
         smoothBearing = (smoothBearing + step + 360.0) % 360.0
         return smoothBearing
+    }
+
+    private fun dampPitch(target: Double, dt: Double): Double {
+        if (!pitchReady || dt <= 0.0) {
+            pitchReady = true
+            smoothPitch = target
+            return target
+        }
+        val follow = 1.0 - kotlin.math.exp(-dt / 0.18)
+        smoothPitch += (target - smoothPitch) * follow
+        return smoothPitch
     }
 
     private fun carEntity(): Int {

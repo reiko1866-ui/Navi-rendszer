@@ -21,6 +21,18 @@ class OsrmClientTest {
     }
 
     @Test
+    fun aThirdCoordinateIsNotUsedAsElevation() {
+        val json = routeJson().replace(
+            """"coordinates":[[19.04,47.49],[19.05,47.5]]""",
+            """"coordinates":[[19.04,47.49,312.5],[19.05,47.5,401.0]]"""
+        )
+        val ready = OsrmClient.parse(json) as OsrmResult.Ready
+        assertEquals(19.04, ready.plan.coordinates[0].lon, 0.000001)
+        assertEquals(47.49, ready.plan.coordinates[0].lat, 0.000001)
+        assertEquals(47.5, ready.plan.coordinates[1].lat, 0.000001)
+    }
+
+    @Test
     fun keepsARouteWhenDurationIsMissing() {
         val json = routeJson().replace(""""duration":180.2,""", "")
         val ready = OsrmClient.parse(json) as OsrmResult.Ready

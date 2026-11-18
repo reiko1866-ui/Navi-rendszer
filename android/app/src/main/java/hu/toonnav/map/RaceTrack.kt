@@ -84,6 +84,15 @@ object RaceTrack {
         return last
     }
 
+    /** Positive when the road rises ahead. Radians, from the smoothed samples. */
+    fun gradeRadians(samples: List<RoadSample>, alongMeters: Double): Double {
+        if (samples.size < 2) return 0.0
+        val back = pointAt(samples, alongMeters - 5.0)
+        val ahead = pointAt(samples, alongMeters + 7.0)
+        val run = kotlin.math.hypot(ahead.east - back.east, ahead.north - back.north).coerceAtLeast(0.5)
+        return kotlin.math.atan2((ahead.elevation - back.elevation).toDouble(), run)
+    }
+
     fun samplePreview(): List<OsrmPoint> {
         val origin = OsrmPoint(19.0, 47.0)
         val points = ArrayList<OsrmPoint>()
