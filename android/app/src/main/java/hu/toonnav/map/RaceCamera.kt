@@ -27,8 +27,8 @@ object RaceCamera {
      */
     const val eyeLocalY = 1.88
     const val eyeLocalZ = -1.72
-    const val lookLocalY = 0.92
-    const val lookAheadMeters = 32.0
+    const val lookLocalY = 0.42
+    const val lookAheadMeters = 46.0
     const val fovDegrees = 48.0
     /** Near plane stays in front of the nose. Far plane clears the streamed corridor. */
     const val nearMeters = 0.08
@@ -36,9 +36,15 @@ object RaceCamera {
     const val noseLocalY = 0.40
     const val noseLocalZ = 2.60
 
-    fun pose(east: Double, north: Double, bearingDegrees: Double, surface: Double = RaceGeometry.deckTop): RaceCameraPose {
+    fun pose(
+        east: Double,
+        north: Double,
+        bearingDegrees: Double,
+        surface: Double = RaceGeometry.deckTop,
+        lookSurface: Double = surface
+    ): RaceCameraPose {
         val eye = world(east, north, bearingDegrees, eyeLocalX, eyeLocalY, eyeLocalZ, surface)
-        val look = world(east, north, bearingDegrees, 0.0, lookLocalY, eyeLocalZ + lookAheadMeters, surface)
+        val look = world(east, north, bearingDegrees, 0.0, lookLocalY, eyeLocalZ + lookAheadMeters, lookSurface)
         return RaceCameraPose(
             eyeX = eye[0], eyeY = eye[1], eyeZ = eye[2],
             targetX = look[0], targetY = look[1], targetZ = look[2],
@@ -65,8 +71,14 @@ object RaceCamera {
      * third column points backward. The first column points to the driver's right,
      * which is east when the car faces north.
      */
-    fun cameraModel(east: Double, north: Double, bearingDegrees: Double, surface: Double = RaceGeometry.deckTop): FloatArray {
-        val pose = pose(east, north, bearingDegrees, surface)
+    fun cameraModel(
+        east: Double,
+        north: Double,
+        bearingDegrees: Double,
+        surface: Double = RaceGeometry.deckTop,
+        lookSurface: Double = surface
+    ): FloatArray {
+        val pose = pose(east, north, bearingDegrees, surface, lookSurface)
         return lookingModel(pose.eyeX, pose.eyeY, pose.eyeZ, pose.targetX, pose.targetY, pose.targetZ)
     }
 
@@ -102,14 +114,22 @@ object RaceCamera {
     }
 
     /** Column-major transform. The asset's nose points along local +Z. */
-    fun carTransform(east: Double, north: Double, bearingDegrees: Double, surface: Double = RaceGeometry.deckTop): FloatArray {
+    fun carTransform(
+        east: Double,
+        north: Double,
+        bearingDegrees: Double,
+        surface: Double = RaceGeometry.deckTop,
+        pitchRadians: Double = 0.0
+    ): FloatArray {
         val yaw = Math.toRadians(bearingDegrees)
-        val cosine = cos(yaw).toFloat()
-        val sine = sin(yaw).toFloat()
+        val cosine = cos(yaw)
+        val sine = sin(yaw)
+        val pitch = cos(pitchRadians)
+        val rise = sin(pitchRadians)
         return floatArrayOf(
-            cosine, 0f, -sine, 0f,
-            0f, 1f, 0f, 0f,
-            sine, 0f, cosine, 0f,
+            cosine.toFloat(), 0f, (-sine).toFloat(), 0f,
+            (-sine * rise).toFloat(), pitch.toFloat(), (-cosine * rise).toFloat(), 0f,
+            (sine * pitch).toFloat(), rise.toFloat(), (cosine * pitch).toFloat(), 0f,
             east.toFloat(), surface.toFloat(), north.toFloat(), 1f
         )
     }

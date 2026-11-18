@@ -2,6 +2,7 @@ package hu.toonnav.map
 
 import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.floor
 import kotlin.math.hypot
 import kotlin.math.sin
 
@@ -26,8 +27,11 @@ object LegacyBackdrop {
  * Solid driving backdrop. Every color is a material parameter. There is no
  * texture, HDR, IBL image, KTX2, or ORM map.
  *
- * The ribbon is resampled on a short curve so a bend is an arc, not a
- * corner cut from the raw samples. Colors stay untextured.
+ * The road ribbon follows the route elevation. Terrain is a height grid in the
+ * same local meters: inside the carriageway it stays under the asphalt, and
+ * beyond the shoulder it uses the surveyed field when one exists. A missing
+ * field stays a low roll. It does not grow a hill beside the road, because a
+ * later bend used to drive through those hills.
  */
 object PlainWorld {
     data class Swatch(val name: String, val red: Float, val green: Float, val blue: Float) {
@@ -37,28 +41,36 @@ object PlainWorld {
         }
     }
 
-    val ground = Swatch("plain-ground", 0.17f, 0.55f, 0.18f)
-    val road = Swatch("plain-road", 0.45f, 0.45f, 0.43f)
-    val shoulder = Swatch("plain-shoulder", 0.62f, 0.46f, 0.28f)
-    val verge = Swatch("plain-verge", 0.36f, 0.50f, 0.24f)
-    val center = Swatch("plain-center", 0.96f, 0.96f, 0.94f)
-    val edge = Swatch("plain-edge", 0.93f, 0.93f, 0.90f)
+    val ground = Swatch("plain-ground", 0.16f, 0.46f, 0.15f)
+    val grassDeep = Swatch("plain-grass-deep", 0.10f, 0.34f, 0.11f)
+    val grassLight = Swatch("plain-grass-light", 0.38f, 0.58f, 0.24f)
+    val earth = Swatch("plain-earth", 0.47f, 0.36f, 0.22f)
+    val road = Swatch("plain-road", 0.36f, 0.36f, 0.35f)
+    val roadShade = Swatch("plain-road-shade", 0.31f, 0.31f, 0.30f)
+    val shoulder = Swatch("plain-shoulder", 0.55f, 0.42f, 0.27f)
+    val verge = Swatch("plain-verge", 0.34f, 0.46f, 0.22f)
+    val center = Swatch("plain-center", 0.94f, 0.94f, 0.92f)
+    val edge = Swatch("plain-edge", 0.90f, 0.90f, 0.88f)
     val kerbRed = Swatch("plain-kerb-red", 0.78f, 0.08f, 0.05f)
     val kerbWhite = Swatch("plain-kerb-white", 0.94f, 0.94f, 0.92f)
-    /** Zenith, mid sky, and a pale horizon. Drawn as untextured rings, not an HDR image. */
+    /** Horizon first, zenith last. Drawn as untextured rings, not an HDR image. */
     val dayGradient = listOf(
-        Swatch("plain-sky-band-0", 0.74f, 0.86f, 0.93f),
-        Swatch("plain-sky-band-1", 0.52f, 0.72f, 0.92f),
-        Swatch("plain-sky-band-2", 0.36f, 0.60f, 0.90f)
+        Swatch("plain-sky-band-0", 0.78f, 0.88f, 0.95f),
+        Swatch("plain-sky-band-1", 0.62f, 0.78f, 0.94f),
+        Swatch("plain-sky-band-2", 0.46f, 0.66f, 0.92f),
+        Swatch("plain-sky-band-3", 0.32f, 0.56f, 0.88f),
+        Swatch("plain-sky-band-4", 0.22f, 0.46f, 0.84f)
     )
     val nightGradient = listOf(
-        Swatch("plain-night-band-0", 0.12f, 0.16f, 0.26f),
-        Swatch("plain-night-band-1", 0.07f, 0.10f, 0.20f),
-        Swatch("plain-night-band-2", 0.05f, 0.08f, 0.16f)
+        Swatch("plain-night-band-0", 0.16f, 0.20f, 0.30f),
+        Swatch("plain-night-band-1", 0.12f, 0.15f, 0.24f),
+        Swatch("plain-night-band-2", 0.08f, 0.11f, 0.20f),
+        Swatch("plain-night-band-3", 0.06f, 0.08f, 0.16f),
+        Swatch("plain-night-band-4", 0.04f, 0.05f, 0.12f)
     )
-    val horizon = dayGradient[0]
-    val sky = dayGradient[2]
-    val nightSky = nightGradient[2]
+    val horizon = dayGradient.first()
+    val sky = dayGradient.last()
+    val nightSky = nightGradient.last()
 
     /** Steps from the grass toward the pale horizon, so the distance is not one hard stripe. */
     val haze: List<Swatch> = (0 until 7).map { step ->
@@ -92,12 +104,18 @@ object PlainWorld {
     const val shoulderWidth = 3.2
     const val grassWidth = 28.0
     const val hazeBandWidth = 36.0
+    private const val nearStep = 3.2
+    private const val nearReach = 42.0
+    private const val farStep = 18.0
+    private const val farReach = 200.0
 
     fun swatch(name: String): Swatch? {
         return all.firstOrNull { it.name == name }
     }
 
-    val all = listOf(ground, road, shoulder, verge, center, edge, kerbRed, kerbWhite, sky, nightSky) + haze
+    val all = listOf(
+        ground, grassDeep, grassLight, earth, road, roadShade, shoulder, verge, center, edge, kerbRed, kerbWhite, sky, nightSky
+    ) + haze
 
     fun previewSamples(length: Double = 800.0, step: Double = 8.0): List<RoadSample> {
         if (length <= 1.0 || step <= 0.0) return emptyList()
@@ -111,76 +129,227 @@ object PlainWorld {
         return samples
     }
 
-    fun meshes(samples: List<RoadSample>, from: Double = Double.NEGATIVE_INFINITY, until: Double = Double.POSITIVE_INFINITY): List<RaceMesh> {
+    fun meshes(
+        samples: List<RoadSample>,
+        from: Double = Double.NEGATIVE_INFINITY,
+        until: Double = Double.POSITIVE_INFINITY,
+        field: ((Double, Double) -> Float)? = null
+    ): List<RaceMesh> {
         if (samples.size < 2) return emptyList()
         val window = samples.filter { it.along >= from - 40.0 && it.along <= until + 40.0 }
         val curve = refine(if (window.size >= 2) window else samples)
         if (curve.size < 2) return emptyList()
-        val groundStrip = Strip(ground.name)
-        val vergeStrip = Strip(verge.name)
-        val hazeStrips = haze.map { Strip(it.name) }
-        val shoulderStrip = Strip(shoulder.name)
-        val roadStrip = Strip(road.name)
-        val edgeStrip = Strip(edge.name)
-        val centerStrip = Strip(center.name)
-        val redStrip = Strip(kerbRed.name)
-        val whiteStrip = Strip(kerbWhite.name)
-        val outerShoulder = roadHalf + shoulderWidth
-        val outerGrass = outerShoulder + grassWidth
-        val grassEdges = listOf(outerShoulder, outerShoulder + grassWidth * 0.34, outerShoulder + grassWidth * 0.67, outerGrass)
+        val strips = linkedMapOf(
+            shoulder.name to Strip(shoulder.name),
+            road.name to Strip(road.name),
+            roadShade.name to Strip(roadShade.name),
+            edge.name to Strip(edge.name),
+            center.name to Strip(center.name),
+            kerbRed.name to Strip(kerbRed.name),
+            kerbWhite.name to Strip(kerbWhite.name)
+        )
         for (index in 0 until curve.size - 1) {
             val a = curve[index]
             val b = curve[index + 1]
             if (b.along < from || a.along > until) continue
             val rightA = right(curve, index)
             val rightB = right(curve, index + 1)
-            band(shoulderStrip, a, b, rightA, rightB, roadHalf, outerShoulder, 0.015)
-            band(roadStrip, a, b, rightA, rightB, -roadHalf, roadHalf, 0.06)
-            band(edgeStrip, a, b, rightA, rightB, roadHalf - 0.55, roadHalf - 0.22, 0.09)
-            if ((a.along / 8.0).toInt() % 2 == 0) {
-                band(centerStrip, a, b, rightA, rightB, -0.14, 0.14, 0.11)
+            val profileA = RoadProfile.of(a.kind)
+            val profileB = RoadProfile.of(b.kind)
+            val halfA = profileA.halfWidth
+            val halfB = profileB.halfWidth
+            band(strips.getValue(shoulder.name), a, b, rightA, rightB, halfA, halfA + profileA.shoulder, halfB, halfB + profileB.shoulder, 0.02)
+            band(strips.getValue(shoulder.name), a, b, rightA, rightB, -(halfA + profileA.shoulder), -halfA, -(halfB + profileB.shoulder), -halfB, 0.02)
+            val asphalt = if ((a.along / 18.0).toInt() % 5 == 0) roadShade.name else road.name
+            band(strips.getValue(asphalt), a, b, rightA, rightB, -halfA, halfA, -halfB, halfB, 0.06)
+            if (profileA.edgeLines || profileB.edgeLines) {
+                band(strips.getValue(edge.name), a, b, rightA, rightB, halfA - 0.48, halfA - 0.18, halfB - 0.48, halfB - 0.18, 0.09)
+                band(strips.getValue(edge.name), a, b, rightA, rightB, -(halfA - 0.18), -(halfA - 0.48), -(halfB - 0.18), -(halfB - 0.48), 0.09)
             }
-            if (abs(a.turn) > 0.01 || abs(b.turn) > 0.01) {
-                val kerb = if ((a.along / 1.7).toInt() % 2 == 0) redStrip else whiteStrip
-                band(kerb, a, b, rightA, rightB, roadHalf - 0.08, roadHalf + 0.62, 0.10)
+            if (profileA.center == CenterMark.DASH && (a.along / 8.0).toInt() % 2 == 0) {
+                band(strips.getValue(center.name), a, b, rightA, rightB, -0.13, 0.13, -0.13, 0.13, 0.11)
+            }
+            if ((profileA.kerbs || profileB.kerbs) && (abs(a.turn) > 0.02 || abs(b.turn) > 0.02)) {
+                val kerb = if ((a.along / 1.6).toInt() % 2 == 0) kerbRed.name else kerbWhite.name
+                band(strips.getValue(kerb), a, b, rightA, rightB, halfA - 0.04, halfA + 0.58, halfB - 0.04, halfB + 0.58, 0.10)
+                band(strips.getValue(kerb), a, b, rightA, rightB, -(halfA + 0.58), -(halfA - 0.04), -(halfB + 0.58), -(halfB - 0.04), 0.10)
             }
         }
-        val stride = 4
-        var terrain = 0
-        while (terrain < curve.size - 1) {
-            val next = (terrain + stride).coerceAtMost(curve.lastIndex)
-            if (next == terrain) break
-            val a = curve[terrain]
-            val b = curve[next]
-            if (b.along >= from && a.along <= until) {
-                val rightA = right(curve, terrain)
-                val rightB = right(curve, next)
-                for (band in 0 until grassEdges.size - 1) {
-                    band(groundStrip, a, b, rightA, rightB, grassEdges[band], grassEdges[band + 1], 0.0)
-                }
-                var lateral = outerGrass
-                for (strip in hazeStrips) {
-                    val outer = lateral + hazeBandWidth
-                    band(strip, a, b, rightA, rightB, lateral, outer, 0.0)
-                    lateral = outer
-                }
-                band(vergeStrip, a, b, rightA, rightB, outerShoulder - 0.15, outerShoulder + 2.4, 0.0)
-            }
-            terrain += stride
-        }
-        return (listOf(groundStrip, vergeStrip, shoulderStrip, roadStrip, edgeStrip, centerStrip, redStrip, whiteStrip) + hazeStrips)
-            .mapNotNull { it.build() }
+        val terrain = terrainStrips(curve, from, until, field)
+        return (strips.values + terrain.values).mapNotNull { it.build() }
     }
 
-    fun chunks(samples: List<RoadSample>, needed: IntRange): Map<Int, List<RaceMesh>> {
+    fun chunks(
+        samples: List<RoadSample>,
+        needed: IntRange,
+        field: ((Double, Double) -> Float)? = null
+    ): Map<Int, List<RaceMesh>> {
         val built = LinkedHashMap<Int, List<RaceMesh>>()
         for (index in needed) {
             val from = index * RaceGeometry.chunkMeters
             val until = (index + 1) * RaceGeometry.chunkMeters
-            val piece = meshes(samples, from, until)
+            val piece = meshes(samples, from, until, field)
             if (piece.isNotEmpty()) built[index] = piece
         }
         return built
+    }
+
+    /** Height of the ground at a local point. The carriageway stays at the road elevation. */
+    fun groundHeight(
+        anchors: List<RoadSample>,
+        east: Double,
+        north: Double,
+        field: ((Double, Double) -> Float)? = null
+    ): Float {
+        val anchor = nearest(anchors, east, north) ?: return 0f
+        return heightAt(east, north, anchor, field).toFloat()
+    }
+
+    private fun terrainStrips(
+        curve: List<RoadSample>,
+        from: Double,
+        until: Double,
+        field: ((Double, Double) -> Float)?
+    ): Map<String, Strip> {
+        val strips = LinkedHashMap<String, Strip>()
+        fillGrid(strips, curve, nearStep, nearReach, 0.0, from, until, field)
+        fillGrid(strips, curve, farStep, farReach, nearReach, from, until, field)
+        return strips
+    }
+
+    private fun fillGrid(
+        strips: MutableMap<String, Strip>,
+        anchors: List<RoadSample>,
+        step: Double,
+        reach: Double,
+        inner: Double,
+        from: Double,
+        until: Double,
+        field: ((Double, Double) -> Float)?
+    ) {
+        if (anchors.size < 2) return
+        var minE = Double.POSITIVE_INFINITY
+        var maxE = Double.NEGATIVE_INFINITY
+        var minN = Double.POSITIVE_INFINITY
+        var maxN = Double.NEGATIVE_INFINITY
+        for (sample in anchors) {
+            if (sample.east < minE) minE = sample.east
+            if (sample.east > maxE) maxE = sample.east
+            if (sample.north < minN) minN = sample.north
+            if (sample.north > maxN) maxN = sample.north
+        }
+        minE -= reach
+        maxE += reach
+        minN -= reach
+        maxN += reach
+        var used = step
+        while ((maxE - minE) / used > 320.0 || (maxN - minN) / used > 320.0) used *= 1.5
+        val x0 = floor(minE / used) * used
+        val z0 = floor(minN / used) * used
+        val end = anchors.last().along
+        var x = x0
+        while (x < maxE - used * 0.25) {
+            var z = z0
+            while (z < maxN - used * 0.25) {
+                val centerEast = x + used * 0.5
+                val centerNorth = z + used * 0.5
+                val anchor = nearest(anchors, centerEast, centerNorth)
+                if (anchor != null && anchor.distance in inner..reach && owns(anchor.along, from, until, end)) {
+                    val name = materialFor(anchor.distance, centerEast, centerNorth)
+                    val strip = strips.getOrPut(name) { Strip(name) }
+                    val y00 = heightAt(x, z, nearest(anchors, x, z) ?: anchor, field)
+                    val y10 = heightAt(x + used, z, nearest(anchors, x + used, z) ?: anchor, field)
+                    val y11 = heightAt(x + used, z + used, nearest(anchors, x + used, z + used) ?: anchor, field)
+                    val y01 = heightAt(x, z + used, nearest(anchors, x, z + used) ?: anchor, field)
+                    val a = strip.addPoint(x, z, y00)
+                    val b = strip.addPoint(x + used, z, y10)
+                    val c = strip.addPoint(x + used, z + used, y11)
+                    val d = strip.addPoint(x, z + used, y01)
+                    strip.quad(a, b, c, d)
+                }
+                z += used
+            }
+            x += used
+        }
+    }
+
+    private fun owns(along: Double, from: Double, until: Double, end: Double): Boolean {
+        if (along < from) return false
+        if (along < until) return true
+        return along <= end + 0.05 && until >= end - 0.05
+    }
+
+    private fun materialFor(distance: Double, east: Double, north: Double): String {
+        if (distance > 72.0) {
+            val band = ((distance - 72.0) / 18.0).toInt().coerceIn(0, haze.lastIndex)
+            return haze[band].name
+        }
+        if (distance < 8.0) return shoulder.name
+        if (distance < 12.0) return verge.name
+        val patch = sin(east * 0.021) * cos(north * 0.017)
+        return when {
+            patch < -0.55 -> earth.name
+            patch > 0.62 -> grassLight.name
+            patch < -0.2 -> grassDeep.name
+            else -> ground.name
+        }
+    }
+
+    private fun heightAt(
+        east: Double,
+        north: Double,
+        anchor: Anchor,
+        field: ((Double, Double) -> Float)?
+    ): Double {
+        val road = anchor.elevation.toDouble()
+        val edge = anchor.half + 0.35
+        val shoulder = anchor.half + anchor.shoulder
+        if (anchor.distance <= edge) return road - 0.08
+        if (anchor.distance <= shoulder) {
+            val t = ((anchor.distance - edge) / (shoulder - edge).coerceAtLeast(0.4)).coerceIn(0.0, 1.0)
+            return road - 0.04 - 0.06 * t
+        }
+        val surveyed = if (field != null) {
+            field(east, north).toDouble()
+        } else {
+            road + roll(east, north, anchor.distance, shoulder)
+        }
+        val span = 16.0
+        val t = ((anchor.distance - shoulder) / span).coerceIn(0.0, 1.0)
+        val smooth = t * t * (3.0 - 2.0 * t)
+        val lip = road - 0.12
+        return lip * (1.0 - smooth) + surveyed * smooth
+    }
+
+    /** A few meters of roll, and only past the shoulder. Zero means the road stays clear. */
+    private fun roll(east: Double, north: Double, distance: Double, shoulder: Double): Double {
+        val t = ((distance - shoulder) / 24.0).coerceIn(0.0, 1.0)
+        val smooth = t * t * (3.0 - 2.0 * t)
+        val wave = sin(east * 0.018) * cos(north * 0.015) * 1.05 + sin(east * 0.006 + north * 0.005) * 1.25
+        return wave * smooth
+    }
+
+    private data class Anchor(
+        val distance: Double,
+        val elevation: Float,
+        val along: Double,
+        val half: Double,
+        val shoulder: Double
+    )
+
+    private fun nearest(anchors: List<RoadSample>, east: Double, north: Double): Anchor? {
+        var best = Double.POSITIVE_INFINITY
+        var found: RoadSample? = null
+        for (sample in anchors) {
+            val distance = hypot(sample.east - east, sample.north - north)
+            if (distance < best) {
+                best = distance
+                found = sample
+            }
+        }
+        val sample = found ?: return null
+        val profile = RoadProfile.of(sample.kind)
+        return Anchor(best, sample.elevation, sample.along, profile.halfWidth, profile.shoulder)
     }
 
     private fun refine(samples: List<RoadSample>): List<RoadSample> {
@@ -197,6 +366,7 @@ object PlainWorld {
             val steps = (span / if (tight) 0.65 else 1.7).toInt().coerceIn(1, if (tight) 18 else 5)
             for (step in 0 until steps) {
                 val t = step.toDouble() / steps
+                val elevation = p1.elevation + (p2.elevation - p1.elevation) * t
                 curved.add(
                     RoadSample(
                         catmull(p0.east, p1.east, p2.east, p3.east, t),
@@ -204,7 +374,7 @@ object PlainWorld {
                         p1.along + (p2.along - p1.along) * t,
                         0.0,
                         p1.kind,
-                        catmull(p0.elevation.toDouble(), p1.elevation.toDouble(), p2.elevation.toDouble(), p3.elevation.toDouble(), t).toFloat()
+                        elevation.toFloat()
                     )
                 )
             }
@@ -247,64 +417,24 @@ object PlainWorld {
             )
     }
 
-    /** Flat on the asphalt, then a low roll that fades out before the horizon. */
-    private fun relief(east: Double, north: Double, lateral: Double): Double {
-        val fade = ((abs(lateral) - roadHalf - 0.35) / 12.0).coerceIn(0.0, 1.0)
-        val smooth = fade * fade * (3.0 - 2.0 * fade)
-        val outer = roadHalf + shoulderWidth + grassWidth
-        val settle = (1.0 - ((abs(lateral) - outer) / 140.0).coerceIn(0.0, 1.0))
-        val roll = sin(east * 0.021) * cos(north * 0.017) * 0.38
-        val broad = sin(east * 0.006 + north * 0.005) * 0.72
-        return (roll + broad) * smooth * settle
-    }
-
-    /** Low ridges beyond the verge. Flat on the asphalt and gone again at the far haze. */
-    private fun hill(east: Double, north: Double, lateral: Double): Double {
-        val inner = roadHalf + shoulderWidth + grassWidth * 0.45
-        val outer = roadHalf + shoulderWidth + grassWidth + hazeBandWidth * 4.0
-        val distance = abs(lateral)
-        if (distance <= inner || distance >= outer) return 0.0
-        val span = (outer - inner).coerceAtLeast(1.0)
-        val t = ((distance - inner) / span).coerceIn(0.0, 1.0)
-        val dome = sin(t * Math.PI)
-        val vary = 0.42 + 0.58 * (0.5 + 0.5 * sin(east * 0.018 + north * 0.013))
-        return dome * vary * 16.0
-    }
-
     private fun band(
         strip: Strip,
         a: RoadSample,
         b: RoadSample,
         rightA: Pair<Double, Double>,
         rightB: Pair<Double, Double>,
-        from: Double,
-        to: Double,
+        fromA: Double,
+        toA: Double,
+        fromB: Double,
+        toB: Double,
         lift: Double
     ) {
         val span = hypot(b.east - a.east, b.north - a.north)
         if (span < 0.05) return
-        if (from >= 0.0 && to > from) {
-            quad(strip, a, b, rightA, rightB, from, to, lift)
-            quad(strip, a, b, rightA, rightB, -to, -from, lift)
-        } else {
-            quad(strip, a, b, rightA, rightB, from, to, lift)
-        }
-    }
-
-    private fun quad(
-        strip: Strip,
-        a: RoadSample,
-        b: RoadSample,
-        rightA: Pair<Double, Double>,
-        rightB: Pair<Double, Double>,
-        from: Double,
-        to: Double,
-        lift: Double
-    ) {
-        val a0 = strip.add(a, rightA, from, lift)
-        val a1 = strip.add(a, rightA, to, lift)
-        val b1 = strip.add(b, rightB, to, lift)
-        val b0 = strip.add(b, rightB, from, lift)
+        val a0 = strip.add(a, rightA, fromA, lift)
+        val a1 = strip.add(a, rightA, toA, lift)
+        val b1 = strip.add(b, rightB, toB, lift)
+        val b0 = strip.add(b, rightB, fromB, lift)
         strip.quad(a0, a1, b1, b0)
     }
 
@@ -324,11 +454,13 @@ object PlainWorld {
         private val indices = ArrayList<Int>()
 
         fun add(sample: RoadSample, right: Pair<Double, Double>, lateral: Double, lift: Double): Int {
+            return addPoint(sample.east + right.first * lateral, sample.north + right.second * lateral, sample.elevation + lift)
+        }
+
+        fun addPoint(east: Double, north: Double, y: Double): Int {
             val index = positions.size / 3
-            val east = sample.east + right.first * lateral
-            val north = sample.north + right.second * lateral
             positions.add(east.toFloat())
-            positions.add((sample.elevation + lift + relief(east, north, lateral) + hill(east, north, lateral)).toFloat())
+            positions.add(y.toFloat())
             positions.add(north.toFloat())
             normals.add(0f)
             normals.add(1f)

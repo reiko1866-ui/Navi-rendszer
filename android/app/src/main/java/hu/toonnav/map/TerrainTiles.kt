@@ -166,6 +166,53 @@ object TerrainTiles {
     }
 }
 
+/**
+ * OSRM overview coordinates are longitude and latitude only. Heights come from
+ * [TerrainTiles]. This smooths tile noise over a short window and drops a single
+ * wild sample, without flattening a real grade.
+ */
+object RouteElevation {
+    fun smooth(points: List<OsrmPoint>, heights: FloatArray, windowMeters: Double = 16.0): FloatArray {
+        if (heights.isEmpty() || points.size != heights.size) return heights.copyOf()
+        if (heights.size < 3 || windowMeters <= 1.0) return heights.copyOf()
+        val clean = heights.copyOf()
+        for (index in 1 until clean.size - 1) {
+            val spike = abs(clean[index] - clean[index - 1]) > 60f && abs(clean[index] - clean[index + 1]) > 60f
+            if (spike || abs(clean[index]) > 2000f) {
+                clean[index] = (clean[index - 1] + clean[index + 1]) * 0.5f
+            }
+        }
+        val along = DoubleArray(points.size)
+        for (index in 1 until points.size) {
+            val step = GeoMeters.local(points[index - 1], points[index])
+            along[index] = along[index - 1] + kotlin.math.hypot(step.first, step.second)
+        }
+        val smoothed = FloatArray(clean.size)
+        for (index in clean.indices) {
+            var sum = 0.0
+            var weight = 0.0
+            var cursor = index
+            while (cursor >= 0 && along[index] - along[cursor] <= windowMeters) {
+                val influence = 1.0 - (along[index] - along[cursor]) / windowMeters
+                sum += clean[cursor] * influence
+                weight += influence
+                cursor--
+            }
+            cursor = index + 1
+            while (cursor < clean.size && along[cursor] - along[index] <= windowMeters) {
+                val influence = 1.0 - (along[cursor] - along[index]) / windowMeters
+                sum += clean[cursor] * influence
+                weight += influence
+                cursor++
+            }
+            smoothed[index] = if (weight > 0.0) (sum / weight).toFloat() else clean[index]
+        }
+        return smoothed
+    }
+
+    private fun abs(value: Float): Float = if (value < 0f) -value else value
+}
+
 /** Inverse helpers kept for tests that check a tile maps back near its center. */
 fun terrainTileCenter(x: Int, y: Int, zoom: Int = TerrainTiles.zoom): Pair<Double, Double> {
     val count = 2.0.pow(zoom)
