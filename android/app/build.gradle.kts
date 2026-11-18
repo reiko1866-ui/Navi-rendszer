@@ -19,8 +19,20 @@ android {
         applicationId = "hu.toonnav.map"
         minSdk = 21
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
+    }
+
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
+        }
     }
 
     buildFeatures {
@@ -34,6 +46,19 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            isShrinkResources = false
+            isDebuggable = false
+            // Same debug certificate as the build already on the phone, so an update keeps app data.
+            signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+        resources {
+            excludes += setOf("META-INF/version-control-info.textproto")
         }
     }
 
@@ -48,6 +73,15 @@ android {
 
     testOptions {
         unitTests.isIncludeAndroidResources = true
+    }
+
+    lint {
+        checkReleaseBuilds = false
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 
     sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/voice-assets"))
